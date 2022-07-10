@@ -2,8 +2,8 @@ unit Kundenauftraege;
 
 interface
 
-uses Vcl.Forms, System.SysUtils, System.Classes, DBConnect, DBQry,
-  KundenauftragsPos, StuecklistenPosition;
+uses Vcl.Forms, System.SysUtils, System.Classes,
+  KundenauftragsPos, StuecklistenPosition, DBZugriff;
 
 type
   TZKundenauftrag = class(TZStueliPos)
@@ -38,19 +38,15 @@ end;
 procedure TZKundenauftrag.liesKopfundPositionen();
 
 var
-  conn: TZDbConnector;
   gefunden: Boolean;
   Rabatt: Double;
   NewStueliPos: TZKundenauftragsPos;
   KAQry, RabattQry: TZQry;
 
 begin
-    // DatenbankConnector anlegen und oeffnen
-  conn := TZDbConnector.Create(nil);
-  conn := SQLiteDataModule;
 
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
-  KAQry := conn.getQuery;
+  KAQry := DBConn.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
 
   if gefunden then
@@ -60,7 +56,7 @@ begin
     kunden_id := KAQry.FieldByName('kunde').AsInteger;
 
     // Abfrage des Rabattes zu diesem Kunden
-    RabattQry := conn.getQuery;
+    RabattQry := DBConn.getQuery;
     RabattQry.SucheKundenRabatt(ka_id);
     { TODO :
       Else-Zweig bearbeiten

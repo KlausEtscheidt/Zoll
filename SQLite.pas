@@ -15,21 +15,20 @@ uses
 type
   TSQLiteDataModule = class(TDataModule)
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
-    FDConnection1: TFDConnection;
+    DBConnection: TFDConnection;
     Query: TFDQuery;
     //constructor Create;
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
-    n_records: Integer;
-    SqlQuery:TFDQuery;
   end;
 
   var
   SQLiteDataModule: TSQLiteDataModule;
 
 implementation
+
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 

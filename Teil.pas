@@ -2,7 +2,7 @@
 
 interface
 
-uses  System.SysUtils, Data.Db, DBConnect, DBQry, Bestellung;
+uses  System.SysUtils, Data.Db, DBZugriff, Bestellung;
 
 type
   TZTeil = class
@@ -60,14 +60,12 @@ end;
 procedure TZTeil.holeMaxPreisAus3Bestellungen;
 begin
   var gefunden: Boolean;
-  var conn: TZDbConnector;
   var Qry: TZQry;
   var maxPreis:Double;
   var maxFields:TFields;
 
 
-  conn:= TZDbConnector.Create(nil);
-  Qry:=conn.getQuery();
+  Qry:=DBConn.getQuery();
   if istKaufteil then
   begin
 

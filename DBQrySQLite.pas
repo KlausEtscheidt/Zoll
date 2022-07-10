@@ -1,11 +1,11 @@
-﻿unit DBQry;
+﻿unit DBQrySQLite;
 
 interface
 
   uses System.Classes,FireDAC.Comp.Client;
 
   type
-    TZQry = class(TFDQuery)
+    TZQrySQLite = class(TFDQuery)
       constructor Create(AOwner: TComponent;conn : TFDConnection);
       function SucheKundenRabatt(ka_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
@@ -22,7 +22,7 @@ interface
 implementation
 
 
-constructor TZQry.Create(AOwner: TComponent;conn : TFDConnection);
+constructor TZQrySQLite.Create(AOwner: TComponent;conn : TFDConnection);
 
 begin
   inherited Create(AOwner);
@@ -31,7 +31,7 @@ begin
   gefunden:=False;
 end;
 
-function TZQry.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+function TZQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_KAPositionen"
@@ -47,7 +47,7 @@ begin
 
 end;
 
-function TZQry.SucheKundenRabatt(ka_id:string):Boolean;
+function TZQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
@@ -63,7 +63,7 @@ begin
 
 end;
 
-function TZQry.SucheDatenzumTeil(t_tg_nr:string):Boolean;
+function TZQrySQLite.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 {siehe Access Abfrage "b_hole_Daten_zu Teil"
 sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
     & "teil_uw.v_besch_art as besch_art, teil.typ, teil.urspr_land,
@@ -87,7 +87,7 @@ begin
   Result:= query(sql);
 end;
 
-function TZQry.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+function TZQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
 {siehe Access Abfrage "b_Bestelldaten"
     'Suche �ber unipps_bestellpos.t_tg_nr=t_tg_nr; bestellkopf.datum muss aus der Unterabfrage hervorgehen (neuestes Datum)
     sql = "SELECT first 3 bestellkopf.ident_nr as bestell_id, bestellkopf.datum as bestell_datum, bestellpos.preis, bestellpos.basis, bestellpos.pme, bestellpos.bme, " _
@@ -114,7 +114,7 @@ begin
 
 end;
 
-function TZQry.query(sql:string):Boolean;
+function TZQrySQLite.query(sql:string):Boolean;
 begin
   Open(sql);
   n_records:=RowsAffected;

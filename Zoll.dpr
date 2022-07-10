@@ -4,13 +4,13 @@ uses
   Vcl.Forms,
   main in 'main.pas' {mainFrm},
   Kundenauftraege in 'Kundenauftraege.pas',
-  DBQry in 'DBQry.pas',
-  DBConnect in 'DBConnect.pas',
+  DBQrySQLite in 'DBQrySQLite.pas',
   SQLite in 'SQLite.pas' {SQLiteDataModule: TDataModule},
   StuecklistenPosition in 'StuecklistenPosition.pas',
   KundenauftragsPos in 'KundenauftragsPos.pas',
   Teil in 'Teil.pas',
-  Bestellung in 'Bestellung.pas';
+  Bestellung in 'Bestellung.pas',
+  DBZugriff in 'DBZugriff.pas';
 
 {$R *.res}
 

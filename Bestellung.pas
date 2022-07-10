@@ -2,7 +2,7 @@ unit Bestellung;
 
 interface
 
-uses Data.Db, DBQry;
+uses Data.Db, DBZugriff;
 
 type
   TZBestellung = class

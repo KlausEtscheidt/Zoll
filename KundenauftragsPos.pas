@@ -2,7 +2,7 @@ unit KundenauftragsPos;
 
 interface
 
-uses  StuecklistenPosition,DBConnect,DBQry;
+uses  StuecklistenPosition, DBZugriff;
 
 type
   TZKundenauftragsPos = class(TZStueliPos)

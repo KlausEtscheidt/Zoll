@@ -1,7 +1,7 @@
 unit StuecklistenPosition;
 
 interface
-  uses System.SysUtils, System.Generics.Collections, DBConnect, DBQry, Teil;
+  uses System.SysUtils, System.Generics.Collections, DBZugriff, Teil;
 
   type
     TZStueliPosTyp = (KA, KA_Pos, FA_Komm);
@@ -38,7 +38,6 @@ begin
 end;
 
 procedure TZStueliPos.PosDatenSpeichern(Qry: TZQry);
-var conn: TZDbConnector;
 var TeileQry: TZQry;
 
 begin
@@ -56,8 +55,7 @@ begin
   if PosTyp=KA_Pos then
   begin
     var gefunden: Boolean;
-    conn:= TZDbConnector.Create(nil);
-    TeileQry:=conn.getQuery();
+    TeileQry:=DBConn.getQuery();
     gefunden:=TeileQry.SucheDatenzumTeil(t_tg_nr);
     if gefunden then
     begin

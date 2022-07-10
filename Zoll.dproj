@@ -129,8 +129,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Kundenauftraege.pas"/>
-        <DCCReference Include="DBQry.pas"/>
-        <DCCReference Include="DBConnect.pas"/>
+        <DCCReference Include="DBQrySQLite.pas"/>
         <DCCReference Include="SQLite.pas">
             <Form>SQLiteDataModule</Form>
             <FormType>dfm</FormType>
@@ -140,6 +139,7 @@
         <DCCReference Include="KundenauftragsPos.pas"/>
         <DCCReference Include="Teil.pas"/>
         <DCCReference Include="Bestellung.pas"/>
+        <DCCReference Include="DBZugriff.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

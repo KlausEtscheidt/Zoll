@@ -7,7 +7,7 @@ object SQLiteDataModule: TSQLiteDataModule
     Left = 104
     Top = 72
   end
-  object FDConnection1: TFDConnection
+  object DBConnection: TFDConnection
     Params.Strings = (
       
         'Database=C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\P' +
@@ -19,7 +19,7 @@ object SQLiteDataModule: TSQLiteDataModule
     Top = 144
   end
   object Query: TFDQuery
-    Connection = FDConnection1
+    Connection = DBConnection
     SQL.Strings = (
       'select * from stamm;')
     Left = 320
