@@ -1,4 +1,4 @@
-object DataModule1: TDataModule1
+object SQLiteDataModule: TSQLiteDataModule
   OldCreateOrder = False
   Height = 483
   Width = 490
@@ -9,15 +9,16 @@ object DataModule1: TDataModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Database=V:\E-MAIL\Dr Etscheidt\Datengrab\personal.sqlite'
+      
+        'Database=C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\P' +
+        'rojekte\zoll\zoll.sqlite'
       'LockingMode=Normal'
       'DriverID=SQLite')
-    Connected = True
     LoginPrompt = False
     Left = 88
     Top = 144
   end
-  object FDQuery1: TFDQuery
+  object Query: TFDQuery
     Connection = FDConnection1
     SQL.Strings = (
       'select * from stamm;')

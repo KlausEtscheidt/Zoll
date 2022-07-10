@@ -13,18 +13,21 @@ uses
   FireDAC.Phys.MSAcc;
 
 type
-  TDataModule1 = class(TDataModule)
+  TSQLiteDataModule = class(TDataModule)
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
     FDConnection1: TFDConnection;
-    FDQuery1: TFDQuery;
+    Query: TFDQuery;
+    //constructor Create;
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
+    n_records: Integer;
+    SqlQuery:TFDQuery;
   end;
 
-var
-  DataModule1: TDataModule1;
+  var
+  SQLiteDataModule: TSQLiteDataModule;
 
 implementation
 

@@ -3,9 +3,14 @@ program Zoll;
 uses
   Vcl.Forms,
   main in 'main.pas' {mainFrm},
-  SQL in 'SQL.pas',
   Kundenauftraege in 'Kundenauftraege.pas',
-  SQLite in 'SQLite.pas' {DataModule1: TDataModule};
+  DBQry in 'DBQry.pas',
+  DBConnect in 'DBConnect.pas',
+  SQLite in 'SQLite.pas' {SQLiteDataModule: TDataModule},
+  StuecklistenPosition in 'StuecklistenPosition.pas',
+  KundenauftragsPos in 'KundenauftragsPos.pas',
+  Teil in 'Teil.pas',
+  Bestellung in 'Bestellung.pas';
 
 {$R *.res}
 
@@ -13,6 +18,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
-  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TSQLiteDataModule, SQLiteDataModule);
   Application.Run;
 end.

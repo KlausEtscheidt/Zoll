@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Kundenauftraege;
+  Kundenauftraege, Data.DB, Vcl.Grids, Vcl.DBGrids;
 
 type
   TmainFrm = class(TForm)
@@ -28,14 +28,15 @@ implementation
 
 {$R *.dfm}
 
-
 procedure TmainFrm.Run_BtnClick(Sender: TObject);
 var ka_id:string;
+var ka:TZKundenauftrag;
 
 begin
   ka_id := KA_id_ctrl.Text;
   //
-  Kundenauftraege.auswerten(ka_id);
+  ka:=TZKundenauftrag.Create(ka_id);
+  ka.auswerten;
   //Application.MessageBox(PChar(ka_id), 'Look', MB_OK);
 end;
 

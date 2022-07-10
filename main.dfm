@@ -2,7 +2,7 @@ object mainFrm: TmainFrm
   Left = 0
   Top = 0
   Caption = 'Pr'#228'Fix'
-  ClientHeight = 186
+  ClientHeight = 217
   ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -35,6 +35,7 @@ object mainFrm: TmainFrm
     Width = 121
     Height = 21
     TabOrder = 1
+    Text = '142591'
   end
   object Ende_Btn: TButton
     Left = 176

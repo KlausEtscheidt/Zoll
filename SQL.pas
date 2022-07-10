@@ -14,7 +14,7 @@ begin
   var Qry : TFDQuery;
   var name: String;
 
-  Qry := SQLite.DataModule1.FDQuery1;
+  Qry := SQLite.SQLite_Reader.Query;
   Qry.Open('select * from stamm;')  ;
   nrec:=Qry.RowsAffected;
 
