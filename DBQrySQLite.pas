@@ -1,4 +1,5 @@
-﻿unit DBQrySQLite;
+﻿//Abfragen fuer SQLite Datenbank
+unit DBQrySQLite;
 
 interface
 
