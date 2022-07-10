@@ -102,6 +102,7 @@ function TZQry.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
           we_menge, lieferant, kurzname, t_tg_nr
 
 }
+
 begin
   var sql: String;
   sql:= 'SELECT bestell_id, bestell_datum, preis, basis, pme, bme, '
