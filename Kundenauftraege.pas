@@ -39,18 +39,15 @@ procedure TZKundenauftrag.liesKopfundPositionen();
 
 var
   conn: TZDbConnector;
+  gefunden: Boolean;
+  Rabatt: Double;
+  NewStueliPos: TZKundenauftragsPos;
+  KAQry, RabattQry: TZQry;
 
 begin
-  var
-    gefunden: Boolean;
-  var
-    Rabatt: Double;
-  var
-    NewStueliPos: TZKundenauftragsPos;
-  var
-    KAQry, RabattQry: TZQry;
     // DatenbankConnector anlegen und oeffnen
   conn := TZDbConnector.Create(nil);
+  conn := SQLiteDataModule;
 
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
   KAQry := conn.getQuery;
@@ -88,8 +85,9 @@ end;
 
 //Schrittweise Suche aller untergeordneten Elemente
 procedure TZKundenauftrag.holeKinder();
+var StueliPos: TZStueliPos;
+
 begin
-  var StueliPos: TZStueliPos;
 
   for StueliPos in Stueli.Values do
   begin
