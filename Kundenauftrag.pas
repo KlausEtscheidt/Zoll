@@ -82,19 +82,21 @@ end;
 
 //Schrittweise Suche aller untergeordneten Elemente
 procedure TZKundenauftrag.holeKinder();
-var StueliPos: TZStueliPos;
+var StueliPos: TZValue;
+//var StueliPos: TZStueliPos;
 var KaPos: TZKundenauftragsPos;
-var I:Integer;
+//var I:Integer;
 
 begin
 
-  for StueliPos in Stueli.Values do
+  for StueliPos in Stueli.Values  do
   begin
     //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
     //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
     //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste teile_ohne_stu vermerkt
-    if not StueliPos.Teil.istKaufteil then
-      KaPos:= StueliPos As TZKundenauftragsPos;
+    KaPos:= StueliPos.AsType<TZKundenauftragsPos>;
+
+    if not KaPos.Teil.istKaufteil then
       KaPos.holeKinderAusASTUELIPOS;
 
   end;

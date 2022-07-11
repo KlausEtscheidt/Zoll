@@ -44,7 +44,7 @@ begin
   }
   sql := 'select id_stu, id_pos, kunde, besch_art, klassifiz, pos_nr, t_tg_nr, '
       +  'oa, typ, menge, preis '
-      +  'from auftragkopf where id_stu = "' + ka_id + '";';
+      +  'from auftragkopf where id_stu = "' + ka_id + '"order by id_pos;';
   Result:= query(sql);
 
 end;

@@ -1,9 +1,10 @@
 unit StuecklistenPosition;
 
 interface
-  uses System.SysUtils, System.Generics.Collections, DBZugriff, Teil;
+  uses System.RTTI, System.SysUtils, System.Generics.Collections, DBZugriff, Teil;
 
   type
+    TZValue = TValue;
     TZStueliPosTyp = (KA, KA_Pos, FA_Komm);
     TZStueliPos = class(TObject)
       private
@@ -20,7 +21,8 @@ interface
         t_tg_nr: String;
         unipps_typ: String;
         menge: Double;
-        Stueli: TDictionary<String, TZStueliPos>;
+        //Stueli: TDictionary<String, TZStueliPos>;
+        Stueli: TDictionary<String, TValue>;
         Teil: TZTeil;
 
       published
@@ -33,7 +35,8 @@ implementation
 constructor TZStueliPos.Create(APosTyp:TZStueliPosTyp);
 begin
   PosTyp:=APosTyp;
-  Stueli:= TDictionary<String, TZStueliPos>.Create;
+  //Stueli:= TDictionary<String, TZStueliPos>.Create;
+  Stueli:= TDictionary<String, TValue>.Create;
 
 end;
 
