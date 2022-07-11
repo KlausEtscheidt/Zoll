@@ -74,7 +74,7 @@ begin
     //KundenauftragsPos erzeugen; übertrage relevante Daten aus Qry in Felder
     NewStueliPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
     //neue Pos in Stückliste aufnehmen
-    Stueli.Add(NewStueliPos.id_pos, NewStueliPos);
+    Stueli.Add(NewStueliPos.pos_nr, NewStueliPos);
     KAQry.next;
   end;
 

@@ -135,10 +135,10 @@ begin
   var sql: String;
   sql:= 'SELECT f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, '
       + 'f_auftragkopf.verurs_art, f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ, '
-      + 'f_auftragkopf.ident_nr as id_FA '
+      + 'f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
-      + 'Where f_auftragkopf.auftr_nr=' + id_stu + ' and f_auftragkopf.auftr_pos=' + id_pos
-      + ' and f_auftragkopf.oa<9 ORDER BY id_FA';
+      + 'Where f_auftragkopf.auftr_nr="' + id_stu + '" and f_auftragkopf.auftr_pos="' + id_pos
+      + '" and f_auftragkopf.oa<9 ORDER BY FA_Nr';
   Result:= query(sql);
 
 end;

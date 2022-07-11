@@ -11,7 +11,8 @@ uses
   Teil in 'Teil.pas',
   Bestellung in 'Bestellung.pas',
   DBZugriff in 'DBZugriff.pas',
-  DBQrySQLite in 'DBQrySQLite.pas';
+  DBQrySQLite in 'DBQrySQLite.pas',
+  FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas';
 
 {$R *.res}
 

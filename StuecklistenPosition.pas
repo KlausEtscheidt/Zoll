@@ -5,7 +5,7 @@ interface
 
   type
     TZValue = TValue;
-    TZStueliPosTyp = (KA, KA_Pos, FA_Komm);
+    TZStueliPosTyp = (KA, KA_Pos, FA_Komm, FA_Serie);
     TZStueliPos = class(TObject)
       private
 
@@ -21,7 +21,9 @@ interface
         t_tg_nr: String;
         unipps_typ: String;
         menge: Double;
-        //Stueli: TDictionary<String, TZStueliPos>;
+        FA_Nr: String;
+        verurs_art: String;
+
         Stueli: TDictionary<String, TValue>;
         Teil: TZTeil;
 
@@ -46,17 +48,18 @@ var TeileQry: TZQry;
 begin
   //Allgemeingültige Felder
   id_stu:=trim(Qry.FieldByName('id_stu').AsString);
-  id_pos:=trim(Qry.FieldByName('id_pos').AsString);
-  besch_art:=Qry.FieldByName('besch_art').AsInteger;
   pos_nr:=trim(Qry.FieldByName('pos_nr').AsString);
   oa:=Qry.FieldByName('oa').AsInteger;
   t_tg_nr:=trim(Qry.FieldByName('t_tg_nr').AsString);
   unipps_typ:=trim(Qry.FieldByName('typ').AsString);
-  menge:=Qry.FieldByName('menge').AsFloat;
 
   //typspezifische Felder
   if PosTyp=KA_Pos then
   begin
+    id_pos:=trim(Qry.FieldByName('id_pos').AsString);
+    besch_art:=Qry.FieldByName('besch_art').AsInteger;
+    menge:=Qry.FieldByName('menge').AsFloat;
+
     var gefunden: Boolean;
     TeileQry:=DBConn.getQuery();
     gefunden:=TeileQry.SucheDatenzumTeil(t_tg_nr);
@@ -66,9 +69,20 @@ begin
       if Teil.istKaufteil then
         Teil.holeMaxPreisAus3Bestellungen;
     end;
-
-
   end;
+
+  if PosTyp=FA_Serie then
+  begin
+     FA_Nr:=trim(Qry.FieldByName('id_FA').AsString);
+     verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
+  end;
+
+  if PosTyp=FA_Komm then
+  begin
+     FA_Nr:=trim(Qry.FieldByName('FA_Nr').AsString);
+     verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
+  end;
+
 
 end;
 
