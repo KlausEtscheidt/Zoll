@@ -1,4 +1,4 @@
-unit SQLite;
+unit DBConnectSQLite;
 
 interface
 
@@ -10,13 +10,16 @@ uses
   FireDAC.Stan.Async, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Phys.MSAccDef, FireDAC.Phys.ODBCBase,
-  FireDAC.Phys.MSAcc;
+  FireDAC.Phys.MSAcc, Data.Win.ADODB;
 
 type
   TSQLiteDataModule = class(TDataModule)
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
-    DBConnection: TFDConnection;
+    FDConnectionSQLite: TFDConnection;
     Query: TFDQuery;
+    ADOQuery1: TADOQuery;
+    ADOConnectionUnipps: TADOConnection;
+    ADOQuery1Kunden_id: TIntegerField;
     //constructor Create;
   private
     { Private-Deklarationen }

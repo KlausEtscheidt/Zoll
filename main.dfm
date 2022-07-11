@@ -46,4 +46,16 @@ object mainFrm: TmainFrm
     TabOrder = 2
     OnClick = Ende_BtnClick
   end
+  object DBGrid1: TDBGrid
+    Left = 304
+    Top = 184
+    Width = 320
+    Height = 120
+    TabOrder = 3
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
 end

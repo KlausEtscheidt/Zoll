@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Kundenauftrag, Data.DB, Vcl.Grids, Vcl.DBGrids;
+  Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB;
 
 type
   TmainFrm = class(TForm)
@@ -13,6 +13,7 @@ type
     KA_id_ctrl: TEdit;
     Label1: TLabel;
     Ende_Btn: TButton;
+    DBGrid1: TDBGrid;
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
   private
@@ -39,6 +40,7 @@ begin
   ka.auswerten;
   //Application.MessageBox(PChar(ka_id), 'Look', MB_OK);
 end;
+
 
 procedure TmainFrm.Ende_BtnClick(Sender: TObject);
 begin

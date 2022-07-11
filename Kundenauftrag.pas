@@ -2,7 +2,7 @@ unit Kundenauftrag;
 
 interface
 
-uses Vcl.Forms, System.SysUtils, System.Classes,
+uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
   KundenauftragsPos, StuecklistenPosition, DBZugriff;
 
 type
@@ -80,21 +80,25 @@ begin
 
 end;
 
+
 //Schrittweise Suche aller untergeordneten Elemente
 procedure TZKundenauftrag.holeKinder();
 var StueliPos: TZValue;
+var StueliPosKey: String;
+var keyArray: System.TArray<System.string>;
 //var StueliPos: TZStueliPos;
 var KaPos: TZKundenauftragsPos;
 //var I:Integer;
 
 begin
-
-  for StueliPos in Stueli.Values  do
+  keyArray:=Stueli.Keys.ToArray;
+  TArray.Sort<String>(keyArray);
+  for StueliPosKey in Stueli.Keys  do
   begin
     //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
     //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
     //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste teile_ohne_stu vermerkt
-    KaPos:= StueliPos.AsType<TZKundenauftragsPos>;
+    KaPos:= Stueli[StueliPosKey].AsType<TZKundenauftragsPos>;
 
     if not KaPos.Teil.istKaufteil then
       KaPos.holeKinderAusASTUELIPOS;

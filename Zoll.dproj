@@ -5,8 +5,8 @@
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
-        <TargetedPlatforms>2</TargetedPlatforms>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>Zoll.dpr</MainSource>
     </PropertyGroup>
@@ -129,9 +129,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Kundenauftrag.pas"/>
-        <DCCReference Include="DBQrySQLite.pas"/>
-        <DCCReference Include="SQLite.pas">
-            <Form>SQLiteDataModule</Form>
+        <DCCReference Include="DBQryUNIPPS.pas"/>
+        <DCCReference Include="DBDatamodule.pas">
+            <Form>KombiDataModule</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
@@ -140,6 +140,7 @@
         <DCCReference Include="Teil.pas"/>
         <DCCReference Include="Bestellung.pas"/>
         <DCCReference Include="DBZugriff.pas"/>
+        <DCCReference Include="DBQrySQLite.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -162,12 +163,6 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win64\Debug\Zoll.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>Zoll.rsm</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
@@ -952,8 +947,8 @@
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
-                <Platform value="Win32">False</Platform>
-                <Platform value="Win64">True</Platform>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
             </Platforms>
             <ModelSupport>False</ModelSupport>
         </BorlandProject>

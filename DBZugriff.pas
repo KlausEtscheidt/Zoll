@@ -1,14 +1,24 @@
 //Die Unit dient als Zwischenschicht
 // zum Wechseln der Datenbank (Informix/SQLIte)
 
+{$DEFINE UNIPPS}
+
 unit DBZugriff;
 
 interface
 
-uses SQLite, DBQrySQLite;
+{$IFDEF UNIPPS}
+  uses DBDatamodule, DBQryUNIPPS;
+  type
+     TZQry =TZQryUNIPPS;
+{$ELSE}
+  uses DBDatamodule, DBQrySQLite;
+  type
+     TZQry =TZQrySQLite;
+{$ENDIF}
+
 
 type
-   TZQry =TZQrySQLite;
    TZDBConnect = class
      published
        function getQuery():TZQry;
@@ -18,12 +28,17 @@ var DBConn : TZDBConnect;
 
 implementation
 
-//Liefert eine TFDQuery die über diese TFDConnection mit einer Datenbank verbunden ist
+//Liefert eine TFDQuery die über eine der beiden Connections mit einer Datenbank verbunden ist
 function TZDBConnect.getQuery():TZQry;
 
 begin
-    getQuery:=TZQry.Create(SQLiteDataModule,
-                            SQLiteDataModule.DBConnection);
+{$IFDEF UNIPPS}
+    getQuery:=TZQry.Create(KombiDataModule,
+                            KombiDataModule.ADOConnectionUnipps);
+{$ELSE}
+    getQuery:=TZQry.Create(KombiDataModule,
+                            KombiDataModule.FDConnectionSQLite);
+{$ENDIF}
 end;
 
 
