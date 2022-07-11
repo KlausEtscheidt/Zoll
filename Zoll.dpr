@@ -3,7 +3,7 @@ program Zoll;
 uses
   Vcl.Forms,
   main in 'main.pas' {mainFrm},
-  Kundenauftraege in 'Kundenauftraege.pas',
+  Kundenauftrag in 'Kundenauftrag.pas',
   DBQrySQLite in 'DBQrySQLite.pas',
   SQLite in 'SQLite.pas' {SQLiteDataModule: TDataModule},
   StuecklistenPosition in 'StuecklistenPosition.pas',

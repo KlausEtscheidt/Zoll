@@ -3,7 +3,7 @@ unit DBQrySQLite;
 
 interface
 
-  uses System.Classes,FireDAC.Comp.Client;
+  uses System.SysUtils,System.Classes,FireDAC.Comp.Client;
 
   type
     TZQrySQLite = class(TFDQuery)
@@ -12,6 +12,7 @@ interface
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+      function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
       function query(sql:string):Boolean;
     public
       { Public-Deklarationen }
@@ -75,9 +76,6 @@ sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
     & "Where teil_uw.t_tg_nr=""" & t_tg_nr _
     & """ and teil_uw.oa<9 AND teil_uw.uw=1; "
 
-    create Table teil (t_tg_nr text, oa integer, besch_art integer,
-     typ text, urspr_land integer, ausl_u_land integer, praeferenzkennung integer,
-      sme integer, faktlme_sme double, lme integer)
 }
 
 begin
@@ -111,6 +109,38 @@ begin
       + 'we_menge, lieferant, kurzname, t_tg_nr '
       + 'FROM bestellungen where t_tg_nr = "' + t_tg_nr
       + '" order by bestell_datum desc limit 3;';
+  Result:= query(sql);
+
+end;
+
+function TZQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+{siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
+ Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
+    sql = "SELECT f_auftragkopf.auftr_nr as id_stu, " _
+        & "f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart,
+           f_auftragkopf.verurs_art, f_auftragkopf.t_tg_nr, f_auftragkopf.oa, " _
+        & "f_auftragkopf.typ,  " _
+        & "f_auftragkopf.ident_nr as id_FA " _
+        & "FROM f_auftragkopf " _
+        & "Where f_auftragkopf.auftr_nr=" & id_stu & " and f_auftragkopf.auftr_pos=" & id_pos _
+        & " and f_auftragkopf.oa<9 " _
+        & " ORDER BY id_FA;"
+
+    id_stu, pos_nr, auftragsart, verurs_art,
+    t_tg_nr, oa, typ, id_FA
+
+    create Table f_auftragkopf (id_stu integer, pos_nr integer, auftragsart integer, verurs_art integer,
+     t_tg_nr text, oa integer, typ text, id_FA integer)
+
+
+}
+begin
+  var sql: String;
+  sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
+      + 't_tg_nr, oa, typ, id_FA '
+      + 'FROM f_auftragkopf where id_stu = "' + id_stu
+      + '" and pos_nr="' + id_pos
+      + '" and oa<9 ORDER BY id_FA';
   Result:= query(sql);
 
 end;

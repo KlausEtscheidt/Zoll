@@ -128,7 +128,7 @@
             <Form>mainFrm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Kundenauftraege.pas"/>
+        <DCCReference Include="Kundenauftrag.pas"/>
         <DCCReference Include="DBQrySQLite.pas"/>
         <DCCReference Include="SQLite.pas">
             <Form>SQLiteDataModule</Form>
