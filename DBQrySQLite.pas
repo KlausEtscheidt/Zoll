@@ -13,6 +13,7 @@ interface
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
       function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+      function SuchePosZuFA(FA_Nr:String): Boolean;
       function query(sql:string):Boolean;
     public
       { Public-Deklarationen }
@@ -125,24 +126,38 @@ function TZQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
         & "Where f_auftragkopf.auftr_nr=" & id_stu & " and f_auftragkopf.auftr_pos=" & id_pos _
         & " and f_auftragkopf.oa<9 " _
         & " ORDER BY id_FA;"
-
-    id_stu, pos_nr, auftragsart, verurs_art,
-    t_tg_nr, oa, typ, id_FA
-
-    create Table f_auftragkopf (id_stu integer, pos_nr integer, auftragsart integer, verurs_art integer,
-     t_tg_nr text, oa integer, typ text, id_FA integer)
-
-
 }
 begin
   var sql: String;
   sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
-      + 't_tg_nr, oa, typ, id_FA '
+      + 't_tg_nr, oa, typ, FA_Nr '
       + 'FROM f_auftragkopf where id_stu = "' + id_stu
       + '" and pos_nr="' + id_pos
-      + '" and oa<9 ORDER BY id_FA';
+      + '" and oa<9 ORDER BY FA_Nr';
   Result:= query(sql);
 
+end;
+
+//Suche alle Positionen zu einem FA (ASTUELIPOS)
+function TZQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
+{siehe Access Abfrage "b_hole_Pos_zu_FA"
+ Suche ueber astuelipos.ident_nr1=FA_Nr (Id des Fertigungsauftrages)
+ sql = "SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, " _
+          & "astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, " _
+          & "astuelipos.pos_nr, astuelipos.t_tg_nr, astuelipos.oa, " _
+          & "astuelipos.typ, astuelipos.menge " _
+          & "FROM astuelipos " _
+          & "WHERE astuelipos.ident_nr1=" & FA_id _
+          & " AND astuelipos.oa<9 " _
+          & "ORDER BY astuelipos.pos_nr"
+}
+begin
+  var sql: String;
+  sql:= 'SELECT id_stu, id_pos, '
+      + 'ueb_s_nr, ds, set_block, pos_nr, t_tg_nr, oa, typ, menge '
+      + 'FROM astuelipos where id_stu = "' + FA_Nr
+      + '" and oa<9 ORDER BY pos_nr';
+  Result:= query(sql);
 end;
 
 function TZQrySQLite.query(sql:string):Boolean;

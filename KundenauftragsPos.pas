@@ -2,7 +2,7 @@ unit KundenauftragsPos;
 
 interface
 
-uses  FertigungsauftragsKopf, StuecklistenPosition, DBZugriff;
+uses  System.SysUtils,FertigungsauftragsKopf, StuecklistenPosition, DBZugriff;
 
 type
   TZKundenauftragsPos = class(TZStueliPos)
@@ -36,21 +36,29 @@ procedure TZKundenauftragsPos.holeKinderAusASTUELIPOS;
 
 var gefunden: Boolean;
 var Qry: TZQry;
-var NewStueliPos:TZFAKopf;
+var FAKopf:TZFAKopf;
+var FAStueliKey:String; //Stueli Key für FA's
+var lfn: Integer;
+
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := DBConn.getQuery;
   gefunden := Qry.SucheFAzuKAPos(id_stu, id_pos);
 
+  lfn:=1;
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    NewStueliPos:=TZFAKopf.Create(FA_Komm, Qry);
+    FAKopf:=TZFAKopf.Create(FA_Komm, Qry);
 
     // in Stueck-Liste übernehmen
-    Stueli.Add(NewStueliPos.pos_nr, NewStueliPos);
+    // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
+    FAStueliKey:=inttostr(lfn);
+    Stueli.Add(FAStueliKey, FAKopf);
+    lfn:=lfn+1;
+
     // Kinder suchen
-    //        myFA.hole_Kinder
+    FAKopf.holeKinderAusASTUELIPOS;
 
     //Naechter Datensatz
     Qry.next;

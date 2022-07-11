@@ -132,7 +132,6 @@
         <DCCReference Include="DBQryUNIPPS.pas"/>
         <DCCReference Include="DBDatamodule.pas">
             <Form>KombiDataModule</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="StuecklistenPosition.pas"/>
@@ -141,6 +140,7 @@
         <DCCReference Include="Bestellung.pas"/>
         <DCCReference Include="DBZugriff.pas"/>
         <DCCReference Include="DBQrySQLite.pas"/>
+        <DCCReference Include="FertigungsauftragsPos.pas"/>
         <DCCReference Include="FertigungsauftragsKopf.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

@@ -1,2 +1,2 @@
 .separator ;
-.import Kundenauftragspositionen.csv auftragkopf
+.import FA_zu_KAPos.csv f_auftragkopf

@@ -4,16 +4,12 @@ object KombiDataModule: TKombiDataModule
   Width = 490
   object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
     DriverID = 'SQLite'
-    Left = 104
-    Top = 72
+    Left = 80
+    Top = 40
   end
   object FDConnectionSQLite: TFDConnection
     Params.Strings = (
-      
-        'Database=C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekt' +
-        'e\zoll\zoll.sqlite'
-      'LockingMode=Normal'
-      'DriverID=SQLite')
+      'ConnectionDef=Zoll')
     LoginPrompt = False
     Left = 88
     Top = 144

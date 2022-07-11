@@ -12,6 +12,7 @@ uses
   Bestellung in 'Bestellung.pas',
   DBZugriff in 'DBZugriff.pas',
   DBQrySQLite in 'DBQrySQLite.pas',
+  FertigungsauftragsPos in 'FertigungsauftragsPos.pas',
   FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas';
 
 {$R *.res}

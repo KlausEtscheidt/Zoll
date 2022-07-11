@@ -1,8 +1,8 @@
-unit FertigungsauftragsKopf;
+﻿unit FertigungsauftragsKopf;
 
 interface
 
-uses  StuecklistenPosition, DBZugriff;
+uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff;
 
 type
   TZFAKopf = class(TZStueliPos)
@@ -23,14 +23,61 @@ constructor TZFAKopf.Create(einTyp: TZStueliPosTyp; AQry: TZQry);
 begin
   inherited Create(einTyp);
   Qry:=AQry;
-  //Speichere typunabh�ngige Daten �ber geerbte Funktion
+  //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
-
 
 end;
 
 procedure TZFAKopf.holeKinderAusASTUELIPOS;
+
+var Qry: TZQry;
+var gefunden:Boolean;
+var FAPos:TZFAPos;
+
 begin
+  //Hole die Positionen des FA's aus der Unipps-Tabelle ASTUELIPOS
+  Qry := DBConn.getQuery;
+  gefunden := Qry.SuchePosZuFA(FA_Nr);
+
+  //Daten lesen, zuerst nur Teile der obersten Ebene: ueb_s_nr=0
+  while not Qry.Eof do
+  begin
+
+      //Erzeuge Objekt fuer eine FA-Position
+      FAPos:=TZFAPos.Create(Qry);
+
+      //Hier nur toplevel-KNoten berücksichtigen
+      //d.h. alle die in ASTUELIPOS keine übergeordnete Stückliste haben: ueb_s_nr=0
+      If FAPos.istToplevel Then
+      begin
+        // in Stueck-Liste übernehmen
+        Stueli.Add(FAPos.id_pos, FAPos);
+
+        //Rekursiv weiter in ASTUELIPOS suchen wenn Knoten Kinder hat (Feld ds=1)
+        If FAPos.hatKinder Then
+            //Bearbeite Kindknoten
+            FAPos.holeKinderAusASTUELIPOS(FAPos.id_pos)
+        Else
+          //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
+           If Not FAPos.Teil.istKaufteil Then
+              EndKnoten.Add(FAPos);
+
+      end;
+      {
+      else
+        Die Sortierung in ASTUELIPOS und der Programmablauf (Es werden zuerst alle Kinder gesucht)
+        'sollten dazu f�hren, das wir hier nie hinkommen.
+        'Der erste Eintrag in ASTUELIPOS sollte immer ein toplevel-KNoten sein.
+        'Danach kommen dessen Kinder und Kindeskinder, die alle abgearbeitet werden
+        'Danach sollte der Zeiger des Recordsets fa_rs auf dem n�chsten toplevel-Knoten stehen.
+       Logger.user_info "Unerwartete Datenstruktur in 'ASTUELIPOS'. Toplevelknoten mit Feld ueb_s_nr=0 erwartet.", level:=2
+       }
+
+      //Hier erneut Endebedingung prüfen, da Recordzeiger verändert wurde
+      If Not Qry.EOF Then
+          Qry.Next;
+
+    end; //while
 
 end;
 
