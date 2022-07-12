@@ -12,7 +12,7 @@ type
       { protected declarations }
     public
       istToplevel:Boolean;
-      hatKinder:Boolean;
+      KinderInASTUELIPOSerwartet:Boolean;
     published
       constructor Create(AQry: TZQry);
       procedure holeKinderAusASTUELIPOS(id_pos_vater:String);
@@ -28,7 +28,9 @@ begin
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
   istToplevel:=ueb_s_nr='0';
-  hatKinder:=set_block='1';
+  KinderInASTUELIPOSerwartet:=set_block='1';
+  //Suche Teil zur Position
+  SucheTeilzurStueliPos();
 
 end;
 
@@ -56,7 +58,7 @@ begin
       Stueli.Add(FAPos.id_pos, FAPos);
 
       //------------------ Suche Kinder
-      If FAPos.hatKinder Then
+      If FAPos.KinderInASTUELIPOSerwartet Then
          //Teile mit ds=1 sind schon von UNIPPS aufgelöst => Kinder direkt in Tabelle ASTUELIPOS des FA suchen
           //!!! -----------   Rekursion: Bearbeite Kindknoten
          FAPos.holeKinderAusASTUELIPOS(FAPos.id_pos)
@@ -64,7 +66,7 @@ begin
          //Für Teile mit ds<>1
          //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
          If Not FAPos.Teil.istKaufteil Then
-            EndKnoten.Add(FAPos);
+            EndKnotenListe.Add(FAPos);
 
     end
     else

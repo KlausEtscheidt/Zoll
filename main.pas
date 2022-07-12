@@ -16,6 +16,9 @@ type
     DBGrid1: TDBGrid;
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
+    procedure KA_auswerten(ka_id:string);
+    procedure RunIt(Sender: TObject);
+
   private
     { Private-Deklarationen }
   public
@@ -31,13 +34,10 @@ implementation
 
 procedure TmainFrm.Run_BtnClick(Sender: TObject);
 var ka_id:string;
-var ka:TZKundenauftrag;
-
 begin
   ka_id := KA_id_ctrl.Text;
   //
-  ka:=TZKundenauftrag.Create(ka_id);
-  ka.auswerten;
+  KA_auswerten(ka_id);
   //Application.MessageBox(PChar(ka_id), 'Look', MB_OK);
 end;
 
@@ -46,5 +46,19 @@ procedure TmainFrm.Ende_BtnClick(Sender: TObject);
 begin
   close
 end;
+
+procedure TmainFrm.RunIt(Sender: TObject);
+begin
+  //KA_auswerten('142591'); //Error
+  KA_auswerten('142567'); //2Pumpen
+end;
+
+procedure TmainFrm.KA_auswerten(ka_id:string);
+var ka:TZKundenauftrag;
+begin
+  ka:=TZKundenauftrag.Create(ka_id);
+  ka.auswerten;
+end;
+
 
 end.

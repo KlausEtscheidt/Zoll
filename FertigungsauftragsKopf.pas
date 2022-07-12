@@ -2,7 +2,7 @@
 
 interface
 
-uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff;
+uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff, Exceptions;
 
 type
   TZFAKopf = class(TZStueliPos)
@@ -39,11 +39,16 @@ begin
   Qry := DBConn.getQuery;
   gefunden := Qry.SuchePosZuFA(FA_Nr);
 
+  if not gefunden then
+    raise EStuBaumFaKopfErr.Create('Keine Positionen zum FA >'
+    + FA_Nr  + '< gefunden. (holeKinderAusASTUELIPOS)');
+
+
   //Daten lesen, zuerst nur Teile der obersten Ebene: ueb_s_nr=0
   while not Qry.Eof do
   begin
 
-      //Erzeuge Objekt fuer eine FA-Position
+      //Erzeuge Objekt fuer eine FA-Position aus der Qry
       FAPos:=TZFAPos.Create(Qry);
 
       //Hier nur toplevel-KNoten berücksichtigen
@@ -54,17 +59,17 @@ begin
         Stueli.Add(FAPos.id_pos, FAPos);
 
         //Rekursiv weiter in ASTUELIPOS suchen wenn Knoten Kinder hat (Feld ds=1)
-        If FAPos.hatKinder Then
+        If FAPos.KinderInASTUELIPOSerwartet Then
             //Bearbeite Kindknoten
             FAPos.holeKinderAusASTUELIPOS(FAPos.id_pos)
         Else
           //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
            If Not FAPos.Teil.istKaufteil Then
-              EndKnoten.Add(FAPos);
+              EndKnotenListe.Add(FAPos);
 
-      end;
-      {
+      end
       else
+      {
         Die Sortierung in ASTUELIPOS und der Programmablauf (Es werden zuerst alle Kinder gesucht)
         'sollten dazu f�hren, das wir hier nie hinkommen.
         'Der erste Eintrag in ASTUELIPOS sollte immer ein toplevel-KNoten sein.
@@ -72,6 +77,7 @@ begin
         'Danach sollte der Zeiger des Recordsets fa_rs auf dem n�chsten toplevel-Knoten stehen.
        Logger.user_info "Unerwartete Datenstruktur in 'ASTUELIPOS'. Toplevelknoten mit Feld ueb_s_nr=0 erwartet.", level:=2
        }
+       raise EStuBaumFaKopfErr.Create('Unerwartete Datenstruktur in ASTUELIPOS für FA: ' + FA_Nr  );
 
       //Hier erneut Endebedingung prüfen, da Recordzeiger verändert wurde
       If Not Qry.EOF Then

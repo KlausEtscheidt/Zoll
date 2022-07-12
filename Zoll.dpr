@@ -13,7 +13,8 @@ uses
   DBZugriff in 'DBZugriff.pas',
   DBQrySQLite in 'DBQrySQLite.pas',
   FertigungsauftragsPos in 'FertigungsauftragsPos.pas',
-  FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas';
+  FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas',
+  Exceptions in 'Exceptions.pas';
 
 {$R *.res}
 

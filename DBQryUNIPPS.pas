@@ -13,6 +13,9 @@ interface
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
       function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+      function SucheFAzuTeil(t_tg_nr:String): Boolean;
+      function SucheStuelizuTeil(t_tg_nr:String): Boolean;
+      function SuchePosZuFA(FA_Nr:String): Boolean;
       function query(sqlqry:String):Boolean;
     public
       { Public-Deklarationen }
@@ -121,6 +124,35 @@ begin
 
 end;
 
+function TZQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_suche_Stueli_zu_Teil"
+  Suche über teil_stuelipos.ident_nr1=t_tg_nr
+  Es werden die Daten aus teil_stuelipos gelesen
+  Es existieren z.T. unterschiedlich Stücklisten wegen mehrerer Arbeitspläne (Ausweichmaschine mit anderen Rohteilen)
+  Es wird daher zu TEIL_APLNKOPF gejoined und dort teil_aplnkopf.art=1 gefordert (Standardarbeitsplan)
+}
+{
+    sql = "SELECT teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr,
+           teil_stuelipos.t_tg_nr, teil_stuelipos.oa, teil_stuelipos.menge
+           FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1
+          AND teil_aplnkopf.ident_nr2 = teil_stuelipos.ident_nr2 AND teil_aplnkopf.ident_nr3 = teil_stuelipos.ident_nr3
+          WHERE teil_stuelipos.ident_nr1=""" & t_tg_nr & """ And teil_aplnkopf.art=""1""
+          ORDER BY teil_stuelipos.pos_nr ;
+       }
+
+begin
+  var sql: String;
+  sql:= 'SELECT teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr, '
+      + 'teil_stuelipos.t_tg_nr, teil_stuelipos.oa, teil_stuelipos.typ, teil_stuelipos.menge '
+      + 'FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1 '
+      + 'AND teil_aplnkopf.ident_nr2 = teil_stuelipos.ident_nr2 AND teil_aplnkopf.ident_nr3 = teil_stuelipos.ident_nr3 '
+      + 'Where teil_stuelipos.ident_nr1="' + t_tg_nr + '" And teil_aplnkopf.art="1"'
+      + 'ORDER BY teil_stuelipos.pos_nr ;';
+  Result:= query(sql);
+
+end;
+
+
 function TZQryUNIPPS.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
  Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
@@ -143,12 +175,55 @@ begin
 
 end;
 
+function TZQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_suche_FA_zu_Teil"
+    sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
+          f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
+          f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ,
+          f_auftragkopf.ident_nr as id_FA
+          FROM f_auftragkopf " _
+          Where f_auftragkopf.t_tg_nr=""" & t_tg_nr _
+          """ and f_auftragkopf.oa<9 " _
+           ORDER BY id_FA desc;"
+        }
+begin
+  var sql: String;
+  sql:= 'SELECT first 1 f_auftragkopf.auftr_nr as id_stu, '
+      + 'f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art, '
+      + 'f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ, '
+      + 'f_auftragkopf.ident_nr as FA_Nr '
+      + 'FROM f_auftragkopf '
+      + 'Where f_auftragkopf.t_tg_nr="' + t_tg_nr
+      + '" and f_auftragkopf.oa<9 ORDER BY FA_Nr desc';
+  Result:= query(sql);
+
+end;
+
+
+//Suche alle Positionen zu einem FA (ASTUELIPOS)
+function TZQryUNIPPS.SuchePosZuFA(FA_Nr:String): Boolean;
+//siehe Access Abfrage "b_hole_Pos_zu_FA"
+begin
+  var sql: String;
+  sql:= 'SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, '
+      + 'astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, '
+      + 'astuelipos.pos_nr, astuelipos.t_tg_nr, astuelipos.oa, '
+      + 'astuelipos.typ, astuelipos.menge '
+      + 'FROM astuelipos where astuelipos.ident_nr1 = "' + FA_Nr
+      + '" and astuelipos.oa<9 ORDER BY astuelipos.pos_nr';
+  Result:= query(sql);
+end;
+
+//helper: Fuehrt SQL aus und setzt Felder n_records und gefunden
 function TZQryUNIPPS.query(sqlqry:String):Boolean;
 begin
-
+  //sql ins Qry-Objekt
   SQL.Add(sqlqry);
+  //Qry ausführen
   Open;
+  //Anzahl der gefundenen Datensätze
   n_records:=GetRecordCount;
+  //Wurde was gefunden ?
   gefunden:=n_records>0;
   Result:= gefunden;
 end;

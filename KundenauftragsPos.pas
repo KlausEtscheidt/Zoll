@@ -45,7 +45,17 @@ begin
   Qry := DBConn.getQuery;
   gefunden := Qry.SucheFAzuKAPos(id_stu, id_pos);
 
+  if not gefunden then
+  begin
+    //Pos in EndKnoten zur spaeteren Suche merken
+    EndKnotenListe.Add(Self);
+    Exit;
+  end;
+
   lfn:=1;
+  //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
+  //Zu Doku und Testzwecken werden die FA-Köpfe als Dummy-Stücklisten-Einträge
+  //in die Stückliste mit aufgenommen
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA

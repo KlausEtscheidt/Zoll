@@ -82,29 +82,72 @@ end;
 
 
 //Schrittweise Suche aller untergeordneten Elemente
+{Bei jedem Schritt werden alle Knoten, fuer die in der bisherigen Suche
+ noch keine Kinder gefunden wurden, in der Liste EndKnoten abgelegt,
+ sofern es keine Kaufteile sind.
+ Im naechsten Schritt werden, dann Kinder fuer die Knoten aus EndKnoten gesucht
+ Die Suche wird so lange wiederholt, bis EndKnoten leer bleibt.
+ Die untersten Knoten müssen dann alle Kaufteil sein.
+}
+
 procedure TZKundenauftrag.holeKinder();
-var StueliPos: TZValue;
+var StueliPos: TZStueliPos;
 var StueliPosKey: String;
 var keyArray: System.TArray<System.string>;
-//var StueliPos: TZStueliPos;
 var KaPos: TZKundenauftragsPos;
-//var I:Integer;
+var alteEndKnotenListe: TZEndKnotenListe;
+var EndKnoten: TZValue;
 
 begin
+  //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
+  //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
+  //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste EndKnoten vermerkt
+  //---------------------------------------------------------------------------------------------
+
+  //Liste fuer "Kinderlose" erzeugen:
+  EndKnotenListe:=TZEndKnotenListe.Create;
+  alteEndKnotenListe:=TZEndKnotenListe.Create;
+
+  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
   keyArray:=Stueli.Keys.ToArray;
   TArray.Sort<String>(keyArray);
+
+  //Loop über alle Pos des Kundenauftrages
   for StueliPosKey in Stueli.Keys  do
   begin
-    //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
-    //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
-    //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste teile_ohne_stu vermerkt
     KaPos:= Stueli[StueliPosKey].AsType<TZKundenauftragsPos>;
 
+    //Fuer Kaufteile muss nicht weiter gesucht werden
     if not KaPos.Teil.istKaufteil then
+      //Falls ein Komm-Fa zur Pos vorhanden, werden dessen Kinder aus
+      //Unipps-Tabelle ASTUELIPOS geholt
+      //Falls kein Komm-Fa zur Pos vorhanden, landet der Knoten in EndKnoten
       KaPos.holeKinderAusASTUELIPOS;
 
   end;
 
+
+  // Weitere Schritte wiederholen, bis EndKnoten leer
+  //-----------------------------------------------------------------
+  while EndKnotenListe.Count>0 do
+  begin
+    //Liste kopieren und leeren
+    alteEndKnotenListe.AddRange(EndKnotenListe);
+    EndKnotenListe.Clear;
+
+    //Suche weiter
+    //Bisherige Endknoten müssten Serien- und Fremd-Fertigungsteile sein
+    for EndKnoten in alteEndKnotenListe do
+    begin
+      StueliPos:= EndKnoten.AsType<TZStueliPos>;
+        StueliPos.holeKindervonEndKnoten;
+    end;
+
+  end;
+
+
 end;
+
+
 
 end.

@@ -1,18 +1,18 @@
 unit StuecklistenPosition;
 
 interface
-  uses System.RTTI, System.SysUtils, System.Generics.Collections, DBZugriff, Teil;
+  uses System.RTTI, System.SysUtils, System.Generics.Collections, DBZugriff,
+       Teil,Exceptions,Data.DB;
 
   type
     TZValue = TValue; //alias
-    TZEndKnoten =  TList<TValue>;
-    TZStueliPosTyp = (KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil);
-
+    TZEndKnotenListe =  TList<TValue>;
+    TZStueliPosTyp = (KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, TTeil);
+    TZStueli = TDictionary<String, TValue>;
     TZStueliPos = class(TObject)
       private
-        procedure SucheTeilzurStueliPos();
+        procedure raiseNixGefunden();
       protected
-
       public
         PosTyp:TZStueliPosTyp;
         id_stu : String;
@@ -30,97 +30,247 @@ interface
         set_block:String;
 
         Stueli: TDictionary<String, TValue>;
+        hatTeil:Boolean;
         Teil: TZTeil;
 
-      published
         constructor Create(APosTyp:TZStueliPosTyp);
         procedure PosDatenSpeichern(Qry: TZQry);
+        procedure SucheTeilzurStueliPos();
+        procedure holeKindervonEndKnoten();
+        function holeKinderAusASTUELIPOS(): Boolean;
+        function holeKinderAusTeileStu(): Boolean;
+      published
       end;
 
 var
-  EndKnoten: TZEndKnoten;
+  EndKnotenListe: TZEndKnotenListe;
 
 implementation
 
+uses FertigungsauftragsKopf;
 
 constructor TZStueliPos.Create(APosTyp:TZStueliPosTyp);
 begin
+  //Art des Eintrags
   PosTyp:=APosTyp;
-  Stueli:= TDictionary<String, TValue>.Create;
+  //untergeordenete Stueli anlegen
+  Stueli:= TZStueli.Create;
+  //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
+  hatTeil:=False;
 
 end;
 
+//Überträgt allgemeingültige und typspezifische Daten aus Qry in Felder
 procedure TZStueliPos.PosDatenSpeichern(Qry: TZQry);
-
+var
+  allesGut:Boolean;
 begin
-  //Allgemeingültige Felder
-  //-----------------------------------------------
-  id_stu:=trim(Qry.FieldByName('id_stu').AsString);
-  pos_nr:=trim(Qry.FieldByName('pos_nr').AsString);
-  oa:=Qry.FieldByName('oa').AsInteger;
-  t_tg_nr:=trim(Qry.FieldByName('t_tg_nr').AsString);
-  unipps_typ:=trim(Qry.FieldByName('typ').AsString);
+  try
+    //Allgemeingültige Felder
+    //-----------------------------------------------
+    id_stu:=trim(Qry.FieldByName('id_stu').AsString);
+    pos_nr:=trim(Qry.FieldByName('pos_nr').AsString);
+    oa:=Qry.FieldByName('oa').AsInteger;
+    t_tg_nr:=trim(Qry.FieldByName('t_tg_nr').AsString);
+    unipps_typ:=trim(Qry.FieldByName('typ').AsString);
 
-  //typspezifische Felder
-  //-----------------------------------------------
-  //vorbelegen
-  id_pos:='';
-  besch_art:='';
-  menge:=1.;
-  FA_Nr:='';
-  verurs_art:='';
-  ueb_s_nr:='';
-  ds:='';
-  set_block:='';
+    //typspezifische Felder
+    //-----------------------------------------------
+    //vorbelegen
+    id_pos:='';
+    besch_art:='';
+    menge:=1.;
+    FA_Nr:='';
+    verurs_art:='';
+    ueb_s_nr:='';
+    ds:='';
+    set_block:='';
 
-  if PosTyp=KA_Pos then
-  begin
-    id_pos:=trim(Qry.FieldByName('id_pos').AsString);
-    besch_art:=Qry.FieldByName('besch_art').AsString;
-    menge:=Qry.FieldByName('menge').AsFloat;
+    if PosTyp=KA_Pos then
+    begin
+      id_pos:=trim(Qry.FieldByName('id_pos').AsString);
+      besch_art:=Qry.FieldByName('besch_art').AsString;
+      menge:=Qry.FieldByName('menge').AsFloat;
 
-    //Suche Teil zur Position
-    SucheTeilzurStueliPos;
+      //Suche Teil zur Position
+      SucheTeilzurStueliPos;
 
-  end;
+    end;
 
-  if PosTyp=FA_Serie then
-  begin
-     FA_Nr:=trim(Qry.FieldByName('id_FA').AsString);
-     verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
-  end;
+    if PosTyp=FA_Serie then
+    begin
+       FA_Nr:=trim(Qry.FieldByName('FA_Nr').AsString);
+       verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
+    end;
 
-  if PosTyp=FA_Komm then
-  begin
-     FA_Nr:=trim(Qry.FieldByName('FA_Nr').AsString);
-     verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
-  end;
+    if PosTyp=FA_Komm then
+    begin
+       FA_Nr:=trim(Qry.FieldByName('FA_Nr').AsString);
+       verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
+    end;
 
-  if PosTyp=FA_Pos then
-  begin
-    id_pos:=trim(Qry.FieldByName('id_pos').AsString);
-    ueb_s_nr:=trim(Qry.FieldByName('ueb_s_nr').AsString);
-    ds:=trim(Qry.FieldByName('ds').AsString);
-    set_block:=trim(Qry.FieldByName('set_block').AsString);
+    if PosTyp=FA_Pos then
+    begin
+      id_pos:=trim(Qry.FieldByName('id_pos').AsString);
+      ueb_s_nr:=trim(Qry.FieldByName('ueb_s_nr').AsString);
+      ds:=trim(Qry.FieldByName('ds').AsString);
+      set_block:=trim(Qry.FieldByName('set_block').AsString);
+    end;
+  except
+   on EDatabaseError do
+      allesGut:=False;
+  else
+     raise;
   end;
 
 end;
+
 
 procedure TZStueliPos.SucheTeilzurStueliPos();
 
 var
-  TeileQry: TZQry;
+  Qry: TZQry;
   gefunden: Boolean;
 
 begin
-      TeileQry:=DBConn.getQuery();
-      gefunden:=TeileQry.SucheDatenzumTeil(t_tg_nr);
-      if gefunden then
-      begin
-        Teil:= TZTeil.Create(TeileQry);
-        if   Teil.istKaufteil then
-          Teil.holeMaxPreisAus3Bestellungen;
-      end;
-    
+    Qry:=DBConn.getQuery();
+    gefunden:=Qry.SucheDatenzumTeil(t_tg_nr);
+    if gefunden then
+    begin
+      Teil:= TZTeil.Create(Qry);
+      hatTeil:=True;
+      if   Teil.istKaufteil then
+        Teil.holeMaxPreisAus3Bestellungen;
+    end;
+
 end;
+
+procedure TZStueliPos.holeKindervonEndKnoten();
+var
+  Qry: TZQry;
+  gefunden: Boolean;
+
+begin
+
+  if Teil.istKaufteil then
+      raise EStuBaumStueliPos.Create('Hääh Kaufteile sollten hier nicht hinkommen >'
+    + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)')
+  else
+  if Teil.istEigenfertigung then
+  begin
+    //Fuer die weitere Suche gibt es hier noch 2 Varianten, da unklar welche besser (richtig)
+    //Die Suche erfolgt entweder über Ferftigungsaufträge oder über die Baukasten-Stückliste des Teiles
+    If 1 = 1 Then
+    begin
+      //Suche erst über FA
+      gefunden := holeKinderAusASTUELIPOS();
+      //Wenn im FA nix gefunden Suche über Teile-STU
+      If Not gefunden Then
+          //Immer noch nix gefunden: Wie blöd
+          If Not holeKinderAusASTUELIPOS() Then
+            raiseNixGefunden
+    end
+    Else
+        //Suche nur über Teilestueckliste
+        If Not holeKinderAusASTUELIPOS() Then
+          raiseNixGefunden
+  end
+  else
+  if Teil.istFremdfertigung then
+  begin
+      //Suche nur über Teilestueckliste, da es normal keinen FA gibt
+      If Not holeKinderAusASTUELIPOS() Then
+          raiseNixGefunden
+  end
+  else
+    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.t_tg_nr + '<');
+
+end;
+
+//Suche in Serien-FA
+function TZStueliPos.holeKinderAusASTUELIPOS(): Boolean;
+var gefunden: Boolean;
+var Qry: TZQry;
+var FAKopf:TZFAKopf;
+
+begin
+  //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
+  Qry := DBConn.getQuery;
+  gefunden := Qry.SucheFAzuTeil(Teil.t_tg_nr);
+
+  if not gefunden then
+  begin
+    //Suche hier abbrechen
+    Result:=False;
+    Exit;
+  end;
+
+  //Serien-FA gefunden => Suche dessen Kinder in ASTUELIPOS
+  //Zu Doku und Testzwecken wirden der FA-Kopf als Dummy-Stücklisten-Eintrag
+  //in die Stückliste mit aufgenommen
+
+  //Erzeuge Objekt fuer einen auftragsbezogenen FA
+  FAKopf:=TZFAKopf.Create(FA_Serie, Qry);
+
+  // Da es nur den einen FA für die STU gibt, mit Index 1 in Stueck-Liste übernehmen
+  Stueli.Add('1', FAKopf);
+
+  // Kinder suchen
+  FAKopf.holeKinderAusASTUELIPOS;
+
+  Result:=True;
+
+end;
+
+
+function TZStueliPos.holeKinderAusTeileStu(): Boolean;
+  var
+   gefunden:  Boolean;
+   TeilInStu: TZStueliPos;
+   Qry: TZQry;
+
+begin
+    //Gibt es eine Stückliste zum Teil
+    Qry := DBConn.getQuery;
+    gefunden := Qry.SucheStuelizuTeil(Teil.t_tg_nr);
+
+    if not gefunden then
+    begin
+      //Suche hier abbrechen
+      Result:=False;
+      Exit;
+    end;
+
+
+    //Wenn Stu gefunden
+    While Not Qry.EOF do
+    begin
+
+        //aktuellen Datensatz in StueliPos-Objekt wandeln
+        TeilInStu.Create(TTeil);
+
+        //in Stueck-Liste übernehmen
+        //INdex ???
+        Stueli.Add(TeilInStu.pos_nr, TeilInStu);
+
+        //merken als Teil noch ohne Kinder fuer weitere Suchläufe
+        EndKnotenListe.Add(TeilInStu);
+
+        //Naechster Datensatz
+        Qry.Next;
+
+    end;
+
+    Result:=True;
+
+end;
+
+
+procedure TZStueliPos.raiseNixGefunden();
+begin
+    raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
+  + Teil.t_tg_nr + '< gefunden.')
+end;
+
+
 end.

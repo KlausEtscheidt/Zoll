@@ -2,20 +2,19 @@
 
 interface
 
-uses  System.SysUtils, Data.Db, DBZugriff, Bestellung;
+uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions;
 
 type
   TZTeil = class
   private
     { private declarations }
-    function getistKaufteil:Boolean;
     function BerechnePreisJeLMERabattiert(Qry: TZQry): Double;
     function BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
   protected
     { protected declarations }
   public
     besch_art: Integer;
-    pos_nr: String;
+    //pos_nr: String;
     oa: Integer;
     praeferenzkennung: Integer;
     t_tg_nr: String;
@@ -27,7 +26,9 @@ type
     PreisErmittelt: Boolean;
     Bestellung: TZBestellung;
     PreisJeLME: Double;
-    property istKaufteil:Boolean read getistKaufteil;
+    istKaufteil:Boolean;
+    istEigenfertigung:Boolean;
+    istFremdfertigung:Boolean;
   published
     constructor Create(TeileQry: TZQry);
     procedure holeMaxPreisAus3Bestellungen;
@@ -36,7 +37,10 @@ type
 implementation
 
 constructor TZTeil.Create(TeileQry: TZQry);
+var
+  allesGut:Boolean;
 begin
+  try
     t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
     besch_art:=TeileQry.FieldByName('besch_art').AsInteger;
     oa:=TeileQry.FieldByName('oa').AsInteger;
@@ -49,13 +53,24 @@ begin
     PreisJeLME:=0;
     PreisGesucht:= False;
     PreisErmittelt:= False;
+    if besch_art in [1,2,4] then
+    begin
+      istKaufteil:=besch_art=1;
+      istEigenfertigung:=besch_art=2;
+      istFremdfertigung:=besch_art=4;
+    end
+    else
+      raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
+      + inttostr(besch_art) + '< in >TZTeil.Create<');
+  except
+   on EDatabaseError do
+      allesGut:=False;
+  else
+      raise;
+  end;
 
 end;
 
-function TZTeil.getistKaufteil:Boolean;
-begin
-  Result:= besch_art=1;
-end;
 
 procedure TZTeil.holeMaxPreisAus3Bestellungen;
 begin
