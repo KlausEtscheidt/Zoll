@@ -2,7 +2,7 @@ unit StuecklistenPosition;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
-       DBZugriff,Teil,Exceptions,Data.DB;
+       DBZugriff,Teil,Exceptions,Data.DB,Logger;
 
   type
     TZValue = TValue; //alias
@@ -38,6 +38,7 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
+        function ToStr():String;
       end;
 
 var
@@ -211,6 +212,7 @@ begin
 
   //Erzeuge Objekt fuer einen auftragsbezogenen FA
   FAKopf:=TZFAKopf.Create('FA_Serie', Qry);
+  Log.Log(FAKopf.ToStr);
 
   // Da es nur den einen FA für die STU gibt, mit Index 1 in Stueck-Liste übernehmen
   Stueli.Add(FAKopf.FA_Nr, FAKopf);
@@ -248,6 +250,7 @@ begin
 
         //aktuellen Datensatz in StueliPos-Objekt wandeln
         TeilInStu:=TZTeilAlsStuPos.Create(Qry);
+        Log.Log(TeilInStu.ToStr);
 
         //in Stueck-Liste übernehmen
         //INdex ???
@@ -272,5 +275,28 @@ begin
   + Teil.t_tg_nr + '< gefunden.')
 end;
 
+function TZStueliPos.ToStr():String;
+  var trenn :String;
+begin
+    trenn:= ' ; ';
+    ToStr:=PosTyp
+    + trenn + id_stu
+    + trenn + id_pos
+    + trenn + besch_art
+    + trenn + pos_nr
+    //oa : Integer;
+    + trenn + t_tg_nr
+    //unipps_typ: String;
+    + trenn + FloatToStr(menge)
+    + trenn + FA_Nr;
+    //verurs_art: String;
+    //ueb_s_nr:String;
+    //ds:String;
+    //set_block:String;
+
+    //Stueli: TDictionary<String, TValue>;
+    //hatTeil:Boolean;
+    //Teil: TZTeil;
+end;
 
 end.

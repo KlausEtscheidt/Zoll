@@ -3,7 +3,7 @@ unit Kundenauftrag;
 interface
 
 uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
-  KundenauftragsPos, StuecklistenPosition, DBZugriff;
+  KundenauftragsPos, StuecklistenPosition, DBZugriff, Logger;
 
 type
   TZKundenauftrag = class(TZStueliPos)
@@ -27,6 +27,8 @@ constructor TZKundenauftrag.Create(new_ka_id: String);
 begin
   inherited Create('KA');
   ka_id := new_ka_id;
+  Log.ClearContent;
+  Log.Log('Starte Auswertung fuer: ' + ka_id);
 end;
 
 procedure TZKundenauftrag.auswerten();
@@ -73,6 +75,9 @@ begin
   begin
     //KundenauftragsPos erzeugen; übertrage relevante Daten aus Qry in Felder
     NewStueliPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
+    Log.Log('--------- KA-Pos -----------');
+    Log.Log(NewStueliPos.ToStr);
+
     //neue Pos in Stückliste aufnehmen
     Stueli.Add(NewStueliPos.pos_nr, NewStueliPos);
     KAQry.next;
@@ -129,6 +134,7 @@ begin
 
   // Weitere Schritte wiederholen, bis EndKnoten leer
   //-----------------------------------------------------------------
+
   while EndKnotenListe.Count>0 do
   begin
     //Liste kopieren und leeren
@@ -141,7 +147,8 @@ begin
     begin
       StueliPos:= EndKnoten.AsType<TZStueliPos>;
       var txt:String;
-      txt:=StueliPos.id_stu + ' pos: ' + StueliPos.id_pos;
+      txt:=StueliPos.ToStr;
+      Log.Log(txt);
       StueliPos.holeKindervonEndKnoten;
     end;
 

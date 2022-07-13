@@ -2,7 +2,7 @@
 
 interface
 
-uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff, Exceptions;
+uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff, Exceptions,Logger;
 
 type
   TZFAKopf = class(TZStueliPos)
@@ -55,6 +55,7 @@ begin
       //d.h. alle die in ASTUELIPOS keine übergeordnete Stückliste haben: ueb_s_nr=0
       If FAPos.istToplevel Then
       begin
+        Log.Log(FAPos.ToStr);
         // in Stueck-Liste übernehmen
         Stueli.Add(FAPos.id_pos, FAPos);
 

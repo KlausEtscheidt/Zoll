@@ -25,5 +25,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
   Application.CreateForm(TKombiDataModule, KombiDataModule);
+  Log:=TZLogger.Create;
   Application.Run;
 end.

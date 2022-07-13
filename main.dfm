@@ -48,8 +48,8 @@ object mainFrm: TmainFrm
     OnClick = Ende_BtnClick
   end
   object DBGrid1: TDBGrid
-    Left = 304
-    Top = 184
+    Left = 272
+    Top = 128
     Width = 320
     Height = 120
     TabOrder = 3

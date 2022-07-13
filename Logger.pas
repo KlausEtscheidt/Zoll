@@ -7,12 +7,17 @@ uses System.SysUtils, Vcl.Forms;
   type
     TZLogger = class
       private
-        LogFile: TextFile;
+        Filename: string;
       public
+        LogFile: TextFile;
         constructor Create;
         destructor Destroy; override;
         procedure Log(msg: String);
+        procedure ClearContent();
     end;
+
+var
+  Log : TZLogger;
 
 implementation
 
@@ -23,24 +28,33 @@ begin
 end;
 
 constructor TZLogger.Create;
-var
-  Filename: string;
+
 begin
     // prepares log file
-    Filename := ChangeFileExt (Application.Exename, '.log');
+    //Filename := ChangeFileExt (Application.Exename, '.log');
+    Filename := ChangeFileExt ('C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
     AssignFile (LogFile, Filename);
+
     if FileExists (FileName) then
+        //CloseFile (LogFile);
         Append (LogFile) // open existing file
     else
         Rewrite (LogFile); // create a new one
+
+end;
+
+procedure TZLogger.ClearContent();
+begin
+    CloseFile (LogFile);
+    Rewrite (LogFile); // create a new one
 end;
 
 procedure TZLogger.Log(msg: String);
 begin
+
   try
-    // write to the file and show error
     Writeln (LogFile, msg);
-  finally
+  Except
     // close the file
     CloseFile (LogFile);
   end;
