@@ -154,8 +154,11 @@ var
 begin
 
   if Teil.istKaufteil then
+  begin
       raise EStuBaumStueliPos.Create('Hääh Kaufteile sollten hier nicht hinkommen >'
-    + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)')
+    + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)');
+    Log.Log('Kaufteil gefunden' + Self.ToStr)
+  end
   else
   if Teil.istEigenfertigung then
   begin
@@ -257,7 +260,8 @@ begin
         Stueli.Add(TeilInStu.pos_nr, TeilInStu);
 
         //merken als Teil noch ohne Kinder fuer weitere Suchläufe
-        EndKnotenListe.Add(TeilInStu);
+        if not TeilInStu.Teil.istKaufteil then
+          EndKnotenListe.Add(TeilInStu);
 
         //Naechster Datensatz
         Qry.Next;

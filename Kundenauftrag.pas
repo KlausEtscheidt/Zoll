@@ -27,14 +27,16 @@ constructor TZKundenauftrag.Create(new_ka_id: String);
 begin
   inherited Create('KA');
   ka_id := new_ka_id;
-  Log.ClearContent;
-  Log.Log('Starte Auswertung fuer: ' + ka_id);
 end;
 
 procedure TZKundenauftrag.auswerten();
 begin
+  Log.ClearContent;
+  Log.Log('Starte Auswertung fuer: ' + ka_id);
   liesKopfundPositionen;
   holeKinder;
+  Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
+  Log.Free;
 end;
 
 procedure TZKundenauftrag.liesKopfundPositionen();
@@ -138,15 +140,18 @@ begin
   while EndKnotenListe.Count>0 do
   begin
     //Liste kopieren und leeren
+    alteEndKnotenListe.Clear;
     alteEndKnotenListe.AddRange(EndKnotenListe);
     EndKnotenListe.Clear;
     txt:=alteEndKnotenListe.ToStr();
+    alteEndKnotenListe.WriteToLog;
 
     //Suche weiter
     //Bisherige Endknoten müssten Serien- und Fremd-Fertigungsteile sein
-    for EndKnoten in alteEndKnotenListe.Liste do
+    for EndKnoten in alteEndKnotenListe do
     begin
       StueliPos:= EndKnoten.AsType<TZStueliPos>;
+      Log.Log('------Suche fuer Endknoten ----------');
       txt:=StueliPos.ToStr;
       Log.Log(txt);
       StueliPos.holeKindervonEndKnoten;
