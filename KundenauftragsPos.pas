@@ -23,7 +23,7 @@ implementation
 
 constructor TZKundenauftragsPos.Create(Qry: TZQry; Kundenrabatt: Double);
 begin
-  inherited Create(KA_Pos);
+  inherited Create('KA_Pos');
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
   //Speichere typabhängige Daten
@@ -59,7 +59,7 @@ begin
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    FAKopf:=TZFAKopf.Create(FA_Komm, Qry);
+    FAKopf:=TZFAKopf.Create('FA_Komm', Qry);
 
     // in Stueck-Liste übernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert

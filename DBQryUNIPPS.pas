@@ -7,25 +7,25 @@ interface
 
   type
     TZQryUNIPPS = class(TADOQuery)
-      constructor Create(AOwner: TComponent;conn : TADOConnection);
-      function SucheKundenRabatt(ka_id:string):Boolean;
-      function SucheKundenAuftragspositionen(ka_id:string):Boolean;
-      function SucheDatenzumTeil(t_tg_nr:string):Boolean;
-      function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
-      function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
-      function SucheFAzuTeil(t_tg_nr:String): Boolean;
-      function SucheStuelizuTeil(t_tg_nr:String): Boolean;
-      function SuchePosZuFA(FA_Nr:String): Boolean;
-      function query(sqlqry:String):Boolean;
     public
       { Public-Deklarationen }
         n_records: Integer;
         gefunden: Boolean;
+        constructor Create(AOwner: TComponent;conn : TADOConnection); overload;
+        function SucheKundenRabatt(ka_id:string):Boolean;
+        function SucheKundenAuftragspositionen(ka_id:string):Boolean;
+        function SucheDatenzumTeil(t_tg_nr:string):Boolean;
+        function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+        function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+        function SucheFAzuTeil(t_tg_nr:String): Boolean;
+        function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+        function SucheStuelizuTeil(t_tg_nr:String): Boolean;
+        function SuchePosZuFA(FA_Nr:String): Boolean;
+        function query(sqlqry:String):Boolean;
     end;
 
 
 implementation
-
 
 constructor TZQryUNIPPS.Create(AOwner: TComponent;conn : TADOConnection);
 
@@ -123,6 +123,23 @@ begin
   Result:= query(sql);
 
 end;
+
+function TZQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_hole_Teile_Bezeichnung"
+    sql = "SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung
+     FROM teil_bez
+     WHERE ident_nr1=""" & t_tg_nr$ & """ and teil_bez.sprache=""D""
+     AND teil_bez.art=1 ;"
+}
+
+begin
+  var sql: String;
+  sql:= 'SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung '
+      + 'FROM teil_bez where ident_nr1="' + t_tg_nr
+      + '" and teil_bez.sprache="D" AND teil_bez.art=1 ;' ;
+  Result:= query(sql);
+end;
+
 
 function TZQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_Stueli_zu_Teil"

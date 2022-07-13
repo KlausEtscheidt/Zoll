@@ -25,7 +25,7 @@ implementation
 
 constructor TZKundenauftrag.Create(new_ka_id: String);
 begin
-  inherited Create(KA);
+  inherited Create('KA');
   ka_id := new_ka_id;
 end;
 
@@ -140,7 +140,9 @@ begin
     for EndKnoten in alteEndKnotenListe do
     begin
       StueliPos:= EndKnoten.AsType<TZStueliPos>;
-        StueliPos.holeKindervonEndKnoten;
+      var txt:String;
+      txt:=StueliPos.id_stu + ' pos: ' + StueliPos.id_pos;
+      StueliPos.holeKindervonEndKnoten;
     end;
 
   end;

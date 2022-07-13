@@ -22,16 +22,22 @@ type
     sme: Integer;
     lme: Integer;
     faktlme_sme: Double;
+    Bezeichnung:String;
+
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TZBestellung;
     PreisJeLME: Double;
+
     istKaufteil:Boolean;
     istEigenfertigung:Boolean;
     istFremdfertigung:Boolean;
-  published
+
+    procedure holeBenennung;
     constructor Create(TeileQry: TZQry);
     procedure holeMaxPreisAus3Bestellungen;
+
+  published
   end;
 
 implementation
@@ -62,6 +68,8 @@ begin
     else
       raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
       + inttostr(besch_art) + '< in >TZTeil.Create<');
+
+    holeBenennung;
   except
    on EDatabaseError do
       allesGut:=False;
@@ -71,49 +79,57 @@ begin
 
 end;
 
+procedure TZTeil.holeBenennung;
+  var gefunden: Boolean;
+  var Qry: TZQry;
+begin
+  Qry:=DBConn.getQuery();
+  if Qry.SucheBenennungZuTeil(t_tg_nr) then
+    Bezeichnung:=Trim(Qry.FieldByName('Bezeichnung').AsString);
+end;
+
 
 procedure TZTeil.holeMaxPreisAus3Bestellungen;
-begin
   var gefunden: Boolean;
   var Qry: TZQry;
   var maxPreis:Double;
   var maxFields:TFields;
 
+begin
+
+  if not istKaufteil then
+    exit;
 
   Qry:=DBConn.getQuery();
-  if istKaufteil then
+
+  PreisGesucht:= True;
+  gefunden:=Qry.SucheLetzte3Bestellungen(t_tg_nr);
+
+  if not gefunden then
   begin
-
-    PreisGesucht:= True;
-    gefunden:=Qry.SucheLetzte3Bestellungen(t_tg_nr);
-
-    if not gefunden then
-    begin
-        //Fehler ausgeben
-        exit;
-    end;
-
-    maxPreis:=0;
-
-    while not Qry.Eof do
-    begin
-      PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
-      If PreisJeLME > maxPreis Then
-      begin
-            //Datensatz und Preis merken
-            maxPreis := PreisJeLME;
-            maxFields:=Qry.Fields;
-      end;
-
-      Qry.next;
-    end;
-
-    PreisErmittelt:= True;
-
-    //Übertrage gemerkten Datensatz in Ojekt
-    Bestellung := TZBestellung.Create(maxFields);
-
+      //Fehler ausgeben
+      exit;
   end;
+
+  maxPreis:=0;
+
+  while not Qry.Eof do
+  begin
+    PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
+    If PreisJeLME > maxPreis Then
+    begin
+          //Datensatz und Preis merken
+          maxPreis := PreisJeLME;
+          maxFields:=Qry.Fields;
+    end;
+
+    Qry.next;
+  end;
+
+  PreisErmittelt:= True;
+
+  //Übertrage gemerkten Datensatz in Ojekt
+  Bestellung := TZBestellung.Create(maxFields);
 
 end;
 

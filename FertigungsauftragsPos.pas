@@ -23,7 +23,7 @@ implementation
 
 constructor TZFAPos.Create(AQry: TZQry);
 begin
-  inherited Create(FA_Pos);
+  inherited Create('FA_Pos');
   Qry:=AQry;
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);

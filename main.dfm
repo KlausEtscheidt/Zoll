@@ -59,4 +59,9 @@ object mainFrm: TmainFrm
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
   end
+  object ApplicationEvents1: TApplicationEvents
+    OnException = LogException
+    Left = 56
+    Top = 112
+  end
 end

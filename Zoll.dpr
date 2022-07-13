@@ -14,7 +14,9 @@ uses
   DBQrySQLite in 'DBQrySQLite.pas',
   FertigungsauftragsPos in 'FertigungsauftragsPos.pas',
   FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas',
-  Exceptions in 'Exceptions.pas';
+  Exceptions in 'Exceptions.pas',
+  Logger in 'Logger.pas',
+  TeilAlsStuPos in 'TeilAlsStuPos.pas';
 
 {$R *.res}
 

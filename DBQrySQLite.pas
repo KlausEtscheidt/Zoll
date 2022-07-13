@@ -13,6 +13,9 @@ interface
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
       function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+      function SucheFAzuTeil(t_tg_nr:String): Boolean;
+      function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+      function SucheStuelizuTeil(t_tg_nr:String): Boolean;
       function SuchePosZuFA(FA_Nr:String): Boolean;
       function query(sql:string):Boolean;
     public
@@ -114,6 +117,38 @@ begin
 
 end;
 
+function TZQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_hole_Teile_Bezeichnung"
+    sql = "SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung FROM teil_bez " _
+         & "WHERE ident_nr1=""" & t_tg_nr$ & """ and teil_bez.sprache=""D"" AND teil_bez.art=1 ;"
+create table teil_bez( teil_bez_id text, Bezeichnung text)
+}
+
+begin
+  var sql: String;
+  sql:= 'SELECT teil_bez_id, Bezeichnung '
+      + 'FROM teil_bez where teil_bez_id="' + t_tg_nr + '" ;' ;
+  Result:= query(sql);
+end;
+
+
+function TZQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_suche_Stueli_zu_Teil"
+  Suche über teil_stuelipos.ident_nr1=t_tg_nr
+  Es werden die Daten aus teil_stuelipos gelesen
+  Es existieren z.T. unterschiedlich Stücklisten wegen mehrerer Arbeitspläne (Ausweichmaschine mit anderen Rohteilen)
+  Es wird daher zu TEIL_APLNKOPF gejoined und dort teil_aplnkopf.art=1 gefordert (Standardarbeitsplan)
+}
+
+begin
+  var sql: String;
+  sql:= 'SELECT id_stu, pos_nr, t_tg_nr, oa, typ, menge '
+      + 'FROM teil_stuelipos where id_stu="' + t_tg_nr
+      + '" ORDER BY pos_nr ;';
+  Result:= query(sql);
+end;
+
+
 function TZQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
  Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
@@ -137,6 +172,30 @@ begin
   Result:= query(sql);
 
 end;
+
+
+function TZQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
+{siehe Access Abfrage "b_suche_FA_zu_Teil"
+    sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
+          f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
+          f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ,
+          f_auftragkopf.ident_nr as id_FA
+          FROM f_auftragkopf " _
+          Where f_auftragkopf.t_tg_nr=""" & t_tg_nr _
+          """ and f_auftragkopf.oa<9 " _
+           ORDER BY id_FA desc;"
+        }
+begin
+  var sql: String;
+  sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
+      + 't_tg_nr, oa, typ, FA_Nr '
+      + 'FROM f_auftragkopf '
+      + 'Where t_tg_nr="' + t_tg_nr + '" and oa<9 ORDER BY FA_Nr desc limit 1';
+  Result:= query(sql);
+
+end;
+
+
 
 //Suche alle Positionen zu einem FA (ASTUELIPOS)
 function TZQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;

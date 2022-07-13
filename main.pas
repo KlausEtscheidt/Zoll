@@ -3,9 +3,10 @@ unit main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls;
+  Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts;
 
 type
   TmainFrm = class(TForm)
@@ -14,10 +15,12 @@ type
     Label1: TLabel;
     Ende_Btn: TButton;
     DBGrid1: TDBGrid;
+    ApplicationEvents1: TApplicationEvents;
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
     procedure KA_auswerten(ka_id:string);
     procedure RunIt(Sender: TObject);
+    procedure LogException(Sender: TObject; E: Exception);
 
   private
     { Private-Deklarationen }
@@ -60,5 +63,27 @@ begin
   ka.auswerten;
 end;
 
+procedure TmainFrm.LogException(Sender: TObject; E: Exception);
+var
+  Filename: string;
+  LogFile: TextFile;
+begin
+  // prepares log file
+  Filename := ChangeFileExt (Application.Exename, '.log');
+  AssignFile (LogFile, Filename);
+  if FileExists (FileName) then
+    Append (LogFile) // open existing file
+  else
+    Rewrite (LogFile); // create a new one
+  try
+    // write to the file and show error
+    Writeln (LogFile, DateTimeToStr (Now) + ':' + E.Message);
+//    if not CheckBoxSilent.Checked then
+//      Application.ShowException (E);
+  finally
+    // close the file
+    CloseFile (LogFile);
+  end;
+end;
 
 end.

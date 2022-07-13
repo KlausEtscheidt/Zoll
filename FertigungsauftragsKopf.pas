@@ -12,14 +12,14 @@ type
       { protected declarations }
     public
     published
-      constructor Create(einTyp: TZStueliPosTyp; AQry: TZQry);
+      constructor Create(einTyp: String; AQry: TZQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
 
 implementation
 
-constructor TZFAKopf.Create(einTyp: TZStueliPosTyp; AQry: TZQry);
+constructor TZFAKopf.Create(einTyp: String; AQry: TZQry);
 begin
   inherited Create(einTyp);
   Qry:=AQry;
