@@ -15,9 +15,6 @@ interface
           procedure WriteToLog;
     end;
 
-var
-  EndKnotenListe: TZEndKnotenListe;
-
 implementation
 
 uses StuecklistenPosition;
@@ -45,7 +42,6 @@ end;
 
 procedure TZEndKnotenListe.WriteToLog;
 var
-  txt:String;
   Member:TZValue;
   StueliPos: TZStueliPos;
 

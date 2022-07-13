@@ -2,14 +2,14 @@
 
 interface
 
-uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions;
+uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions,Logger;
 
 type
   TZTeil = class
   private
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TZQry): Double;
-    function BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
+//    function BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
   protected
     { protected declarations }
   public
@@ -37,14 +37,11 @@ type
     constructor Create(TeileQry: TZQry);
     procedure holeMaxPreisAus3Bestellungen;
 
-  published
   end;
 
 implementation
 
 constructor TZTeil.Create(TeileQry: TZQry);
-var
-  allesGut:Boolean;
 begin
   try
     t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
@@ -72,7 +69,7 @@ begin
     holeBenennung;
   except
    on EDatabaseError do
-      allesGut:=False;
+      Log.Log('Fehler');
   else
       raise;
   end;
@@ -80,7 +77,6 @@ begin
 end;
 
 procedure TZTeil.holeBenennung;
-  var gefunden: Boolean;
   var Qry: TZQry;
 begin
   Qry:=DBConn.getQuery();
@@ -112,6 +108,7 @@ begin
   end;
 
   maxPreis:=0;
+  maxFields:=nil;
 
   while not Qry.Eof do
   begin
@@ -155,32 +152,34 @@ begin
 //    End If
 end;
 
-function TZTeil.BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
-begin
-  {Daten in UNIPPS aus Bestllung/Zusatz/Zusatzdaten zur Bestellposition (im Feld Preis) bzw Hauptformular zum Teil
-   Beispiel ERMPE�40
-   Basis=1
-   PME=kg (Preismengeneinheit)
-   BME=St�ck (Bestellmengeneinheit)
-   faktbme_pme= 2,48 Kg/St;   wieviele PME ergeben eine BME ? 2,48 Kg ergeben 1 St�ck
-   Preis_je_PME=8,35�/Kg aus Bestellung
-   Preis_je_BME = Preis_je_PME *faktbme_pme=8,35�/Kg * 2,48Kg/St = 20,71�/St
-   LME=m (Lagermengeeinheit)
-   faktlme_bme=0,5St/m;  wieviele BME ergeben eine LME ? 0,5 ergeben 1 St�ck
-   Preis_je_LME = Preis_je_BME * faktlme_bme = 20,71�/St * 0,5St/m = 10,35 �/m
-  }
 
-  //  UNIPPS-Feld Preis ist Preis je Basis (UNIPPS-Feld Basis) und Preismengeneinheit PME
-  //  unrabbatierter Preis je Preismengeneinheit
-  var preis : double;
-  preis := Qry.FieldByName('preis').AsFloat / Qry.FieldByName('basis').AsFloat;
+//function TZTeil.BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
+//begin
+//  {Daten in UNIPPS aus Bestllung/Zusatz/Zusatzdaten zur Bestellposition (im Feld Preis) bzw Hauptformular zum Teil
+//   Beispiel ERMPE�40
+//   Basis=1
+//   PME=kg (Preismengeneinheit)
+//   BME=St�ck (Bestellmengeneinheit)
+//   faktbme_pme= 2,48 Kg/St;   wieviele PME ergeben eine BME ? 2,48 Kg ergeben 1 St�ck
+//   Preis_je_PME=8,35�/Kg aus Bestellung
+//   Preis_je_BME = Preis_je_PME *faktbme_pme=8,35�/Kg * 2,48Kg/St = 20,71�/St
+//   LME=m (Lagermengeeinheit)
+//   faktlme_bme=0,5St/m;  wieviele BME ergeben eine LME ? 0,5 ergeben 1 St�ck
+//   Preis_je_LME = Preis_je_BME * faktlme_bme = 20,71�/St * 0,5St/m = 10,35 �/m
+//  }
+//
+//  //  UNIPPS-Feld Preis ist Preis je Basis (UNIPPS-Feld Basis) und Preismengeneinheit PME
+//  //  unrabbatierter Preis je Preismengeneinheit
+//  var preis : double;
+//  preis := Qry.FieldByName('preis').AsFloat / Qry.FieldByName('basis').AsFloat;
+//
+//  // Preis je Bestellmengeneinheit
+//  preis := preis * Qry.FieldByName('faktbme_pme').AsFloat;
+//
+//  // Preis je Lagermengeneinheit
+//  Result := preis * Qry.FieldByName('faktlme_bme').AsFloat;
+//
+//end;
 
-  // Preis je Bestellmengeneinheit
-  preis := preis * Qry.FieldByName('faktbme_pme').AsFloat;
-
-  // Preis je Lagermengeneinheit
-  Result := preis * Qry.FieldByName('faktlme_bme').AsFloat;
-
-end;
 
 end.

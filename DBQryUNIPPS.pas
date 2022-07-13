@@ -3,7 +3,8 @@ unit DBQryUNIPPS;
 
 interface
 
-  uses System.SysUtils,System.Classes,Data.Win.ADODB;
+  uses System.SysUtils,System.Classes,Data.Win.ADODB,
+  SQLiteConnect;
 
   type
     TZQryUNIPPS = class(TADOQuery)
@@ -11,7 +12,7 @@ interface
       { Public-Deklarationen }
         n_records: Integer;
         gefunden: Boolean;
-        constructor Create(AOwner: TComponent;conn : TADOConnection); overload;
+        constructor Create(AOwner: TComponent;conn : TADOConnection);
         function SucheKundenRabatt(ka_id:string):Boolean;
         function SucheKundenAuftragspositionen(ka_id:string):Boolean;
         function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -24,6 +25,7 @@ interface
         function query(sqlqry:String):Boolean;
     end;
 
+var sqlitedb : TZDbConnector;
 
 implementation
 
@@ -34,6 +36,8 @@ begin
   Connection:=conn;
   n_records:=0;
   gefunden:=False;
+  /////////////////////////////////////
+  sqlitedb := TZDbConnector.Create
 end;
 
 function TZQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
@@ -53,7 +57,6 @@ begin
       +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 '
       +  'where auftragpos.ident_nr1 = "' + ka_id + '" order by id_pos;';
   Result:= query(sql);
-
 end;
 
 function TZQryUNIPPS.SucheKundenRabatt(ka_id:string):Boolean;
@@ -69,6 +72,8 @@ begin
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
        + 'from kunde_zuab where ident_nr1 = "' + ka_id + '";';
   Result:= query(sql);
+
+  sqlitedb.Exec('select * from kunde_zuab');
 
 end;
 

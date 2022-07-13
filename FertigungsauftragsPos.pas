@@ -13,10 +13,8 @@ type
     public
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
-    published
       constructor Create(AQry: TZQry);
       procedure holeKinderAusASTUELIPOS(id_pos_vater:String);
-
     end;
 
 implementation

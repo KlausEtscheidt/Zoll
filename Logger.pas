@@ -8,10 +8,12 @@ uses System.SysUtils, Vcl.Forms;
     TZLogger = class
       private
         Filename: string;
-      public
         LogFile: TextFile;
+      public
         constructor Create;
         destructor Destroy; override;
+        procedure Open();
+        procedure Close();
         procedure Log(msg: String);
         procedure ClearContent();
     end;
@@ -36,19 +38,29 @@ begin
     Filename := ChangeFileExt ('C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
     //Filename := ChangeFileExt ('C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
     AssignFile (LogFile, Filename);
+    Open;
 
+end;
+
+procedure TZLogger.Close();
+begin
+    CloseFile (LogFile);
+end;
+
+procedure TZLogger.Open();
+begin
     if FileExists (FileName) then
         //CloseFile (LogFile);
         Append (LogFile) // open existing file
     else
         Rewrite (LogFile); // create a new one
-
 end;
+
 
 procedure TZLogger.ClearContent();
 begin
     CloseFile (LogFile);
-    Rewrite (LogFile); // create a new one
+    Open;
 end;
 
 procedure TZLogger.Log(msg: String);

@@ -5,9 +5,8 @@ interface
        DBZugriff,Teil,Exceptions,Data.DB,Logger,Stueckliste;
 
   type
-//    TZValue = TValue; //alias
-//    TZEndKnotenListe =  TList<TValue>;
-//    TZStueli = TDictionary<String, TValue>;
+    TZValue = TValue; //alias
+    TZStueli = TDictionary<String, TValue>;
     TZStueliPos = class(TObject)
       private
         procedure raiseNixGefunden();
@@ -63,8 +62,6 @@ end;
 
 //Überträgt allgemeingültige und typspezifische Daten aus Qry in Felder
 procedure TZStueliPos.PosDatenSpeichern(Qry: TZQry);
-var
-  allesGut:Boolean;
 begin
 
   try
@@ -118,8 +115,11 @@ begin
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp )
 
   except
-    on EDatabaseError do
-      allesGut:=False;
+    on E: EDatabaseError do
+    begin
+      Log.Log('EDatabaseError ' + E.Message);
+      raise
+    end
   else
      raise;
   end;
@@ -148,7 +148,6 @@ end;
 
 procedure TZStueliPos.holeKindervonEndKnoten();
 var
-  Qry: TZQry;
   gefunden: Boolean;
 
 begin

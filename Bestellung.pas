@@ -28,9 +28,6 @@ type
     kurzname: String;
     t_tg_nr: String;
     constructor Create(myRecord: TFields);
-
-  published
-
   end;
 
 implementation

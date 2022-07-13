@@ -10,7 +10,6 @@ type
     protected
       { protected declarations }
     public
-    published
       constructor Create(AQry: TZQry);
     end;
 

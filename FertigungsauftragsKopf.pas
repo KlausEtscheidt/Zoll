@@ -2,7 +2,8 @@
 
 interface
 
-uses  FertigungsauftragsPos, StuecklistenPosition, DBZugriff, Exceptions,Logger;
+uses  System.SysUtils, FertigungsauftragsPos, StuecklistenPosition,
+               DBZugriff, Exceptions,Logger;
 
 type
   TZFAKopf = class(TZStueliPos)
@@ -11,7 +12,6 @@ type
     protected
       { protected declarations }
     public
-    published
       constructor Create(einTyp: String; AQry: TZQry);
       procedure holeKinderAusASTUELIPOS;
 
@@ -31,8 +31,9 @@ end;
 procedure TZFAKopf.holeKinderAusASTUELIPOS;
 
 var Qry: TZQry;
-var gefunden:Boolean;
-var FAPos:TZFAPos;
+  gefunden:Boolean;
+  FAPos:TZFAPos;
+  msg : String;
 
 begin
   //Hole die Positionen des FA's aus der Unipps-Tabelle ASTUELIPOS
@@ -40,8 +41,12 @@ begin
   gefunden := Qry.SuchePosZuFA(FA_Nr);
 
   if not gefunden then
-    raise EStuBaumFaKopfErr.Create('Keine Positionen zum FA >'
-    + FA_Nr  + '< gefunden. (holeKinderAusASTUELIPOS)');
+  begin
+    msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
+    Log.Log(msg);
+    Log.Close;
+    raise EStuBaumFaKopfErr.Create(msg);
+  end;
 
 
   //Daten lesen, zuerst nur Teile der obersten Ebene: ueb_s_nr=0

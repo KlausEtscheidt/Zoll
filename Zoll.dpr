@@ -17,7 +17,8 @@ uses
   Exceptions in 'Exceptions.pas',
   Logger in 'Logger.pas',
   TeilAlsStuPos in 'TeilAlsStuPos.pas',
-  Stueckliste in 'Stueckliste.pas';
+  Stueckliste in 'Stueckliste.pas',
+  SQLiteConnect in 'SQLiteConnect.pas';
 
 {$R *.res}
 

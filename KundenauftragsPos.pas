@@ -9,15 +9,11 @@ type
   TZKundenauftragsPos = class(TZStueliPos)
     private
       Rabatt:Double;
-    protected
-      { protected declarations }
     public
       vk_brutto: Double;
       vk_netto: Double;
-    published
       constructor Create(Qry: TZQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
-
     end;
 
 implementation

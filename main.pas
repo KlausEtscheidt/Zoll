@@ -50,16 +50,20 @@ begin
   close
 end;
 
+//Zum Testen, wird automatisch von OnShow gestartet
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-  //KA_auswerten('142591'); //Error
-  KA_auswerten('142567'); //2Pumpen
+  KA_auswerten('142591'); //Error
+  //KA_auswerten('142567'); //2Pumpen
 end;
 
+//Haupteinsprung zum Auswerten eines Kundenauftrages
 procedure TmainFrm.KA_auswerten(ka_id:string);
 var ka:TZKundenauftrag;
 begin
+  //anlegen
   ka:=TZKundenauftrag.Create(ka_id);
+  //auswerten
   ka.auswerten;
 end;
 

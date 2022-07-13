@@ -14,10 +14,9 @@ type
     ka_id: String;
     komm_nr: String;
     kunden_id: Integer;
+    constructor Create(new_ka_id: String);
     procedure liesKopfundPositionen;
     procedure holeKinder;
-  published
-    constructor Create(new_ka_id: String);
     procedure auswerten;
   end;
 
@@ -31,12 +30,15 @@ end;
 
 procedure TZKundenauftrag.auswerten();
 begin
+  Log.Open;
   Log.ClearContent;
   Log.Log('Starte Auswertung fuer: ' + ka_id);
+
   liesKopfundPositionen;
   holeKinder;
+
   Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
-  Log.Free;
+  Log.Close;
 end;
 
 procedure TZKundenauftrag.liesKopfundPositionen();
@@ -52,6 +54,7 @@ begin
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
   KAQry := DBConn.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+  Rabatt:=0;
 
   if gefunden then
   begin
@@ -60,7 +63,6 @@ begin
     kunden_id := KAQry.FieldByName('kunde').AsInteger;
 
     // Abfrage des Rabattes zu diesem Kunden
-    Rabatt:=0;
     RabattQry := DBConn.getQuery;
     RabattQry.SucheKundenRabatt(ka_id);
     { TODO :

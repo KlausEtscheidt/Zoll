@@ -20,7 +20,7 @@ interface
 
 type
    TZDBConnect = class
-     published
+     public
        function getQuery():TZQry;
    end;
 
