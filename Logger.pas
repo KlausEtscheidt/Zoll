@@ -32,7 +32,9 @@ constructor TZLogger.Create;
 begin
     // prepares log file
     //Filename := ChangeFileExt (Application.Exename, '.log');
-    Filename := ChangeFileExt ('C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
+
+    Filename := ChangeFileExt ('C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
+    //Filename := ChangeFileExt ('C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\test.txt', '.log');
     AssignFile (LogFile, Filename);
 
     if FileExists (FileName) then

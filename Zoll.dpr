@@ -16,7 +16,8 @@ uses
   FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas',
   Exceptions in 'Exceptions.pas',
   Logger in 'Logger.pas',
-  TeilAlsStuPos in 'TeilAlsStuPos.pas';
+  TeilAlsStuPos in 'TeilAlsStuPos.pas',
+  Stueckliste in 'Stueckliste.pas';
 
 {$R *.res}
 

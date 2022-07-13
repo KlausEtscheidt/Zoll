@@ -3,7 +3,7 @@ unit Kundenauftrag;
 interface
 
 uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
-  KundenauftragsPos, StuecklistenPosition, DBZugriff, Logger;
+  KundenauftragsPos, Stueckliste, StuecklistenPosition, DBZugriff, Logger;
 
 type
   TZKundenauftrag = class(TZStueliPos)
@@ -87,6 +87,7 @@ end;
 
 
 //Schrittweise Suche aller untergeordneten Elemente
+procedure TZKundenauftrag.holeKinder();
 {Bei jedem Schritt werden alle Knoten, fuer die in der bisherigen Suche
  noch keine Kinder gefunden wurden, in der Liste EndKnoten abgelegt,
  sofern es keine Kaufteile sind.
@@ -94,14 +95,13 @@ end;
  Die Suche wird so lange wiederholt, bis EndKnoten leer bleibt.
  Die untersten Knoten müssen dann alle Kaufteil sein.
 }
-
-procedure TZKundenauftrag.holeKinder();
 var StueliPos: TZStueliPos;
 var StueliPosKey: String;
 var keyArray: System.TArray<System.string>;
 var KaPos: TZKundenauftragsPos;
 var alteEndKnotenListe: TZEndKnotenListe;
 var EndKnoten: TZValue;
+var txt:String;
 
 begin
   //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
@@ -140,13 +140,13 @@ begin
     //Liste kopieren und leeren
     alteEndKnotenListe.AddRange(EndKnotenListe);
     EndKnotenListe.Clear;
+    txt:=alteEndKnotenListe.ToStr();
 
     //Suche weiter
     //Bisherige Endknoten müssten Serien- und Fremd-Fertigungsteile sein
-    for EndKnoten in alteEndKnotenListe do
+    for EndKnoten in alteEndKnotenListe.Liste do
     begin
       StueliPos:= EndKnoten.AsType<TZStueliPos>;
-      var txt:String;
       txt:=StueliPos.ToStr;
       Log.Log(txt);
       StueliPos.holeKindervonEndKnoten;

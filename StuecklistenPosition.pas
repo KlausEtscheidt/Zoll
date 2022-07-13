@@ -2,12 +2,12 @@ unit StuecklistenPosition;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
-       DBZugriff,Teil,Exceptions,Data.DB,Logger;
+       DBZugriff,Teil,Exceptions,Data.DB,Logger,Stueckliste;
 
   type
-    TZValue = TValue; //alias
-    TZEndKnotenListe =  TList<TValue>;
-    TZStueli = TDictionary<String, TValue>;
+//    TZValue = TValue; //alias
+//    TZEndKnotenListe =  TList<TValue>;
+//    TZStueli = TDictionary<String, TValue>;
     TZStueliPos = class(TObject)
       private
         procedure raiseNixGefunden();
