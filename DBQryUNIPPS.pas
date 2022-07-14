@@ -13,7 +13,7 @@ interface
         n_records: Integer;
         gefunden: Boolean;
         constructor Create(AOwner: TComponent;conn : TADOConnection);
-        function SucheKundenRabatt(ka_id:string):Boolean;
+        function SucheKundenRabatt(kunden_id:string):Boolean;
         function SucheKundenAuftragspositionen(ka_id:string):Boolean;
         function SucheDatenzumTeil(t_tg_nr:string):Boolean;
         function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
@@ -63,7 +63,7 @@ begin
 
 end;
 
-function TZQryUNIPPS.SucheKundenRabatt(ka_id:string):Boolean;
+function TZQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
@@ -73,7 +73,7 @@ begin
                  & " AND datum_bis>" & heute_datum_str & " ; "
   }
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
-       + 'from kunde_zuab where ident_nr1 = "' + ka_id + '";';
+       + 'from kunde_zuab where ident_nr1 = "' + kunden_id + '";';
   Result:= query(sql);
   UNI2SQLite('kunde_zuab');
 
@@ -96,11 +96,12 @@ sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
 begin
   var sql: String;
   sql:= 'SELECT teil_uw.t_tg_nr, teil_uw.oa, teil_uw.v_besch_art besch_art, teil.typ, '
+      + 'teil.urspr_land, teil.ausl_u_land, '
       + 'teil.praeferenzkennung, teil.sme, teil.faktlme_sme, teil.lme '
       + 'FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa '
       + 'where teil_uw.t_tg_nr = "' + t_tg_nr + '" and teil_uw.oa<9 and teil_uw.uw=1;';
   Result:= query(sql);
-  UNI2SQLite('bestellung');
+  UNI2SQLite('teil');
 
 end;
 
@@ -132,7 +133,7 @@ begin
       + 'WHERE bestellpos.t_tg_nr="' + t_tg_nr + '" order by bestellkopf.datum desc ;';
   Result:= query(sql);
 
-  UNI2SQLite('bestellung');
+  UNI2SQLite('bestellungen');
 
 end;
 
@@ -273,8 +274,10 @@ begin
   while not self.Eof do
   begin
       sqlitedb.Store(tablename, Fields);
-      next;
+      self.next;
   end;
+  //WICHTIGGGGGGGGG
+  self.First;
 
 end;
 

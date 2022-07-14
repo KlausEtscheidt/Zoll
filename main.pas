@@ -55,7 +55,9 @@ end;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
 //  KA_auswerten('142591'); //Error
-  KA_auswerten('142567'); //2Pumpen
+  //KA_auswerten('142567'); //2Pumpen
+  KA_auswerten('142302'); //Ersatz
+
 end;
 
 //Haupteinsprung zum Auswerten eines Kundenauftrages

@@ -3,8 +3,8 @@ unit SQLiteConnect;
 interface
 
   uses System.Classes,FireDAC.Phys.SQLite ,FireDAC.Stan.Def,FireDAC.Stan.Param
-       ,FireDAC.Comp.Client,
-        DBQrySQLite,Data.DB;
+       ,FireDAC.Comp.Client,StrUtils,
+        DBQrySQLite,Data.DB, TextWriter;
 
   type
     TZDbConnector = class
@@ -60,39 +60,48 @@ begin
 end;
 
 procedure TZDbConnector.Store(tablename: String; myFields:TFields);
-var txt, sql:String;
+var
+  sql:String;
   myfield : TField;
-  myparams : TFDParams;
-  myparam :TFDParam;
+  myparam :TFDParam; //nur zum kucken
 
 begin
-  txt:='"';
 
-  sql := 'INSERT INTO ' + tablename + ' VALUES(';
-  for myField in myFields do
-  begin
-      sql:=sql +':'+ myField.FieldName + ', ';
-  end;
-
-  delete(sql,length(sql)-1,5);
-  sql:= sql + ');';
-  //erste NEUE Query erzeugen oder SQL leeren
-  mQry.SQL.Clear;
-  mQry.SQL.Add(sql);
-  myparams:=mQry.Params;
-  for myField in myFields do
-  begin
-      myparam:=mQry.ParamByName(myField.FieldName);
-      mQry.ParamByName(myField.FieldName).AsString := myField.AsString;
-      myparam:=mQry.ParamByName(myField.FieldName);
-  end;
-  myparam:=mQry.ParamByName('id_stu');
   try
+
+    //SQL aus FEldnamen
+    sql := 'INSERT INTO ' + tablename + ' VALUES(';
+    for myField in myFields do
+    begin
+        sql:=sql +':'+ myField.FieldName + ', ';
+    end;
+
+    delete(sql,length(sql)-1,5);
+    sql:= sql + ');';
+
+    //SQL  in Query (erst leeren)
+    mQry.SQL.Clear;
+    mQry.SQL.Add(sql);
+
+    //Daten als Parameter in Query
+    for myField in myFields do
+    begin
+        mQry.ParamByName(myField.FieldName).AsString := myField.AsString;
+        //myparam:=mQry.ParamByName(myField.FieldName);
+    end;
+
+  //Ausführen
     mQry.Prepare;
     mQry.ExecSQL(sql);
   except
+
     on E: EDatabaseError do
-      txt:=''
+      if not ContainsText(E.Message, 'UNIQUE constraint failed') then
+      begin
+          ErrLog.Log('in SQLiteConnect.Store' + E.Message);
+          if ContainsText(E.Message, 'database is locked') then
+            raise
+      end;
   end;
 
 

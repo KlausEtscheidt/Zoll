@@ -61,14 +61,14 @@ begin
 
     // Abfrage des Rabattes zu diesem Kunden
     RabattQry := DBConn.getQuery;
-    RabattQry.SucheKundenRabatt(ka_id);
+    RabattQry.SucheKundenRabatt(inttostr(kunden_id));
     { TODO :
       Else-Zweig bearbeiten
       SQL muss auf aktuelles Datum filtern }
     if RabattQry.n_records = 1 then
       Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100
     else
-      Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100;
+      Rabatt := 0;
   end;
 
   //Positionen beabeiten
