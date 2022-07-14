@@ -1,7 +1,7 @@
 //Die Unit dient als Zwischenschicht
 // zum Wechseln der Datenbank (Informix/SQLIte)
 
-{$DEFINE UNIPPS}
+{$DEFINE xxUNIPPS}
 
 unit DBZugriff;
 

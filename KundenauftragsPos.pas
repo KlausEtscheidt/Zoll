@@ -3,7 +3,7 @@ unit KundenauftragsPos;
 interface
 
 uses  System.SysUtils,FertigungsauftragsKopf, StuecklistenPosition,
-         DBZugriff,Logger;
+         DBZugriff,TextWriter;
 
 type
   TZKundenauftragsPos = class(TZStueliPos)

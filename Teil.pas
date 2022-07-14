@@ -2,7 +2,8 @@
 
 interface
 
-uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions,Logger;
+uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions,
+      TextWriter;
 
 type
   TZTeil = class
@@ -14,7 +15,6 @@ type
     { protected declarations }
   public
     besch_art: Integer;
-    //pos_nr: String;
     oa: Integer;
     praeferenzkennung: Integer;
     t_tg_nr: String;
@@ -33,9 +33,10 @@ type
     istEigenfertigung:Boolean;
     istFremdfertigung:Boolean;
 
-    procedure holeBenennung;
     constructor Create(TeileQry: TZQry);
+    procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
+    function ToStr():String;
 
   end;
 
@@ -69,7 +70,7 @@ begin
     holeBenennung;
   except
    on EDatabaseError do
-      Log.Log('Fehler');
+      ErrLog.Log('Fehler');
   else
       raise;
   end;
@@ -181,5 +182,22 @@ end;
 //
 //end;
 
+function TZTeil.ToStr():String;
+  var trenn :String;
+begin
+    trenn:= ' ; ';
+    ToStr:= t_tg_nr
+    + trenn + intToStr(oa)
+    + trenn + intToStr(besch_art)
+    + trenn + intToStr(praeferenzkennung)
+    + trenn + unipps_typ
+    + trenn + intToStr(sme)
+    + trenn + intToStr(lme)
+    + trenn + FloatToStr(faktlme_sme)
+    + trenn + Bezeichnung
+    + trenn + FloatToStr(PreisJeLME)
+    ;
+
+end;
 
 end.

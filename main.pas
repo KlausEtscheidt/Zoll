@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts;
+  Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
+  TextWriter;
 
 type
   TmainFrm = class(TForm)
@@ -53,18 +54,30 @@ end;
 //Zum Testen, wird automatisch von OnShow gestartet
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-  KA_auswerten('142591'); //Error
-  //KA_auswerten('142567'); //2Pumpen
+//  KA_auswerten('142591'); //Error
+  KA_auswerten('142567'); //2Pumpen
 end;
 
 //Haupteinsprung zum Auswerten eines Kundenauftrages
 procedure TmainFrm.KA_auswerten(ka_id:string);
 var ka:TZKundenauftrag;
+
 begin
-  //anlegen
+  //Logger oeffnen
+  Log.Open;
+  Log.ClearContent;
+  ErrLog.Open;
+  ErrLog.ClearContent;
+
+  //Ka anlegen
   ka:=TZKundenauftrag.Create(ka_id);
   //auswerten
   ka.auswerten;
+
+  //Logger schlieﬂen
+  Log.Close;
+  ErrLog.Close;
+
 end;
 
 procedure TmainFrm.LogException(Sender: TObject; E: Exception);

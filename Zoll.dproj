@@ -57,6 +57,11 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug_Firma' or '$(Cfg_3)'!=''">
+        <Cfg_3>true</Cfg_3>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -126,13 +131,11 @@
         </DelphiCompile>
         <DCCReference Include="main.pas">
             <Form>mainFrm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Kundenauftrag.pas"/>
         <DCCReference Include="DBQryUNIPPS.pas"/>
         <DCCReference Include="DBDatamodule.pas">
             <Form>KombiDataModule</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="StuecklistenPosition.pas"/>
@@ -144,10 +147,12 @@
         <DCCReference Include="FertigungsauftragsPos.pas"/>
         <DCCReference Include="FertigungsauftragsKopf.pas"/>
         <DCCReference Include="Exceptions.pas"/>
-        <DCCReference Include="Logger.pas"/>
+        <DCCReference Include="TextWriter.pas"/>
         <DCCReference Include="TeilAlsStuPos.pas"/>
         <DCCReference Include="Stueckliste.pas"/>
         <DCCReference Include="SQLiteConnect.pas"/>
+        <DCCReference Include="Config.pas"/>
+        <DCCReference Include="Output.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -157,6 +162,10 @@
         </BuildConfiguration>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug_Firma">
+            <Key>Cfg_3</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
     </ItemGroup>

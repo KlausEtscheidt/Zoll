@@ -2,16 +2,24 @@ unit StuecklistenPosition;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
-       DBZugriff,Teil,Exceptions,Data.DB,Logger,Stueckliste;
+       System.Classes,
+       DBZugriff,Teil,Exceptions,Data.DB,TextWriter,Stueckliste,
+       Config;
 
   type
     TZValue = TValue; //alias
     TZStueli = TDictionary<String, TValue>;
-    TZStueliPos = class(TObject)
+    TZFeldListe = TDictionary<String, String>;
+
+    TZStueliPos = class
       private
+        FeldListeKompl: TZFeldListe;
+        function GetFeldListeKomplett():TZFeldListe ;
         procedure raiseNixGefunden();
       protected
+
       public
+
         PosTyp:String;
         id_stu : String;
         id_pos : String;
@@ -26,10 +34,11 @@ interface
         ueb_s_nr:String;
         ds:String;
         set_block:String;
-
-        Stueli: TDictionary<String, TValue>;
+        Stueli: TZStueli;
         hatTeil:Boolean;
         Teil: TZTeil;
+
+        property FeldListeKomplett: TZFeldListe read GetFeldListeKomplett ;
 
         constructor Create(APosTyp:String);
         procedure PosDatenSpeichern(Qry: TZQry);
@@ -38,10 +47,15 @@ interface
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
         function ToStr():String;
+        function ToStrKurz():String;
+        class procedure InitTextFile(filename:string);
+        procedure ToTextFile;
+
       end;
 
 var
   EndKnotenListe: TZEndKnotenListe;
+  CSVLang,CSVKurz: TZTextFile;
 
 implementation
 
@@ -53,8 +67,13 @@ begin
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
 
   PosTyp:=APosTyp;
+
+  //Liste zur Ausgabe der Eigenschaften anlegen
+  FeldListeKompl:=TZFeldListe.Create;
+
   //untergeordenete Stueli anlegen
   Stueli:= TZStueli.Create;
+
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
@@ -255,7 +274,6 @@ begin
         Log.Log(TeilInStu.ToStr);
 
         //in Stueck-Liste übernehmen
-        //INdex ???
         Stueli.Add(TeilInStu.pos_nr, TeilInStu);
 
         //merken als Teil noch ohne Kinder fuer weitere Suchläufe
@@ -279,27 +297,98 @@ begin
 end;
 
 function TZStueliPos.ToStr():String;
-  var trenn :String;
+const trenn = ' ; ' ;
+var
+  val:string;
+  locFeldListeKomplett:TZFeldListe;
+  txt:string;
 begin
-    trenn:= ' ; ';
-    ToStr:=PosTyp
-    + trenn + id_stu
-    + trenn + id_pos
-    + trenn + besch_art
-    + trenn + pos_nr
-    //oa : Integer;
-    + trenn + t_tg_nr
-    //unipps_typ: String;
-    + trenn + FloatToStr(menge)
-    + trenn + FA_Nr;
-    //verurs_art: String;
-    //ueb_s_nr:String;
-    //ds:String;
-    //set_block:String;
-
-    //Stueli: TDictionary<String, TValue>;
-    //hatTeil:Boolean;
-    //Teil: TZTeil;
+  txt:='';
+  locFeldListeKomplett:=FeldListeKomplett;
+  for val in  locFeldListeKomplett.Values do
+  begin
+    txt:= txt + val + trenn;
+  end;
+  Result:=txt;
 end;
+
+function TZStueliPos.ToStrKurz():String;
+const trenn = ' ; ' ;
+var
+  val:string;
+  Felder:TZFeldListe;
+  txt:string;
+begin
+  Felder:=FeldListeKomplett;
+  txt:= Felder['id_stu'] + trenn;
+  txt:= txt + Felder['pos_nr'] + trenn;
+  txt:= txt + Felder['t_tg_nr'] + trenn;
+  Result:=txt;
+end;
+
+class procedure TZStueliPos.InitTextFile(filename:string);
+begin
+
+  CSVLang:=TZTextFile.Create(Config.logdir+'\' + filename + '_Stu.txt');
+  CSVLang.Open;
+  CSVLang.ClearContent;
+  CSVKurz:=TZTextFile.Create(Config.logdir+'\' + filename + '_Kalk.txt' );
+  CSVKurz.Open;
+  CSVKurz.ClearContent;
+
+
+end;
+
+procedure TZStueliPos.ToTextFile;
+
+var StueliPos: TZStueliPos;
+var StueliPosKey: String;
+var keyArray: System.TArray<System.string>;
+
+begin
+
+  //Ausgeben und zurueck, wenn keine Kinder
+  if Stueli.Count=0 then
+  begin
+    CSVLang.Log(ToStr());
+    CSVKurz.Log(ToStrKurz());
+    exit;
+  end;
+
+  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
+
+  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
+  keyArray:=Stueli.Keys.ToArray;
+  TArray.Sort<String>(keyArray);
+
+  for StueliPosKey in keyArray  do
+  begin
+    StueliPos:= Stueli[StueliPosKey].AsType<TZStueliPos>;
+    StueliPos.ToTextFile;
+  end;
+
+end;
+
+function TZStueliPos.GetFeldListeKomplett():TZFeldListe ;
+
+begin
+    //Liste zur Ausgabe der Eigenschaften anlegen
+    FeldListeKompl:=TZFeldListe.Create;
+
+    FeldListeKompl.Add('PosTyp',PosTyp);
+    FeldListeKompl.Add('id_stu',id_stu);
+    FeldListeKompl.Add('id_pos',id_pos);
+    FeldListeKompl.Add('besch_art',besch_art);
+    FeldListeKompl.Add('pos_nr',pos_nr);
+    FeldListeKompl.Add('oa',IntToStr(oa));
+    FeldListeKompl.Add('t_tg_nr',t_tg_nr);
+    FeldListeKompl.Add('unipps_typ',unipps_typ);
+    FeldListeKompl.Add('menge',FloatToStr(menge));
+    FeldListeKompl.Add('FA_Nr',FA_Nr);
+    FeldListeKompl.Add('verurs_art',verurs_art);
+    FeldListeKompl.Add('ds',ds);
+    FeldListeKompl.Add('set_block',set_block);
+    Result:=FeldListeKompl;
+  end;
 
 end.

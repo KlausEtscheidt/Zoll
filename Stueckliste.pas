@@ -2,7 +2,7 @@ unit Stueckliste;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
-       Exceptions,Data.DB,Logger;
+       Exceptions,Data.DB,TextWriter;
 
  type
     TZValue = TValue; //alias

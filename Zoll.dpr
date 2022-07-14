@@ -15,10 +15,12 @@ uses
   FertigungsauftragsPos in 'FertigungsauftragsPos.pas',
   FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas',
   Exceptions in 'Exceptions.pas',
-  Logger in 'Logger.pas',
+  TextWriter in 'TextWriter.pas',
   TeilAlsStuPos in 'TeilAlsStuPos.pas',
   Stueckliste in 'Stueckliste.pas',
-  SQLiteConnect in 'SQLiteConnect.pas';
+  SQLiteConnect in 'SQLiteConnect.pas',
+  Config in 'Config.pas',
+  Output in 'Output.pas';
 
 {$R *.res}
 
@@ -27,6 +29,10 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
   Application.CreateForm(TKombiDataModule, KombiDataModule);
-  Log:=TZLogger.Create;
+  cfg_init;
+  //Logfile für Ablauf
+  Log:=TZTextFile.Create(Config.logdir+'\logfile.txt');
+  //Logfile für Fehler
+  ErrLog:=TZTextFile.Create(Config.logdir+'\Errlog.txt');
   Application.Run;
 end.
