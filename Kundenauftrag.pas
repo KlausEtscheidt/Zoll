@@ -43,7 +43,7 @@ procedure TZKundenauftrag.liesKopfundPositionen();
 var
   gefunden: Boolean;
   Rabatt: Double;
-  NewStueliPos: TZKundenauftragsPos;
+  KAPos: TZKundenauftragsPos;
   KAQry, RabattQry: TZQry;
 
 begin
@@ -51,6 +51,8 @@ begin
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
   KAQry := DBConn.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+  if not gefunden then
+    raise Exception.Create('KA '+ka_id + ' nicht gefunden.');
   Rabatt:=0;
 
   if gefunden then
@@ -75,12 +77,12 @@ begin
   while not KAQry.Eof do
   begin
     //KundenauftragsPos erzeugen; übertrage relevante Daten aus Qry in Felder
-    NewStueliPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
+    KAPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
     Log.Log('--------- KA-Pos -----------');
-    Log.Log(NewStueliPos.ToStr);
+    Log.Log(KAPos.ToStr);
 
     //neue Pos in Stückliste aufnehmen
-    Stueli.Add(NewStueliPos.pos_nr, NewStueliPos);
+    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
     KAQry.next;
   end;
 

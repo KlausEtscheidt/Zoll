@@ -26,7 +26,9 @@ begin
   //Speichere typabhängige Daten
   Rabatt:=Kundenrabatt;
   vk_brutto:=Qry.FieldByName('preis').AsFloat;
-  vk_netto:=vk_brutto * (1 + Rabatt) //Rabbat hat Minuszeichen in UNIPPS
+  vk_netto:=vk_brutto * (1 + Rabatt); //Rabbat hat Minuszeichen in UNIPPS
+  AddPosData('vk_netto',FloatToStr(vk_netto));
+  AddPosData('vk_brutto',FloatToStr(vk_brutto));
 end;
 
 procedure TZKundenauftragsPos.holeKinderAusASTUELIPOS;
@@ -40,7 +42,7 @@ var lfn: Integer;
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := DBConn.getQuery;
-  gefunden := Qry.SucheFAzuKAPos(id_stu, id_pos);
+  gefunden := Qry.SucheFAzuKAPos(PosData['id_stu'],PosData['id_pos'] );
 
   if not gefunden then
   begin

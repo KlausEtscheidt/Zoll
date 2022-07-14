@@ -9,36 +9,36 @@ interface
   type
     TZValue = TValue; //alias
     TZStueli = TDictionary<String, TValue>;
-    TZFeldListe = TDictionary<String, String>;
+    //TZFeldListe = TDictionary<String, String>;
 
-    TZStueliPos = class
+    TZStueliPos = class(TSStueliPos)
       private
-        FeldListeKompl: TZFeldListe;
-        function GetFeldListeKomplett():TZFeldListe ;
+        FeldListeKompl: String;
+        function GetFeldListeKomplett():String ;
         procedure raiseNixGefunden();
       protected
 
       public
 
         PosTyp:String;
-        id_stu : String;
-        id_pos : String;
-        besch_art : String;
-        pos_nr : String;
-        oa : Integer;
-        t_tg_nr: String;
-        unipps_typ: String;
-        menge: Double;
-        FA_Nr: String;
-        verurs_art: String;
-        ueb_s_nr:String;
-        ds:String;
-        set_block:String;
-        Stueli: TZStueli;
-        hatTeil:Boolean;
+//        id_stu : String;
+//        id_pos : String;
+//        besch_art : String;
+//        pos_nr : String;
+//        oa : Integer;
+//        t_tg_nr: String;
+//        unipps_typ: String;
+//        menge: Double;
+//        FA_Nr: String;
+//        verurs_art: String;
+//        ueb_s_nr:String;
+//        ds:String;
+//        set_block:String;
+//        Stueli: TZStueli;
+//        hatTeil:Boolean;
         Teil: TZTeil;
 
-        property FeldListeKomplett: TZFeldListe read GetFeldListeKomplett ;
+        property FeldListeKomplett: String read GetFeldListeKomplett ;
 
         constructor Create(APosTyp:String);
         procedure PosDatenSpeichern(Qry: TZQry);
@@ -46,7 +46,6 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
-        function ToStr():String;
         function ToStrKurz():String;
         class procedure InitTextFile(filename:string);
         procedure ToTextFile;
@@ -63,19 +62,22 @@ uses FertigungsauftragsKopf,TeilAlsStuPos;
 
 constructor TZStueliPos.Create(APosTyp:String);
 begin
+
+  inherited Create;
+
   //Art des Eintrags
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
 
   PosTyp:=APosTyp;
-
+  AddPosData('PosTyp', APosTyp);
   //Liste zur Ausgabe der Eigenschaften anlegen
-  FeldListeKompl:=TZFeldListe.Create;
+  //FeldListeKompl:=TSFeldListe.Create;
 
   //untergeordenete Stueli anlegen
-  Stueli:= TZStueli.Create;
+  //Stueli:= TZStueli.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
-  hatTeil:=False;
+  //hatTeil:=False;
 
 end;
 
@@ -86,45 +88,45 @@ begin
   try
     //Allgemeingültige Felder
     //-----------------------------------------------
-    id_stu:=trim(Qry.FieldByName('id_stu').AsString);
-    pos_nr:=trim(Qry.FieldByName('pos_nr').AsString);
-    oa:=Qry.FieldByName('oa').AsInteger;
-    t_tg_nr:=trim(Qry.FieldByName('t_tg_nr').AsString);
-    unipps_typ:=trim(Qry.FieldByName('typ').AsString);
+    AddPosData('id_stu', Qry.Fields);
+    AddPosData('pos_nr', Qry.Fields);
+    AddPosData('oa', Qry.Fields);
+    AddPosData('t_tg_nr', Qry.Fields);
+    AddPosData('typ', Qry.Fields);
 
     //typspezifische Felder
     //-----------------------------------------------
     //vorbelegen
-    id_pos:='';
-    besch_art:='';
-    menge:=1.;
-    FA_Nr:='';
-    verurs_art:='';
-    ueb_s_nr:='';
-    ds:='';
-    set_block:='';
+//    id_pos:='';
+//    besch_art:='';
+//    FA_Nr:='';
+//    verurs_art:='';
+//    ueb_s_nr:='';
+//    ds:='';
+//    set_block:='';
 
     if PosTyp='KA_Pos' then
     begin
-      id_pos:=trim(Qry.FieldByName('id_pos').AsString);
-      besch_art:=Qry.FieldByName('besch_art').AsString;
-      menge:=Qry.FieldByName('menge').AsFloat;
+      AddPosData('id_pos', Qry.Fields);
+      AddPosData('besch_art', Qry.Fields);
+      AddPosData('menge', Qry.Fields);
       //Suche Teil zur Position
       SucheTeilzurStueliPos;
     end
     else
     if (PosTyp='FA_Serie') or (PosTyp='FA_Komm') then
     begin
-       FA_Nr:=trim(Qry.FieldByName('FA_Nr').AsString);
-       verurs_art:=trim(Qry.FieldByName('verurs_art').AsString);
+      AddPosData('FA_Nr', Qry.Fields);
+      AddPosData('verurs_art', Qry.Fields);
+      AddPosData('menge', '1.');
     end
     else
     if PosTyp='FA_Pos' then
     begin
-      id_pos:=trim(Qry.FieldByName('id_pos').AsString);
-      ueb_s_nr:=trim(Qry.FieldByName('ueb_s_nr').AsString);
-      ds:=trim(Qry.FieldByName('ds').AsString);
-      set_block:=trim(Qry.FieldByName('set_block').AsString);
+      AddPosData('id_pos', Qry.Fields);
+      AddPosData('ueb_s_nr', Qry.Fields);
+      AddPosData('ds', Qry.Fields);
+      AddPosData('set_block', Qry.Fields);
     end
     else
     if PosTyp='Teil' then
@@ -154,7 +156,7 @@ var
 
 begin
     Qry:=DBConn.getQuery();
-    gefunden:=Qry.SucheDatenzumTeil(t_tg_nr);
+    gefunden:=Qry.SucheDatenzumTeil(PosData['t_tg_nr']);
     if gefunden then
     begin
       Teil:= TZTeil.Create(Qry);
@@ -296,34 +298,11 @@ begin
   + Teil.t_tg_nr + '< gefunden.')
 end;
 
-function TZStueliPos.ToStr():String;
-const trenn = ' ; ' ;
-var
-  val:string;
-  locFeldListeKomplett:TZFeldListe;
-  txt:string;
-begin
-  txt:='';
-  locFeldListeKomplett:=FeldListeKomplett;
-  for val in  locFeldListeKomplett.Values do
-  begin
-    txt:= txt + val + trenn;
-  end;
-  Result:=txt;
-end;
-
 function TZStueliPos.ToStrKurz():String;
 const trenn = ' ; ' ;
-var
-  val:string;
-  Felder:TZFeldListe;
-  txt:string;
+  meineFelder: TSDictKeys = ['id_stu','pos_nr','t_tg_nr'];
 begin
-  Felder:=FeldListeKomplett;
-  txt:= Felder['id_stu'] + trenn;
-  txt:= txt + Felder['pos_nr'] + trenn;
-  txt:= txt + Felder['t_tg_nr'] + trenn;
-  Result:=txt;
+  Result := ToSTr(meineFelder);
 end;
 
 class procedure TZStueliPos.InitTextFile(filename:string);
@@ -369,26 +348,9 @@ begin
 
 end;
 
-function TZStueliPos.GetFeldListeKomplett():TZFeldListe ;
-
+function TZStueliPos.GetFeldListeKomplett():String ;
 begin
-    //Liste zur Ausgabe der Eigenschaften anlegen
-    FeldListeKompl:=TZFeldListe.Create;
 
-    FeldListeKompl.Add('PosTyp',PosTyp);
-    FeldListeKompl.Add('id_stu',id_stu);
-    FeldListeKompl.Add('id_pos',id_pos);
-    FeldListeKompl.Add('besch_art',besch_art);
-    FeldListeKompl.Add('pos_nr',pos_nr);
-    FeldListeKompl.Add('oa',IntToStr(oa));
-    FeldListeKompl.Add('t_tg_nr',t_tg_nr);
-    FeldListeKompl.Add('unipps_typ',unipps_typ);
-    FeldListeKompl.Add('menge',FloatToStr(menge));
-    FeldListeKompl.Add('FA_Nr',FA_Nr);
-    FeldListeKompl.Add('verurs_art',verurs_art);
-    FeldListeKompl.Add('ds',ds);
-    FeldListeKompl.Add('set_block',set_block);
-    Result:=FeldListeKompl;
-  end;
+end;
 
 end.

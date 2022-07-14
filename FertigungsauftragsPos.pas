@@ -11,6 +11,9 @@ type
     protected
       { protected declarations }
     public
+      ueb_s_nr:String;
+      id_pos:String;
+      set_block:String;
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
       constructor Create(AQry: TZQry);
@@ -25,8 +28,16 @@ begin
   Qry:=AQry;
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
-  istToplevel:=ueb_s_nr='0';
-  KinderInASTUELIPOSerwartet:=set_block='1';
+  //Key zum Ablegen in der Stückliste
+  //Muss eindeutig sein und dient zum Sortieren beim Ausgeben
+  //Felder die zur weiteren Auswertung gebraucht werden,
+  // zusätzlich als Feld ablegen
+  ueb_s_nr:=Self.PosData['ueb_s_nr'];
+  id_pos:=Self.PosData['id_pos'];
+  set_block:=Self.PosData['set_block'];
+
+  istToplevel:= ueb_s_nr='0';
+  KinderInASTUELIPOSerwartet:=Self.PosData['set_block']='1';
   //Suche Teil zur Position
   SucheTeilzurStueliPos();
 
@@ -61,7 +72,6 @@ begin
           //!!! -----------   Rekursion: Bearbeite Kindknoten
          FAPos.holeKinderAusASTUELIPOS(FAPos.id_pos)
       Else
-         //Für Teile mit ds<>1
          //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
          If Not FAPos.Teil.istKaufteil Then
             EndKnotenListe.Add(FAPos);

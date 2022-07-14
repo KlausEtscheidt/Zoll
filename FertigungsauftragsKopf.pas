@@ -12,6 +12,8 @@ type
     protected
       { protected declarations }
     public
+      FA_Nr: String;
+      id_pos: String;
       constructor Create(einTyp: String; AQry: TZQry);
       procedure holeKinderAusASTUELIPOS;
 
@@ -25,6 +27,8 @@ begin
   Qry:=AQry;
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
+  FA_Nr:=Self.PosData['FA_Nr'];
+  //id_pos:=Self.PosData['id_pos'];
 
 end;
 
