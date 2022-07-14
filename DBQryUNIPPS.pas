@@ -22,6 +22,8 @@ interface
         function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
         function SucheStuelizuTeil(t_tg_nr:String): Boolean;
         function SuchePosZuFA(FA_Nr:String): Boolean;
+        //NUr zum Testen
+        procedure UNI2SQLite(tablename: String);
         function query(sqlqry:String):Boolean;
     end;
 
@@ -57,6 +59,8 @@ begin
       +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 '
       +  'where auftragpos.ident_nr1 = "' + ka_id + '" order by id_pos;';
   Result:= query(sql);
+  UNI2SQLite('auftragkopf');
+
 end;
 
 function TZQryUNIPPS.SucheKundenRabatt(ka_id:string):Boolean;
@@ -67,15 +71,14 @@ begin
         & "FROM kunde_zuab " _
         & "WHERE ident_nr1 = """ & kunden_id & """ AND datum_von<=" & heute_datum_str _
                  & " AND datum_bis>" & heute_datum_str & " ; "
-
   }
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
        + 'from kunde_zuab where ident_nr1 = "' + ka_id + '";';
   Result:= query(sql);
-
-  sqlitedb.Exec('select * from kunde_zuab');
+  UNI2SQLite('kunde_zuab');
 
 end;
+
 
 function TZQryUNIPPS.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 {siehe Access Abfrage "b_hole_Daten_zu Teil"
@@ -97,6 +100,8 @@ begin
       + 'FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa '
       + 'where teil_uw.t_tg_nr = "' + t_tg_nr + '" and teil_uw.oa<9 and teil_uw.uw=1;';
   Result:= query(sql);
+  UNI2SQLite('bestellung');
+
 end;
 
 function TZQryUNIPPS.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
@@ -127,6 +132,8 @@ begin
       + 'WHERE bestellpos.t_tg_nr="' + t_tg_nr + '" order by bestellkopf.datum desc ;';
   Result:= query(sql);
 
+  UNI2SQLite('bestellung');
+
 end;
 
 function TZQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
@@ -143,6 +150,7 @@ begin
       + 'FROM teil_bez where ident_nr1="' + t_tg_nr
       + '" and teil_bez.sprache="D" AND teil_bez.art=1 ;' ;
   Result:= query(sql);
+  UNI2SQLite('teil_bez');
 end;
 
 
@@ -172,6 +180,8 @@ begin
       + 'ORDER BY teil_stuelipos.pos_nr ;';
   Result:= query(sql);
 
+  UNI2SQLite('teil_stuelipos');
+
 end;
 
 
@@ -194,6 +204,8 @@ begin
       + 'Where f_auftragkopf.auftr_nr="' + id_stu + '" and f_auftragkopf.auftr_pos="' + id_pos
       + '" and f_auftragkopf.oa<9 ORDER BY FA_Nr';
   Result:= query(sql);
+
+  UNI2SQLite('f_auftragkopf');
 
 end;
 
@@ -219,6 +231,8 @@ begin
       + '" and f_auftragkopf.oa<9 ORDER BY FA_Nr desc';
   Result:= query(sql);
 
+  UNI2SQLite('f_auftragkopf');
+
 end;
 
 
@@ -234,6 +248,9 @@ begin
       + 'FROM astuelipos where astuelipos.ident_nr1 = "' + FA_Nr
       + '" and astuelipos.oa<9 ORDER BY astuelipos.pos_nr';
   Result:= query(sql);
+
+  UNI2SQLite('astuelipos');
+
 end;
 
 //helper: Fuehrt SQL aus und setzt Felder n_records und gefunden
@@ -250,5 +267,15 @@ begin
   Result:= gefunden;
 end;
 
+/////////////nicht fuer produktiv-version
+procedure TZQryUNIPPS.UNI2SQLite(tablename: String);
+begin
+  while not self.Eof do
+  begin
+      sqlitedb.Store(tablename, Fields);
+      next;
+  end;
+
+end;
 
 end.
