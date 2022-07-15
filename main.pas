@@ -7,7 +7,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
-  TextWriter;
+  Logger  ;
 
 type
   TmainFrm = class(TForm)
@@ -17,6 +17,11 @@ type
     Ende_Btn: TButton;
     DBGrid1: TDBGrid;
     ApplicationEvents1: TApplicationEvents;
+    Log: TLogFile;
+    ErrLog: TLogFile;
+    CSVKurz: TLogFile;
+    CSVLang: TLogFile;
+
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
     procedure KA_auswerten(ka_id:string);
@@ -66,8 +71,11 @@ var ka:TZKundenauftrag;
 
 begin
   //Logger oeffnen
-  Log.Open;
+  Log.Init;
+  if not Log.opened then
+    Log.Open;
   Log.ClearContent;
+  ErrLog.Init;
   ErrLog.Open;
   ErrLog.ClearContent;
 

@@ -2,7 +2,7 @@
 
 interface
 
-uses  StuecklistenPosition, DBZugriff,TextWriter;
+uses  StuecklistenPosition, DBZugriff,Logger;
 
 type
   TZFAPos = class(TZStueliPos)

@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{A681F8BF-ACC0-4675-BFC9-A2B727AFC8EE}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Zoll.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Logger\Logger.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Zoll">
+        <MSBuild Projects="Zoll.dproj"/>
+    </Target>
+    <Target Name="Zoll:Clean">
+        <MSBuild Projects="Zoll.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoll:Make">
+        <MSBuild Projects="Zoll.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Logger">
+        <MSBuild Projects="Logger\Logger.dproj"/>
+    </Target>
+    <Target Name="Logger:Clean">
+        <MSBuild Projects="Logger\Logger.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Logger:Make">
+        <MSBuild Projects="Logger\Logger.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Zoll;Logger"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Zoll:Clean;Logger:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Zoll:Make;Logger:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -1,6 +1,6 @@
 //Die Unit dient als Zwischenschicht zum Wechseln der Datenbank
 
-{$DEFINE xUNIPPS}
+{$DEFINE UNIPPS}
 
 {
    mit bedingter Kompilierung "$DEFINE UNIPPS" kann zwischen

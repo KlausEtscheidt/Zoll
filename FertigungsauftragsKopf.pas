@@ -3,7 +3,7 @@
 interface
 
 uses  System.SysUtils, FertigungsauftragsPos, StuecklistenPosition,
-               DBZugriff, Exceptions,TextWriter;
+               DBZugriff, Exceptions,Logger;
 
 type
   TZFAKopf = class(TZStueliPos)

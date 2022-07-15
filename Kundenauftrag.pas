@@ -3,7 +3,7 @@ unit Kundenauftrag;
 interface
 
 uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
-  KundenauftragsPos, Stueckliste, StuecklistenPosition, DBZugriff, TextWriter;
+  KundenauftragsPos, Stueckliste, StuecklistenPosition, DBZugriff,Logger ;
 
 type
   TZKundenauftrag = class(TZStueliPos)
@@ -30,7 +30,7 @@ end;
 
 procedure TZKundenauftrag.auswerten();
 begin
-  Log.Log('Starte Auswertung fuer: ' + ka_id);
+  mainFrm.Log.Log('Starte Auswertung fuer: ' + ka_id);
   TZStueliPos.InitTextFile(string(ka_id));
   liesKopfundPositionen;
   holeKinder;

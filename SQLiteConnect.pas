@@ -4,7 +4,7 @@ interface
 
   uses System.Classes,FireDAC.Phys.SQLite ,FireDAC.Stan.Def,FireDAC.Stan.Param
        ,FireDAC.Comp.Client,StrUtils,
-        DBQrySQLite,Data.DB, TextWriter;
+        DBQrySQLite,Data.DB, Logger;
 
   type
     TZDbConnector = class

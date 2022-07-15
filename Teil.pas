@@ -3,7 +3,7 @@
 interface
 
 uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions,
-      TextWriter;
+      Logger;
 
 type
   TZTeil = class
