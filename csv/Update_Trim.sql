@@ -1,1 +1,0 @@
-update teil set t_tg_nr=trim(t_tg_nr);

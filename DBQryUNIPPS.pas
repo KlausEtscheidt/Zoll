@@ -1,4 +1,16 @@
-﻿//Abfragen fuer SQLite Datenbank
+﻿//Abfragen fuer UNIPPS Datenbank über TADOQuery
+
+{Anwendungsbeispiel:
+  Abfrage zum Lesen des Kundenauftrags und seiner Positionen
+  KAQry := DBConn.getQuery;
+  gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+
+  mit DBConn.getQuery wird die Abfrage,
+  d.h. eine Instanz dieser Klasse TZQryUNIPPS erzeugt.
+  TZQryUNIPPS.SucheKundenAuftragspositionen füllt sie
+  mit einem geeigneten SQL und führt sie aus.
+
+}
 unit DBQryUNIPPS;
 
 interface

@@ -1,4 +1,16 @@
-﻿//Abfragen fuer SQLite Datenbank
+﻿//Abfragen fuer SQLite Datenbank über TFDQuery
+{Anwendungsbeispiel:
+  Abfrage zum Lesen des Kundenauftrags und seiner Positionen
+  KAQry := DBConn.getQuery;
+  gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+
+  mit DBConn.getQuery wird die Abfrage,
+  d.h. eine Instanz dieser Klasse TZQryUNIPPS erzeugt.
+  TZQrySQLite.SucheKundenAuftragspositionen füllt sie
+  mit einem geeigneten SQL und führt sie aus.
+
+}
+
 unit DBQrySQLite;
 
 interface
