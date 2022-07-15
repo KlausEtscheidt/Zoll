@@ -3,7 +3,7 @@ unit StuecklistenPosition;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.Classes,
-       DBZugriff,Teil,Exceptions,Data.DB,TextWriter,Stueckliste,
+       DBZugriff,Teil,Exceptions,Data.DB,Logger,Stueckliste,
        Config;
 
   type
@@ -54,7 +54,7 @@ interface
 
 var
   EndKnotenListe: TZEndKnotenListe;
-  CSVLang,CSVKurz: TZTextFile;
+  CSVLang,CSVKurz: TLogFile;
 
 implementation
 
@@ -307,11 +307,19 @@ end;
 
 class procedure TZStueliPos.InitTextFile(filename:string);
 begin
+  //CSVKurz:=TZTextFile.Create(Config.logdir+'\' + filename + '_Kalk.txt' );
 
-  CSVLang:=TZTextFile.Create(Config.logdir+'\' + filename + '_Stu.txt');
+  CSVLang.FileDir:=Config.logdir;
+  CSVKurz.FileDir:=Config.logdir;
+
+  CSVLang.Filename:= filename + '_Long.txt' ;
+  CSVKurz.Filename:= filename + '_Kalk.txt' ;
+
+  CSVLang.Init;
   CSVLang.Open;
   CSVLang.ClearContent;
-  CSVKurz:=TZTextFile.Create(Config.logdir+'\' + filename + '_Kalk.txt' );
+
+  CSVKurz.Init;
   CSVKurz.Open;
   CSVKurz.ClearContent;
 
