@@ -1,7 +1,4 @@
-﻿[DBGrid1]
-Coordinates=73,78,64,36
-
-[Label1]
+﻿[Label1]
 Coordinates=10,78,53,58
 
 [Run_Btn]
@@ -14,5 +11,5 @@ Coordinates=10,10,73,58
 Coordinates=167,10,71,58
 
 []
-Coordinates=285,1,91,36
+Coordinates=73,78,64,36
 

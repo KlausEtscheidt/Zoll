@@ -3,25 +3,23 @@ program Zoll;
 uses
   Vcl.Forms,
   main in 'main.pas' {mainFrm},
-  Kundenauftrag in 'Kundenauftrag.pas',
-  DBQryUNIPPS in 'DBQryUNIPPS.pas',
-  DBDatamodule in 'DBDatamodule.pas' {KombiDataModule: TDataModule},
-  StuecklistenPosition in 'StuecklistenPosition.pas',
-  KundenauftragsPos in 'KundenauftragsPos.pas',
-  Teil in 'Teil.pas',
-  Bestellung in 'Bestellung.pas',
-  DBZugriff in 'DBZugriff.pas',
-  DBQrySQLite in 'DBQrySQLite.pas',
-  FertigungsauftragsPos in 'FertigungsauftragsPos.pas',
-  FertigungsauftragsKopf in 'FertigungsauftragsKopf.pas',
-  Exceptions in 'Exceptions.pas',
-  xxTextWriter in 'xxTextWriter.pas',
-  TeilAlsStuPos in 'TeilAlsStuPos.pas',
-  Stueckliste in 'Stueckliste.pas',
-  SQLiteConnect in 'SQLiteConnect.pas',
-  Config in 'Config.pas',
-  Output in 'Output.pas',
-  Zoll_TLB in 'Zoll_TLB.pas';
+  Kundenauftrag in 'lib\UNIPPS\Kundenauftrag.pas',
+  DBQryUNIPPS in 'lib\Datenbank\DBQryUNIPPS.pas',
+  DBDatamodule in 'lib\Datenbank\DBDatamodule.pas' {KombiDataModule: TDataModule},
+  DBZugriff in 'lib\Datenbank\DBZugriff.pas',
+  DBQrySQLite in 'lib\Datenbank\DBQrySQLite.pas',
+  Zoll_TLB in 'Zoll_TLB.pas',
+  SQLiteConnect in 'lib\Datenbank\SQLiteConnect.pas',
+  FertigungsauftragsKopf in 'lib\UNIPPS\FertigungsauftragsKopf.pas',
+  KundenauftragsPos in 'lib\UNIPPS\KundenauftragsPos.pas',
+  FertigungsauftragsPos in 'lib\UNIPPS\FertigungsauftragsPos.pas',
+  Exceptions in 'lib\Tools\Exceptions.pas',
+  Tools in 'lib\Tools\Tools.pas' {Wkz: TDataModule},
+  Stueckliste in 'lib\Stueli\Stueckliste.pas',
+  Bestellung in 'lib\UNIPPS\Bestellung.pas',
+  StuecklistenPosition in 'lib\Stueli\StuecklistenPosition.pas',
+  Teil in 'lib\UNIPPS\Teil.pas',
+  TeilAlsStuPos in 'lib\UNIPPS\TeilAlsStuPos.pas';
 
 {$R *.res}
 
@@ -30,6 +28,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
   Application.CreateForm(TKombiDataModule, KombiDataModule);
-  cfg_init;
+  Application.CreateForm(TWkz, Wkz);
   Application.Run;
 end.

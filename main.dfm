@@ -2,8 +2,8 @@ object mainFrm: TmainFrm
   Left = 0
   Top = 0
   Caption = 'Pr'#228'Fix'
-  ClientHeight = 444
-  ClientWidth = 855
+  ClientHeight = 304
+  ClientWidth = 612
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -46,54 +46,5 @@ object mainFrm: TmainFrm
     Caption = 'Ende'
     TabOrder = 2
     OnClick = Ende_BtnClick
-  end
-  object DBGrid1: TDBGrid
-    Left = 256
-    Top = 168
-    Width = 320
-    Height = 120
-    TabOrder = 3
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-  end
-  object ApplicationEvents1: TApplicationEvents
-    OnException = LogException
-    Left = 56
-    Top = 112
-  end
-  object Log: TLogFile
-    FileDir = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\ou' +
-      'tput'
-    Filename = 'ergebnislog.txt'
-    Left = 760
-    Top = 288
-  end
-  object ErrLog: TLogFile
-    FileDir = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\ou' +
-      'tput'
-    Filename = 'neuerrlog.txt'
-    Left = 768
-    Top = 352
-  end
-  object CSVKurz: TLogFile
-    FileDir = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\ou' +
-      'tput'
-    Filename = 'ergebnislog.txt'
-    Left = 688
-    Top = 280
-  end
-  object CSVLang: TLogFile
-    FileDir = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\ou' +
-      'tput'
-    Filename = 'ergebnislog.txt'
-    Left = 704
-    Top = 344
   end
 end

@@ -106,7 +106,7 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <DCC_UnitSearchPath>C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\Logger;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(BDSPROJECTSDIR)\zoll\lib\Logger;$(BDSPROJECTSDIR)\zoll\lib\Datenbank;$(BDSPROJECTSDIR)\zoll\lib\UNIPPS;$(BDSPROJECTSDIR)\zoll\lib\Tools;$(BDSPROJECTSDIR)\zoll\lib\Stueli;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
@@ -128,6 +128,10 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_3)'!=''">
+        <DCC_Define>UNIPPS;$(DCC_Define)</DCC_Define>
+        <VerInfo_Locale>1031</VerInfo_Locale>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -135,28 +139,30 @@
         <DCCReference Include="main.pas">
             <Form>mainFrm</Form>
         </DCCReference>
-        <DCCReference Include="Kundenauftrag.pas"/>
-        <DCCReference Include="DBQryUNIPPS.pas"/>
-        <DCCReference Include="DBDatamodule.pas">
+        <DCCReference Include="lib\UNIPPS\Kundenauftrag.pas"/>
+        <DCCReference Include="lib\Datenbank\DBQryUNIPPS.pas"/>
+        <DCCReference Include="lib\Datenbank\DBDatamodule.pas">
             <Form>KombiDataModule</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="StuecklistenPosition.pas"/>
-        <DCCReference Include="KundenauftragsPos.pas"/>
-        <DCCReference Include="Teil.pas"/>
-        <DCCReference Include="Bestellung.pas"/>
-        <DCCReference Include="DBZugriff.pas"/>
-        <DCCReference Include="DBQrySQLite.pas"/>
-        <DCCReference Include="FertigungsauftragsPos.pas"/>
-        <DCCReference Include="FertigungsauftragsKopf.pas"/>
-        <DCCReference Include="Exceptions.pas"/>
-        <DCCReference Include="xxTextWriter.pas"/>
-        <DCCReference Include="TeilAlsStuPos.pas"/>
-        <DCCReference Include="Stueckliste.pas"/>
-        <DCCReference Include="SQLiteConnect.pas"/>
-        <DCCReference Include="Config.pas"/>
-        <DCCReference Include="Output.pas"/>
+        <DCCReference Include="lib\Datenbank\DBZugriff.pas"/>
+        <DCCReference Include="lib\Datenbank\DBQrySQLite.pas"/>
         <DCCReference Include="Zoll_TLB.pas"/>
+        <DCCReference Include="lib\Datenbank\SQLiteConnect.pas"/>
+        <DCCReference Include="lib\UNIPPS\FertigungsauftragsKopf.pas"/>
+        <DCCReference Include="lib\UNIPPS\KundenauftragsPos.pas"/>
+        <DCCReference Include="lib\UNIPPS\FertigungsauftragsPos.pas"/>
+        <DCCReference Include="lib\Tools\Exceptions.pas"/>
+        <DCCReference Include="lib\Tools\Tools.pas">
+            <Form>Wkz</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
+        <DCCReference Include="lib\UNIPPS\Bestellung.pas"/>
+        <DCCReference Include="lib\Stueli\StuecklistenPosition.pas"/>
+        <DCCReference Include="lib\UNIPPS\Teil.pas"/>
+        <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
