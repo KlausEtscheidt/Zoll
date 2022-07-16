@@ -25,12 +25,19 @@ package Logger;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Logging und Textfiles'}
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  designide,
+  vcl,
+  vclactnband,
+  vclx,
+  xmlrtl;
 
 contains
-  Logger in 'Logger.pas';
+  Logger in 'Logger.pas',
+  SQLiteConnect in '..\Datenbank\SQLiteConnect.pas';
 
 end.

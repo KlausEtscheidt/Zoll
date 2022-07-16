@@ -3,7 +3,7 @@ unit KundenauftragsPos;
 interface
 
 uses  System.SysUtils,FertigungsauftragsKopf, StuecklistenPosition,
-         DBZugriff,Logger;
+         DBZugriff,Tools;
 
 type
   TZKundenauftragsPos = class(TZStueliPos)
@@ -59,8 +59,8 @@ begin
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
     FAKopf:=TZFAKopf.Create('FA_Komm', Qry);
-    Log.Log('-------FA Komm -----');
-    Log.Log(FAKopf.ToStr);
+    Wkz.Log.Log('-------FA Komm -----');
+    Wkz.Log.Log(FAKopf.ToStr);
 
     // in Stueck-Liste übernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
