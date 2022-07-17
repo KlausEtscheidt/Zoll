@@ -148,21 +148,22 @@
         <DCCReference Include="lib\Datenbank\DBZugriff.pas"/>
         <DCCReference Include="lib\Datenbank\DBQrySQLite.pas"/>
         <DCCReference Include="Zoll_TLB.pas"/>
-        <DCCReference Include="lib\Datenbank\SQLiteConnect.pas"/>
+        <DCCReference Include="dies und das\testsoftware\dbzugriff\TestSQLiteConnect.pas"/>
         <DCCReference Include="lib\UNIPPS\FertigungsauftragsKopf.pas"/>
         <DCCReference Include="lib\UNIPPS\KundenauftragsPos.pas"/>
         <DCCReference Include="lib\UNIPPS\FertigungsauftragsPos.pas"/>
         <DCCReference Include="lib\Tools\Exceptions.pas"/>
-        <DCCReference Include="lib\Tools\Tools.pas">
-            <Form>Wkz</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
         <DCCReference Include="lib\UNIPPS\Bestellung.pas"/>
         <DCCReference Include="lib\Stueli\StuecklistenPosition.pas"/>
         <DCCReference Include="lib\UNIPPS\Teil.pas"/>
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
+        <DCCReference Include="lib\Tools\Logger.pas"/>
+        <DCCReference Include="lib\Tools\Tools.pas">
+            <Form>Wkz</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

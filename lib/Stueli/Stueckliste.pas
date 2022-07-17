@@ -120,11 +120,11 @@ var
   StueliPos: TZStueliPos;
 
 begin
-  Wkz.Log.Log('EndknotenListe: ');
+  Tools.Log.Log('EndknotenListe: ');
   for Member in Self do
   begin
     StueliPos:= Member.AsType<TZStueliPos>;
-    Wkz.Log.Log(StueliPos.ToStr );
+    Tools.Log.Log(StueliPos.ToStr );
   end;
 end;
 

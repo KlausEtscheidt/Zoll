@@ -30,12 +30,12 @@ end;
 
 procedure TZKundenauftrag.auswerten();
 begin
-  Wkz.Log.Log('Starte Auswertung fuer: ' + ka_id);
+  Tools.Log.Log('Starte Auswertung fuer: ' + ka_id);
   TZStueliPos.InitTextFile(string(ka_id));
   liesKopfundPositionen;
   holeKinder;
   ToTextFile;
-  Wkz.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
+  Tools.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
 end;
 
 procedure TZKundenauftrag.liesKopfundPositionen();
@@ -78,8 +78,8 @@ begin
   begin
     //KundenauftragsPos erzeugen; übertrage relevante Daten aus Qry in Felder
     KAPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
-    Wkz.Log.Log('--------- KA-Pos -----------');
-    Wkz.Log.Log(KAPos.ToStr);
+    Tools.Log.Log('--------- KA-Pos -----------');
+    Tools.Log.Log(KAPos.ToStr);
 
     //neue Pos in Stückliste aufnehmen
     Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
@@ -152,9 +152,9 @@ begin
     for EndKnoten in alteEndKnotenListe do
     begin
       StueliPos:= EndKnoten.AsType<TZStueliPos>;
-      Wkz.Log.Log('------Suche fuer Endknoten ----------');
+      Tools.Log.Log('------Suche fuer Endknoten ----------');
       txt:=StueliPos.ToStr;
-      Wkz.Log.Log(txt);
+      Tools.Log.Log(txt);
       StueliPos.holeKindervonEndKnoten;
     end;
 

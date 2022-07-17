@@ -7,7 +7,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Kundenauftrag, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
-  Tools  ;
+  Tools;
 
 type
   TmainFrm = class(TForm)
@@ -20,6 +20,7 @@ type
     procedure Ende_BtnClick(Sender: TObject);
     procedure KA_auswerten(ka_id:string);
     procedure RunIt(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -59,27 +60,35 @@ begin
 end;
 
 //Haupteinsprung zum Auswerten eines Kundenauftrages
+procedure TmainFrm.FormCreate(Sender: TObject);
+begin
+  //Tools initialisieren (einmalig nötig)
+  //legt globale Variable und Objekte (wie Logger) an
+  Tools.init;
+end;
+
 procedure TmainFrm.KA_auswerten(ka_id:string);
 var ka:TZKundenauftrag;
-
+var ld:string;
 begin
-  //Logger oeffnen
-  Wkz.Log.FileDir:=Tools.logdir;
-  if not Wkz.Log.opened then
-    Wkz.Log.Open;
-  Wkz.Log.ClearContent;
-  Wkz.ErrLog.FileDir:=Tools.logdir;
-  Wkz.ErrLog.Open;
-  Wkz.ErrLog.ClearContent;
 
-  //Ka anlegen
-  ka:=TZKundenauftrag.Create(ka_id);
-  //auswerten
-  ka.auswerten;
+  try
 
-  //Logger schließen
-  Wkz.Log.Close;
-  Wkz.ErrLog.Close;
+    //Logger oeffnen
+    Tools.Log.OpenAppend(Tools.LogDir,'FullLog.txt');
+    Tools.ErrLog.OpenAppend(Tools.logdir,'ErrLog.txt');
+
+    //Ka anlegen
+    ka:=TZKundenauftrag.Create(ka_id);
+    //auswerten
+    ka.auswerten;
+
+  finally
+    //Logger schließen
+    Tools.Log.Close;
+    Tools.ErrLog.Close;
+
+  end;
 
 end;
 

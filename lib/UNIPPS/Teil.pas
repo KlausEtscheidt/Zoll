@@ -70,7 +70,7 @@ begin
     holeBenennung;
   except
    on EDatabaseError do
-      Wkz.ErrLog.Log('Fehler');
+      Tools.ErrLog.Log('Fehler');
   else
       raise;
   end;

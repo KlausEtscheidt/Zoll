@@ -1,41 +1,40 @@
-//Die unit dient zum Abspeichern globaler Werte und nicht visueller Komponenten
 unit Tools;
 
 interface
 
-uses
-  Vcl.Forms, System.SysUtils, System.IOUtils, System.Classes, Logger;
+uses Logger;
+//Vcl.Forms, System.SysUtils, System.IOUtils, System.Classes, Logger
 
-type
-  TWkz = class(TDataModule)
-    Log: TLogFile;
-    ErrLog: TLogFile;
-    CSVKurz: TLogFile;
-    CSVLang: TLogFile;
-    //Dient zum Vorbelegen globaler Werte beim Programmstart
-    procedure DataModuleCreate(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
-  end;
+
+{$IFDEF TESTCASE}
+const LogDir: String =
+    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\'
+    +'zoll\dies und das\testsoftware\logger';
+{$ELSE}
+const LogDir: String =
+    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\'
+    +'zoll\data\output';
+{$ENDIF}
+
+
+
+procedure init();
 
 var
-  Wkz: TWkz;
-  basedir:String;
-  logdir:String;
+  Log: TLogFile;
+  ErrLog: TLogFile;
+  CSVKurz: TLogFile;
+  CSVLang: TLogFile;
 
 implementation
 
-{%CLASSGROUP 'Vcl.Controls.TControl'}
-
-{$R *.dfm}
-
-procedure TWkz.DataModuleCreate(Sender: TObject);
+procedure init();
 begin
-  basedir:= TPath.GetDirectoryName(Application.Exename);
-  basedir:= TDirectory.GetParent(TDirectory.GetParent(basedir));
-  logdir:=basedir + '\data\output';
+  Log:=TLogFile.Create();
+  ErrLog:=TLogFile.Create();
+  CSVKurz:=TLogFile.Create();
+  CSVLang:=TLogFile.Create();
 end;
+
 
 end.

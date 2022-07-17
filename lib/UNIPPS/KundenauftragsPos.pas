@@ -59,8 +59,8 @@ begin
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
     FAKopf:=TZFAKopf.Create('FA_Komm', Qry);
-    Wkz.Log.Log('-------FA Komm -----');
-    Wkz.Log.Log(FAKopf.ToStr);
+    Tools.Log.Log('-------FA Komm -----');
+    Tools.Log.Log(FAKopf.ToStr);
 
     // in Stueck-Liste übernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert

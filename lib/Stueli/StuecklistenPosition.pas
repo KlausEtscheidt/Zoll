@@ -138,7 +138,7 @@ begin
   except
     on E: EDatabaseError do
     begin
-      Wkz.Log.Log('EDatabaseError ' + E.Message);
+      Tools.Log.Log('EDatabaseError ' + E.Message);
       raise
     end
   else
@@ -177,7 +177,7 @@ begin
   begin
       raise EStuBaumStueliPos.Create('Hääh Kaufteile sollten hier nicht hinkommen >'
     + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)');
-    Wkz.Log.Log('Kaufteil gefunden' + Self.ToStr)
+    Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
   else
   if Teil.istEigenfertigung then
@@ -235,7 +235,7 @@ begin
 
   //Erzeuge Objekt fuer einen auftragsbezogenen FA
   FAKopf:=TZFAKopf.Create('FA_Serie', Qry);
-  Wkz.Log.Log(FAKopf.ToStr);
+  Tools.Log.Log(FAKopf.ToStr);
 
   // Da es nur den einen FA für die STU gibt, mit Index 1 in Stueck-Liste übernehmen
   Stueli.Add(FAKopf.FA_Nr, FAKopf);
@@ -273,7 +273,7 @@ begin
 
         //aktuellen Datensatz in StueliPos-Objekt wandeln
         TeilInStu:=TZTeilAlsStuPos.Create(Qry);
-        Wkz.Log.Log(TeilInStu.ToStr);
+        Tools.Log.Log(TeilInStu.ToStr);
 
         //in Stueck-Liste übernehmen
         Stueli.Add(TeilInStu.pos_nr, TeilInStu);
@@ -307,21 +307,8 @@ end;
 
 class procedure TZStueliPos.InitTextFile(filename:string);
 begin
-  //CSVKurz:=TZTextFile.Create(Config.logdir+'\' + filename + '_Kalk.txt' );
-
-  Wkz.CSVLang.FileDir:=Tools.logdir;
-  Wkz.CSVKurz.FileDir:=Tools.logdir;
-
-  Wkz.CSVLang.Filename:= filename + '_Long.txt' ;
-  Wkz.CSVKurz.Filename:= filename + '_Kalk.txt' ;
-
-  Wkz.CSVLang.Open;
-  Wkz.CSVLang.ClearContent;
-
-  Wkz.CSVKurz.Open;
-  Wkz.CSVKurz.ClearContent;
-
-
+  Tools.CSVLang.OpenNew(Tools.LogDir,filename + '_Struktur.txt');
+  Tools.CSVKurz.OpenNew(Tools.LogDir,filename + '_Kalk.txt');
 end;
 
 procedure TZStueliPos.ToTextFile;
@@ -335,8 +322,8 @@ begin
   //Ausgeben und zurueck, wenn keine Kinder
   if Stueli.Count=0 then
   begin
-    Wkz.CSVLang.Log(ToStr());
-    Wkz.CSVKurz.Log(ToStrKurz());
+    Tools.CSVLang.Log(ToStr());
+    Tools.CSVKurz.Log(ToStrKurz());
     exit;
   end;
 

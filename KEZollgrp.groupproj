@@ -3,13 +3,7 @@
         <ProjectGuid>{A681F8BF-ACC0-4675-BFC9-A2B727AFC8EE}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="..\Test_Logger.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Zoll.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="lib\Logger\Logger.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -20,15 +14,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Test_Logger">
-        <MSBuild Projects="..\Test_Logger.dproj"/>
-    </Target>
-    <Target Name="Test_Logger:Clean">
-        <MSBuild Projects="..\Test_Logger.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Test_Logger:Make">
-        <MSBuild Projects="..\Test_Logger.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Zoll">
         <MSBuild Projects="Zoll.dproj"/>
     </Target>
@@ -38,23 +23,14 @@
     <Target Name="Zoll:Make">
         <MSBuild Projects="Zoll.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Logger">
-        <MSBuild Projects="lib\Logger\Logger.dproj"/>
-    </Target>
-    <Target Name="Logger:Clean">
-        <MSBuild Projects="lib\Logger\Logger.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Logger:Make">
-        <MSBuild Projects="lib\Logger\Logger.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Test_Logger;Zoll;Logger"/>
+        <CallTarget Targets="Zoll"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Test_Logger:Clean;Zoll:Clean;Logger:Clean"/>
+        <CallTarget Targets="Zoll:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Test_Logger:Make;Zoll:Make;Logger:Make"/>
+        <CallTarget Targets="Zoll:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

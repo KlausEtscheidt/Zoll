@@ -47,8 +47,8 @@ begin
   if not gefunden then
   begin
     msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
-    Wkz.Log.Log(msg);
-    Wkz.Log.Close;
+    Tools.Log.Log(msg);
+    Tools.Log.Close;
     raise EStuBaumFaKopfErr.Create(msg);
   end;
 
@@ -64,7 +64,7 @@ begin
       //d.h. alle die in ASTUELIPOS keine übergeordnete Stückliste haben: ueb_s_nr=0
       If FAPos.istToplevel Then
       begin
-        Wkz.Log.Log(FAPos.ToStr);
+        Tools.Log.Log(FAPos.ToStr);
         // in Stueck-Liste übernehmen
         Stueli.Add(FAPos.id_pos, FAPos);
 

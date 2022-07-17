@@ -1,4 +1,4 @@
-unit SQLiteConnect;
+unit TestSQLiteConnect;
 
 interface
 
