@@ -1,9 +1,11 @@
-program GuiTestLogger;
+program Guidbtest;
 
 uses
   Vcl.Forms,
-  Testform in 'Testform.pas' {Form1},
-  Tools in '..\..\lib\Tools\Tools.pas' {Wkz: TDataModule};
+  testfrm in 'testfrm.pas' {Form1},
+  tests in 'tests.pas',
+  Logger in 'Logger.pas',
+  Tools in 'Tools.pas';
 
 {$R *.res}
 

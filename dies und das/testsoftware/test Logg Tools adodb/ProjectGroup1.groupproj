@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{3A14BFE5-A925-489A-ADE4-9530AFC48682}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="dbzugriff.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Guidbtest.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="dbzugriff">
+        <MSBuild Projects="dbzugriff.dproj"/>
+    </Target>
+    <Target Name="dbzugriff:Clean">
+        <MSBuild Projects="dbzugriff.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="dbzugriff:Make">
+        <MSBuild Projects="dbzugriff.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Guidbtest">
+        <MSBuild Projects="Guidbtest.dproj"/>
+    </Target>
+    <Target Name="Guidbtest:Clean">
+        <MSBuild Projects="Guidbtest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Guidbtest:Make">
+        <MSBuild Projects="Guidbtest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="dbzugriff;Guidbtest"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="dbzugriff:Clean;Guidbtest:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="dbzugriff:Make;Guidbtest:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
