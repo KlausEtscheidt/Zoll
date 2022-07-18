@@ -12,7 +12,7 @@ uses
 //  FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs,
 //  FireDAC.Phys.SQLiteWrapper.Stat,
   Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB,
-  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.StdCtrls,DBQrySQLite,tests;
+  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.StdCtrls,BaumQrySQLite,tests;
 
 type
   TForm1 = class(TForm)

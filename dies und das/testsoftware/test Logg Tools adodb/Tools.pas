@@ -18,7 +18,7 @@ const LogDir: String =
 
 
 const SQLiteFile: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll_neux.sqlite';
+                 'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
 
 //const SQLiteFile: String = 'C:\Users\zoll.sqlite';
 

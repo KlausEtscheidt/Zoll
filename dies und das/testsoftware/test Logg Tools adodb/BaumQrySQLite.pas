@@ -11,16 +11,15 @@
 
 }
 
-unit DBQrySQLite;
+unit BaumQrySQLite;
 
 interface
 
-  uses System.SysUtils, System.Classes, Data.Win.ADODB;
+  uses System.SysUtils, System.Classes, Data.Win.ADODB, SQLiteConnect;
 
   type
-    TZQrySQLite = class(TADOQuery)
-      constructor Create();
-      procedure OpenConnector();
+    TZBaumQrySQLite = class(TADOQuery)
+      constructor Create(AOwner: TComponent);
       function SucheKundenRabatt(ka_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -30,100 +29,51 @@ interface
       function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
       function SucheStuelizuTeil(t_tg_nr:String): Boolean;
       function SuchePosZuFA(FA_Nr:String): Boolean;
-      function query(sql:string):Boolean;
-    private
-      dbconn:TADOConnection;
+      function RunSelectQuery(sql:string):Boolean;
     public
-      { Public-Deklarationen }
-      class var DbFilePath: String;
-      n_records: Integer;
-      gefunden: Boolean;
+      class var dbconn:TADOConnection;
+      var n_records: Integer;
+      var gefunden: Boolean;
     end;
 
+var Text: string='keine';
 
 implementation
 
 
-constructor TZQrySQLite.Create();
+constructor TZBaumQrySQLite.Create(AOwner: TComponent);
 begin
-  if dbconn=nil then
-    OpenConnector();
+//  Owner:=AOwner;
+  inherited Create(Owner);
 
-  inherited Create(nil);
-  Connection:=dbconn;
+  //Daten zum Abfrageergebnis vorbelegen
   n_records:=0;
   gefunden:=False;
 end;
 
-procedure TZQrySQLite.OpenConnector();
-var Tabellen: TStrings;
-  MyClass: TComponent;
+function TZBaumQrySQLite.RunSelectQuery(sql:string):Boolean;
 begin
 
-  if (length(DbFilePath)=0) then
-       raise Exception.Create('Vor Erstbenutzung Pfad zur Datenbank' +
-                                  ' (DbFilePath) setzen.');
-  dbconn:=TADOConnection.Create(nil);
+  //Test ob mit DB verbunden
+  if dbconn=nil then
+       raise Exception.Create('Vor Erstbenutzung Datenbank öffnen.' );
 
-//  dbconn.Close;
-  dbconn.LoginPrompt := False;
+  //Verbindung ins Query-Objekt eintragen
+  Self.Connection:=dbconn;
 
-  dbconn.ConnectionString :=
-        'Provider=MSDASQL.1;Persist Security Info=False;' +
-        'Data Source=SQLite3 Datasource;' +
-        'Database=' + DbFilePath + ';';
+  //sql ins Qry-Objekt
+  Self.SQL.Add(sql);
+  //Qry ausführen
+  Self.Open;
 
-//      Provider=MSDASQL.1;Persist Security Info=False;Data Source=SQLite3 Datasource
-//  dbconn.ConnectOptions := coAsyncConnect;
-  dbconn.Provider := 'MSDASQL.1';
-  dbconn.Open;
-//  if dbconn.Connected then
-//         raise Exception.Create('Konnte Datenbank >>' +
-//                       DbFilePath + '<< nicht öffen.');
-
-  if not (dbconn.State=[stOpen]) then
-       raise Exception.Create('Vor Erstbenutzung Pfad zur Datenbank' +
-                       DbFilePath + ' (DbFilePath) setzen.');
-  Tabellen:= TStrings.Create;
-  try
-    dbconn.GetTableNames(Tabellen);
-  except
-     raise Exception.Create('Konnte Datenbank >>' +
-                   DbFilePath + '<< nicht öffen.');
-  end;
-  if (Tabellen.Count=0) then
-         raise Exception.Create('Konnte Datenbank >>' +
-                       DbFilePath + '<< nicht öffen.');
-
+//  SQL.Add(sqlqry);
+  n_records:=self.GetRecordCount();
+  gefunden:=n_records>0;
+  Result:= gefunden;
 end;
 
-{$IFDEF x}
-procedure TZQrySQLite.OpenConnector();
 
-begin
-
-  if (length(DbFilePath)=0) then
-       raise Exception.Create('Vor Erstbenutzung Pfad zur Datenbank' +
-                                  ' (DbFilePath) setzen.');
-  dbconn:=TADOConnection.Create(nil);
-
-//  dbconn.Close;
-  dbconn.LoginPrompt := False;
-
-  dbconn.ConnectionString :=
-      'Provider=MSDASQL.1;Persist Security Info=False;' +
-      'Extended Properties="DSN=zoll32;' +
-      'Database=' + DbFilePath + ';'+
-      'StepAPI=0;SyncPragma=NORMAL;NoTXN=0;Timeout=1000;ShortNames=0;' +
-      'LongNames=0;NoCreat=0;NoWCHAR=0;FKSupport=0;' +
-      'JournalMode=;OEMCP=0;LoadExt=;BigInt=0;JDConv=0;"';
-  dbconn.ConnectOptions := coAsyncConnect;
-  dbconn.Provider := 'MSDASQL.1';
-  dbconn.Open;
-end;
-{$ENDIF}
-
-function TZQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+function TZBaumQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_KAPositionen"
@@ -135,11 +85,11 @@ begin
   sql := 'select id_stu, id_pos, kunde, besch_art, klassifiz, pos_nr, t_tg_nr, '
       +  'oa, typ, menge, preis '
       +  'from auftragkopf where id_stu = "' + ka_id + '"order by id_pos;';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 
 end;
 
-function TZQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
+function TZBaumQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
@@ -151,11 +101,11 @@ begin
   }
   sql := 'select kunden_id, zu_ab_proz, datum_von, datum_bis '
        + 'from kunde_zuab where kunden_id = "' + ka_id + '";';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 
 end;
 
-function TZQrySQLite.SucheDatenzumTeil(t_tg_nr:string):Boolean;
+function TZBaumQrySQLite.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 {siehe Access Abfrage "b_hole_Daten_zu Teil"
 sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
     & "teil_uw.v_besch_art as besch_art, teil.typ, teil.urspr_land,
@@ -173,10 +123,10 @@ begin
   sql:= 'SELECT t_tg_nr, oa, besch_art, typ, praeferenzkennung, '
       + 'sme, faktlme_sme, lme '
       + 'FROM teil where t_tg_nr = "' + t_tg_nr + '" and oa<9;';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 end;
 
-function TZQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+function TZBaumQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
 {siehe Access Abfrage "b_Bestelldaten"
     'Suche �ber unipps_bestellpos.t_tg_nr=t_tg_nr; bestellkopf.datum muss aus der Unterabfrage hervorgehen (neuestes Datum)
     sql = "SELECT first 3 bestellkopf.ident_nr as bestell_id, bestellkopf.datum as bestell_datum, bestellpos.preis, bestellpos.basis, bestellpos.pme, bestellpos.bme, " _
@@ -185,13 +135,7 @@ function TZQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
         & "FROM bestellpos INNER JOIN bestellkopf ON bestellpos.ident_nr1 = bestellkopf.ident_nr " _
         & "JOIN adresse ON bestellkopf.lieferant = adresse.ident_nr " _
         & "WHERE bestellpos.t_tg_nr=""" & t_tg_nr$ & """ order by bestellkopf.datum desc ;"
-
-          bestell_id, bestell_datum, preis, basis, pme, bme,
-          faktlme_bme, faktbme_pme, netto_poswert, menge,
-          we_menge, lieferant, kurzname, t_tg_nr
-
 }
-
 begin
   var sql: String;
   sql:= 'SELECT bestell_id, bestell_datum, preis, basis, pme, bme, '
@@ -199,26 +143,24 @@ begin
       + 'we_menge, lieferant, kurzname, t_tg_nr '
       + 'FROM bestellungen where t_tg_nr = "' + t_tg_nr
       + '" order by bestell_datum desc limit 3;';
-  Result:= query(sql);
-
+  Result:= RunSelectQuery(sql);
 end;
 
-function TZQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+function TZBaumQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Teile_Bezeichnung"
     sql = "SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung FROM teil_bez " _
          & "WHERE ident_nr1=""" & t_tg_nr$ & """ and teil_bez.sprache=""D"" AND teil_bez.art=1 ;"
 create table teil_bez( teil_bez_id text, Bezeichnung text)
 }
-
 begin
   var sql: String;
   sql:= 'SELECT teil_bez_id, Bezeichnung '
       + 'FROM teil_bez where teil_bez_id="' + t_tg_nr + '" ;' ;
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 end;
 
 
-function TZQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
+function TZBaumQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_Stueli_zu_Teil"
   Suche über teil_stuelipos.ident_nr1=t_tg_nr
   Es werden die Daten aus teil_stuelipos gelesen
@@ -231,11 +173,11 @@ begin
   sql:= 'SELECT id_stu, pos_nr, t_tg_nr, oa, typ, menge '
       + 'FROM teil_stuelipos where id_stu="' + t_tg_nr
       + '" ORDER BY pos_nr ;';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 end;
 
 
-function TZQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+function TZBaumQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
  Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
     sql = "SELECT f_auftragkopf.auftr_nr as id_stu, " _
@@ -255,12 +197,12 @@ begin
       + 'FROM f_auftragkopf where id_stu = "' + id_stu
       + '" and pos_nr="' + id_pos
       + '" and oa<9 ORDER BY FA_Nr';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 
 end;
 
 
-function TZQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
+function TZBaumQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
     sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
           f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
@@ -277,14 +219,14 @@ begin
       + 't_tg_nr, oa, typ, FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where t_tg_nr="' + t_tg_nr + '" and oa<9 ORDER BY FA_Nr desc limit 1';
-  Result:= query(sql);
+  Result:= RunSelectQuery(sql);
 
 end;
 
 
 
 //Suche alle Positionen zu einem FA (ASTUELIPOS)
-function TZQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
+function TZBaumQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Pos_zu_FA"
  Suche ueber astuelipos.ident_nr1=FA_Nr (Id des Fertigungsauftrages)
  sql = "SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, " _
@@ -302,20 +244,7 @@ begin
       + 'ueb_s_nr, ds, set_block, pos_nr, t_tg_nr, oa, typ, menge '
       + 'FROM astuelipos where id_stu = "' + FA_Nr
       + '" and oa<9 ORDER BY pos_nr';
-  Result:= query(sql);
-end;
-
-function TZQrySQLite.query(sql:string):Boolean;
-begin
-  //sql ins Qry-Objekt
-  self.SQL.Add(sql);
-  //Qry ausführen
-  self.Open;
-
-//  SQL.Add(sqlqry);
-  n_records:=self.GetRecordCount();
-  gefunden:=n_records>0;
-  Result:= gefunden;
+  Result:= RunSelectQuery(sql);
 end;
 
 

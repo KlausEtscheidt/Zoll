@@ -7,10 +7,10 @@ program dbzugriff;
 uses
   System.SysUtils,
   ActiveX,
-  DBQrySQLite in 'DBQrySQLite.pas',
+  BaumQrySQLite in 'BaumQrySQLite.pas',
   Tools in 'Tools.pas',
   Logger in 'Logger.pas',
-  DBQryUNIPPS in 'DBQryUNIPPS.pas',
+  BaumQryUNIPPS in 'BaumQryUNIPPS.pas',
   tests in 'tests.pas';
 
 begin
