@@ -56,6 +56,49 @@ begin
 end;
 
 procedure TZQrySQLite.OpenConnector();
+var Tabellen: TStrings;
+  MyClass: TComponent;
+begin
+
+  if (length(DbFilePath)=0) then
+       raise Exception.Create('Vor Erstbenutzung Pfad zur Datenbank' +
+                                  ' (DbFilePath) setzen.');
+  dbconn:=TADOConnection.Create(nil);
+
+//  dbconn.Close;
+  dbconn.LoginPrompt := False;
+
+  dbconn.ConnectionString :=
+        'Provider=MSDASQL.1;Persist Security Info=False;' +
+        'Data Source=SQLite3 Datasource;' +
+        'Database=' + DbFilePath + ';';
+
+//      Provider=MSDASQL.1;Persist Security Info=False;Data Source=SQLite3 Datasource
+//  dbconn.ConnectOptions := coAsyncConnect;
+  dbconn.Provider := 'MSDASQL.1';
+  dbconn.Open;
+//  if dbconn.Connected then
+//         raise Exception.Create('Konnte Datenbank >>' +
+//                       DbFilePath + '<< nicht öffen.');
+
+  if not (dbconn.State=[stOpen]) then
+       raise Exception.Create('Vor Erstbenutzung Pfad zur Datenbank' +
+                       DbFilePath + ' (DbFilePath) setzen.');
+  Tabellen:= TStrings.Create;
+  try
+    dbconn.GetTableNames(Tabellen);
+  except
+     raise Exception.Create('Konnte Datenbank >>' +
+                   DbFilePath + '<< nicht öffen.');
+  end;
+  if (Tabellen.Count=0) then
+         raise Exception.Create('Konnte Datenbank >>' +
+                       DbFilePath + '<< nicht öffen.');
+
+end;
+
+{$IFDEF x}
+procedure TZQrySQLite.OpenConnector();
 
 begin
 
@@ -78,7 +121,7 @@ begin
   dbconn.Provider := 'MSDASQL.1';
   dbconn.Open;
 end;
-
+{$ENDIF}
 
 function TZQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin

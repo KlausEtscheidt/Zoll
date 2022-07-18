@@ -16,7 +16,11 @@ const LogDir: String =
     +'zoll\data\output';
 {$ENDIF}
 
-const SQLiteFile: String = 'C:\Users\zoll.sqlite';
+
+const SQLiteFile: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
+                 'Studio\Projekte\Zoll\data\db\zoll_neux.sqlite';
+
+//const SQLiteFile: String = 'C:\Users\zoll.sqlite';
 
 procedure init();
 

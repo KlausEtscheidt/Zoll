@@ -23,7 +23,7 @@ begin
   //Logger oeffnen
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
   Qry:=TZQrySQLite.Create();
-  gefunden := Qry.SucheKundenRabatt('1020450');
+  gefunden := Qry.SucheKundenRabatt('1120840');
 
   Tools.Log.WriteLine('Test-Lauf vom '+DateTimeToStr(Now));
   while not Qry.Eof do
@@ -34,7 +34,8 @@ begin
           text:=text + field.FieldName +': ' + field.AsString + '; ';
       end;
       Tools.Log.WriteLine(text);
-      Qry.Next
+      Qry.Next;
+      Tools.Log.WriteLine(Qry.FieldByName('datum_von').AsString);
   end;
 
 Tools.Log.Close;
