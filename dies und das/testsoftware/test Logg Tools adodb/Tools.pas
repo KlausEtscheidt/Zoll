@@ -2,7 +2,8 @@ unit Tools;
 
 interface
 
-uses System.IOUtils,System.SysUtils,Logger;
+uses System.IOUtils,System.SysUtils,Logger,
+ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
 //Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
@@ -13,6 +14,8 @@ const LogDir: String =
 const SQLiteDBFileName: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
                  'Zoll\data\db\zoll_neu.sqlite';
+type
+  TZUNIPPSQry = TZBaumQrySQLite;
 
 {$ELSE}
 const LogDir: String =
@@ -21,13 +24,13 @@ const LogDir: String =
 const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
                  'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
 
+type
+  TZUNIPPSQry = TZBaumQryUNIPPS;
+
 {$ENDIF}
 
-
-
-//const SQLiteFile: String = 'C:\Users\zoll.sqlite';
-
 procedure init();
+function GetQuery() : TZUNIPPSQry;
 
 var
   Log: TLogFile;
@@ -35,6 +38,7 @@ var
   CSVKurz: TLogFile;
   CSVLang: TLogFile;
   ApplicationBaseDir: String;
+  DbConnector:TZADOConnector;
 
 implementation
 
@@ -46,7 +50,26 @@ begin
   CSVLang:=TLogFile.Create();
   ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
   ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
+   DbConnector:=TZADOConnector.Create(nil);
+   {$IFDEF HOME}
+   DbConnector.ConnectToSQLite(SQLiteDBFileName);
+   {$ELSE}
+   DbConnector.ConnectToUNIPPS();
+  {$ENDIF}
+
+
 end;
 
+function GetQuery() : TZUNIPPSQry;
+var
+  UNIPPSQry: TZUNIPPSQry;
+
+begin
+    //Query erzeugen
+   UNIPPSQry := TZUNIPPSQry.Create(nil);
+   //Connector in Klassenvariable
+   UNIPPSQry.Connector:=DbConnector;
+   Result:= UNIPPSQry;
+end;
 
 end.

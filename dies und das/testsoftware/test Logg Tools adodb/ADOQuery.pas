@@ -1,6 +1,7 @@
+                { TODO : Constructor einfuehren, der Verbindung übernimmt }
 unit ADOQuery;
 {Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
- Vor der ersten "Benutzung" einer neu Instanz muss
+ Vor der ersten "Benutzung" einer neuen Instanz muss
  ein TZADOConnector für die Klasse gesetzt werden
  Beispiel (die Owner sind auf nil gesetzt)
  1. Connector erzeugen
@@ -47,7 +48,7 @@ interface
       { public declarations }
       function RunSelectQuery(sql:string):Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
-      procedure InsertFields(tablename: String; myFields:TFields);
+      function  InsertFields(tablename: String; myFields:TFields):Boolean;
       var n_records: Integer;
       var gefunden: Boolean;
       property Connector:TZADOConnector write SetConnector;
@@ -108,13 +109,15 @@ end;
 
 //Insert-Statement für "tablename" anhand einer Feldliste ausführen
 //-----------------------------------------------------------
-procedure TZADOQuery.InsertFields(tablename: String; myFields:TFields);
+function TZADOQuery.InsertFields(tablename: String; myFields:TFields):Boolean;
 var
   felder,werte,sql:String;
   myfield : TField;
-  myparam :TParameter;
-            { TODO : Parameter gehen nicht. SQL komplett zusammengeschustert }
 begin
+
+
+  //Prüft of Datenbank verbunden
+  Self.CheckConnection;
 
   try
 
@@ -124,8 +127,8 @@ begin
     for myField in myFields do
     begin
         felder:=felder + myField.FieldName + ', ';
-//        werte:=werte +':'+ myField.FieldName + ', ';
-        werte:=werte +'"'+ myField.AsString + '", ';
+        werte:=werte +':'+ myField.FieldName + ', ';
+//        werte:=werte +'"'+ myField.AsString + '", ';
     end;
 
     System.delete(felder,length(felder)-1,5);
@@ -133,37 +136,52 @@ begin
     sql:= 'INSERT INTO ' + tablename + '(' + felder +
             ') VALUES(' + werte + ');';
 
+    //Überträge die Klassen-Connection ins Objekt
+    //
+    // !!! Muss vor dem Ändern des SQL erfolgen damit Parameter angelegt werden.
+    //
+    Self.Connection:=FConnector.Connection;
+
     //SQL in Query (erst leeren)
-    //Das wird in RunExecSQLQuery noch mal gemacht,
-    //muss aber schon hier passieren damit Parameter bekannt sind
     Self.SQL.BeginUpdate;
     Self.SQL.Clear;
     Self.SQL.Add(sql);
     Self.SQL.EndUpdate;
-    Self.ParamCheck;
+
     //Daten als Parameter in Query
     for myField in myFields do
     begin
-        myparam:=Self.Parameters.AddParameter;
-        myparam.Name:=myField.FieldName;
-        myparam.DataType:= myField.DataType; // ftString;
-        myparam.Value:= myField.Value; // .AsString;
-//        Self.Parameters.ParamByName(myField.FieldName).Value := myField.AsString;
+//        myparam:=Self.Parameters.CreateParameter(myField.FieldName,
+//                         myField.DataType,pdInput,20,myField.Value) ;
+//        myparam:=Self.Parameters.AddParameter;
+//        myparam.Name:=myField.FieldName;
+//        myparam.DataType:= myField.DataType; // ftString;
+//        myparam.Value:= myField.Value; // .AsString;
+        Self.Parameters.ParamByName(myField.FieldName).DataType := myField.DataType;
+        Self.Parameters.ParamByName(myField.FieldName).Value := myField.Value;
     end;
 
-  //Ausführen
-    Self.RunExecSQLQuery(sql);
+
+    //Ausführen
+    n_records:=Self.ExecSQL();
+    gefunden:=n_records>0;
+    Result:= gefunden;
+
   except
 
-    on E: EDatabaseError do
-      if not ContainsText(E.Message, 'UNIQUE constraint failed') then
-      begin
-//          Tools.ErrLog.Log('in SQLiteConnect.Store' + E.Message);
-          if ContainsText(E.Message, 'database is locked') then
+    on E: Exception do
+    begin
+  //          Tools.ErrLog.Log('in SQLiteConnect.Store' + E.Message);
+        if ContainsText(E.Message, 'UNIQUE constraint failed') then
+            writeln('Doppelte')
+        else
             raise
-      end;
-  end;
+//            if ContainsText(E.Message, 'database is locked') then
+//              raise
+    end;
 
+
+  end;
 
 end;
 

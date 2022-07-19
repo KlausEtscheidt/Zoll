@@ -3,18 +3,37 @@ unit tests;
 interface
 
 uses SysUtils, Tools, Logger, Data.DB,
-      ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
+      ADOQuery,ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
 //      UNIPPSConnect, BaumQryUNIPPS, SQLiteConnect, BaumQrySQLite;
 
 procedure RunTests();
 procedure Uni2SQLite();
+procedure Unipps();
 procedure TestTest();
 
 implementation
 
 procedure RunTests();
 begin
-  Uni2SQLite;
+  //Uni2SQLite;
+  Unipps;
+end;
+
+procedure Unipps();
+  var  KAQry: TZUNIPPSQry;
+  var gefunden: Boolean;
+begin
+  Tools.Init;
+   { alt
+     // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
+     KAQry := DBConn.getQuery;
+     gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+   }
+   KAQry := Tools.getQuery;
+   //  131645	144211	142302	142567	142573
+   gefunden := KAQry.SucheKundenAuftragspositionen('131645');
+
+
 end;
 
 procedure Uni2SQLite();
@@ -23,7 +42,9 @@ var
   dbSQLiteConn,dbUniConn: TZADOConnector;
   QrySQLite: TZBaumQrySQLite;
   QryUNIPPS: TZBaumQryUNIPPS;
+  QryADO,QryADO2: TZADOQuery;
   gefunden:Boolean;
+  Sql:String;
 
 begin
   //Globale Var init
@@ -45,8 +66,38 @@ begin
   //Flag und SQLite-Verbindung einmalig in Klassenvariable
   QryUNIPPS.Export2SQLite:=True;
   QryUNIPPS.SQLiteConnector:=dbSQLiteConn;
-  //Abfragen
+  //Abfragen ueber vordefinierte
   gefunden := QryUNIPPS.SucheKundenRabatt('1120840');
+
+  //Abfragen ueber Standard
+  QryADO:=TZADOQuery.Create(nil);
+  QryADO.Connector:=dbUniConn;
+
+    Sql:= 'SELECT first 200  astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, '
+      + 'astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, '
+      + 'astuelipos.pos_nr, astuelipos.t_tg_nr, astuelipos.oa, '
+      + 'astuelipos.typ, astuelipos.menge '
+      + 'FROM astuelipos;';
+
+     sql := 'select first 200 auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos, '
+    +  ' auftragkopf.kunde, auftragpos.besch_art, '
+    +  ' auftragkopf.klassifiz, auftragpos.pos as pos_nr, auftragpos.t_tg_nr, '
+    +  'auftragpos.oa, auftragpos.typ, auftragpos.menge, auftragpos.preis '
+    +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1; '  ;
+
+//    Sql:= 'SELECT count( astuelipos.ident_nr1) '
+//      + 'FROM astuelipos;';
+
+  gefunden := QryADO.RunSelectQuery(Sql);
+  QryADO2:=TZADOQuery.Create(nil);
+  QryADO2.Connector:=dbSQLiteConn;
+  while not QryADO.eof do
+  begin
+//      QryADO2.InsertFields('astuelipos',QryADO.Fields);
+      QryADO2.InsertFields('auftragkopf',QryADO.Fields);
+      QryADO.Next;
+  end;
+
 
 end;
 
@@ -61,6 +112,7 @@ var
   text:String;
 
 begin
+
 
   //Globale Var init
   Tools.Init;

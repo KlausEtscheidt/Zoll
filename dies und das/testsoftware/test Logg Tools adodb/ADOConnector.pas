@@ -17,6 +17,8 @@ type
       function GetConnection(): TADOConnection;
     public
       verbunden: Boolean;
+      Datenbank: String;   //nur Info
+      Datenbankpfad: String; //nur Info
       property Connection: TADOConnection read GetConnection;
       property Tabellen: System.TArray<String> read GetTabellen;
     end;
@@ -60,6 +62,9 @@ var
       'Konnte Datenbank >>' + PathTODBFile + '<< nicht öffen.' );
   end;
 
+  Datenbank:='SQLite';   //nur Info
+  Datenbankpfad:=PathTODBFile; //nur Info
+
   Result:=FConnection;
 end;
 
@@ -80,6 +85,7 @@ var
     raise Exception.Create('Konnte UNIPPS nicht öffen.' );
   end;
 
+  Datenbank:='UNIPPS';   //nur Info
   Result:=FConnection;
 end;
 
