@@ -14,8 +14,8 @@
 unit BaumQryUNIPPS;
 
 interface
-
-  uses System.SysUtils,System.Classes, ADOQuery;
+  //ADOConnector nur fuer UNIPPS nach SQLite über SQLiteConnector
+  uses System.SysUtils,System.Classes,ADOConnector, ADOQuery;
 
   type
     TZBaumQryUNIPPS = class(TZADOQuery)
@@ -30,6 +30,12 @@ interface
       function SuchePosZuFA(FA_Nr:String): Boolean;
       //NUr zum Testen
       procedure UNI2SQLite(tablename: String);
+    private
+      class var ExportQry: TZADOQuery;
+    public
+      class var Export2SQLite:Boolean;
+      class var SQLiteConnector:TZADOConnector;
+
     end;
 
 
@@ -251,10 +257,15 @@ end;
 /////////////nicht fuer produktiv-version
 procedure TZBaumQryUNIPPS.UNI2SQLite(tablename: String);
 begin
+  if not Export2SQLite then
+    exit;
+  //Qry anlegen und mit Connector versorgen
+  ExportQry:= TZADOQuery.Create(nil);
+  ExportQry.Connector:=SQLiteConnector;
   while not self.Eof do
   begin
-//      sqlitedb.Store(tablename, Fields);
-      self.next;
+      ExportQry.InsertFields(tablename, Fields);
+      Self.next;
   end;
   //WICHTIGGGGGGGGG
   self.First;

@@ -7,10 +7,50 @@ uses SysUtils, Tools, Logger, Data.DB,
 //      UNIPPSConnect, BaumQryUNIPPS, SQLiteConnect, BaumQrySQLite;
 
 procedure RunTests();
+procedure Uni2SQLite();
+procedure TestTest();
 
 implementation
 
 procedure RunTests();
+begin
+  Uni2SQLite;
+end;
+
+procedure Uni2SQLite();
+//kopiert von UNIPPS nach SQLite
+var
+  dbSQLiteConn,dbUniConn: TZADOConnector;
+  QrySQLite: TZBaumQrySQLite;
+  QryUNIPPS: TZBaumQryUNIPPS;
+  gefunden:Boolean;
+
+begin
+  //Globale Var init
+  Tools.Init;
+  //Logger oeffnen
+  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
+
+  //DB-Verbindungen anlegen und DB's öffnen
+  dbUniConn:=TZADOConnector.Create(nil);
+  dbUniConn.ConnectToUNIPPS();
+  //DB oeffnen  Pfad aus globaler Tools.SQLiteFile
+  dbSQLiteConn:=TZADOConnector.Create(nil);
+  dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
+
+  //Query fuer UNIPPS anlegen und Verbindung setzen
+  QryUNIPPS:=TZBaumQryUNIPPS.Create(nil);
+  QryUNIPPS.Connector:=dbUniConn;
+  //Fuer Export nach SQLite
+  //Flag und SQLite-Verbindung einmalig in Klassenvariable
+  QryUNIPPS.Export2SQLite:=True;
+  QryUNIPPS.SQLiteConnector:=dbSQLiteConn;
+  //Abfragen
+  gefunden := QryUNIPPS.SucheKundenRabatt('1120840');
+
+end;
+
+procedure TestTest();
 
 var
   dbSQLiteConn,dbSQLiteConn2,dbUniConn: TZADOConnector;
@@ -27,18 +67,18 @@ begin
   //Logger oeffnen
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
 
+  dbUniConn:=TZADOConnector.Create(nil);
+  dbUniConn.ConnectToUNIPPS();
   //DB oeffnen  Pfad aus globaler Tools.SQLiteFile
-//  dbUniConn:=TZADOConnector.Create(nil);
-//  dbUniConn.ConnectToUNIPPS();
   dbSQLiteConn:=TZADOConnector.Create(nil);
   dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
-  dbSQLiteConn2:=TZADOConnector.Create(nil);
-  var path2:='C:\Users\Klaus Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
-  dbSQLiteConn2.ConnectToSQLite(path2);
+//  dbSQLiteConn2:=TZADOConnector.Create(nil);
+//  var path2:='C:\Users\Klaus Etscheidt\Documents\Embarcadero\' +
+//                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
+//  dbSQLiteConn2.ConnectToSQLite(path2);
   var Tabs:TArray<String>;
-  Tabs:=dbSQLiteConn2.Tabellen;
-
+  Tabs:=dbUniConn.Tabellen;
+{
   // Query anlegen
   QrySQLite:=TZBaumQrySQLite.Create(nil);
   // einmalig DB-Verbindung setzen (wird als Klassenvariable gemerkt)
@@ -60,10 +100,14 @@ begin
       Tools.Log.WriteLine(QrySQLite.FieldByName('datum_von').AsString);
   end;
   Tools.Log.Close;
-
+ }
 
   QryUNIPPS:=TZBaumQryUNIPPS.Create(nil);
   QryUNIPPS.Connector:=dbUniConn;
+  //Fuer Export nach SQLite einmalig in Klassenvar
+  QryUNIPPS.Export2SQLite:=True;
+  QryUNIPPS.SQLiteConnector:=dbSQLiteConn;
+  //Abfragen
   gefunden := QryUNIPPS.SucheKundenRabatt('1120840');
 
   Tools.Log.WriteLine('Test-Lauf vom '+DateTimeToStr(Now));
