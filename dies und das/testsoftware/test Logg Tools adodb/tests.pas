@@ -3,7 +3,8 @@ unit tests;
 interface
 
 uses SysUtils, Tools, Logger, Data.DB,
-      UNIPPSConnect, BaumQryUNIPPS, SQLiteConnect, BaumQrySQLite;
+      ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
+//      UNIPPSConnect, BaumQryUNIPPS, SQLiteConnect, BaumQrySQLite;
 
 procedure RunTests();
 
@@ -12,8 +13,7 @@ implementation
 procedure RunTests();
 
 var
-  dbSQLiteConn: TZSQLiteConnection;
-  dbUniConn: TZUNIPPSConnection;
+  dbSQLiteConn,dbSQLiteConn2,dbUniConn: TZADOConnector;
   QrySQLite: TZBaumQrySQLite;
   QryUNIPPS: TZBaumQryUNIPPS;
   gefunden:Boolean;
@@ -28,13 +28,21 @@ begin
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
 
   //DB oeffnen  Pfad aus globaler Tools.SQLiteFile
-  dbUniConn:=TZUNIPPSConnection.Create(nil);
-  dbSQLiteConn:=TZSQLiteConnection.Create(nil, Tools.SQLiteFile);
+//  dbUniConn:=TZADOConnector.Create(nil);
+//  dbUniConn.ConnectToUNIPPS();
+  dbSQLiteConn:=TZADOConnector.Create(nil);
+  dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
+  dbSQLiteConn2:=TZADOConnector.Create(nil);
+  var path2:='C:\Users\Klaus Etscheidt\Documents\Embarcadero\' +
+                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
+  dbSQLiteConn2.ConnectToSQLite(path2);
+  var Tabs:TArray<String>;
+  Tabs:=dbSQLiteConn2.Tabellen;
 
   // Query anlegen
   QrySQLite:=TZBaumQrySQLite.Create(nil);
   // einmalig DB-Verbindung setzen (wird als Klassenvariable gemerkt)
-  QrySQLite.dbconn:=dbSQLiteConn.dbconn;
+  QrySQLite.Connector:=dbSQLiteConn;
 
   //Abfragen
   gefunden := QrySQLite.SucheKundenRabatt('1120840');
@@ -55,7 +63,7 @@ begin
 
 
   QryUNIPPS:=TZBaumQryUNIPPS.Create(nil);
-  QryUNIPPS.dbconn:=dbUniConn.dbconn;
+  QryUNIPPS.Connector:=dbUniConn;
   gefunden := QryUNIPPS.SucheKundenRabatt('1120840');
 
   Tools.Log.WriteLine('Test-Lauf vom '+DateTimeToStr(Now));

@@ -15,13 +15,10 @@ unit BaumQryUNIPPS;
 
 interface
 
-  uses System.SysUtils,System.Classes,Data.Win.ADODB,UNIPPSConnect;
-//  uses System.SysUtils,System.Classes,UNIPPSConnect;
-// SQLiteConnect;
+  uses System.SysUtils,System.Classes, ADOQuery;
 
   type
-    TZBaumQryUNIPPS = class(TADOQuery)
-      constructor Create(AOwner: TComponent);
+    TZBaumQryUNIPPS = class(TZADOQuery)
       function SucheKundenRabatt(kunden_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -33,49 +30,10 @@ interface
       function SuchePosZuFA(FA_Nr:String): Boolean;
       //NUr zum Testen
       procedure UNI2SQLite(tablename: String);
-      function RunSelectQuery(sql:string):Boolean;
-    public
-      class var dbconn:TADOConnection;
-      var n_records: Integer;
-      var gefunden: Boolean;
-
     end;
 
-//var sqlitedb : TZDbConnector;
 
 implementation
-
-constructor TZBaumQryUNIPPS.Create(AOwner: TComponent);
-
-begin
-  inherited Create(AOwner);
-  Connection:=dbconn;
-  n_records:=0;
-  gefunden:=False;
-end;
-
-//helper: Fuehrt SQL aus und setzt Felder n_records und gefunden
-function TZBaumQryUNIPPS.RunSelectQuery(sql:string):Boolean;
-begin
-
-  //Test ob mit DB verbunden
-  if dbconn=nil then
-       raise Exception.Create('Vor Erstbenutzung Datenbank öffnen.' );
-
-  //Verbindung ins Query-Objekt eintragen
-  Self.Connection:=dbconn;
-
-  //sql ins Qry-Objekt
-  Self.SQL.Add(sql);
-  //Qry ausführen
-  Self.Open;
-
-//  SQL.Add(sqlqry);
-  n_records:=self.GetRecordCount();
-  gefunden:=n_records>0;
-  Result:= gefunden;
-end;
-
 
 function TZBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin

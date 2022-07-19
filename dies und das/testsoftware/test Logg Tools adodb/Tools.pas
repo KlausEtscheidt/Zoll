@@ -6,19 +6,24 @@ uses System.IOUtils,System.SysUtils,Logger;
 //Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
-{$IFDEF TESTCASE}
+{$IFDEF HOME}
 const LogDir: String =
-    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\'
-    +'zoll\dies und das\testsoftware\logger';
+    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
+    'zoll\dies und das\testsoftware\logger';
+const SQLiteDBFileName: String =
+    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
+                 'Zoll\data\db\zoll_neu.sqlite';
+
 {$ELSE}
 const LogDir: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\'
     +'zoll\data\output';
+const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
+                 'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
+
 {$ENDIF}
 
 
-const SQLiteFile: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
 
 //const SQLiteFile: String = 'C:\Users\zoll.sqlite';
 

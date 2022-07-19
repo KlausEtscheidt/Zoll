@@ -6,10 +6,7 @@ uses
   tests in 'tests.pas',
   Logger in 'Logger.pas',
   Tools in 'Tools.pas',
-  ADOConnect in 'ADOConnect.pas',
-  SQLiteConnect in 'SQLiteConnect.pas',
-  UNIPPSConnect in 'UNIPPSConnect.pas',
-  UniToSQLite in 'UniToSQLite.pas';
+  ADOConnector in 'ADOConnector.pas';
 
 {$R *.res}
 

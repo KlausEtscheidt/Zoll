@@ -3,10 +3,10 @@ unit UNIPPSConnect;
 interface
 
 //uses  System.SysUtils,  Data.Win.ADODB, ADOConnect  ;
-uses  System.Classes, System.SysUtils, ADOConnect  ;
+uses  System.Classes, System.SysUtils, ADOConnector  ;
 
 type
-    TZUNIPPSConnection = class(TZTADOConnection)
+    TZUNIPPSConnection = class(TZTADOConnector)
       constructor Create(AOwner: TComponent);
     end;
 

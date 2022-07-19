@@ -15,11 +15,10 @@ unit BaumQrySQLite;
 
 interface
 
-  uses System.SysUtils, System.Classes, Data.Win.ADODB, SQLiteConnect;
+  uses System.SysUtils, System.Classes, ADOQuery;
 
   type
-    TZBaumQrySQLite = class(TADOQuery)
-      constructor Create(AOwner: TComponent);
+    TZBaumQrySQLite = class(TZADOQuery)
       function SucheKundenRabatt(ka_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -29,49 +28,9 @@ interface
       function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
       function SucheStuelizuTeil(t_tg_nr:String): Boolean;
       function SuchePosZuFA(FA_Nr:String): Boolean;
-      function RunSelectQuery(sql:string):Boolean;
-    public
-      class var dbconn:TADOConnection;
-      var n_records: Integer;
-      var gefunden: Boolean;
     end;
 
-var Text: string='keine';
-
 implementation
-
-
-constructor TZBaumQrySQLite.Create(AOwner: TComponent);
-begin
-//  Owner:=AOwner;
-  inherited Create(Owner);
-
-  //Daten zum Abfrageergebnis vorbelegen
-  n_records:=0;
-  gefunden:=False;
-end;
-
-function TZBaumQrySQLite.RunSelectQuery(sql:string):Boolean;
-begin
-
-  //Test ob mit DB verbunden
-  if dbconn=nil then
-       raise Exception.Create('Vor Erstbenutzung Datenbank öffnen.' );
-
-  //Verbindung ins Query-Objekt eintragen
-  Self.Connection:=dbconn;
-
-  //sql ins Qry-Objekt
-  Self.SQL.Add(sql);
-  //Qry ausführen
-  Self.Open;
-
-//  SQL.Add(sqlqry);
-  n_records:=self.GetRecordCount();
-  gefunden:=n_records>0;
-  Result:= gefunden;
-end;
-
 
 function TZBaumQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin

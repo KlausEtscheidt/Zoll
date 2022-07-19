@@ -11,10 +11,12 @@ uses
   Tools in 'Tools.pas',
   Logger in 'Logger.pas',
   BaumQryUNIPPS in 'BaumQryUNIPPS.pas',
-  tests in 'tests.pas';
+  tests in 'tests.pas',
+  ADOConnector in 'ADOConnector.pas',
+  ADOQuery in 'ADOQuery.pas';
 
 begin
-
+  var answer:string;
   try
     CoInitialize(nil);
     RunTests;
@@ -22,4 +24,6 @@ begin
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
   end;
+  Writeln('Fertig');
+  Readln(answer);
 end.
