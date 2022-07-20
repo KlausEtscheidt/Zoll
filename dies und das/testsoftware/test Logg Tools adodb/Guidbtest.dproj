@@ -102,6 +102,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <DCC_UnitSearchPath>$(BDSPROJECTSDIR)\zoll\lib\Tools;$(BDSPROJECTSDIR)\zoll\lib\Datenbank;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -122,9 +123,13 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="tests.pas"/>
-        <DCCReference Include="Logger.pas"/>
-        <DCCReference Include="Tools.pas"/>
-        <DCCReference Include="ADOConnector.pas"/>
+        <DCCReference Include="..\..\..\lib\Tools\Exceptions.pas"/>
+        <DCCReference Include="..\..\..\lib\Tools\Logger.pas"/>
+        <DCCReference Include="..\..\..\lib\Tools\Tools.pas"/>
+        <DCCReference Include="..\..\..\lib\Datenbank\ADOConnector.pas"/>
+        <DCCReference Include="..\..\..\lib\Datenbank\ADOQuery.pas"/>
+        <DCCReference Include="..\..\..\lib\Datenbank\BaumQrySQLite.pas"/>
+        <DCCReference Include="..\..\..\lib\Datenbank\BaumQryUNIPPS.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -132,13 +137,13 @@
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
-        <BuildConfiguration Include="Debug">
-            <Key>Cfg_1</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
         <BuildConfiguration Include="Home">
             <Key>Cfg_3</Key>
             <CfgParent>Cfg_1</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
         </BuildConfiguration>
     </ItemGroup>
     <ProjectExtensions>

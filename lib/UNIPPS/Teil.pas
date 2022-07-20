@@ -2,14 +2,14 @@
 
 interface
 
-uses  System.SysUtils, Data.Db, DBZugriff, Bestellung, Exceptions,
+uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
       Tools;
 
 type
   TZTeil = class
   private
     { private declarations }
-    function BerechnePreisJeLMERabattiert(Qry: TZQry): Double;
+    function BerechnePreisJeLMERabattiert(Qry: TZUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
   protected
     { protected declarations }
@@ -33,7 +33,7 @@ type
     istEigenfertigung:Boolean;
     istFremdfertigung:Boolean;
 
-    constructor Create(TeileQry: TZQry);
+    constructor Create(TeileQry: TZUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
     function ToStr():String;
@@ -42,7 +42,7 @@ type
 
 implementation
 
-constructor TZTeil.Create(TeileQry: TZQry);
+constructor TZTeil.Create(TeileQry: TZUNIPPSQry);
 begin
   try
     t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
@@ -78,9 +78,9 @@ begin
 end;
 
 procedure TZTeil.holeBenennung;
-  var Qry: TZQry;
+  var Qry: TZUNIPPSQry;
 begin
-  Qry:=DBConn.getQuery();
+  Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(t_tg_nr) then
     Bezeichnung:=Trim(Qry.FieldByName('Bezeichnung').AsString);
 end;
@@ -88,7 +88,7 @@ end;
 
 procedure TZTeil.holeMaxPreisAus3Bestellungen;
   var gefunden: Boolean;
-  var Qry: TZQry;
+  var Qry: TZUNIPPSQry;
   var maxPreis:Double;
   var maxFields:TFields;
 
@@ -97,7 +97,7 @@ begin
   if not istKaufteil then
     exit;
 
-  Qry:=DBConn.getQuery();
+  Qry:=Tools.getQuery();
 
   PreisGesucht:= True;
   gefunden:=Qry.SucheLetzte3Bestellungen(t_tg_nr);
@@ -131,7 +131,7 @@ begin
 
 end;
 
-function TZTeil.BerechnePreisJeLMERabattiert(Qry: TZQry): Double;
+function TZTeil.BerechnePreisJeLMERabattiert(Qry: TZUNIPPSQry): Double;
 begin
   {s. auch Erklärungen in BerechnePreisJeLMEUnrabattiert
     Wert der Bestellpos ohne Rabatte:

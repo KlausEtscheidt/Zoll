@@ -2,12 +2,12 @@
 
 interface
 
-uses  StuecklistenPosition, DBZugriff,Logger;
+uses  StuecklistenPosition, Tools,Logger;
 
 type
   TZFAPos = class(TZStueliPos)
     private
-      Qry: TZQry;
+      Qry: TZUNIPPSQry;
     protected
       { protected declarations }
     public
@@ -16,13 +16,13 @@ type
       set_block:String;
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
-      constructor Create(AQry: TZQry);
+      constructor Create(AQry: TZUNIPPSQry);
       procedure holeKinderAusASTUELIPOS(id_pos_vater:String);
     end;
 
 implementation
 
-constructor TZFAPos.Create(AQry: TZQry);
+constructor TZFAPos.Create(AQry: TZUNIPPSQry);
 begin
   inherited Create('FA_Pos');
   Qry:=AQry;

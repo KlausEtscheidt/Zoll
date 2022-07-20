@@ -4,7 +4,7 @@ unit Bestellung;
 
 interface
 
-uses Data.Db, DBZugriff;
+uses Data.Db;
 
 type
   TZBestellung = class

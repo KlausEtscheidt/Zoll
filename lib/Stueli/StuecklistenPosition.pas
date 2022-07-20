@@ -3,7 +3,7 @@ unit StuecklistenPosition;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.Classes,
-       DBZugriff,Teil,Exceptions,Data.DB,Logger,Stueckliste,
+       Teil,Exceptions,Data.DB,Logger,Stueckliste,
        Tools;
 
   type
@@ -41,7 +41,7 @@ interface
         property FeldListeKomplett: String read GetFeldListeKomplett ;
 
         constructor Create(APosTyp:String);
-        procedure PosDatenSpeichern(Qry: TZQry);
+        procedure PosDatenSpeichern(Qry: TZUNIPPSQry);
         procedure SucheTeilzurStueliPos();
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
@@ -82,7 +82,7 @@ begin
 end;
 
 //Überträgt allgemeingültige und typspezifische Daten aus Qry in Felder
-procedure TZStueliPos.PosDatenSpeichern(Qry: TZQry);
+procedure TZStueliPos.PosDatenSpeichern(Qry: TZUNIPPSQry);
 begin
 
   try
@@ -151,11 +151,11 @@ end;
 procedure TZStueliPos.SucheTeilzurStueliPos();
 
 var
-  Qry: TZQry;
+  Qry: TZUNIPPSQry;
   gefunden: Boolean;
 
 begin
-    Qry:=DBConn.getQuery();
+    Qry:=Tools.getQuery();
     gefunden:=Qry.SucheDatenzumTeil(PosData['t_tg_nr']);
     if gefunden then
     begin
@@ -214,12 +214,12 @@ end;
 //Suche in Serien-FA
 function TZStueliPos.holeKinderAusASTUELIPOS(): Boolean;
 var gefunden: Boolean;
-var Qry: TZQry;
+var Qry: TZUNIPPSQry;
 var FAKopf:TZFAKopf;
 
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
-  Qry := DBConn.getQuery;
+  Qry := Tools.getQuery;
   gefunden := Qry.SucheFAzuTeil(Teil.t_tg_nr);
 
   if not gefunden then
@@ -252,11 +252,11 @@ function TZStueliPos.holeKinderAusTeileStu(): Boolean;
   var
    gefunden:  Boolean;
    TeilInStu: TZTeilAlsStuPos;
-   Qry: TZQry;
+   Qry: TZUNIPPSQry;
 
 begin
     //Gibt es eine Stückliste zum Teil
-    Qry := DBConn.getQuery;
+    Qry := Tools.getQuery;
     gefunden := Qry.SucheStuelizuTeil(Teil.t_tg_nr);
 
     if not gefunden then

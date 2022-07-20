@@ -10,7 +10,7 @@ unit ADOQuery;
    dbUniConn.ConnectToUNIPPS();
  3. Instanz anlegen
    QryUNIPPS:=TZADOQuery.Create(nil);
- 4. Connector einmalig setzen
+ 4. Connector setzen
    QryUNIPPS.Connector:=dbUniConn;
  5. Qry benutzen
    QryUNIPPS.RunSelectQuery('Select * from tabellxy');
@@ -41,17 +41,28 @@ interface
   type
     TZADOQuery = class(TADOQuery)
     private
-      class var FConnector:TZADOConnector;
+      FConnector:TZADOConnector;
+//      FDatenbank: String;
+//      FDatenbankpfad: String;
       procedure SetConnector(AConnector: TZADOConnector);
-      procedure CheckConnection;
+      function GetDatenbank():String;
+      function GetDatenbankpfad():String;
+      function GetIsConnected():Boolean;
     public
       { public declarations }
       function RunSelectQuery(sql:string):Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
-      function  InsertFields(tablename: String; myFields:TFields):Boolean;
+      function InsertFields(tablename: String; myFields:TFields):Boolean;
+      function GetFieldValues(): System.TArray<String>;
+      function GetFieldValuesAsText(): String;
+      function GetFieldNames(): System.TArray<String>;
+      function GetFieldNamesAsText(): String;
       var n_records: Integer;
       var gefunden: Boolean;
       property Connector:TZADOConnector write SetConnector;
+      property IsConnected:Boolean read GetIsConnected;
+      property Datenbank: String read GetDatenbank;
+      property Datenbankpfad: String read GetDatenbankpfad;
     end;
 
 
@@ -67,7 +78,7 @@ function TZADOQuery.RunSelectQuery(sql:string):Boolean;
 begin
 
   //Prüft of Datenbank verbunden
-  Self.CheckConnection;
+  Self.IsConnected;
 
   //Überträge die Klassen-Connection ins Objekt
   Self.Connection:=FConnector.Connection;
@@ -90,7 +101,7 @@ function TZADOQuery.RunExecSQLQuery(sql:string):Boolean;
 var n_records:Integer;
 begin
   //Prüft of Datenbank verbunden
-  Self.CheckConnection;
+  Self.IsConnected;
 
   //Überträge die Klassen-Connection ins Objekt
   Self.Connection:=FConnector.Connection;
@@ -98,7 +109,10 @@ begin
   //sql ins Qry-Objekt
   Self.SQL.Clear;
   Self.SQL.Add(sql);
+
+  //Qry ausführen
   n_records:=Self.ExecSQL();
+
   gefunden:=n_records>0;
   Result:= gefunden;
 end;
@@ -115,9 +129,8 @@ var
   myfield : TField;
 begin
 
-
   //Prüft of Datenbank verbunden
-  Self.CheckConnection;
+  Self.IsConnected;
 
   try
 
@@ -161,7 +174,6 @@ begin
         Self.Parameters.ParamByName(myField.FieldName).Value := myField.Value;
     end;
 
-
     //Ausführen
     n_records:=Self.ExecSQL();
     gefunden:=n_records>0;
@@ -180,9 +192,71 @@ begin
 //              raise
     end;
 
-
   end;
 
+end;
+
+//-----------------------------------------------------------
+function TZADOQuery.GetFieldValuesAsText(): String;
+var
+  Werte : System.TArray<String>;
+  Wert, Text : String;
+  I:Integer;
+begin
+  Werte:=GetFieldValues();
+  Text:='';
+  for I := 0 to length(Werte)-2 do
+  begin
+    Text:=Text+Werte[I]+'; ' ;
+  end;
+  Text:=Text+Werte[I];
+  Result:=Text;
+end;
+
+//-----------------------------------------------------------
+function TZADOQuery.GetFieldValues(): System.TArray<String>;
+var
+  felder,werte,sql:String;
+  myfield : TField;
+  Names: TStringList;
+begin
+    felder:='';
+    werte:='';
+    Names:= TStringList.Create;
+    for myField in Self.Fields do
+    begin
+        Names.Add(myField.AsString)
+    end;
+
+    Result:=Names.ToStringArray;
+
+end;
+
+//-----------------------------------------------------------
+function TZADOQuery.GetFieldNamesAsText(): String;
+var
+  Werte : System.TArray<String>;
+  Wert, Text : String;
+  I:Integer;
+begin
+  Werte:=GetFieldNames();
+  Text:='';
+  for I := 0 to length(Werte)-2 do
+  begin
+    Text:=Text+Werte[I]+'; ' ;
+  end;
+  Text:=Text+Werte[I];
+  Result:=Text;
+end;
+
+//-----------------------------------------------------------
+function TZADOQuery.GetFieldNames(): System.TArray<String>;
+var
+  Names: TStringList;
+begin
+     Names:= TStringList.Create;
+     Self.Fields.GetFieldNames(Names);
+     Result:=Names.ToStringArray;
 end;
 
 //-----------------------------------------------------------
@@ -191,28 +265,37 @@ end;
 
 //Prüft of Datenbank korrekt verbunden, raises error wenn nicht
 //-----------------------------------------------------------
-procedure TZADOQuery.CheckConnection;
+function TZADOQuery.GetIsConnected():Boolean;
   var ok:Boolean;
 begin
-  //Test ob mit DB verbunden
+  ok:=False;
   //Schritt 1 wurde FConnector erzeugt
   if not assigned(FConnector) then
     raise Exception.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
-
+  //Schritt 2 ist FConnector verbunden
   try
     ok:=FConnector.Connection.Connected;
   except
     raise Exception.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
   end;
-
+  Result:=ok;
 end;
 
-//Besetzt die Klassenvariable FConnector, die eine Verbindung zur DB hält
+//Besetzt die Connector-Eigenschaft, der eine Verbindung zur DB hält
 //-----------------------------------------------------------
 procedure TZADOQuery.SetConnector(AConnector: TZADOConnector);
 begin
   FConnector:=AConnector;
 end;
-
+//Infos zur verbundenen DB
+function TZADOQuery.GetDatenbank():String;
+begin
+  Result:= FConnector.Datenbank;
+end;
+//Infos zur verbundenen DB
+function TZADOQuery.GetDatenbankpfad():String;
+begin
+  Result:= FConnector.Datenbankpfad;
+end;
 
 end.

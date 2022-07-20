@@ -2,7 +2,7 @@ unit TeilAlsStuPos;
 
 interface
 
-uses  StuecklistenPosition, DBZugriff;
+uses  StuecklistenPosition, Tools;
 
 type
   TZTeilAlsStuPos = class(TZStueliPos)
@@ -12,13 +12,13 @@ type
     public
       pos_nr: String;
       t_tg_nr: String;
-      constructor Create(AQry: TZQry);
+      constructor Create(AQry: TZUNIPPSQry);
     end;
 
 
 implementation
 
-constructor TZTeilAlsStuPos.Create(AQry: TZQry);
+constructor TZTeilAlsStuPos.Create(AQry: TZUNIPPSQry);
 begin
   inherited Create('Teil');
   //Speichere typunabhängige Daten über geerbte Funktion

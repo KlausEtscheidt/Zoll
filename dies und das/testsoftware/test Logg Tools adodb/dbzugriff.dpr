@@ -7,13 +7,13 @@ program dbzugriff;
 uses
   System.SysUtils,
   ActiveX,
-  BaumQrySQLite in 'BaumQrySQLite.pas',
-  Tools in 'Tools.pas',
-  Logger in 'Logger.pas',
-  BaumQryUNIPPS in 'BaumQryUNIPPS.pas',
   tests in 'tests.pas',
-  ADOConnector in 'ADOConnector.pas',
-  ADOQuery in 'ADOQuery.pas';
+  Logger in '..\..\..\lib\Tools\Logger.pas',
+  Tools in '..\..\..\lib\Tools\Tools.pas',
+  ADOConnector in '..\..\..\lib\Datenbank\ADOConnector.pas',
+  ADOQuery in '..\..\..\lib\Datenbank\ADOQuery.pas',
+  BaumQrySQLite in '..\..\..\lib\Datenbank\BaumQrySQLite.pas',
+  BaumQryUNIPPS in '..\..\..\lib\Datenbank\BaumQryUNIPPS.pas';
 
 begin
   var answer:string;

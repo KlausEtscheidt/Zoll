@@ -3,25 +3,25 @@
 interface
 
 uses  System.SysUtils, FertigungsauftragsPos, StuecklistenPosition,
-               DBZugriff, Exceptions,Tools, Logger;
+                Exceptions,Tools, Logger;
 
 type
   TZFAKopf = class(TZStueliPos)
     private
-      Qry: TZQry;
+      Qry: TZUNIPPSQry;
     protected
       { protected declarations }
     public
       FA_Nr: String;
       id_pos: String;
-      constructor Create(einTyp: String; AQry: TZQry);
+      constructor Create(einTyp: String; AQry: TZUNIPPSQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
 
 implementation
 
-constructor TZFAKopf.Create(einTyp: String; AQry: TZQry);
+constructor TZFAKopf.Create(einTyp: String; AQry: TZUNIPPSQry);
 begin
   inherited Create(einTyp);
   Qry:=AQry;
@@ -34,14 +34,14 @@ end;
 
 procedure TZFAKopf.holeKinderAusASTUELIPOS;
 
-var Qry: TZQry;
+var Qry: TZUNIPPSQry;
   gefunden:Boolean;
   FAPos:TZFAPos;
   msg : String;
 
 begin
   //Hole die Positionen des FA's aus der Unipps-Tabelle ASTUELIPOS
-  Qry := DBConn.getQuery;
+  Qry := Tools.getQuery;
   gefunden := Qry.SuchePosZuFA(FA_Nr);
 
   if not gefunden then

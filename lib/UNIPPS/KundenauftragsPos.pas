@@ -3,7 +3,7 @@ unit KundenauftragsPos;
 interface
 
 uses  System.SysUtils,FertigungsauftragsKopf, StuecklistenPosition,
-         DBZugriff,Tools;
+         Tools;
 
 type
   TZKundenauftragsPos = class(TZStueliPos)
@@ -12,13 +12,13 @@ type
     public
       vk_brutto: Double;
       vk_netto: Double;
-      constructor Create(Qry: TZQry; Kundenrabatt: Double);
+      constructor Create(Qry: TZUNIPPSQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
     end;
 
 implementation
 
-constructor TZKundenauftragsPos.Create(Qry: TZQry; Kundenrabatt: Double);
+constructor TZKundenauftragsPos.Create(Qry: TZUNIPPSQry; Kundenrabatt: Double);
 begin
   inherited Create('KA_Pos');
   //Speichere typunabhängige Daten über geerbte Funktion
@@ -34,14 +34,14 @@ end;
 procedure TZKundenauftragsPos.holeKinderAusASTUELIPOS;
 
 var gefunden: Boolean;
-var Qry: TZQry;
+var Qry: TZUNIPPSQry;
 var FAKopf:TZFAKopf;
 var FAStueliKey:String; //Stueli Key für FA's
 var lfn: Integer;
 
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
-  Qry := DBConn.getQuery;
+  Qry := Tools.getQuery;
   gefunden := Qry.SucheFAzuKAPos(PosData['id_stu'],PosData['id_pos'] );
 
   if not gefunden then

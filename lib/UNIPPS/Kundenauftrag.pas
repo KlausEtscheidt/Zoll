@@ -3,7 +3,8 @@ unit Kundenauftrag;
 interface
 
 uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
-  KundenauftragsPos, Stueckliste, StuecklistenPosition, DBZugriff,Tools;
+  KundenauftragsPos,
+  Stueckliste, StuecklistenPosition, Tools;
 
 type
   TZKundenauftrag = class(TZStueliPos)
@@ -34,7 +35,7 @@ begin
   TZStueliPos.InitTextFile(string(ka_id));
   liesKopfundPositionen;
   holeKinder;
-  ToTextFile;
+//  ToTextFile;
   Tools.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
 end;
 
@@ -44,12 +45,12 @@ var
   gefunden: Boolean;
   Rabatt: Double;
   KAPos: TZKundenauftragsPos;
-  KAQry, RabattQry: TZQry;
+  KAQry, RabattQry: TZUNIPPSQry;
 
 begin
 
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
-  KAQry := DBConn.getQuery;
+  KAQry := Tools.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
   if not gefunden then
     raise Exception.Create('KA '+ka_id + ' nicht gefunden.');
@@ -62,7 +63,7 @@ begin
     kunden_id := KAQry.FieldByName('kunde').AsInteger;
 
     // Abfrage des Rabattes zu diesem Kunden
-    RabattQry := DBConn.getQuery;
+    RabattQry := Tools.getQuery;
     RabattQry.SucheKundenRabatt(inttostr(kunden_id));
     { TODO :
       Else-Zweig bearbeiten

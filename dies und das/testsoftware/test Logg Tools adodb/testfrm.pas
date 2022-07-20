@@ -16,17 +16,13 @@ uses
 
 type
   TForm1 = class(TForm)
-    ADOQuery1: TADOQuery;
     ADOConnection1: TADOConnection;
-    ADOQuery1KUNDEN_ID: TLargeintField;
-    ADOQuery1ZU_AB_PROZ: TFloatField;
-    ADOQuery1DATUM_VON: TFloatField;
-    ADOQuery1DATUM_BIS: TFloatField;
-    DataSource1: TDataSource;
-    DBGrid1: TDBGrid;
     Button1: TButton;
     RunTest: TButton;
     Ende: TButton;
+    DataSource1: TDataSource;
+    DBGrid1: TDBGrid;
+    ADOQuery1: TADOQuery;
     procedure Button1Click(Sender: TObject);
     procedure EndeClick(Sender: TObject);
     procedure RunTestClick(Sender: TObject);

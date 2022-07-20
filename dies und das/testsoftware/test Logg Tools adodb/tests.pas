@@ -4,6 +4,7 @@ interface
 
 uses SysUtils, Tools, Logger, Data.DB,
       ADOQuery,ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
+
 //      UNIPPSConnect, BaumQryUNIPPS, SQLiteConnect, BaumQrySQLite;
 
 procedure RunTests();
@@ -12,6 +13,8 @@ procedure Unipps();
 procedure TestTest();
 
 implementation
+
+uses testfrm;
 
 procedure RunTests();
 begin
@@ -22,18 +25,28 @@ end;
 procedure Unipps();
   var  KAQry: TZUNIPPSQry;
   var gefunden: Boolean;
+  var Feldnamen,Feldwerte: System.TArray<String>;
+  var FeldNamenTxt,FeldWerteTxt: String;
 begin
-  Tools.Init;
-   { alt
-     // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
-     KAQry := DBConn.getQuery;
-     gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
-   }
+   Tools.Init;
+  //Logger oeffnen
+  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'TestLog.txt');
+
    KAQry := Tools.getQuery;
    //  131645	144211	142302	142567	142573
-   gefunden := KAQry.SucheKundenAuftragspositionen('131645');
-
-
+   if KAQry.IsConnected then
+       gefunden := KAQry.SucheKundenAuftragspositionen('142302');
+//   Form1.DataSource1.DataSet:=KaQry;
+//   Form1.DataSource1.Enabled := true;
+   Feldnamen:=KAQry.GetFieldNames();
+   Feldwerte:=KAQry.GetFieldValues();
+   Tools.Log.Log(KAQry.GetFieldNamesAsText);
+   while not KAQry.Eof do
+   begin
+      Tools.Log.Log(KAQry.GetFieldValuesAsText);
+      KAQry.Next;
+   end;
+   Tools.Log.Close;
 end;
 
 procedure Uni2SQLite();
@@ -84,9 +97,6 @@ begin
     +  ' auftragkopf.klassifiz, auftragpos.pos as pos_nr, auftragpos.t_tg_nr, '
     +  'auftragpos.oa, auftragpos.typ, auftragpos.menge, auftragpos.preis '
     +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1; '  ;
-
-//    Sql:= 'SELECT count( astuelipos.ident_nr1) '
-//      + 'FROM astuelipos;';
 
   gefunden := QryADO.RunSelectQuery(Sql);
   QryADO2:=TZADOQuery.Create(nil);
