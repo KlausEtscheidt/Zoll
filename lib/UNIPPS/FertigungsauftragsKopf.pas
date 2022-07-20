@@ -2,26 +2,26 @@
 
 interface
 
-uses  System.SysUtils, FertigungsauftragsPos, StuecklistenPosition,
+uses  System.SysUtils, FertigungsauftragsPos, UnippsStueliPos,
                 Exceptions,Tools, Logger;
 
 type
-  TZFAKopf = class(TZStueliPos)
+  TWFAKopf = class(TWUniStueliPos)
     private
-      Qry: TZUNIPPSQry;
+      Qry: TWUNIPPSQry;
     protected
       { protected declarations }
     public
       FA_Nr: String;
       id_pos: String;
-      constructor Create(einTyp: String; AQry: TZUNIPPSQry);
+      constructor Create(einTyp: String; AQry: TWUNIPPSQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
 
 implementation
 
-constructor TZFAKopf.Create(einTyp: String; AQry: TZUNIPPSQry);
+constructor TWFAKopf.Create(einTyp: String; AQry: TWUNIPPSQry);
 begin
   inherited Create(einTyp);
   Qry:=AQry;
@@ -32,11 +32,11 @@ begin
 
 end;
 
-procedure TZFAKopf.holeKinderAusASTUELIPOS;
+procedure TWFAKopf.holeKinderAusASTUELIPOS;
 
-var Qry: TZUNIPPSQry;
+var Qry: TWUNIPPSQry;
   gefunden:Boolean;
-  FAPos:TZFAPos;
+  FAPos:TWFAPos;
   msg : String;
 
 begin
@@ -58,7 +58,7 @@ begin
   begin
 
       //Erzeuge Objekt fuer eine FA-Position aus der Qry
-      FAPos:=TZFAPos.Create(Qry);
+      FAPos:=TWFAPos.Create(Qry);
 
       //Hier nur toplevel-KNoten berücksichtigen
       //d.h. alle die in ASTUELIPOS keine übergeordnete Stückliste haben: ueb_s_nr=0

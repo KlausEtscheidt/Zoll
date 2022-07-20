@@ -5,27 +5,27 @@ interface
        Exceptions,Data.DB,Tools,Logger;
 
  type
-    TSValue = TValue; //alias
-    TSDictKeys = TArray<String>;
-    TSPosdata = TDictionary<String, String>;
-    TSStueli = TDictionary<String, TValue>;
+    TWValue = TValue; //alias
+    TwDictKeys = TArray<String>;
+    TWPosdata = TDictionary<String, String>;
+    TWStueli = TDictionary<String, TValue>;
 
-    TSStueliPos = class
+    TWStueliPos = class
       private
       protected
 
       public
-        Stueli: TSStueli;
-        PosData:TSPosdata;
+        Stueli: TWStueli;
+        PosData:TWPosdata;
         hatTeil:Boolean;
         constructor Create();
         function ToStr():String;overload;
-        function ToStr(KeyListe:TSDictKeys):String;overload;
+        function ToStr(KeyListe:TwDictKeys):String;overload;
         procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
         procedure AddPosData(PosDataKey:String;Felder:TFields);overload;
     end;
 
-    TZEndKnotenListe = class(TList<TValue>)
+    TWEndKnotenListe = class(TList<TValue>)
         private
         public
           Liste: TList<TValue>;
@@ -36,13 +36,13 @@ interface
 
 implementation
 
-uses StuecklistenPosition;
+uses UnippsStueliPos;
 
-constructor TSStueliPos.Create();
+constructor TWStueliPos.Create();
 begin
   //untergeordenete Stueli anlegen
-  Stueli:= TSStueli.Create;
-  Posdata:=TSPosdata.Create;
+  Stueli:= TWStueli.Create;
+  Posdata:=TWPosdata.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
@@ -50,18 +50,18 @@ begin
   inherited;
 end;
 
-procedure TSStueliPos.AddPosData(PosDataKey:String;PosDataVal:String);
+procedure TWStueliPos.AddPosData(PosDataKey:String;PosDataVal:String);
 begin
     PosData.Add(PosDataKey, PosDataVal);
 end;
 
-procedure TSStueliPos.AddPosData(PosDataKey:String;Felder:TFields);
+procedure TWStueliPos.AddPosData(PosDataKey:String;Felder:TFields);
 begin
     PosData.Add( PosDataKey, trim(Felder.FieldByName(PosDataKey).AsString));
 end;
 
 
-function TSStueliPos.ToStr(KeyListe:TSDictKeys):String;
+function TWStueliPos.ToStr(KeyListe:TwDictKeys):String;
 const trenn = ' ; ' ;
 var
   txt,key:string;
@@ -75,7 +75,7 @@ var
   Result:=txt;
 end;
 
-function TSStueliPos.ToStr():String;
+function TWStueliPos.ToStr():String;
 const trenn = ' ; ' ;
 var
   val,txt:string;
@@ -93,37 +93,37 @@ end;
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-constructor TZEndKnotenListe.Create;
+constructor TWEndKnotenListe.Create;
 begin
   inherited;
 end;
 
-function TZEndKnotenListe.ToStr():String;
+function TWEndKnotenListe.ToStr():String;
 var
   txt:String;
-  Member:TZValue;
-  StueliPos: TSStueliPos;
+  Member:TWValue;
+  StueliPos: TWStueliPos;
 
 begin
   txt:= 'EndknotenListe: ';
   for Member in Self do
   begin
-    StueliPos:= Member.AsType<TSStueliPos>;
+    StueliPos:= Member.AsType<TWStueliPos>;
     txt:= txt + '<' + StueliPos.ToStr() +  '>'  ;
   end;
   Result := txt;
 end;
 
-procedure TZEndKnotenListe.WriteToLog;
+procedure TWEndKnotenListe.WriteToLog;
 var
-  Member:TZValue;
-  StueliPos: TZStueliPos;
+  Member:TWValue;
+  StueliPos: TWStueliPos;
 
 begin
   Tools.Log.Log('EndknotenListe: ');
   for Member in Self do
   begin
-    StueliPos:= Member.AsType<TZStueliPos>;
+    StueliPos:= Member.AsType<TWStueliPos>;
     Tools.Log.Log(StueliPos.ToStr );
   end;
 end;

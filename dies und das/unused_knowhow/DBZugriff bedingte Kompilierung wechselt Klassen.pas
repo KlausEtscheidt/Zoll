@@ -6,15 +6,15 @@
    mit bedingter Kompilierung "$DEFINE UNIPPS" kann zwischen
    Informix und SQLite gewechselt werden.
 
-   Das Objekt DBConn der hier defierten Klasse TZDBConnect liefert
-   über DBConn.getQuery ein Abfrageergebnis vom generischen Typ TZQry
+   Das Objekt DBConn der hier defierten Klasse TWDBConnect liefert
+   ï¿½ber DBConn.getQuery ein Abfrageergebnis vom generischen TyTWQryry
 
-   TZQry ummantelt für
-   UNIPPS eine aus TADOQuery abgeleitete TZQryUNIPPS
-   oder für
-   SQLite eine aus TFDQuery  abgeleitete TZQrySQLite
+   TWQry ummantelt fï¿½r
+   UNIPPS eine aus TADOQuery abgeleitete TWQryUNIPPS
+   oder fï¿½r
+   SQLite eine aus TFDQuery  abgeleitete TWQrySQLite
 
-   Die Verbindung zur Datenbank erfolgt über die in der
+   Die Verbindung zur Datenbank erfolgt ï¿½ber die in der
    Unit DBDatamodule.pas in KombiDataModule definierten
    ADOConnectionUnipps bzw FDConnectionSQLite
 
@@ -22,17 +22,17 @@
    z.B. Abfrage zum Lesen des Kundenauftrags und seiner Positionen
    Abfrage KAQry erzeugen
           KAQry := DBConn.getQuery;
-   Abfrage ausführen
+   Abfrage ausfï¿½hren
           gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
 
-   KAQry.SucheKundenAuftragspositionen füllt das TZQuery-Objekt KAQry
-   mit einem für die Aufgabe geeigneten SQL-String und führt sie aus.
+   KAQry.SucheKundenAuftragspositionen fï¿½llt das TWQuery-Objekt KAQry
+   mit einem fï¿½r die Aufgabe geeigneten SQL-String und fï¿½hrt sie aus.
 
    KAQry kann dann im weiteren Ablauf mit den BEINAHE identischen Methoden
    von TADOQuery bzw. TFDQuery verwendet werden.
 
-   SucheKundenAuftragspositionen und alle ähnlichen Suche_xxx
-   müssen für beide Datenbanken in den units DBQryUNIPPS bzw DBQrySQLite
+   SucheKundenAuftragspositionen und alle ï¿½hnlichen Suche_xxx
+   mï¿½ssen fï¿½r beide Datenbanken in den units DBQryUNIPPS bzw DBQrySQLite
    definiert werden.
 }
 
@@ -44,33 +44,33 @@ interface
 {$IFDEF UNIPPS}
   uses DBDatamodule, DBQryUNIPPS;
   type
-     TZQry =TZQryUNIPPS;
+     TWQry =TWQryUNIPPS;
 {$ELSE}
   uses DBDatamodule, DBQrySQLite;
   type
-     TZQry =TZQrySQLite;
+     TWQry =TWQrySQLite;
 {$ENDIF}
 
 
 type
-   TZDBConnect = class
+   TWDBConnect = class
      public
-       function getQuery():TZQry;
+       function getQuery():TWQry;
    end;
 
-var DBConn : TZDBConnect;
+var DBConn : TWDBConnect;
 
 implementation
 
-//Liefert eine TFDQuery die über eine der beiden Connections mit einer Datenbank verbunden ist
-function TZDBConnect.getQuery():TZQry;
+//Liefert eine TFDQuery die ï¿½ber eine der beiden Connections mit einer Datenbank verbunden ist
+function TWDBConnect.getQuery():TWQry;
 
 begin
 {$IFDEF UNIPPS}
-    getQuery:=TZQry.Create(KombiDataModule,
+    getQuery:=TWQry.Create(KombiDataModule,
                             KombiDataModule.ADOConnectionUnipps);
 {$ELSE}
-    getQuery:=TZQry.Create(KombiDataModule,
+    getQuery:=TWQry.Create(KombiDataModule,
                             KombiDataModule.FDConnectionSQLite);
 {$ENDIF}
 end;

@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -156,7 +156,6 @@
         <DCCReference Include="lib\UNIPPS\FertigungsauftragsPos.pas"/>
         <DCCReference Include="lib\Tools\Exceptions.pas"/>
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
-        <DCCReference Include="lib\Stueli\StuecklistenPosition.pas"/>
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
         <DCCReference Include="lib\Tools\Logger.pas"/>
         <DCCReference Include="lib\Tools\Tools.pas">
@@ -170,6 +169,8 @@
         <DCCReference Include="lib\Datenbank\ADOQuery.pas"/>
         <DCCReference Include="lib\Datenbank\BaumQrySQLite.pas"/>
         <DCCReference Include="lib\Datenbank\BaumQryUNIPPS.pas"/>
+        <DCCReference Include="mainNonGui.pas"/>
+        <DCCReference Include="lib\Stueli\UnippsStueliPos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -200,12 +201,6 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>Zoll.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
@@ -214,6 +209,12 @@
                 </DeployFile>
                 <DeployFile LocalName="Win64\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
+                        <RemoteName>Zoll.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
+                    <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

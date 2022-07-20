@@ -5,8 +5,8 @@
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
 
   mit DBConn.getQuery wird die Abfrage,
-  d.h. eine Instanz dieser Klasse TZQryUNIPPS erzeugt.
-  TZQrySQLite.SucheKundenAuftragspositionen füllt sie
+  d.h. eine Instanz dieser Klasse TWQryUNIPPS erzeugt.
+  TWQrySQLite.SucheKundenAuftragspositionen füllt sie
   mit einem geeigneten SQL und führt sie aus.
 
 }
@@ -18,7 +18,7 @@ interface
   uses System.SysUtils, System.Classes, ADOQuery;
 
   type
-    TZBaumQrySQLite = class(TZADOQuery)
+    TWBaumQrySQLite = class(TWADOQuery)
       function SucheKundenRabatt(ka_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -32,7 +32,7 @@ interface
 
 implementation
 
-function TZBaumQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+function TWBaumQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_KAPositionen"
@@ -48,7 +48,7 @@ begin
 
 end;
 
-function TZBaumQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
+function TWBaumQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
@@ -64,7 +64,7 @@ begin
 
 end;
 
-function TZBaumQrySQLite.SucheDatenzumTeil(t_tg_nr:string):Boolean;
+function TWBaumQrySQLite.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 {siehe Access Abfrage "b_hole_Daten_zu Teil"
 sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
     & "teil_uw.v_besch_art as besch_art, teil.typ, teil.urspr_land,
@@ -85,7 +85,7 @@ begin
   Result:= RunSelectQuery(sql);
 end;
 
-function TZBaumQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+function TWBaumQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
 {siehe Access Abfrage "b_Bestelldaten"
     'Suche �ber unipps_bestellpos.t_tg_nr=t_tg_nr; bestellkopf.datum muss aus der Unterabfrage hervorgehen (neuestes Datum)
     sql = "SELECT first 3 bestellkopf.ident_nr as bestell_id, bestellkopf.datum as bestell_datum, bestellpos.preis, bestellpos.basis, bestellpos.pme, bestellpos.bme, " _
@@ -105,7 +105,7 @@ begin
   Result:= RunSelectQuery(sql);
 end;
 
-function TZBaumQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+function TWBaumQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Teile_Bezeichnung"
     sql = "SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung FROM teil_bez " _
          & "WHERE ident_nr1=""" & t_tg_nr$ & """ and teil_bez.sprache=""D"" AND teil_bez.art=1 ;"
@@ -119,7 +119,7 @@ begin
 end;
 
 
-function TZBaumQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
+function TWBaumQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_Stueli_zu_Teil"
   Suche über teil_stuelipos.ident_nr1=t_tg_nr
   Es werden die Daten aus teil_stuelipos gelesen
@@ -136,7 +136,7 @@ begin
 end;
 
 
-function TZBaumQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+function TWBaumQrySQLite.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
  Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
     sql = "SELECT f_auftragkopf.auftr_nr as id_stu, " _
@@ -161,7 +161,7 @@ begin
 end;
 
 
-function TZBaumQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
+function TWBaumQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
     sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
           f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
@@ -185,7 +185,7 @@ end;
 
 
 //Suche alle Positionen zu einem FA (ASTUELIPOS)
-function TZBaumQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
+function TWBaumQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Pos_zu_FA"
  Suche ueber astuelipos.ident_nr1=FA_Nr (Id des Fertigungsauftrages)
  sql = "SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, " _

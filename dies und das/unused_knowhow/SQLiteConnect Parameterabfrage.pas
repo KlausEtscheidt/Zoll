@@ -7,7 +7,7 @@ interface
         DBQrySQLite,Data.DB, Tools;
 
   type
-    TZDbConnector = class
+    TWDbConnector = class
       dbconn : TFDConnection;
       mQry: TFDQuery;
       constructor Create();
@@ -20,7 +20,7 @@ interface
 implementation
 uses DBQryUNIPPS;
 
-constructor TZDbConnector.Create();
+constructor TWDbConnector.Create();
 
 //var driver:TFDPhysSQLiteDriverLink;
 
@@ -41,8 +41,8 @@ begin
   getQuery;
 end;
 
-//Liefert eine TFDQuery die über diese TFDConnection mit einer Datenbank verbunden ist
-function TZDbConnector.getQuery():TFDQuery;
+//Liefert eine TFDQuery die ï¿½ber diese TFDConnection mit einer Datenbank verbunden ist
+function TWDbConnector.getQuery():TFDQuery;
 var aQry: TFDQuery;
 begin
   aQry:= TFDQuery.Create(nil);
@@ -51,7 +51,7 @@ begin
   Result := aQry;
 end;
 
-function TZDbConnector.Exec(sql:string):Boolean;
+function TWDbConnector.Exec(sql:string):Boolean;
 var n_records:Integer;
 begin
   mQry.ExecSQL(sql);
@@ -59,7 +59,7 @@ begin
   Result:= True;
 end;
 
-procedure TZDbConnector.Store(tablename: String; myFields:TFields);
+procedure TWDbConnector.Store(tablename: String; myFields:TFields);
 var
   sql:String;
   myfield : TField;
@@ -90,7 +90,7 @@ begin
         //myparam:=mQry.ParamByName(myField.FieldName);
     end;
 
-  //Ausführen
+  //Ausfï¿½hren
     mQry.Prepare;
     mQry.ExecSQL(sql);
   except

@@ -7,7 +7,7 @@ interface
 uses Data.Db;
 
 type
-  TZBestellung = class
+  TWBestellung = class
   private
 
   protected
@@ -32,7 +32,7 @@ type
 
 implementation
 
-constructor TZBestellung.Create(myRecord: TFields);
+constructor TWBestellung.Create(myRecord: TFields);
 begin
     bestell_id := myRecord.FieldByName('bestell_id').AsInteger;
     bestell_datum:= myRecord.FieldByName('bestell_datum').AsFloat;

@@ -23,7 +23,7 @@ begin
 end;
 
 procedure Unipps();
-  var  KAQry: TZUNIPPSQry;
+  var  KAQry: TWUNIPPSQry;
   var gefunden: Boolean;
   var Feldnamen,Feldwerte: System.TArray<String>;
   var FeldNamenTxt,FeldWerteTxt: String;
@@ -52,10 +52,10 @@ end;
 procedure Uni2SQLite();
 //kopiert von UNIPPS nach SQLite
 var
-  dbSQLiteConn,dbUniConn: TZADOConnector;
-  QrySQLite: TZBaumQrySQLite;
-  QryUNIPPS: TZBaumQryUNIPPS;
-  QryADO,QryADO2: TZADOQuery;
+  dbSQLiteConn,dbUniConn: TWADOConnector;
+  QrySQLite: TWBaumQrySQLite;
+  QryUNIPPS: TWBaumQryUNIPPS;
+  QryADO,QryADO2: TWADOQuery;
   gefunden:Boolean;
   Sql:String;
 
@@ -65,15 +65,15 @@ begin
   //Logger oeffnen
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
 
-  //DB-Verbindungen anlegen und DB's öffnen
-  dbUniConn:=TZADOConnector.Create(nil);
+  //DB-Verbindungen anlegen und DB's ï¿½ffnen
+  dbUniConn:=TWADOConnector.Create(nil);
   dbUniConn.ConnectToUNIPPS();
   //DB oeffnen  Pfad aus globaler Tools.SQLiteFile
-  dbSQLiteConn:=TZADOConnector.Create(nil);
+  dbSQLiteConn:=TWADOConnector.Create(nil);
   dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
 
   //Query fuer UNIPPS anlegen und Verbindung setzen
-  QryUNIPPS:=TZBaumQryUNIPPS.Create(nil);
+  QryUNIPPS:=TWBaumQryUNIPPS.Create(nil);
   QryUNIPPS.Connector:=dbUniConn;
   //Fuer Export nach SQLite
   //Flag und SQLite-Verbindung einmalig in Klassenvariable
@@ -83,7 +83,7 @@ begin
   gefunden := QryUNIPPS.SucheKundenRabatt('1120840');
 
   //Abfragen ueber Standard
-  QryADO:=TZADOQuery.Create(nil);
+  QryADO:=TWADOQuery.Create(nil);
   QryADO.Connector:=dbUniConn;
 
     Sql:= 'SELECT first 200  astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, '
@@ -99,7 +99,7 @@ begin
     +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1; '  ;
 
   gefunden := QryADO.RunSelectQuery(Sql);
-  QryADO2:=TZADOQuery.Create(nil);
+  QryADO2:=TWADOQuery.Create(nil);
   QryADO2.Connector:=dbSQLiteConn;
   while not QryADO.eof do
   begin
@@ -114,9 +114,9 @@ end;
 procedure TestTest();
 
 var
-  dbSQLiteConn,dbSQLiteConn2,dbUniConn: TZADOConnector;
-  QrySQLite: TZBaumQrySQLite;
-  QryUNIPPS: TZBaumQryUNIPPS;
+  dbSQLiteConn,dbSQLiteConn2,dbUniConn: TWADOConnector;
+  QrySQLite: TWBaumQrySQLite;
+  QryUNIPPS: TWBaumQryUNIPPS;
   gefunden:Boolean;
   field:TField;
   text:String;
@@ -129,12 +129,12 @@ begin
   //Logger oeffnen
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'FullLog.txt');
 
-  dbUniConn:=TZADOConnector.Create(nil);
+  dbUniConn:=TWADOConnector.Create(nil);
   dbUniConn.ConnectToUNIPPS();
   //DB oeffnen  Pfad aus globaler Tools.SQLiteFile
-  dbSQLiteConn:=TZADOConnector.Create(nil);
+  dbSQLiteConn:=TWADOConnector.Create(nil);
   dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
-//  dbSQLiteConn2:=TZADOConnector.Create(nil);
+//  dbSQLiteConn2:=TWADOConnector.Create(nil);
 //  var path2:='C:\Users\Klaus Etscheidt\Documents\Embarcadero\' +
 //                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
 //  dbSQLiteConn2.ConnectToSQLite(path2);
@@ -142,7 +142,7 @@ begin
   Tabs:=dbUniConn.Tabellen;
 {
   // Query anlegen
-  QrySQLite:=TZBaumQrySQLite.Create(nil);
+  QrySQLite:=TWBaumQrySQLite.Create(nil);
   // einmalig DB-Verbindung setzen (wird als Klassenvariable gemerkt)
   QrySQLite.Connector:=dbSQLiteConn;
 
@@ -164,7 +164,7 @@ begin
   Tools.Log.Close;
  }
 
-  QryUNIPPS:=TZBaumQryUNIPPS.Create(nil);
+  QryUNIPPS:=TWBaumQryUNIPPS.Create(nil);
   QryUNIPPS.Connector:=dbUniConn;
   //Fuer Export nach SQLite einmalig in Klassenvar
   QryUNIPPS.Export2SQLite:=True;

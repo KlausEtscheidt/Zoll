@@ -6,10 +6,10 @@ interface
         DBQry;
 
   type
-    TZDbConnector = class
+    TWDbConnector = class
       dbconn : TFDConnection;
       constructor Create(AOwner: TComponent);
-      function getQuery():TZQry;
+      function getQuery():TWQry;
     protected
       myowner: TComponent;
     end;
@@ -17,7 +17,7 @@ interface
 implementation
 
 
-constructor TZDbConnector.Create(AOwner: TComponent);
+constructor TWDbConnector.Create(AOwner: TComponent);
 
 //var driver:TFDPhysSQLiteDriverLink;
 
@@ -42,10 +42,10 @@ begin
   dbconn.Open;
 end;
 
-//Liefert eine TFDQuery die über diese TFDConnection mit einer Datenbank verbunden ist
-function TZDbConnector.getQuery():TZQry;
+//Liefert eine TFDQuery die ï¿½ber diese TFDConnection mit einer Datenbank verbunden ist
+function TWDbConnector.getQuery():TWQry;
 begin
-    getQuery:=TZQry.Create(myowner,dbconn);
+    getQuery:=TWQry.Create(myowner,dbconn);
 end;
 
 end.

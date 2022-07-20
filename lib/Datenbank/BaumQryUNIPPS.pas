@@ -6,8 +6,8 @@
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
 
   mit DBConn.getQuery wird die Abfrage,
-  d.h. eine Instanz dieser Klasse TZQryUNIPPS erzeugt.
-  TZQryUNIPPS.SucheKundenAuftragspositionen füllt sie
+  d.h. eine Instanz dieser Klasse TWQryUNIPPS erzeugt.
+  TWQryUNIPPS.SucheKundenAuftragspositionen füllt sie
   mit einem geeigneten SQL und führt sie aus.
 
 }
@@ -18,7 +18,7 @@ interface
   uses System.SysUtils,System.Classes,ADOConnector, ADOQuery;
 
   type
-    TZBaumQryUNIPPS = class(TZADOQuery)
+    TWBaumQryUNIPPS = class(TWADOQuery)
       function SucheKundenRabatt(kunden_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -31,17 +31,17 @@ interface
       //NUr zum Testen
       procedure UNI2SQLite(tablename: String);
     private
-      class var ExportQry: TZADOQuery;
+      class var ExportQry: TWADOQuery;
     public
       class var Export2SQLite:Boolean;
-      class var SQLiteConnector:TZADOConnector;
+      class var SQLiteConnector:TWADOConnector;
 
     end;
 
 
 implementation
 
-function TZBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+function TWBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_KAPositionen"
@@ -62,7 +62,7 @@ begin
 
 end;
 
-function TZBaumQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
+function TWBaumQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
 begin
   var sql: String;
   {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
@@ -79,7 +79,7 @@ begin
 end;
 
 
-function TZBaumQryUNIPPS.SucheDatenzumTeil(t_tg_nr:string):Boolean;
+function TWBaumQryUNIPPS.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 {siehe Access Abfrage "b_hole_Daten_zu Teil"
 sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
     & "teil_uw.v_besch_art as besch_art, teil.typ, teil.urspr_land,
@@ -104,7 +104,7 @@ begin
 
 end;
 
-function TZBaumQryUNIPPS.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
+function TWBaumQryUNIPPS.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
 {siehe Access Abfrage "b_Bestelldaten"
     'Suche �ber unipps_bestellpos.t_tg_nr=t_tg_nr; bestellkopf.datum muss aus der Unterabfrage hervorgehen (neuestes Datum)
     sql = "SELECT first 3 bestellkopf.ident_nr as bestell_id, bestellkopf.datum as bestell_datum,
@@ -136,7 +136,7 @@ begin
 
 end;
 
-function TZBaumQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
+function TWBaumQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Teile_Bezeichnung"
     sql = "SELECT teil_bez.ident_nr1 AS teil_bez_id, teil_bez.Text AS Bezeichnung
      FROM teil_bez
@@ -154,7 +154,7 @@ begin
 end;
 
 
-function TZBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
+function TWBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_Stueli_zu_Teil"
   Suche über teil_stuelipos.ident_nr1=t_tg_nr
   Es werden die Daten aus teil_stuelipos gelesen
@@ -185,7 +185,7 @@ begin
 end;
 
 
-function TZBaumQryUNIPPS.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+function TWBaumQryUNIPPS.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
  Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
     sql = "SELECT f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart,
@@ -209,7 +209,7 @@ begin
 
 end;
 
-function TZBaumQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
+function TWBaumQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
     sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
           f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
@@ -237,7 +237,7 @@ end;
 
 
 //Suche alle Positionen zu einem FA (ASTUELIPOS)
-function TZBaumQryUNIPPS.SuchePosZuFA(FA_Nr:String): Boolean;
+function TWBaumQryUNIPPS.SuchePosZuFA(FA_Nr:String): Boolean;
 //siehe Access Abfrage "b_hole_Pos_zu_FA"
 begin
   var sql: String;
@@ -255,12 +255,12 @@ end;
 
 
 /////////////nicht fuer produktiv-version
-procedure TZBaumQryUNIPPS.UNI2SQLite(tablename: String);
+procedure TWBaumQryUNIPPS.UNI2SQLite(tablename: String);
 begin
   if not Export2SQLite then
     exit;
   //Qry anlegen und mit Connector versorgen
-  ExportQry:= TZADOQuery.Create(nil);
+  ExportQry:= TWADOQuery.Create(nil);
   ExportQry.Connector:=SQLiteConnector;
   while not self.Eof do
   begin

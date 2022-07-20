@@ -6,11 +6,11 @@ uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
       Tools;
 
 type
-  TZTeil = class
+  TWTeil = class
   private
     { private declarations }
-    function BerechnePreisJeLMERabattiert(Qry: TZUNIPPSQry): Double;
-//    function BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
+    function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
+//    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
   protected
     { protected declarations }
   public
@@ -26,14 +26,14 @@ type
 
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
-    Bestellung: TZBestellung;
+    Bestellung: TWBestellung;
     PreisJeLME: Double;
 
     istKaufteil:Boolean;
     istEigenfertigung:Boolean;
     istFremdfertigung:Boolean;
 
-    constructor Create(TeileQry: TZUNIPPSQry);
+    constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
     function ToStr():String;
@@ -42,7 +42,7 @@ type
 
 implementation
 
-constructor TZTeil.Create(TeileQry: TZUNIPPSQry);
+constructor TWTeil.Create(TeileQry: TWUNIPPSQry);
 begin
   try
     t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
@@ -65,7 +65,7 @@ begin
     end
     else
       raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
-      + inttostr(besch_art) + '< in >TZTeil.Create<');
+      + inttostr(besch_art) + '< in >TWTeil.Create<');
 
     holeBenennung;
   except
@@ -77,8 +77,8 @@ begin
 
 end;
 
-procedure TZTeil.holeBenennung;
-  var Qry: TZUNIPPSQry;
+procedure TWTeil.holeBenennung;
+  var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(t_tg_nr) then
@@ -86,9 +86,9 @@ begin
 end;
 
 
-procedure TZTeil.holeMaxPreisAus3Bestellungen;
+procedure TWTeil.holeMaxPreisAus3Bestellungen;
   var gefunden: Boolean;
-  var Qry: TZUNIPPSQry;
+  var Qry: TWUNIPPSQry;
   var maxPreis:Double;
   var maxFields:TFields;
 
@@ -127,11 +127,11 @@ begin
   PreisErmittelt:= True;
 
   //Übertrage gemerkten Datensatz in Ojekt
-  Bestellung := TZBestellung.Create(maxFields);
+  Bestellung := TWBestellung.Create(maxFields);
 
 end;
 
-function TZTeil.BerechnePreisJeLMERabattiert(Qry: TZUNIPPSQry): Double;
+function TWTeil.BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 begin
   {s. auch Erklärungen in BerechnePreisJeLMEUnrabattiert
     Wert der Bestellpos ohne Rabatte:
@@ -154,7 +154,7 @@ begin
 end;
 
 
-//function TZTeil.BerechnePreisJeLMEUnrabattiert(Qry: TZQry): Double;
+//function TWTeil.BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
 //begin
 //  {Daten in UNIPPS aus Bestllung/Zusatz/Zusatzdaten zur Bestellposition (im Feld Preis) bzw Hauptformular zum Teil
 //   Beispiel ERMPE�40
@@ -182,7 +182,7 @@ end;
 //
 //end;
 
-function TZTeil.ToStr():String;
+function TWTeil.ToStr():String;
   var trenn :String;
 begin
     trenn:= ' ; ';

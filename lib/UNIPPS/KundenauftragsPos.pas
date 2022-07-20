@@ -2,28 +2,28 @@ unit KundenauftragsPos;
 
 interface
 
-uses  System.SysUtils,FertigungsauftragsKopf, StuecklistenPosition,
+uses  System.SysUtils,FertigungsauftragsKopf, UnippsStueliPos,
          Tools;
 
 type
-  TZKundenauftragsPos = class(TZStueliPos)
+  TWKundenauftragsPos = class(TWUniStueliPos)
     private
       Rabatt:Double;
     public
       vk_brutto: Double;
       vk_netto: Double;
-      constructor Create(Qry: TZUNIPPSQry; Kundenrabatt: Double);
+      constructor Create(Qry: TWUNIPPSQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
     end;
 
 implementation
 
-constructor TZKundenauftragsPos.Create(Qry: TZUNIPPSQry; Kundenrabatt: Double);
+constructor TWKundenauftragsPos.Create(Qry: TWUNIPPSQry; Kundenrabatt: Double);
 begin
   inherited Create('KA_Pos');
-  //Speichere typunabhängige Daten über geerbte Funktion
+  //Speichere typunabhï¿½ngige Daten ï¿½ber geerbte Funktion
   PosDatenSpeichern(Qry);
-  //Speichere typabhängige Daten
+  //Speichere typabhï¿½ngige Daten
   Rabatt:=Kundenrabatt;
   vk_brutto:=Qry.FieldByName('preis').AsFloat;
   vk_netto:=vk_brutto * (1 + Rabatt); //Rabbat hat Minuszeichen in UNIPPS
@@ -31,12 +31,12 @@ begin
   AddPosData('vk_brutto',FloatToStr(vk_brutto));
 end;
 
-procedure TZKundenauftragsPos.holeKinderAusASTUELIPOS;
+procedure TWKundenauftragsPos.holeKinderAusASTUELIPOS;
 
 var gefunden: Boolean;
-var Qry: TZUNIPPSQry;
-var FAKopf:TZFAKopf;
-var FAStueliKey:String; //Stueli Key für FA's
+var Qry: TWUNIPPSQry;
+var FAKopf:TWFAKopf;
+var FAStueliKey:String; //Stueli Key fï¿½r FA's
 var lfn: Integer;
 
 begin
@@ -53,16 +53,16 @@ begin
 
   lfn:=1;
   //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
-  //Zu Doku und Testzwecken werden die FA-Köpfe als Dummy-Stücklisten-Einträge
-  //in die Stückliste mit aufgenommen
+  //Zu Doku und Testzwecken werden die FA-Kï¿½pfe als Dummy-Stï¿½cklisten-Eintrï¿½ge
+  //in die Stï¿½ckliste mit aufgenommen
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    FAKopf:=TZFAKopf.Create('FA_Komm', Qry);
+    FAKopf:=TWFAKopf.Create('FA_Komm', Qry);
     Tools.Log.Log('-------FA Komm -----');
     Tools.Log.Log(FAKopf.ToStr);
 
-    // in Stueck-Liste übernehmen
+    // in Stueck-Liste ï¿½bernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
     FAStueliKey:=inttostr(lfn);
     Stueli.Add(FAStueliKey, FAKopf);

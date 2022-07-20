@@ -10,7 +10,7 @@ implementation
 procedure db_test();
 var
   gefunden: Boolean;
-  KAQry: TZQryUNIPPS;
+  KAQry: TWQryUNIPPS;
   ka_id: String;
 begin
   ka_id:='142591';

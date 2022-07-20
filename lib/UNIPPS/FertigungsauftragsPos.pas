@@ -2,12 +2,12 @@
 
 interface
 
-uses  StuecklistenPosition, Tools,Logger;
+uses  UnippsStueliPos, Tools,Logger;
 
 type
-  TZFAPos = class(TZStueliPos)
+  TWFAPos = class(TWUniStueliPos)
     private
-      Qry: TZUNIPPSQry;
+      Qry: TWUNIPPSQry;
     protected
       { protected declarations }
     public
@@ -16,13 +16,13 @@ type
       set_block:String;
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
-      constructor Create(AQry: TZUNIPPSQry);
+      constructor Create(AQry: TWUNIPPSQry);
       procedure holeKinderAusASTUELIPOS(id_pos_vater:String);
     end;
 
 implementation
 
-constructor TZFAPos.Create(AQry: TZUNIPPSQry);
+constructor TWFAPos.Create(AQry: TWUNIPPSQry);
 begin
   inherited Create('FA_Pos');
   Qry:=AQry;
@@ -43,9 +43,9 @@ begin
 
 end;
 
-procedure TZFAPos.holeKinderAusASTUELIPOS(id_pos_vater:String);
+procedure TWFAPos.holeKinderAusASTUELIPOS(id_pos_vater:String);
 
-var FAPos:TZFAPos;
+var FAPos:TWFAPos;
 
 begin
   // !!!! Beachte: Hier wird der selbe Recordset verwendet,
@@ -56,7 +56,7 @@ begin
   begin
 
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    FAPos:=TZFAPos.Create(Qry);
+    FAPos:=TWFAPos.Create(Qry);
 
     //Gehört der Eintrag zur übergeordneten Stückliste => speichern; sonst rücksprung
     //Achtung auch hier verlassen wir uns auf die korrekte Reihenfolge in ASTUELIPOS

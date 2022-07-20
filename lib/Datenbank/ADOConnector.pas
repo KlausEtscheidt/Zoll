@@ -5,7 +5,7 @@ interface
 uses  System.SysUtils,  System.Classes, Data.Win.ADODB  ;
 
 type
-    TZADOConnector = class(TComponent)
+    TWADOConnector = class(TComponent)
       constructor Create(AOwner: TComponent);
       function ConnectToDB(AConnectStr : String; AProvider: String):TADOConnection;
       function ConnectToSQLite(PathTODBFile: String): TADOConnection;
@@ -25,16 +25,16 @@ type
 
 implementation
 
-constructor TZADOConnector.Create(AOwner: TComponent);
+constructor TWADOConnector.Create(AOwner: TComponent);
 begin
   //Connection anlegen
   FConnection:=TADOConnection.Create(AOwner);
-  //Ohne Login-Aufforderung (Kann vor Connect geändert werden)
+  //Ohne Login-Aufforderung (Kann vor Connect geï¿½ndert werden)
   FConnection.LoginPrompt := False;
 
 end;
 
-function TZADOConnector.ConnectToSQLite(PathTODBFile: String): TADOConnection;
+function TWADOConnector.ConnectToSQLite(PathTODBFile: String): TADOConnection;
 var
   ConnString, Provider :String;
 
@@ -59,7 +59,7 @@ var
     ConnectToDB(ConnString, Provider);
   except
     raise Exception.Create(
-      'Konnte Datenbank >>' + PathTODBFile + '<< nicht öffen.' );
+      'Konnte Datenbank >>' + PathTODBFile + '<< nicht ï¿½ffen.' );
   end;
 
   Datenbank:='SQLite';   //nur Info
@@ -68,7 +68,7 @@ var
   Result:=FConnection;
 end;
 
-function TZADOConnector.ConnectToUNIPPS(): TADOConnection;
+function TWADOConnector.ConnectToUNIPPS(): TADOConnection;
 var
   ConnString, Provider :String;
 
@@ -82,14 +82,14 @@ var
   try
     ConnectToDB(ConnString, Provider);
   except
-    raise Exception.Create('Konnte UNIPPS nicht öffen.' );
+    raise Exception.Create('Konnte UNIPPS nicht ï¿½ffen.' );
   end;
 
   Datenbank:='UNIPPS';   //nur Info
   Result:=FConnection;
 end;
 
-function TZADOConnector.ConnectToDB(AConnectStr: String; AProvider: String): TADOConnection;
+function TWADOConnector.ConnectToDB(AConnectStr: String; AProvider: String): TADOConnection;
 var
   Tabellen: TStringList ;
   ErrMsg:String;
@@ -112,7 +112,7 @@ begin
 
   FConnection.Open;
 
-  ErrMsg:='Konnte Datenbank nicht öffen.';
+  ErrMsg:='Konnte Datenbank nicht ï¿½ffen.';
 
   if not (FConnection.State=[stOpen]) then
        raise Exception.Create('Fehler beim DB Connect');
@@ -131,12 +131,12 @@ begin
 
 end;
 
-function TZADOConnector.GetConnection(): TADOConnection;
+function TWADOConnector.GetConnection(): TADOConnection;
 begin
   Result:=FConnection
 end;
 
-function TZADOConnector.GetTabellen(): System.TArray<String>;
+function TWADOConnector.GetTabellen(): System.TArray<String>;
 begin
   Result:=FTabellen.ToStringArray;
 end;

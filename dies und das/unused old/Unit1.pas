@@ -26,7 +26,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var qry:TADOQuery;
-var qry2:TZQry;
+var qry2:TWQry;
 
 var sql:String;
 var f: TFields;

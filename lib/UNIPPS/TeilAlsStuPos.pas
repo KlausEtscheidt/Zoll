@@ -2,26 +2,26 @@ unit TeilAlsStuPos;
 
 interface
 
-uses  StuecklistenPosition, Tools;
+uses  UnippsStueliPos, Tools;
 
 type
-  TZTeilAlsStuPos = class(TZStueliPos)
+  TWTeilAlsStuPos = class(TWUniStueliPos)
     private
     protected
       { protected declarations }
     public
       pos_nr: String;
       t_tg_nr: String;
-      constructor Create(AQry: TZUNIPPSQry);
+      constructor Create(AQry: TWUNIPPSQry);
     end;
 
 
 implementation
 
-constructor TZTeilAlsStuPos.Create(AQry: TZUNIPPSQry);
+constructor TWTeilAlsStuPos.Create(AQry: TWUNIPPSQry);
 begin
   inherited Create('Teil');
-  //Speichere typunabhängige Daten über geerbte Funktion
+  //Speichere typunabhï¿½ngige Daten ï¿½ber geerbte Funktion
   PosDatenSpeichern(AQry);
   pos_nr:=Self.PosData['pos_nr'];
   t_tg_nr:=Self.PosData['t_tg_nr'];

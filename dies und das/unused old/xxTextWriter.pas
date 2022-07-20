@@ -5,7 +5,7 @@ interface
 uses System.SysUtils,  Config;
 
   type
-    TZTextFile = class
+    TWTextFile = class
       private
         Filename: string;
         LogFile: TextFile;
@@ -18,18 +18,18 @@ uses System.SysUtils,  Config;
         procedure ClearContent();
     end;
 
-  var Log: TZTextFile;
-  var ErrLog: TZTextFile;
+  var Log: TWTextFile;
+  var ErrLog: TWTextFile;
 
 implementation
 
-destructor TZTextFile.Destroy;
+destructor TWTextFile.Destroy;
 begin
     inherited destroy;
     CloseFile (LogFile);
 end;
 
-constructor TZTextFile.Create(Filename : String);
+constructor TWTextFile.Create(Filename : String);
 
 begin
 
@@ -38,12 +38,12 @@ begin
 
 end;
 
-procedure TZTextFile.Close();
+procedure TWTextFile.Close();
 begin
     CloseFile (LogFile);
 end;
 
-procedure TZTextFile.Open();
+procedure TWTextFile.Open();
 begin
     if FileExists (FileName) then
         Append (LogFile) // open existing file
@@ -52,13 +52,13 @@ begin
 end;
 
 
-procedure TZTextFile.ClearContent();
+procedure TWTextFile.ClearContent();
 begin
     CloseFile (LogFile);
     Open;
 end;
 
-procedure TZTextFile.Log(msg: String);
+procedure TWTextFile.Log(msg: String);
 begin
 
   try

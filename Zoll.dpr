@@ -10,7 +10,6 @@ uses
   FertigungsauftragsPos in 'lib\UNIPPS\FertigungsauftragsPos.pas',
   Exceptions in 'lib\Tools\Exceptions.pas',
   Stueckliste in 'lib\Stueli\Stueckliste.pas',
-  StuecklistenPosition in 'lib\Stueli\StuecklistenPosition.pas',
   TeilAlsStuPos in 'lib\UNIPPS\TeilAlsStuPos.pas',
   Logger in 'lib\Tools\Logger.pas',
   Tools in 'lib\Tools\Tools.pas' {Wkz: TDataModule},
@@ -19,7 +18,9 @@ uses
   ADOConnector in 'lib\Datenbank\ADOConnector.pas',
   ADOQuery in 'lib\Datenbank\ADOQuery.pas',
   BaumQrySQLite in 'lib\Datenbank\BaumQrySQLite.pas',
-  BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas';
+  BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas',
+  mainNonGui in 'mainNonGui.pas',
+  UnippsStueliPos in 'lib\Stueli\UnippsStueliPos.pas';
 
 {$R *.res}
 

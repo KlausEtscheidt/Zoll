@@ -1,4 +1,4 @@
-unit StuecklistenPosition;
+ï»¿unit UnippsStueliPos;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
@@ -7,11 +7,11 @@ interface
        Tools;
 
   type
-    TZValue = TValue; //alias
-    TZStueli = TDictionary<String, TValue>;
-    //TZFeldListe = TDictionary<String, String>;
+    TWValue = TValue; //alias
+//    TWStueli = TDictionary<String, TValue>;
+    //TWFeldListe = TDictionary<String, String>;
 
-    TZStueliPos = class(TSStueliPos)
+    TWUniStueliPos = class(TWStueliPos)
       private
         FeldListeKompl: String;
         function GetFeldListeKomplett():String ;
@@ -34,33 +34,33 @@ interface
 //        ueb_s_nr:String;
 //        ds:String;
 //        set_block:String;
-//        Stueli: TZStueli;
+//        Stueli: TWStueli;
 //        hatTeil:Boolean;
-        Teil: TZTeil;
+        Teil: TWTeil;
 
         property FeldListeKomplett: String read GetFeldListeKomplett ;
 
         constructor Create(APosTyp:String);
-        procedure PosDatenSpeichern(Qry: TZUNIPPSQry);
+        procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
         procedure SucheTeilzurStueliPos();
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
         function ToStrKurz():String;
-        class procedure InitTextFile(filename:string);
+        class procedure InitOutputFiles(filename:string);
         procedure ToTextFile;
 
       end;
 
 var
-  EndKnotenListe: TZEndKnotenListe;
+  EndKnotenListe: TWEndKnotenListe;
   CSVLang,CSVKurz: TLogFile;
 
 implementation
 
 uses FertigungsauftragsKopf,TeilAlsStuPos;
 
-constructor TZStueliPos.Create(APosTyp:String);
+constructor TWUniStueliPos.Create(APosTyp:String);
 begin
 
   inherited Create;
@@ -74,19 +74,19 @@ begin
   //FeldListeKompl:=TSFeldListe.Create;
 
   //untergeordenete Stueli anlegen
-  //Stueli:= TZStueli.Create;
+  //Stueli:= TWStueli.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   //hatTeil:=False;
 
 end;
 
-//Überträgt allgemeingültige und typspezifische Daten aus Qry in Felder
-procedure TZStueliPos.PosDatenSpeichern(Qry: TZUNIPPSQry);
+//ï¿½bertrï¿½gt allgemeingï¿½ltige und typspezifische Daten aus Qry in Felder
+procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
 begin
 
   try
-    //Allgemeingültige Felder
+    //Allgemeingï¿½ltige Felder
     //-----------------------------------------------
     AddPosData('id_stu', Qry.Fields);
     AddPosData('pos_nr', Qry.Fields);
@@ -148,10 +148,10 @@ begin
 end;
 
 
-procedure TZStueliPos.SucheTeilzurStueliPos();
+procedure TWUniStueliPos.SucheTeilzurStueliPos();
 
 var
-  Qry: TZUNIPPSQry;
+  Qry: TWUNIPPSQry;
   gefunden: Boolean;
 
 begin
@@ -159,7 +159,7 @@ begin
     gefunden:=Qry.SucheDatenzumTeil(PosData['t_tg_nr']);
     if gefunden then
     begin
-      Teil:= TZTeil.Create(Qry);
+      Teil:= TWTeil.Create(Qry);
       hatTeil:=True;
       if   Teil.istKaufteil then
         Teil.holeMaxPreisAus3Bestellungen;
@@ -167,7 +167,7 @@ begin
 
 end;
 
-procedure TZStueliPos.holeKindervonEndKnoten();
+procedure TWUniStueliPos.holeKindervonEndKnoten();
 var
   gefunden: Boolean;
 
@@ -175,7 +175,7 @@ begin
 
   if Teil.istKaufteil then
   begin
-      raise EStuBaumStueliPos.Create('Hääh Kaufteile sollten hier nicht hinkommen >'
+      raise EStuBaumStueliPos.Create('Hï¿½ï¿½h Kaufteile sollten hier nicht hinkommen >'
     + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)');
     Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
@@ -183,39 +183,39 @@ begin
   if Teil.istEigenfertigung then
   begin
     //Fuer die weitere Suche gibt es hier noch 2 Varianten, da unklar welche besser (richtig)
-    //Die Suche erfolgt entweder über Ferftigungsaufträge oder über die Baukasten-Stückliste des Teiles
+    //Die Suche erfolgt entweder ï¿½ber Ferftigungsauftrï¿½ge oder ï¿½ber die Baukasten-Stï¿½ckliste des Teiles
     If 1 = 1 Then
     begin
-      //Suche erst über FA
+      //Suche erst ï¿½ber FA
       gefunden := holeKinderAusASTUELIPOS();
-      //Wenn im FA nix gefunden Suche über Teile-STU
+      //Wenn im FA nix gefunden Suche ï¿½ber Teile-STU
       If Not gefunden Then
-          //Immer noch nix gefunden: Wie blöd
+          //Immer noch nix gefunden: Wie blï¿½d
           If Not holeKinderAusTeileStu() Then
             raiseNixGefunden
     end
     Else
-        //Suche nur über Teilestueckliste
+        //Suche nur ï¿½ber Teilestueckliste
         If Not holeKinderAusTeileStu() Then
           raiseNixGefunden
   end
   else
   if Teil.istFremdfertigung then
   begin
-      //Suche nur über Teilestueckliste, da es normal keinen FA gibt
+      //Suche nur ï¿½ber Teilestueckliste, da es normal keinen FA gibt
       If Not holeKinderAusTeileStu() Then
           raiseNixGefunden
   end
   else
-    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.t_tg_nr + '<');
+    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart fï¿½r Teil>' + Teil.t_tg_nr + '<');
 
 end;
 
 //Suche in Serien-FA
-function TZStueliPos.holeKinderAusASTUELIPOS(): Boolean;
+function TWUniStueliPos.holeKinderAusASTUELIPOS(): Boolean;
 var gefunden: Boolean;
-var Qry: TZUNIPPSQry;
-var FAKopf:TZFAKopf;
+var Qry: TWUNIPPSQry;
+var FAKopf:TWFAKopf;
 
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
@@ -230,14 +230,14 @@ begin
   end;
 
   //Serien-FA gefunden => Suche dessen Kinder in ASTUELIPOS
-  //Zu Doku und Testzwecken wirden der FA-Kopf als Dummy-Stücklisten-Eintrag
-  //in die Stückliste mit aufgenommen
+  //Zu Doku und Testzwecken wirden der FA-Kopf als Dummy-Stï¿½cklisten-Eintrag
+  //in die Stï¿½ckliste mit aufgenommen
 
   //Erzeuge Objekt fuer einen auftragsbezogenen FA
-  FAKopf:=TZFAKopf.Create('FA_Serie', Qry);
+  FAKopf:=TWFAKopf.Create('FA_Serie', Qry);
   Tools.Log.Log(FAKopf.ToStr);
 
-  // Da es nur den einen FA für die STU gibt, mit Index 1 in Stueck-Liste übernehmen
+  // Da es nur den einen FA fï¿½r die STU gibt, mit Index 1 in Stueck-Liste ï¿½bernehmen
   Stueli.Add(FAKopf.FA_Nr, FAKopf);
 
   // Kinder suchen
@@ -248,14 +248,14 @@ begin
 end;
 
 
-function TZStueliPos.holeKinderAusTeileStu(): Boolean;
+function TWUniStueliPos.holeKinderAusTeileStu(): Boolean;
   var
    gefunden:  Boolean;
-   TeilInStu: TZTeilAlsStuPos;
-   Qry: TZUNIPPSQry;
+   TeilInStu: TWTeilAlsStuPos;
+   Qry: TWUNIPPSQry;
 
 begin
-    //Gibt es eine Stückliste zum Teil
+    //Gibt es eine Stï¿½ckliste zum Teil
     Qry := Tools.getQuery;
     gefunden := Qry.SucheStuelizuTeil(Teil.t_tg_nr);
 
@@ -272,13 +272,13 @@ begin
     begin
 
         //aktuellen Datensatz in StueliPos-Objekt wandeln
-        TeilInStu:=TZTeilAlsStuPos.Create(Qry);
+        TeilInStu:=TWTeilAlsStuPos.Create(Qry);
         Tools.Log.Log(TeilInStu.ToStr);
 
-        //in Stueck-Liste übernehmen
+        //in Stueck-Liste ï¿½bernehmen
         Stueli.Add(TeilInStu.pos_nr, TeilInStu);
 
-        //merken als Teil noch ohne Kinder fuer weitere Suchläufe
+        //merken als Teil noch ohne Kinder fuer weitere Suchlï¿½ufe
         if not TeilInStu.Teil.istKaufteil then
           EndKnotenListe.Add(TeilInStu);
 
@@ -291,29 +291,29 @@ begin
 
 end;
 
-procedure TZStueliPos.raiseNixGefunden();
+procedure TWUniStueliPos.raiseNixGefunden();
 begin
   exit;
     raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
   + Teil.t_tg_nr + '< gefunden.')
 end;
 
-function TZStueliPos.ToStrKurz():String;
+function TWUniStueliPos.ToStrKurz():String;
 const trenn = ' ; ' ;
-  meineFelder: TSDictKeys = ['id_stu','pos_nr','t_tg_nr'];
+  meineFelder: TwDictKeys = ['id_stu','pos_nr','t_tg_nr'];
 begin
   Result := ToSTr(meineFelder);
 end;
 
-class procedure TZStueliPos.InitTextFile(filename:string);
+class procedure TWUniStueliPos.InitOutputFiles(filename:string);
 begin
   Tools.CSVLang.OpenNew(Tools.LogDir,filename + '_Struktur.txt');
   Tools.CSVKurz.OpenNew(Tools.LogDir,filename + '_Kalk.txt');
 end;
 
-procedure TZStueliPos.ToTextFile;
+procedure TWUniStueliPos.ToTextFile;
 
-var StueliPos: TZStueliPos;
+var StueliPos: TWUniStueliPos;
 var StueliPosKey: String;
 var keyArray: System.TArray<System.string>;
 
@@ -335,13 +335,13 @@ begin
 
   for StueliPosKey in keyArray  do
   begin
-    StueliPos:= Stueli[StueliPosKey].AsType<TZStueliPos>;
+    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;
     StueliPos.ToTextFile;
   end;
 
 end;
 
-function TZStueliPos.GetFeldListeKomplett():String ;
+function TWUniStueliPos.GetFeldListeKomplett():String ;
 begin
 
 end;

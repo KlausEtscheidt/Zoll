@@ -15,22 +15,22 @@ const SQLiteDBFileName: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
                  'Zoll\data\db\zoll_neu.sqlite';
 type
-  TZUNIPPSQry = TZBaumQrySQLite;
+  TWUNIPPSQry = TWBaumQrySQLite;
 
 {$ELSE}
 const LogDir: String =
-    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\'
-    +'zoll\data\output';
+    'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
+                   'Zoll\data\output';
 const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
                  'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
 
 type
-  TZUNIPPSQry = TZBaumQryUNIPPS;
+  TWUNIPPSQry = TWBaumQryUNIPPS;
 
 {$ENDIF}
 
 procedure init();
-function GetQuery() : TZUNIPPSQry;
+function GetQuery() : TWUNIPPSQry;
 
 var
   Log: TLogFile;
@@ -38,7 +38,7 @@ var
   CSVKurz: TLogFile;
   CSVLang: TLogFile;
   ApplicationBaseDir: String;
-  DbConnector:TZADOConnector;
+  DbConnector:TWADOConnector;
 
 implementation
 
@@ -50,7 +50,7 @@ begin
   CSVLang:=TLogFile.Create();
   ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
   ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
-   DbConnector:=TZADOConnector.Create(nil);
+   DbConnector:=TWADOConnector.Create(nil);
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(SQLiteDBFileName);
    {$ELSE}
@@ -60,13 +60,13 @@ begin
 
 end;
 
-function GetQuery() : TZUNIPPSQry;
+function GetQuery() : TWUNIPPSQry;
 var
-  UNIPPSQry: TZUNIPPSQry;
+  UNIPPSQry: TWUNIPPSQry;
 
 begin
     //Query erzeugen
-   UNIPPSQry := TZUNIPPSQry.Create(nil);
+   UNIPPSQry := TWUNIPPSQry.Create(nil);
    //Connector in Klassenvariable
    UNIPPSQry.Connector:=DbConnector;
    Result:= UNIPPSQry;

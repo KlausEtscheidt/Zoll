@@ -1,13 +1,13 @@
-unit Kundenauftrag;
+ï»¿unit Kundenauftrag;
 
 interface
 
 uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
   KundenauftragsPos,
-  Stueckliste, StuecklistenPosition, Tools;
+  Stueckliste, UnippsStueliPos, Tools;
 
 type
-  TZKundenauftrag = class(TZStueliPos)
+  TWKundenauftrag = class(TWUniStueliPos)
   private
   protected
     { protected declarations }
@@ -23,29 +23,30 @@ type
 
 implementation
 
-constructor TZKundenauftrag.Create(new_ka_id: String);
+constructor TWKundenauftrag.Create(new_ka_id: String);
 begin
   inherited Create('KA');
   ka_id := new_ka_id;
 end;
 
-procedure TZKundenauftrag.auswerten();
+procedure TWKundenauftrag.auswerten();
 begin
   Tools.Log.Log('Starte Auswertung fuer: ' + ka_id);
-  TZStueliPos.InitTextFile(string(ka_id));
+  //Legt die beiden Ausgabedateien an
+  TWUniStueliPos.InitOutputFiles(string(ka_id));
   liesKopfundPositionen;
   holeKinder;
 //  ToTextFile;
   Tools.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
 end;
 
-procedure TZKundenauftrag.liesKopfundPositionen();
+procedure TWKundenauftrag.liesKopfundPositionen();
 
 var
   gefunden: Boolean;
   Rabatt: Double;
-  KAPos: TZKundenauftragsPos;
-  KAQry, RabattQry: TZUNIPPSQry;
+  KAPos: TWKundenauftragsPos;
+  KAQry, RabattQry: TWUNIPPSQry;
 
 begin
 
@@ -77,12 +78,12 @@ begin
   //Positionen beabeiten
   while not KAQry.Eof do
   begin
-    //KundenauftragsPos erzeugen; übertrage relevante Daten aus Qry in Felder
-    KAPos := TZKundenauftragsPos.Create(KAQry, Rabatt);
+    //KundenauftragsPos erzeugen; ï¿½bertrage relevante Daten aus Qry in Felder
+    KAPos := TWKundenauftragsPos.Create(KAQry, Rabatt);
     Tools.Log.Log('--------- KA-Pos -----------');
     Tools.Log.Log(KAPos.ToStr);
 
-    //neue Pos in Stückliste aufnehmen
+    //neue Pos in Stï¿½ckliste aufnehmen
     Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
     KAQry.next;
   end;
@@ -91,20 +92,20 @@ end;
 
 
 //Schrittweise Suche aller untergeordneten Elemente
-procedure TZKundenauftrag.holeKinder();
+procedure TWKundenauftrag.holeKinder();
 {Bei jedem Schritt werden alle Knoten, fuer die in der bisherigen Suche
  noch keine Kinder gefunden wurden, in der Liste EndKnoten abgelegt,
  sofern es keine Kaufteile sind.
  Im naechsten Schritt werden, dann Kinder fuer die Knoten aus EndKnoten gesucht
  Die Suche wird so lange wiederholt, bis EndKnoten leer bleibt.
- Die untersten Knoten müssen dann alle Kaufteil sein.
+ Die untersten Knoten mï¿½ssen dann alle Kaufteil sein.
 }
-var StueliPos: TZStueliPos;
+var StueliPos: TWUniStueliPos;
 var StueliPosKey: String;
 var keyArray: System.TArray<System.string>;
-var KaPos: TZKundenauftragsPos;
-var alteEndKnotenListe: TZEndKnotenListe;
-var EndKnoten: TZValue;
+var KaPos: TWKundenauftragsPos;
+var alteEndKnotenListe: TWEndKnotenListe;
+var EndKnoten: TWValue;
 var txt:String;
 
 begin
@@ -114,17 +115,17 @@ begin
   //---------------------------------------------------------------------------------------------
 
   //Liste fuer "Kinderlose" erzeugen:
-  EndKnotenListe:=TZEndKnotenListe.Create;
-  alteEndKnotenListe:=TZEndKnotenListe.Create;
+  EndKnotenListe:=TWEndKnotenListe.Create;
+  alteEndKnotenListe:=TWEndKnotenListe.Create;
 
   //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
   keyArray:=Stueli.Keys.ToArray;
   TArray.Sort<String>(keyArray);
 
-  //Loop über alle Pos des Kundenauftrages
+  //Loop ï¿½ber alle Pos des Kundenauftrages
   for StueliPosKey in keyArray do
   begin
-    KaPos:= Stueli[StueliPosKey].AsType<TZKundenauftragsPos>;
+    KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
 
     //Fuer Kaufteile muss nicht weiter gesucht werden
     if not KaPos.Teil.istKaufteil then
@@ -149,10 +150,10 @@ begin
     alteEndKnotenListe.WriteToLog;
 
     //Suche weiter
-    //Bisherige Endknoten müssten Serien- und Fremd-Fertigungsteile sein
+    //Bisherige Endknoten mï¿½ssten Serien- und Fremd-Fertigungsteile sein
     for EndKnoten in alteEndKnotenListe do
     begin
-      StueliPos:= EndKnoten.AsType<TZStueliPos>;
+      StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
       Tools.Log.Log('------Suche fuer Endknoten ----------');
       txt:=StueliPos.ToStr;
       Tools.Log.Log(txt);

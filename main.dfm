@@ -11,7 +11,6 @@ object mainFrm: TmainFrm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   OnShow = RunIt
   PixelsPerInch = 96
   TextHeight = 13
