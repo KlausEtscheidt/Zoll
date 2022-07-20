@@ -36,7 +36,7 @@ object mainFrm: TmainFrm
     Width = 121
     Height = 21
     TabOrder = 1
-    Text = '142591'
+    Text = '142120'
   end
   object Ende_Btn: TButton
     Left = 176

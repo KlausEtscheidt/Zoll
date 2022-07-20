@@ -26,10 +26,10 @@ constructor TWFAPos.Create(AQry: TWUNIPPSQry);
 begin
   inherited Create('FA_Pos');
   Qry:=AQry;
+
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
-  //Key zum Ablegen in der Stückliste
-  //Muss eindeutig sein und dient zum Sortieren beim Ausgeben
+
   //Felder die zur weiteren Auswertung gebraucht werden,
   // zusätzlich als Feld ablegen
   ueb_s_nr:=Self.PosData['ueb_s_nr'];
@@ -38,7 +38,8 @@ begin
 
   istToplevel:= ueb_s_nr='0';
   KinderInASTUELIPOSerwartet:=Self.PosData['set_block']='1';
-  //Suche Teil zur Position
+
+  //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();
 
 end;

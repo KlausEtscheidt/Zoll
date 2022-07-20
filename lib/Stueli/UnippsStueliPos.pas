@@ -7,38 +7,16 @@ interface
        Tools;
 
   type
-    TWValue = TValue; //alias
-//    TWStueli = TDictionary<String, TValue>;
-    //TWFeldListe = TDictionary<String, String>;
 
     TWUniStueliPos = class(TWStueliPos)
       private
-        FeldListeKompl: String;
-        function GetFeldListeKomplett():String ;
         procedure raiseNixGefunden();
       protected
 
       public
 
         PosTyp:String;
-//        id_stu : String;
-//        id_pos : String;
-//        besch_art : String;
-//        pos_nr : String;
-//        oa : Integer;
-//        t_tg_nr: String;
-//        unipps_typ: String;
-//        menge: Double;
-//        FA_Nr: String;
-//        verurs_art: String;
-//        ueb_s_nr:String;
-//        ds:String;
-//        set_block:String;
-//        Stueli: TWStueli;
-//        hatTeil:Boolean;
         Teil: TWTeil;
-
-        property FeldListeKomplett: String read GetFeldListeKomplett ;
 
         constructor Create(APosTyp:String);
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
@@ -46,20 +24,23 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
-        function ToStrKurz():String;
-        class procedure InitOutputFiles(filename:string);
         procedure ToTextFile;
+        class procedure InitOutputFiles(filename:string);
+        class procedure CloseOutputFiles;
+        function ToStrKurz():String;
 
       end;
 
 var
   EndKnotenListe: TWEndKnotenListe;
-  CSVLang,CSVKurz: TLogFile;
+//  CSVLang,CSVKurz: TLogFile;
 
 implementation
 
 uses FertigungsauftragsKopf,TeilAlsStuPos;
 
+// Create
+//---------------------------------------------------------------------
 constructor TWUniStueliPos.Create(APosTyp:String);
 begin
 
@@ -67,26 +48,21 @@ begin
 
   //Art des Eintrags
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
+  { TODO : Check Art der Pos }
 
   PosTyp:=APosTyp;
+  //aus  TWStueliPos
   AddPosData('PosTyp', APosTyp);
-  //Liste zur Ausgabe der Eigenschaften anlegen
-  //FeldListeKompl:=TSFeldListe.Create;
-
-  //untergeordenete Stueli anlegen
-  //Stueli:= TWStueli.Create;
-
-  //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
-  //hatTeil:=False;
 
 end;
 
-//�bertr�gt allgemeing�ltige und typspezifische Daten aus Qry in Felder
+//Uebertraegt allgemeingueltige und typspezifische Daten in die PosData
+//---------------------------------------------------------------------
 procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
 begin
 
   try
-    //Allgemeing�ltige Felder
+    //Allgemeingueltige Felder
     //-----------------------------------------------
     AddPosData('id_stu', Qry.Fields);
     AddPosData('pos_nr', Qry.Fields);
@@ -96,22 +72,11 @@ begin
 
     //typspezifische Felder
     //-----------------------------------------------
-    //vorbelegen
-//    id_pos:='';
-//    besch_art:='';
-//    FA_Nr:='';
-//    verurs_art:='';
-//    ueb_s_nr:='';
-//    ds:='';
-//    set_block:='';
-
     if PosTyp='KA_Pos' then
     begin
       AddPosData('id_pos', Qry.Fields);
       AddPosData('besch_art', Qry.Fields);
       AddPosData('menge', Qry.Fields);
-      //Suche Teil zur Position
-      SucheTeilzurStueliPos;
     end
     else
     if (PosTyp='FA_Serie') or (PosTyp='FA_Komm') then
@@ -130,8 +95,6 @@ begin
     end
     else
     if PosTyp='Teil' then
-      //Suche Teil zur Position
-      SucheTeilzurStueliPos
     else
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp )
 
@@ -147,35 +110,59 @@ begin
 
 end;
 
-
+// Sucht die Informationen zu dem Teil auf der Stuecklistenpos
+//------------------------------------------------------------
 procedure TWUniStueliPos.SucheTeilzurStueliPos();
 
 var
   Qry: TWUNIPPSQry;
   gefunden: Boolean;
+//  meinTeil: TWTeil;
+  props:String;
 
 begin
     Qry:=Tools.getQuery();
     gefunden:=Qry.SucheDatenzumTeil(PosData['t_tg_nr']);
     if gefunden then
     begin
+      //Teil anlegen
       Teil:= TWTeil.Create(Qry);
+      //Werte aus Query zum Drucken speichern
+      TeileEigenschaften:=Qry.Fields  ;
+      //Teil zusätzlich in Vaterklasse
+      StueliTeil:=Teil;
+      //merken das Pos Teil hat
       hatTeil:=True;
-      if   Teil.istKaufteil then
-        Teil.holeMaxPreisAus3Bestellungen;
+      TeileEigenschaften.Add(Teil.BezFeld)
+//      props:=GetTeileEigenschaften;
     end;
 
 end;
 
+//--------------------------------------------------------------------------
+// Struktur-Aufbau
+//--------------------------------------------------------------------------
+
+// Haupteinsprung für Suche von Kindern der bisherigen Endknoten
+// prüft Teileart und sucht je nach Art und Suchstrategie
+// in der Stückliste des Serien-FA zum Teil oder in der Teilestückliste
+//--------------------------------------------------------------------------
 procedure TWUniStueliPos.holeKindervonEndKnoten();
+type
+  TWStrategie = (nurTeil,FAzuerst);
 var
   gefunden: Boolean;
+  Strategie: TWStrategie;
 
 begin
 
+  // Strategie festlegen
+  Strategie := FAzuerst;
+  //Strategie := nurTeil;
+
   if Teil.istKaufteil then
   begin
-      raise EStuBaumStueliPos.Create('H��h Kaufteile sollten hier nicht hinkommen >'
+      raise EStuBaumStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
     + Teil.t_tg_nr + '< gefunden. (holeKindervonEndKnoten)');
     Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
@@ -184,7 +171,7 @@ begin
   begin
     //Fuer die weitere Suche gibt es hier noch 2 Varianten, da unklar welche besser (richtig)
     //Die Suche erfolgt entweder �ber Ferftigungsauftr�ge oder �ber die Baukasten-St�ckliste des Teiles
-    If 1 = 1 Then
+    If Strategie = FAzuerst Then
     begin
       //Suche erst �ber FA
       gefunden := holeKinderAusASTUELIPOS();
@@ -207,11 +194,12 @@ begin
           raiseNixGefunden
   end
   else
-    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart f�r Teil>' + Teil.t_tg_nr + '<');
+    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.t_tg_nr + '<');
 
 end;
 
-//Suche in Serien-FA
+// Sucht Kinder über die Stückliste eines Serien-FA
+//--------------------------------------------------------------------------
 function TWUniStueliPos.holeKinderAusASTUELIPOS(): Boolean;
 var gefunden: Boolean;
 var Qry: TWUNIPPSQry;
@@ -247,7 +235,8 @@ begin
 
 end;
 
-
+// Sucht Kinder über die Stückliste des Teils
+//--------------------------------------------------------------------------
 function TWUniStueliPos.holeKinderAusTeileStu(): Boolean;
   var
    gefunden:  Boolean;
@@ -291,26 +280,12 @@ begin
 
 end;
 
-procedure TWUniStueliPos.raiseNixGefunden();
-begin
-  exit;
-    raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
-  + Teil.t_tg_nr + '< gefunden.')
-end;
+//--------------------------------------------------------------------------
+// Ausgabe-Funktionen
+//--------------------------------------------------------------------------
 
-function TWUniStueliPos.ToStrKurz():String;
-const trenn = ' ; ' ;
-  meineFelder: TwDictKeys = ['id_stu','pos_nr','t_tg_nr'];
-begin
-  Result := ToSTr(meineFelder);
-end;
-
-class procedure TWUniStueliPos.InitOutputFiles(filename:string);
-begin
-  Tools.CSVLang.OpenNew(Tools.LogDir,filename + '_Struktur.txt');
-  Tools.CSVKurz.OpenNew(Tools.LogDir,filename + '_Kalk.txt');
-end;
-
+// Haupteinsprung: Ergebnis als Text in kurzer und langer Form  ausgeben
+//--------------------------------------------------------------------------
 procedure TWUniStueliPos.ToTextFile;
 
 var StueliPos: TWUniStueliPos;
@@ -319,11 +294,12 @@ var keyArray: System.TArray<System.string>;
 
 begin
 
-  //Ausgeben und zurueck, wenn keine Kinder
+  //Position (Self) ausgeben und zurueck, wenn Pos keine Kinder hat
   if Stueli.Count=0 then
   begin
-    Tools.CSVLang.Log(ToStr());
-    Tools.CSVKurz.Log(ToStrKurz());
+    //Wandle in Text über geerbte ToStr bzw eigene ToStrKurz
+    Tools.CSVLang.Log(Self.ToStr());
+    Tools.CSVKurz.Log(Self.ToStrKurz());
     exit;
   end;
 
@@ -332,18 +308,65 @@ begin
   //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
   keyArray:=Stueli.Keys.ToArray;
   TArray.Sort<String>(keyArray);
-
+  //In sortierter Reihenfolge
   for StueliPosKey in keyArray  do
   begin
+    //spezielle Position (zB KA) in allgemeine wandeln
     StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;
+    //Ausgabe
     StueliPos.ToTextFile;
   end;
 
 end;
 
-function TWUniStueliPos.GetFeldListeKomplett():String ;
+// Ausgabedateien oeffnen
+//--------------------------------------------------------------------------
+class procedure TWUniStueliPos.InitOutputFiles(filename:string);
 begin
-
+  //CSVLang ist in Tools schon als TLogFile angelegt
+  Tools.CSVLang.OpenNew(Tools.LogDir,filename + '_Struktur.txt');
+  Tools.CSVKurz.OpenNew(Tools.LogDir,filename + '_Kalk.txt');
 end;
+
+// Ausgabedateien schließen
+//--------------------------------------------------------------------------
+class procedure TWUniStueliPos.CloseOutputFiles;
+begin
+  Tools.CSVLang.Close;
+  Tools.CSVKurz.Close;
+end;
+
+// Definition der Felder, die in die kurze Ausgabe sollen
+//--------------------------------------------------------------------------
+function TWUniStueliPos.ToStrKurz():String;
+const trenn = ' ; ' ;
+  meineFelder: TwDictKeys = ['id_stu','pos_nr','t_tg_nr'];
+begin
+  Result := ToSTr(meineFelder);
+end;
+
+
+//########kann weg ?????
+//--------------------------------------------------------------------------
+//function TWUniStueliPos.GetFeldListeKomplett():String ;
+//begin
+//
+//end;
+
+
+//--------------------------------------------------------------------------
+// Hilfs-Funktionen
+//--------------------------------------------------------------------------
+
+//Helper bricht mit Fehler ab, wenn Kinder vorhanden sein müssten,
+// aber nicht gefunden wurden
+procedure TWUniStueliPos.raiseNixGefunden();
+begin
+                                { TODO : kein Abbruch im Batchmodus }
+  exit;
+    raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
+  + Teil.t_tg_nr + '< gefunden.')
+end;
+
 
 end.

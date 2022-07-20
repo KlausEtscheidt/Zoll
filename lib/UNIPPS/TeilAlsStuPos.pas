@@ -1,4 +1,4 @@
-unit TeilAlsStuPos;
+﻿unit TeilAlsStuPos;
 
 interface
 
@@ -25,6 +25,9 @@ begin
   PosDatenSpeichern(AQry);
   pos_nr:=Self.PosData['pos_nr'];
   t_tg_nr:=Self.PosData['t_tg_nr'];
+
+  //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
+  SucheTeilzurStueliPos();
 
 end;
 

@@ -1,4 +1,4 @@
-                { TODO : Constructor einfuehren, der Verbindung �bernimmt }
+﻿                { TODO : Constructor einfuehren, der Verbindung �bernimmt }
 unit ADOQuery;
 {Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
  Vor der ersten "Benutzung" einer neuen Instanz muss
@@ -55,7 +55,7 @@ interface
       function InsertFields(tablename: String; myFields:TFields):Boolean;
       function GetFieldValues(): System.TArray<String>;
       function GetFieldValuesAsText(): String;
-      function GetFieldNames(): System.TArray<String>;
+      function GetFieldNames(): System.TArray<String>;reintroduce;
       function GetFieldNamesAsText(): String;
       var n_records: Integer;
       var gefunden: Boolean;
@@ -128,6 +128,8 @@ var
   felder,werte,sql:String;
   myfield : TField;
 begin
+
+  Result:=False;
 
   //Pr�ft of Datenbank verbunden
   Self.IsConnected;
@@ -209,7 +211,7 @@ begin
   begin
     Text:=Text+Werte[I]+'; ' ;
   end;
-  Text:=Text+Werte[I];
+  Text:=Text+Werte[length(Werte)-1];
   Result:=Text;
 end;
 
@@ -245,7 +247,7 @@ begin
   begin
     Text:=Text+Werte[I]+'; ' ;
   end;
-  Text:=Text+Werte[I];
+  Text:=Text+Werte[length(Werte)-1];
   Result:=Text;
 end;
 

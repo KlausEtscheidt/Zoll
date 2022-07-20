@@ -3,10 +3,10 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
-      Tools;
+      Tools, StueliTeil;
 
 type
-  TWTeil = class
+  TWTeil = class(TStueliTeil)
   private
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
@@ -22,7 +22,10 @@ type
     sme: Integer;
     lme: Integer;
     faktlme_sme: Double;
+
+
     Bezeichnung:String;
+    BezFeld:TField;
 
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
@@ -43,13 +46,16 @@ type
 implementation
 
 constructor TWTeil.Create(TeileQry: TWUNIPPSQry);
+var
+  feldnamen,feldwerte:String;
 begin
   try
+//    feldnamen:=TeileQry.GetFieldNamesAsText;
     t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
     besch_art:=TeileQry.FieldByName('besch_art').AsInteger;
     oa:=TeileQry.FieldByName('oa').AsInteger;
     praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
-    unipps_typ:=Trim(TeileQry.FieldByName('typ').AsString);
+    unipps_typ:=Trim(TeileQry.FieldByName('unipps_typ').AsString);
     sme:=TeileQry.FieldByName('sme').AsInteger;
     faktlme_sme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
     lme:=TeileQry.FieldByName('lme').AsInteger;
@@ -83,6 +89,11 @@ begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(t_tg_nr) then
     Bezeichnung:=Trim(Qry.FieldByName('Bezeichnung').AsString);
+    BezFeld:=Qry.FieldByName('Bezeichnung');
+  { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
+   if istKaufteil then
+        holeMaxPreisAus3Bestellungen;
+
 end;
 
 

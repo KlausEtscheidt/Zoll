@@ -31,13 +31,15 @@ end;
 
 procedure TWKundenauftrag.auswerten();
 begin
-  Tools.Log.Log('Starte Auswertung fuer: ' + ka_id);
+  Tools.Log.Log('Starte Auswertung fuer: ' + ka_id +
+              ' um ' + DateTimeToStr(Now));
   //Legt die beiden Ausgabedateien an
   TWUniStueliPos.InitOutputFiles(string(ka_id));
   liesKopfundPositionen;
   holeKinder;
-//  ToTextFile;
+  ToTextFile;
   Tools.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
+  TWUniStueliPos.CloseOutputFiles;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();

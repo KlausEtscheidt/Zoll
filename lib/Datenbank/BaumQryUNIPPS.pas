@@ -94,8 +94,9 @@ sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
 
 begin
   var sql: String;
-  sql:= 'SELECT teil_uw.t_tg_nr, teil_uw.oa, teil_uw.v_besch_art besch_art, teil.typ, '
-      + 'teil.urspr_land, teil.ausl_u_land, '
+  sql:= 'SELECT teil_uw.t_tg_nr, teil_uw.oa, teil_uw.v_besch_art besch_art, '
+      + 'teil.typ as unipps_typ, '
+//      + 'teil.urspr_land, teil.ausl_u_land, '
       + 'teil.praeferenzkennung, teil.sme, teil.faktlme_sme, teil.lme '
       + 'FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa '
       + 'where teil_uw.t_tg_nr = "' + t_tg_nr + '" and teil_uw.oa<9 and teil_uw.uw=1;';

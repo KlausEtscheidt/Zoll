@@ -8,21 +8,33 @@ interface
     TWValue = TValue; //alias
     TwDictKeys = TArray<String>;
     TWPosdata = TDictionary<String, String>;
+    TWTeileEigenschaften = TFields;
     TWStueli = TDictionary<String, TValue>;
 
     TWStueliPos = class
       private
+//        FStueliTeil: TValue; //bel. Objekt
+
       protected
 
       public
         Stueli: TWStueli;
-        PosData:TWPosdata;
+        PosData:TWPosdata;   //Positions-Daten fuer Ausgaben
+        StueliTeil: TValue;
+        FTeileEigenschaften:TWTeileEigenschaften; //Teile-Daten fuer Ausgaben
         hatTeil:Boolean;
         constructor Create();
         function ToStr():String;overload;
         function ToStr(KeyListe:TwDictKeys):String;overload;
         procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
         procedure AddPosData(PosDataKey:String;Felder:TFields);overload;
+        function GetTeileEigenschaften():String;
+        procedure SetTeileEigenschaften(Felder:TFields);
+//        procedure SetStueliTeil(Teil: TValue);
+//        property StueliTeil:TValue read FStueliTeil write SetStueliTeil;
+
+        property TeileEigenschaften:TWTeileEigenschaften
+                      read FTeileEigenschaften write SetTeileEigenschaften;
     end;
 
     TWEndKnotenListe = class(TList<TValue>)
@@ -43,12 +55,42 @@ begin
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
   Posdata:=TWPosdata.Create;
+//  TeileEigenschaften:=TWTeileEigenschaften.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
   inherited;
 end;
+
+//procedure TWStueliPos.SetStueliTeil(Teil: TValue);
+//begin
+//  FStueliTeil:=Teil;
+//end;
+procedure TWStueliPos.SetTeileEigenschaften(Felder:TFields);
+var myfield: TField;
+begin
+  FTeileEigenschaften:=Felder;
+end;
+
+function TWStueliPos.GetTeileEigenschaften():String;
+var
+myfield: TField;
+txt:String;
+begin
+    txt:='';
+    if not assigned(FTeileEigenschaften ) then
+      exit;
+    for myfield in  FTeileEigenschaften do
+    begin
+        txt:=txt + Trim(myField.AsString) + ', ';
+    end;
+    System.delete(txt,length(txt)-1,1);
+    Result:=txt;
+
+
+end;
+
 
 procedure TWStueliPos.AddPosData(PosDataKey:String;PosDataVal:String);
 begin
@@ -79,13 +121,17 @@ function TWStueliPos.ToStr():String;
 const trenn = ' ; ' ;
 var
   val,txt:string;
+  myfield:TField;
 begin
   txt:='';
   for val in  PosData.Values do
   begin
     txt:= txt + val + trenn;
   end;
+  txt:=txt+GetTeileEigenschaften;
   Result:=txt;
+
+
 end;
 
 

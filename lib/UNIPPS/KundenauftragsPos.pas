@@ -1,4 +1,4 @@
-unit KundenauftragsPos;
+﻿unit KundenauftragsPos;
 
 interface
 
@@ -29,6 +29,10 @@ begin
   vk_netto:=vk_brutto * (1 + Rabatt); //Rabbat hat Minuszeichen in UNIPPS
   AddPosData('vk_netto',FloatToStr(vk_netto));
   AddPosData('vk_brutto',FloatToStr(vk_brutto));
+
+  //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
+  SucheTeilzurStueliPos();
+
 end;
 
 procedure TWKundenauftragsPos.holeKinderAusASTUELIPOS;
