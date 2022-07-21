@@ -9,7 +9,7 @@ interface
     TWFilter = TArray<String>;
     TWPosdata = TDictionary<String, String>;
     TWTeileEigenschaften = TFields;
-    TWStueli = TDictionary<String, TValue>;
+    TWStueli = TDictionary<Integer, TValue>;
 
     TWStueliPos = class
       private
@@ -18,19 +18,27 @@ interface
       protected
 
       public
-        Stueli: TWStueli;
+        Vater: TWStueliPos;  //Vaterknoten
+        IdStu: String;     //Id der übergeordneten Stueli
+        IdPos: Integer;    //Pos von Self in IdStu
+        Menge: Double;     //Menge von Self in IdStu (beliebige Einheiten)
+        Stueli: TWStueli;    //Hält die Kinder-Positionen
+
         PosData:TWPosdata;   //Positions-Daten fuer Ausgaben
-        StueliTeil: TValue;
+        StueliTeil: TValue;  //optionales Teile-Objekt auf dieser Pos
+
         FTeileEigenschaften:TWTeileEigenschaften; //Teile-Daten fuer Ausgaben
 //        class var PosFilter:TWFilter;
 //        class var TeildatenFilter:TWFilter;
         hatTeil:Boolean;
-        constructor Create();
+        constructor Create(einVater:TWStueliPos; aIdStu:String;
+                               aIdPos: Integer;eineMenge:Double);
         procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter);
         function ToStr():String;overload;
         function ToStr(KeyListe:TWFilter):String;overload;
-        procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
+//        procedure SetzeEigenschaften(Eigenschaften:TWStuPosFelder);
         procedure AddPosData(PosDataKey:String;Felder:TFields);overload;
+        procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
         function GetTeileEigenschaften():String;
         procedure SetTeileEigenschaften(Felder:TFields);
 //        procedure SetStueliTeil(Teil: TValue);
@@ -53,17 +61,24 @@ implementation
 
 uses UnippsStueliPos;
 
-constructor TWStueliPos.Create();
+constructor TWStueliPos.Create(einVater:TWStueliPos; aIdStu:String;
+                                    aIdPos: Integer;eineMenge:Double);
 begin
+  IdStu:= aIdStu;
+  IdPos:= aIdPos;
+  Vater:= einVater;
+  Menge:=eineMenge;
+
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
   Posdata:=TWPosdata.Create;
+//  StuPosFelder:=TWStuPosFelder.Create;
 //  TeileEigenschaften:=TWTeileEigenschaften.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
-  inherited;
+//  inherited;
 end;
 
 //procedure TWStueliPos.SetStueliTeil(Teil: TValue);
@@ -93,7 +108,6 @@ begin
 
 end;
 
-
 procedure TWStueliPos.AddPosData(PosDataKey:String;PosDataVal:String);
 begin
     PosData.Add(PosDataKey, PosDataVal);
@@ -114,8 +128,8 @@ procedure TWStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter);
 
 var
   StueliPos: TWStueliPos;
-  StueliPosKey: String;
-  keyArray: System.TArray<String>;
+  StueliPosKey: Integer;
+  keyArray: System.TArray<Integer>;
 
 begin
 
@@ -130,7 +144,7 @@ begin
 
   //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
   keyArray:=Stueli.Keys.ToArray;
-  TArray.Sort<String>(keyArray);
+  TArray.Sort<Integer>(keyArray);
 
   //In sortierter Reihenfolge
   for StueliPosKey in keyArray  do

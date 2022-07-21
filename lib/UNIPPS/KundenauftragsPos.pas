@@ -10,17 +10,31 @@ type
     private
       Rabatt:Double;
     public
+      //Einige Felder mit eindeutigen Namen zur Unterscheidung von Basisklasse
+      KaPosIdStu: String;   //nur f Debug, redundant in Posdaten
+      KaPosIdPos: Integer;
+      KaPosPosNr: String;  //hier nur zum Debuggen, redundant in Posdaten
       vk_brutto: Double;
       vk_netto: Double;
-      constructor Create(Qry: TWUNIPPSQry; Kundenrabatt: Double);
+      constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
     end;
 
 implementation
 
-constructor TWKundenauftragsPos.Create(Qry: TWUNIPPSQry; Kundenrabatt: Double);
+constructor TWKundenauftragsPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
+var
+  Menge:Double;
 begin
-  inherited Create('KA_Pos');
+  //UNIPPS-Mapping  auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
+  // auftragpos.pos as pos_nr,
+  KaPosIdStu:=Qry.FieldByName('id_stu').AsString;
+  KaPosIdPos:=Qry.FieldByName('id_pos').Value;
+  KaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
+  Menge:=Qry.FieldByName('menge').Value;
+//  Menge:=0;
+  inherited Create(einVater, 'KA_Pos', KaPosIdStu, KaPosIdPos, Menge);
+
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);
   //Speichere typabh�ngige Daten
@@ -46,7 +60,7 @@ var lfn: Integer;
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := Tools.getQuery;
-  gefunden := Qry.SucheFAzuKAPos(PosData['id_stu'],PosData['id_pos'] );
+  gefunden := Qry.SucheFAzuKAPos(KaPosIdStu, KaPosIdPos );
 
   if not gefunden then
   begin
@@ -62,14 +76,14 @@ begin
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    FAKopf:=TWFAKopf.Create('FA_Komm', Qry);
+    FAKopf:=TWFAKopf.Create(Self, 'FA_Komm', Qry);
     Tools.Log.Log('-------FA Komm -----');
     Tools.Log.Log(FAKopf.ToStr);
 
     // in Stueck-Liste �bernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
-    FAStueliKey:=inttostr(lfn);
-    Stueli.Add(FAStueliKey, FAKopf);
+    { TODO 1 : Fa id inStueli pruefen evtl FAKopf.FaIdPos}
+    Stueli.Add(lfn, FAKopf);
     lfn:=lfn+1;
 
     // Kinder suchen

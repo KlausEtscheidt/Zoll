@@ -1,4 +1,4 @@
-unit mainNonGui;
+﻿unit mainNonGui;
 
 interface
 
@@ -10,7 +10,6 @@ implementation
 
 procedure KaAuswerten(ka_id:string);
 var ka:TWKundenauftrag;
-var ld:string;
 begin
 
   try

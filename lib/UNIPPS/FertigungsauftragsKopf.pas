@@ -12,23 +12,35 @@ type
     protected
       { protected declarations }
     public
-      FA_Nr: String;
-      id_pos: String;
-      constructor Create(einTyp: String; AQry: TWUNIPPSQry);
+      FA_Nr: String;     //f_auftragkopf.ident_nr
+      FaIdStu: String;   //f_auftragkopf.auftr_nr  //nur f Debug
+      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
+      constructor Create(einVater: TWUniStueliPos; einTyp: String; AQry: TWUNIPPSQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
 
 implementation
 
-constructor TWFAKopf.Create(einTyp: String; AQry: TWUNIPPSQry);
+constructor TWFAKopf.Create(einVater: TWUniStueliPos; einTyp: String;
+                                                          AQry: TWUNIPPSQry);
+var
+  Menge:Double;
 begin
-  inherited Create(einTyp);
-  Qry:=AQry;
+  //UNIPPS-Mapping
+  // f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr,  f_auftragkopf.ident_nr as FA_Nr
+
+  Qry:=AQry;  //merken fuer weitere Suche
+
+  FA_Nr:=Qry.FieldByName('FA_Nr').AsString;
+
+  FaIdStu:=Qry.FieldByName('id_stu').AsString;
+  FaIdPos:=Qry.FieldByName('pos_nr').Value;
+  Menge:=1; //bei FA immer 1
+  inherited Create(einVater, einTyp, FaIdStu, FaIdPos, Menge);
+
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
-  FA_Nr:=Self.PosData['FA_Nr'];
-  //id_pos:=Self.PosData['id_pos'];
 
 end;
 
@@ -58,7 +70,7 @@ begin
   begin
 
       //Erzeuge Objekt fuer eine FA-Position aus der Qry
-      FAPos:=TWFAPos.Create(Qry);
+      FAPos:=TWFAPos.Create(Self, Qry);
 
       //Hier nur toplevel-KNoten berücksichtigen
       //d.h. alle die in ASTUELIPOS keine übergeordnete Stückliste haben: ueb_s_nr=0
@@ -66,12 +78,12 @@ begin
       begin
         Tools.Log.Log(FAPos.ToStr);
         // in Stueck-Liste übernehmen
-        Stueli.Add(FAPos.id_pos, FAPos);
+        Stueli.Add(FAPos.FaPosIdPos, FAPos);
 
         //Rekursiv weiter in ASTUELIPOS suchen wenn Knoten Kinder hat (Feld ds=1)
         If FAPos.KinderInASTUELIPOSerwartet Then
             //Bearbeite Kindknoten
-            FAPos.holeKinderAusASTUELIPOS(FAPos.id_pos)
+            FAPos.holeKinderAusASTUELIPOS(FAPos.FaPosIdPos)
         Else
           //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
            If Not FAPos.Teil.istKaufteil Then

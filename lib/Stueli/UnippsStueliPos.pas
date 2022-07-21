@@ -17,8 +17,10 @@ interface
 
         PosTyp:String;
         Teil: TWTeil;
-
-        constructor Create(APosTyp:String);
+{ TODO : einfach constr und overload raus }
+        constructor Create(APosTyp:String); overload;
+        constructor Create(einVater: TWUniStueliPos; APosTyp:String;
+                      aIdStu:String;aIdPos: Integer;eMenge:Double); overload;
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
         procedure SucheTeilzurStueliPos();
         procedure holeKindervonEndKnoten();
@@ -39,8 +41,15 @@ uses FertigungsauftragsKopf,TeilAlsStuPos;
 //---------------------------------------------------------------------
 constructor TWUniStueliPos.Create(APosTyp:String);
 begin
+  inherited Create(nil,'',0,1);
+  PosTyp:=APosTyp;
+end;
 
-  inherited Create;
+constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
+                              aIdStu:String;aIdPos: Integer;eMenge:Double);
+begin
+
+  inherited Create(einVater, aIdStu, aIdPos,eMenge);
 
   //Art des Eintrags
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
@@ -50,8 +59,6 @@ begin
 
 end;
 
-//Uebertraegt allgemeingueltige und typspezifische Daten in die PosData
-//---------------------------------------------------------------------
 procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
 begin
 
@@ -218,11 +225,11 @@ begin
   //in die St�ckliste mit aufgenommen
 
   //Erzeuge Objekt fuer einen auftragsbezogenen FA
-  FAKopf:=TWFAKopf.Create('FA_Serie', Qry);
+  FAKopf:=TWFAKopf.Create(Self,'FA_Serie', Qry);
   Tools.Log.Log(FAKopf.ToStr);
 
   // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
-  Stueli.Add(FAKopf.FA_Nr, FAKopf);
+  Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
 
   // Kinder suchen
   FAKopf.holeKinderAusASTUELIPOS;
@@ -257,11 +264,11 @@ begin
     begin
 
         //aktuellen Datensatz in StueliPos-Objekt wandeln
-        TeilInStu:=TWTeilAlsStuPos.Create(Qry);
+        TeilInStu:=TWTeilAlsStuPos.Create(Self, Qry);
         Tools.Log.Log(TeilInStu.ToStr);
 
         //in Stueck-Liste �bernehmen
-        Stueli.Add(TeilInStu.pos_nr, TeilInStu);
+        Stueli.Add(TeilInStu.TeilIdPos, TeilInStu);
 
         //merken als Teil noch ohne Kinder fuer weitere Suchl�ufe
         if not TeilInStu.Teil.istKaufteil then

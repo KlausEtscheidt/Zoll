@@ -3,10 +3,11 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
-      Tools, StueliTeil;
+      Tools ;
+      //StueliTeil
 
 type
-  TWTeil = class(TStueliTeil)
+  TWTeil = class
   private
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;

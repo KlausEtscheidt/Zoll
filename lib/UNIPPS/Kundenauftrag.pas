@@ -25,7 +25,8 @@ implementation
 
 constructor TWKundenauftrag.Create(new_ka_id: String);
 begin
-  inherited Create('KA');
+  //Top-Knoten hat keine IdStu,IdPos=1;Menge=1.
+  inherited Create(nil, 'KA','',1,1);
   ka_id := new_ka_id;
 end;
 
@@ -110,16 +111,17 @@ begin
   while not KAQry.Eof do
   begin
     //KundenauftragsPos erzeugen; �bertrage relevante Daten aus Qry in Felder
-    KAPos := TWKundenauftragsPos.Create(KAQry, Rabatt);
+    KAPos := TWKundenauftragsPos.Create(Self, KAQry, Rabatt);
     Tools.Log.Log('--------- KA-Pos -----------');
     Tools.Log.Log(KAPos.ToStr);
 
     //neue Pos in St�ckliste aufnehmen
-    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
+//    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
+    Stueli.Add(KAPos.KaPosIdPos, KAPos);
     var kaposhatteil,stuposhattteil:boolean;
     var stupos:TWStueliPos;
     kaposhatteil:=KAPos.hatTeil;
-    stupos:=Stueli[KAPos.PosData['pos_nr']].AsType<TWStueliPos>;
+    stupos:=Stueli[KAPos.KaPosIdPos].AsType<TWStueliPos>;
     stuposhattteil:=stupos.hatTeil;
     KAQry.next;
   end;
@@ -137,8 +139,8 @@ procedure TWKundenauftrag.holeKinder();
  Die untersten Knoten m�ssen dann alle Kaufteil sein.
 }
 var StueliPos: TWUniStueliPos;
-var StueliPosKey: String;
-var keyArray: System.TArray<System.string>;
+var StueliPosKey: Integer;
+var keyArray: System.TArray<Integer>;
 var KaPos: TWKundenauftragsPos;
 var alteEndKnotenListe: TWEndKnotenListe;
 var EndKnoten: TWValue;
@@ -156,7 +158,7 @@ begin
 
   //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
   keyArray:=Stueli.Keys.ToArray;
-  TArray.Sort<String>(keyArray);
+  TArray.Sort<Integer>(keyArray);
 
   //Loop �ber alle Pos des Kundenauftrages
   for StueliPosKey in keyArray do

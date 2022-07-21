@@ -10,20 +10,31 @@ type
     protected
       { protected declarations }
     public
-      pos_nr: String;
       t_tg_nr: String;
-      constructor Create(AQry: TWUNIPPSQry);
+      TeilIdStu: String; //Achtung hier Teilenummer  //nur f Debug
+      TeilIdPos: Integer; //teil_stuelipos.pos_nr
+      constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry);
     end;
 
 
 implementation
 
-constructor TWTeilAlsStuPos.Create(AQry: TWUNIPPSQry);
+constructor TWTeilAlsStuPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry);
 begin
-  inherited Create('Teil');
+  {UNIPPS Mapping
+  Suche mit SucheStuelizuTeil: Kriterium teil_stuelipos.ident_nr1=t_tg_nr
+  liefert  teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr,
+   teil_stuelipos.t_tg_nr }
+
+  TeilIdStu:=Qry.FieldByName('id_stu').AsString;
+  TeilIdPos:=Qry.FieldByName('pos_nr').Value;
+  Menge:=Qry.FieldByName('menge').Value;
+  inherited Create(einVater, 'Teil', TeilIdStu, TeilIdPos, Menge);
+
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
-  PosDatenSpeichern(AQry);
-  pos_nr:=Self.PosData['pos_nr'];
+  PosDatenSpeichern(Qry);
+
+//  pos_nr:=Self.PosData['pos_nr'];
   t_tg_nr:=Self.PosData['t_tg_nr'];
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)

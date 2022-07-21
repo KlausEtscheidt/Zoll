@@ -23,7 +23,7 @@ interface
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
-      function SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+      function SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
       function SucheFAzuTeil(t_tg_nr:String): Boolean;
       function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
       function SucheStuelizuTeil(t_tg_nr:String): Boolean;
@@ -186,15 +186,15 @@ begin
 end;
 
 
-function TWBaumQryUNIPPS.SucheFAzuKAPos(id_stu:String; id_pos:String): Boolean;
+function TWBaumQryUNIPPS.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
- Suche ueber f_auftragkopf.auftr_nr=KA_id (Id des Kundenauftrages) und f_auftragkopf.auftr_pos=pos_id
-    sql = "SELECT f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart,
-           f_auftragkopf.verurs_art, f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ
-           f_auftragkopf.ident_nr as id_FA " _
-           FROM f_auftragkopf " _
-           where f_auftragkopf.auftr_nr=" & id_stu & " and f_auftragkopf.auftr_pos=" & id_pos _
-           and f_auftragkopf.oa<9 ORDER BY id_FA;"
+
+ UNIPPS-Mapping für Kundenauftragspositionen (Tabelle auftragpos)
+ KaId (Id des Kundenauftrages) ist in auftragpos.ident_nr1 as id_stu
+ id_pos aus auftragpos.ident_nr2 as id_pos
+
+ Suche in Fertigunsauftraegen (Tabelle f_auftragkopf)
+ über f_auftragkopf.auftr_nr=KaId und f_auftragkopf.auftr_pos=id_pos
 }
 begin
   var sql: String;
@@ -202,7 +202,7 @@ begin
       + 'f_auftragkopf.verurs_art, f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ, '
       + 'f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
-      + 'Where f_auftragkopf.auftr_nr="' + id_stu + '" and f_auftragkopf.auftr_pos="' + id_pos
+      + 'Where f_auftragkopf.auftr_nr="' + KaId + '" and f_auftragkopf.auftr_pos="' + IntToStr(id_pos)
       + '" and f_auftragkopf.oa<9 ORDER BY FA_Nr';
   Result:= RunSelectQuery(sql);
 
@@ -212,17 +212,10 @@ end;
 
 function TWBaumQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
-    sql = "SELECT first 1 f_auftragkopf.auftr_nr as id_stu,
-          f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art,
-          f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ,
-          f_auftragkopf.ident_nr as id_FA
-          FROM f_auftragkopf " _
-          Where f_auftragkopf.t_tg_nr=""" & t_tg_nr _
-          """ and f_auftragkopf.oa<9 " _
-           ORDER BY id_FA desc;"
-        }
+ Suche über f_auftragkopf.t_tg_nr}
 begin
   var sql: String;
+  { TODO 1 : nur freigegebene nehmen }
   sql:= 'SELECT first 1 f_auftragkopf.auftr_nr as id_stu, '
       + 'f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art, '
       + 'f_auftragkopf.t_tg_nr, f_auftragkopf.oa, f_auftragkopf.typ, '
