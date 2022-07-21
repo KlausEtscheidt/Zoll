@@ -79,7 +79,7 @@ sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
 
 begin
   var sql: String;
-  sql:= 'SELECT t_tg_nr, oa, besch_art, typ, praeferenzkennung, '
+  sql:= 'SELECT t_tg_nr, oa, besch_art, typ as unipps_typ, praeferenzkennung, '
       + 'sme, faktlme_sme, lme '
       + 'FROM teil where t_tg_nr = "' + t_tg_nr + '" and oa<9;';
   Result:= RunSelectQuery(sql);

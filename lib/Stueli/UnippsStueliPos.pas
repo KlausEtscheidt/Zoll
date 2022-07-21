@@ -24,10 +24,6 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
-        procedure ToTextFile;
-        class procedure InitOutputFiles(filename:string);
-        class procedure CloseOutputFiles;
-        function ToStrKurz():String;
 
       end;
 
@@ -51,8 +47,6 @@ begin
   { TODO : Check Art der Pos }
 
   PosTyp:=APosTyp;
-  //aus  TWStueliPos
-  AddPosData('PosTyp', APosTyp);
 
 end;
 
@@ -64,6 +58,8 @@ begin
   try
     //Allgemeingueltige Felder
     //-----------------------------------------------
+    AddPosData('PosTyp', PosTyp);
+
     AddPosData('id_stu', Qry.Fields);
     AddPosData('pos_nr', Qry.Fields);
     AddPosData('oa', Qry.Fields);
@@ -279,80 +275,6 @@ begin
     Result:=True;
 
 end;
-
-//--------------------------------------------------------------------------
-// Ausgabe-Funktionen
-//--------------------------------------------------------------------------
-
-// Haupteinsprung: Ergebnis als Text in kurzer und langer Form  ausgeben
-//--------------------------------------------------------------------------
-procedure TWUniStueliPos.ToTextFile;
-
-var StueliPos: TWUniStueliPos;
-var StueliPosKey: String;
-var keyArray: System.TArray<System.string>;
-
-begin
-
-  //Position (Self) ausgeben und zurueck, wenn Pos keine Kinder hat
-  if Stueli.Count=0 then
-  begin
-    //Wandle in Text über geerbte ToStr bzw eigene ToStrKurz
-    Tools.CSVLang.Log(Self.ToStr());
-    Tools.CSVKurz.Log(Self.ToStrKurz());
-    exit;
-  end;
-
-  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
-
-  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
-  keyArray:=Stueli.Keys.ToArray;
-  TArray.Sort<String>(keyArray);
-  //In sortierter Reihenfolge
-  for StueliPosKey in keyArray  do
-  begin
-    //spezielle Position (zB KA) in allgemeine wandeln
-    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;
-    //Ausgabe
-    StueliPos.ToTextFile;
-  end;
-
-end;
-
-// Ausgabedateien oeffnen
-//--------------------------------------------------------------------------
-class procedure TWUniStueliPos.InitOutputFiles(filename:string);
-begin
-  //CSVLang ist in Tools schon als TLogFile angelegt
-  Tools.CSVLang.OpenNew(Tools.LogDir,filename + '_Struktur.txt');
-  Tools.CSVKurz.OpenNew(Tools.LogDir,filename + '_Kalk.txt');
-end;
-
-// Ausgabedateien schließen
-//--------------------------------------------------------------------------
-class procedure TWUniStueliPos.CloseOutputFiles;
-begin
-  Tools.CSVLang.Close;
-  Tools.CSVKurz.Close;
-end;
-
-// Definition der Felder, die in die kurze Ausgabe sollen
-//--------------------------------------------------------------------------
-function TWUniStueliPos.ToStrKurz():String;
-const trenn = ' ; ' ;
-  meineFelder: TwDictKeys = ['id_stu','pos_nr','t_tg_nr'];
-begin
-  Result := ToSTr(meineFelder);
-end;
-
-
-//########kann weg ?????
-//--------------------------------------------------------------------------
-//function TWUniStueliPos.GetFeldListeKomplett():String ;
-//begin
-//
-//end;
-
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen

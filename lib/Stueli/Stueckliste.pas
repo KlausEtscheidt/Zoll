@@ -6,7 +6,7 @@ interface
 
  type
     TWValue = TValue; //alias
-    TwDictKeys = TArray<String>;
+    TWFilter = TArray<String>;
     TWPosdata = TDictionary<String, String>;
     TWTeileEigenschaften = TFields;
     TWStueli = TDictionary<String, TValue>;
@@ -22,10 +22,13 @@ interface
         PosData:TWPosdata;   //Positions-Daten fuer Ausgaben
         StueliTeil: TValue;
         FTeileEigenschaften:TWTeileEigenschaften; //Teile-Daten fuer Ausgaben
+//        class var PosFilter:TWFilter;
+//        class var TeildatenFilter:TWFilter;
         hatTeil:Boolean;
         constructor Create();
+        procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter);
         function ToStr():String;overload;
-        function ToStr(KeyListe:TwDictKeys):String;overload;
+        function ToStr(KeyListe:TWFilter):String;overload;
         procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
         procedure AddPosData(PosDataKey:String;Felder:TFields);overload;
         function GetTeileEigenschaften():String;
@@ -88,7 +91,6 @@ begin
     System.delete(txt,length(txt)-1,1);
     Result:=txt;
 
-
 end;
 
 
@@ -102,19 +104,80 @@ begin
     PosData.Add( PosDataKey, trim(Felder.FieldByName(PosDataKey).AsString));
 end;
 
+//--------------------------------------------------------------------------
+// Ausgabe-Funktionen
+//--------------------------------------------------------------------------
 
-function TWStueliPos.ToStr(KeyListe:TwDictKeys):String;
+// Ergebnis als Text ausgeben
+//--------------------------------------------------------------------------
+procedure TWStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter);
+
+var
+  StueliPos: TWStueliPos;
+  StueliPosKey: String;
+  keyArray: System.TArray<String>;
+
+begin
+
+  //Position (Self) ausgeben
+  OutFile.Log(Self.ToStr(Filter));
+
+  //Zurueck, wenn Pos keine Kinder hat
+  if Stueli.Count=0 then
+    exit;
+
+  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
+
+  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
+  keyArray:=Stueli.Keys.ToArray;
+  TArray.Sort<String>(keyArray);
+
+  //In sortierter Reihenfolge
+  for StueliPosKey in keyArray  do
+  begin
+    //spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
+    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;;
+    //Ausgabe
+    StueliPos.ToTextFile(OutFile, Filter);
+  end;
+
+end;
+
+
+function TWStueliPos.ToStr(KeyListe:TWFilter):String;
 const trenn = ' ; ' ;
 var
-  txt,key:string;
+  txt,key,value:string;
+  myField:TField;
 
   begin
+
   txt:='';
+
   for key in  KeyListe do
   begin
-    txt:= txt + PosData[key] + trenn;
+    if PosData.TryGetValue(key,value) then
+      txt:= txt + value + trenn
+    else
+    begin
+      value:='';
+      try
+        if Self.hatTeil then
+        begin
+          value:= FTeileEigenschaften.FieldByName(key).AsString;
+          myField:=FTeileEigenschaften.FindField(key);
+        end;
+      except
+      end;
+      if value <> '' then
+        txt:= txt + value + trenn
+      else
+        txt:= txt + trenn;
+    end;
   end;
+
   Result:=txt;
+
 end;
 
 function TWStueliPos.ToStr():String;

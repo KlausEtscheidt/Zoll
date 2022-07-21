@@ -2,15 +2,15 @@
 
 interface
 
-uses Vcl.Forms, System.SysUtils, System.Classes, System.Generics.Collections,
-  KundenauftragsPos,
-  Stueckliste, UnippsStueliPos, Tools;
+uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
+        System.Generics.Collections, System.TimeSpan, Windows,
+        KundenauftragsPos, Stueckliste, UnippsStueliPos, Tools;
 
 type
   TWKundenauftrag = class(TWUniStueliPos)
   private
-  protected
-    { protected declarations }
+    procedure CSV_volle_Ausgabe();
+    procedure CSV_kurze_Ausgabe();
   public
     ka_id: String;
     komm_nr: String;
@@ -30,16 +30,45 @@ begin
 end;
 
 procedure TWKundenauftrag.auswerten();
+var
+  startzeit,zzeit,endzeit: Int64;
+  delta:Double;
+  msg:String;
+
 begin
+  startzeit:= GetTickCount;
   Tools.Log.Log('Starte Auswertung fuer: ' + ka_id +
-              ' um ' + DateTimeToStr(Now));
-  //Legt die beiden Ausgabedateien an
-  TWUniStueliPos.InitOutputFiles(string(ka_id));
+              ' um ' + DateTimeToStr(startzeit));
   liesKopfundPositionen;
   holeKinder;
-  ToTextFile;
-  Tools.Log.Log('Auswertung fuer: ' + ka_id + ' beendet.');
-  TWUniStueliPos.CloseOutputFiles;
+  CSV_volle_Ausgabe;
+
+
+  endzeit:=  GetTickCount;
+  delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
+  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.',[ka_id, delta]);
+  ShowMessage(msg);
+
+  Tools.Log.Log(msg);
+
+end;
+
+procedure TWKundenauftrag.CSV_kurze_Ausgabe();
+const trenn = ' ; ' ;
+  meineFelder: TWFilter = ['id_stu','pos_nr','t_tg_nr','Bezeichnung'];
+begin
+  Tools.CSVKurz.OpenNew(Tools.LogDir, ka_id + '_Kalk.txt');
+  ToTextFile(Tools.CSVKurz, meineFelder);
+  Tools.CSVLang.Close;
+end;
+
+procedure TWKundenauftrag.CSV_volle_Ausgabe();
+const trenn = ' ; ' ;
+  meineFelder: TWFilter = ['id_stu','pos_nr','PosTyp','t_tg_nr','Bezeichnung'];
+begin
+  Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
+  ToTextFile(Tools.CSVLang, meineFelder);
+  Tools.CSVLang.Close;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();
@@ -87,6 +116,11 @@ begin
 
     //neue Pos in St�ckliste aufnehmen
     Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
+    var kaposhatteil,stuposhattteil:boolean;
+    var stupos:TWStueliPos;
+    kaposhatteil:=KAPos.hatTeil;
+    stupos:=Stueli[KAPos.PosData['pos_nr']].AsType<TWStueliPos>;
+    stuposhattteil:=stupos.hatTeil;
     KAQry.next;
   end;
 
