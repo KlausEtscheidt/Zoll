@@ -42,7 +42,9 @@ begin
               ' um ' + DateTimeToStr(startzeit));
   liesKopfundPositionen;
   holeKinder;
+  SetzeEbenen(0);
   CSV_volle_Ausgabe;
+  CSV_kurze_Ausgabe;
 
 
   endzeit:=  GetTickCount;
@@ -65,7 +67,26 @@ end;
 
 procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
-  meineFelder: TWFilter = ['id_stu','pos_nr','PosTyp','t_tg_nr','Bezeichnung'];
+  meineFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
+      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr',
+      'T_oa','Bezeichnung', 'T_unipps_typ','T_besch_art',
+      'urspr_land', 'ausl_u_land', 'T_praeferenzkennung','menge', 'T_sme',
+      'T_faktlme_sme', 'T_lme'];
+      {T_lme ; Ebene ; ds ; t_tg_nr ; set_block ; typ ; id_pos ; T_oa ;
+      ueb_s_nr ; EbeneNice ; pos_nr ; oa ; T_unipps_typ ; T_faktlme_sme ;
+       T_praeferenzkennung ; Bezeichnung ; PosTyp ; T_besch_art ;
+        T_t_tg_nr ; id_stu ; T_sme ;
+        EbeneNice ; pos_nr ; FA_Nr ; oa ; t_tg_nr ; verurs_art ;
+        PosTyp ; menge ; id_stu ;
+excel
+        Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr
+        	verurs_art	t_tg_nr	oa	Bezchng	typ	v_besch_art
+          urspr_land	ausl_u_land	praeferenzkennung	menge	sme
+          faktlme_sme	lme	bestell_id	bestell_datum	preis	basis	pme	bme
+          	faktlme_bme	faktbme_pme	id_lief	lieferant	pos_menge	preis_eu
+            	preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
+
+         }
 begin
   Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
   ToTextFile(Tools.CSVLang, meineFelder);

@@ -26,7 +26,6 @@ type
 
 
     Bezeichnung:String;
-    BezFeld:TField;
 
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
@@ -90,7 +89,6 @@ begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(t_tg_nr) then
     Bezeichnung:=Trim(Qry.FieldByName('Bezeichnung').AsString);
-    BezFeld:=Qry.FieldByName('Bezeichnung');
   { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
    if istKaufteil then
         holeMaxPreisAus3Bestellungen;

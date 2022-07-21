@@ -121,7 +121,6 @@ var
   Qry: TWUNIPPSQry;
   gefunden: Boolean;
 //  meinTeil: TWTeil;
-  props:String;
 
 begin
     Qry:=Tools.getQuery();
@@ -131,13 +130,19 @@ begin
       //Teil anlegen
       Teil:= TWTeil.Create(Qry);
       //Werte aus Query zum Drucken speichern
-      TeileEigenschaften:=Qry.Fields  ;
+      while not Qry.eof do
+      begin
+          AddPosData(Qry.Fields,'T_');
+          Qry.Next;
+      end;
+
+
       //Teil zusätzlich in Vaterklasse
       StueliTeil:=Teil;
       //merken das Pos Teil hat
       hatTeil:=True;
-      TeileEigenschaften.Add(Teil.BezFeld)
-//      props:=GetTeileEigenschaften;
+      AddPosData('Bezeichnung',Teil.Bezeichnung);
+
     end;
 
 end;

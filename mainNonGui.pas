@@ -17,12 +17,13 @@ begin
     //Globals setzen und initialiseren
     Tools.Init;
 
+    //Ka anlegen
+    ka:=TWKundenauftrag.Create(ka_id);
+
     //Logger oeffnen
     Tools.Log.OpenAppend(Tools.LogDir,'FullLog.txt');
     Tools.ErrLog.OpenAppend(Tools.logdir,'ErrLog.txt');
 
-    //Ka anlegen
-    ka:=TWKundenauftrag.Create(ka_id);
     //auswerten
     ka.auswerten;
 

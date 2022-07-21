@@ -11,7 +11,7 @@ object mainFrm: TmainFrm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnShow = RunIt
+  OnActivate = RunIt
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
