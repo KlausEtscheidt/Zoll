@@ -13,7 +13,7 @@ const LogDir: String =
     'zoll\data\output';
 const SQLiteDBFileName: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                 'Zoll\data\db\zoll_neu.sqlite';
+                 'Zoll\data\db\zoll.sqlite';
 type
   TWUNIPPSQry = TWBaumQrySQLite;
 

@@ -53,10 +53,13 @@ interface
       function RunSelectQuery(sql:string):Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
       function InsertFields(tablename: String; myFields:TFields):Boolean;
+
       function GetFieldValues(): System.TArray<String>;
       function GetFieldValuesAsText(): String;
       function GetFieldNames(): System.TArray<String>;reintroduce;
       function GetFieldNamesAsText(): String;
+//      function FieldByName(key:String):TField; //MIT error HANDLING
+
       var n_records: Integer;
       var gefunden: Boolean;
       property Connector:TWADOConnector write SetConnector;
@@ -71,6 +74,17 @@ implementation
 //-----------------------------------------------------------
 // Basis- Abfragen
 //-----------------------------------------------------------
+
+
+//function TWADOQuery.FieldByName(key:String):TField;
+//begin
+//  try
+//    Result:=inherited FieldByName(key);
+//  except
+//     raise Exception.Create(Classname+' Feld ' + key + ' nicht in Query gefunden.')
+//  end;
+//
+//end;
 
 //Query mit Ergebnis ausf�hren (setzt Felder n_records und gefunden)
 //-----------------------------------------------------------

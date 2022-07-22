@@ -162,15 +162,6 @@ function TWBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
   Es existieren z.T. unterschiedlich Stücklisten wegen mehrerer Arbeitspläne (Ausweichmaschine mit anderen Rohteilen)
   Es wird daher zu TEIL_APLNKOPF gejoined und dort teil_aplnkopf.art=1 gefordert (Standardarbeitsplan)
 }
-{
-    sql = "SELECT teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr,
-           teil_stuelipos.t_tg_nr, teil_stuelipos.oa, teil_stuelipos.menge
-           FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1
-          AND teil_aplnkopf.ident_nr2 = teil_stuelipos.ident_nr2 AND teil_aplnkopf.ident_nr3 = teil_stuelipos.ident_nr3
-          WHERE teil_stuelipos.ident_nr1=""" & t_tg_nr & """ And teil_aplnkopf.art=""1""
-          ORDER BY teil_stuelipos.pos_nr ;
-       }
-
 begin
   var sql: String;
   sql:= 'SELECT teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr, '

@@ -27,7 +27,7 @@ begin
     //auswerten
     ka.auswerten;
 
-  finally
+  except
     //Logger schlie�en
     Tools.Log.Close;
     Tools.ErrLog.Close;

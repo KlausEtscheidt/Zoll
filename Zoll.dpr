@@ -20,7 +20,8 @@ uses
   BaumQrySQLite in 'lib\Datenbank\BaumQrySQLite.pas',
   BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas',
   mainNonGui in 'mainNonGui.pas',
-  UnippsStueliPos in 'lib\Stueli\UnippsStueliPos.pas',
+  UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
+  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   StueliTeil in 'lib\Stueli\StueliTeil.pas';
 
 {$R *.res}

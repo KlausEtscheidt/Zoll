@@ -45,12 +45,12 @@ begin
 
   //Felder die zur weiteren Auswertung gebraucht werden,
   // zusätzlich als Feld ablegen
-  ueb_s_nr:=Self.PosData['ueb_s_nr'];
-  pos_nr:=Self.PosData['pos_nr'];
-  set_block:=Self.PosData['set_block'];
+  ueb_s_nr:=Self.Ausgabe['ueb_s_nr'];
+  pos_nr:=Self.Ausgabe['pos_nr'];
+  set_block:=Self.Ausgabe['set_block'];
 
   istToplevel:= ueb_s_nr='0';
-  KinderInASTUELIPOSerwartet:=Self.PosData['set_block']='1';
+  KinderInASTUELIPOSerwartet:=Self.Ausgabe['set_block']='1';
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();
@@ -89,6 +89,8 @@ begin
       Else
          //Pos hat keine weiteren Kinder im FA => merken fuer spaetere Suchl�ufe, wenn kein Kaufteil
          If Not FAPos.Teil.istKaufteil Then
+//         var meinTeil:TWTeil;
+//         If Not FAPos.Teil.AsType<TWTeil>.istKaufteil Then
             EndKnotenListe.Add(FAPos);
 
     end

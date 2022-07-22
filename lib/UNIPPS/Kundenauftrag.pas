@@ -69,9 +69,9 @@ procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
   meineFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
       'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr',
-      'T_oa','Bezeichnung', 'T_unipps_typ','T_besch_art',
-      'urspr_land', 'ausl_u_land', 'T_praeferenzkennung','menge', 'T_sme',
-      'T_faktlme_sme', 'T_lme'];
+      'oa','Bezeichnung', 'unipps_typ','besch_art',
+      'urspr_land', 'ausl_u_land', 'praeferenzkennung','menge', 'sme',
+      'faktlme_sme', 'lme'];
       {T_lme ; Ebene ; ds ; t_tg_nr ; set_block ; typ ; id_pos ; T_oa ;
       ueb_s_nr ; EbeneNice ; pos_nr ; oa ; T_unipps_typ ; T_faktlme_sme ;
        T_praeferenzkennung ; Bezeichnung ; PosTyp ; T_besch_art ;
@@ -139,11 +139,6 @@ begin
     //neue Pos in St�ckliste aufnehmen
 //    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
     Stueli.Add(KAPos.KaPosIdPos, KAPos);
-    var kaposhatteil,stuposhattteil:boolean;
-    var stupos:TWStueliPos;
-    kaposhatteil:=KAPos.hatTeil;
-    stupos:=Stueli[KAPos.KaPosIdPos].AsType<TWStueliPos>;
-    stuposhattteil:=stupos.hatTeil;
     KAQry.next;
   end;
 

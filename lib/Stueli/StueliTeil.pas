@@ -2,13 +2,15 @@ unit StueliTeil;
 
 interface
 
-uses System.SysUtils, System.Generics.Collections,Data.DB;
+uses System.Generics.Collections,Data.DB,
+      StueliEigenschaften;
 
   type
-    TWTeileDaten = TDictionary<String, String>;
+//    TWTeileDaten = TDictionary<String, String>;
 
-    TStueliTeil = class
-      TeileDaten: TWTeileDaten;
+    TWStueliTeil = class
+        Ausgabe:TWEigenschaften;
+
     private
 
     protected
@@ -16,20 +18,16 @@ uses System.SysUtils, System.Generics.Collections,Data.DB;
     public
       //  constructor Create; override;
       //  destructor Destroy; override;
-      procedure AddData(Key:String;Val:String);overload;
-      procedure AddData(Key:String;Felder:TFields);overload;
+      function ToStr():String;
+
     end;
 
-    implementation
+implementation
 
-procedure TStueliTeil.AddData(Key:String;Val:String);
+function TWStueliTeil.ToStr():String;
+  var trenn :String;
 begin
-    TeileDaten.Add(Key, Val);
-end;
-
-procedure TStueliTeil.AddData(Key:String;Felder:TFields);
-begin
-    TeileDaten.Add( Key, trim(Felder.FieldByName(Key).AsString));
+  Result:=Ausgabe.ToStr();
 end;
 
 

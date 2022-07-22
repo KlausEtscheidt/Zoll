@@ -3,11 +3,11 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
-      Tools ;
-      //StueliTeil
+      StueliEigenschaften, Tools,
+      StueliTeil;
 
 type
-  TWTeil = class
+  TWTeil = class(TWStueliTeil)
   private
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
@@ -15,17 +15,19 @@ type
   protected
     { protected declarations }
   public
-    besch_art: Integer;
-    oa: Integer;
+    TeilTeilenummer: String; //= t_tg_nr
+    Ausgabe:TWEigenschaften;
+//    besch_art: Integer;
+    //oa: Integer;
     praeferenzkennung: Integer;
-    t_tg_nr: String;
-    unipps_typ: String;
-    sme: Integer;
-    lme: Integer;
-    faktlme_sme: Double;
+    //t_tg_nr: String;
+//    unipps_typ: String;
+//    sme: Integer;
+//    lme: Integer;
+//    faktlme_sme: Double;
 
 
-    Bezeichnung:String;
+//    Bezeichnung:String;
 
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
@@ -47,31 +49,37 @@ implementation
 
 constructor TWTeil.Create(TeileQry: TWUNIPPSQry);
 var
-  feldnamen,feldwerte:String;
+  besch_art:String;
 begin
   try
-//    feldnamen:=TeileQry.GetFieldNamesAsText;
-    t_tg_nr:=Trim(TeileQry.FieldByName('t_tg_nr').AsString);
-    besch_art:=TeileQry.FieldByName('besch_art').AsInteger;
-    oa:=TeileQry.FieldByName('oa').AsInteger;
-    praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
-    unipps_typ:=Trim(TeileQry.FieldByName('unipps_typ').AsString);
-    sme:=TeileQry.FieldByName('sme').AsInteger;
-    faktlme_sme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
-    lme:=TeileQry.FieldByName('lme').AsInteger;
+    //Alle Daten in Ausgabespeicher
+    Ausgabe:=TWEigenschaften.Create(TeileQry.Fields);
+
+    //Einige wichtige Daten direkt in Felder
+    TeilTeilenummer:=Ausgabe['t_tg_nr'];
+
+//    praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
+//    unipps_typ:=Trim(TeileQry.FieldByName('unipps_typ').AsString);
+//    sme:=TeileQry.FieldByName('sme').AsInteger;
+//    faktlme_sme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
+//    lme:=TeileQry.FieldByName('lme').AsInteger;
+
+    //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
     PreisJeLME:=0;
     PreisGesucht:= False;
     PreisErmittelt:= False;
-    if besch_art in [1,2,4] then
-    begin
-      istKaufteil:=besch_art=1;
-      istEigenfertigung:=besch_art=2;
-      istFremdfertigung:=besch_art=4;
-    end
+
+    besch_art:=Ausgabe['besch_art'];
+    if besch_art ='1' then
+      istKaufteil:=True
+    else if besch_art ='2' then
+      istEigenfertigung:=True
+    else if besch_art ='4' then
+      istFremdfertigung:=True
     else
       raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
-      + inttostr(besch_art) + '< in >TWTeil.Create<');
+      + besch_art + '< in >TWTeil.Create<');
 
     holeBenennung;
   except
@@ -87,8 +95,8 @@ procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
-  if Qry.SucheBenennungZuTeil(t_tg_nr) then
-    Bezeichnung:=Trim(Qry.FieldByName('Bezeichnung').AsString);
+  if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
+    Ausgabe.AddData('Bezeichnung',Qry.Fields);
   { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
    if istKaufteil then
         holeMaxPreisAus3Bestellungen;
@@ -110,7 +118,7 @@ begin
   Qry:=Tools.getQuery();
 
   PreisGesucht:= True;
-  gefunden:=Qry.SucheLetzte3Bestellungen(t_tg_nr);
+  gefunden:=Qry.SucheLetzte3Bestellungen(TeilTeilenummer);
 
   if not gefunden then
   begin
@@ -195,19 +203,7 @@ end;
 function TWTeil.ToStr():String;
   var trenn :String;
 begin
-    trenn:= ' ; ';
-    ToStr:= t_tg_nr
-    + trenn + intToStr(oa)
-    + trenn + intToStr(besch_art)
-    + trenn + intToStr(praeferenzkennung)
-    + trenn + unipps_typ
-    + trenn + intToStr(sme)
-    + trenn + intToStr(lme)
-    + trenn + FloatToStr(faktlme_sme)
-    + trenn + Bezeichnung
-    + trenn + FloatToStr(PreisJeLME)
-    ;
-
+  Result:=Ausgabe.ToStr();
 end;
 
 end.

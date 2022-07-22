@@ -10,7 +10,10 @@ type
     protected
       { protected declarations }
     public
-      t_tg_nr: String;
+    { TODO 1 :
+Datenherkunft uns SQL Zusammenhänge prüfen und dokumentieren
+insbes t_tg_nr }
+      TeilInStuTeilenummer: String; //= t_tg_nr
       TeilIdStu: String; //Achtung hier Teilenummer  //nur f Debug
       TeilIdPos: Integer; //teil_stuelipos.pos_nr
       constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry);
@@ -27,15 +30,14 @@ begin
    teil_stuelipos.t_tg_nr }
 
   TeilIdStu:=Qry.FieldByName('id_stu').AsString;
-  TeilIdPos:=Qry.FieldByName('pos_nr').Value;
-  Menge:=Qry.FieldByName('menge').Value;
+  TeilIdPos:=Qry.FieldByName('pos_nr').AsInteger;
+  Menge:=Qry.FieldByName('menge').AsFloat;
   inherited Create(einVater, 'Teil', TeilIdStu, TeilIdPos, Menge);
 
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);
 
-//  pos_nr:=Self.PosData['pos_nr'];
-  t_tg_nr:=Self.PosData['t_tg_nr'];
+  TeilInStuTeilenummer:=Self.Ausgabe['t_tg_nr'];
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();

@@ -2,12 +2,12 @@ unit Stueckliste;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
+       StueliEigenschaften,StueliTeil,
        Exceptions,Data.DB,Tools,Logger;
 
  type
     TWValue = TValue; //alias
     TWFilter = TArray<String>;
-    TWPosdata = TDictionary<String, String>;
     TWSortedKeyArray = TArray<Integer>;
     TWStueli = TDictionary<Integer, TValue>;
 
@@ -25,22 +25,21 @@ interface
         Menge: Double;     //Menge von Self in IdStu (beliebige Einheiten)
         Stueli: TWStueli;    //Hält die Kinder-Positionen
 
-        PosData:TWPosdata;   //Positions-Daten fuer Ausgaben
+        Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
         StueliTeil: TValue;  //optionales Teile-Objekt auf dieser Pos
+//        StueliTeil: TWStueliTeil;  //optionales Teile-Objekt auf dieser Pos
+//        Teil: TWStueliTeil;  //optionales Teile-Objekt auf dieser Pos
 
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
         procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
-        function FeldNamensListe():String;
         function ToStr():String;overload;
         function ToStr(KeyListe:TWFilter;var header:String):String;overload;
         function ToStr(KeyListe:TWFilter):String;overload;
+        function GetTeileEigenschaften():String;virtual;abstract;
 //        procedure SetzeEigenschaften(Eigenschaften:TWStuPosFelder);
-        procedure AddPosData(Felder:TFields;PreFix:String='');overload;
-        procedure AddPosData(PosDataKey:String;Felder:TFields);overload;
-        procedure AddPosData(PosDataKey:String;PosDataVal:String);overload;
         procedure SetzeEbenen(level:Integer);
 //        procedure SetStueliTeil(Teil: TValue);
 //        property StueliTeil:TValue read FStueliTeil write SetStueliTeil;
@@ -70,7 +69,8 @@ begin
 
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
-  Posdata:=TWPosdata.Create;
+  Ausgabe:=TWEigenschaften.Create;
+//  StueliTeil:=TWStueliTeil.Create;
 //  StuPosFelder:=TWStuPosFelder.Create;
 //  TeileEigenschaften:=TWTeileEigenschaften.Create;
 
@@ -84,30 +84,6 @@ end;
 //begin
 //  FStueliTeil:=Teil;
 //end;
-procedure TWStueliPos.AddPosData(PosDataKey:String;PosDataVal:String);
-begin
-    PosData.Add(PosDataKey, PosDataVal);
-end;
-
-procedure TWStueliPos.AddPosData(PosDataKey:String;Felder:TFields);
-begin
-    PosData.Add( PosDataKey, trim(Felder.FieldByName(PosDataKey).AsString));
-end;
-
-procedure TWStueliPos.AddPosData(Felder:TFields;PreFix:String='');
-var
-  myField:TField;
-  key: String;
-begin
-    for myField in Felder do
-    begin
-      key:=myField.FieldName;
-      PosData.Add(PreFix+key , Felder.FieldByName(key).AsString );
-    end;
-
-end;
-
-
 //--------------------------------------------------------------------------
 // Ausgabe-Funktionen
 //--------------------------------------------------------------------------
@@ -117,6 +93,7 @@ end;
 procedure TWStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
 
 var
+  StueliPosPtr: pointer;
   StueliPos: TWStueliPos;
   StueliPosKey: Integer;
   Header:String;
@@ -142,8 +119,8 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-    //spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
-    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;;
+    // spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
+    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;
     //Ausgabe
     StueliPos.ToTextFile(OutFile, Filter, False);
   end;
@@ -163,9 +140,9 @@ begin
 
   Ebene:=Level;
   levelString:=IntToStr(Ebene);
-  EbeneNice := StringOfChar('.', Ebene);
-  Self.AddPosData('Ebene', levelString);
-  Self.AddPosData('EbeneNice', EbeneNice+levelString);
+  EbeneNice := StringOfChar('.', Ebene-1);
+  Self.Ausgabe.AddData('Ebene', levelString);
+  Self.Ausgabe.AddData('EbeneNice', EbeneNice+levelString);
 
   //Zurueck, wenn Pos keine Kinder hat
   if Stueli.Count=0 then
@@ -184,66 +161,6 @@ begin
 
 end;
 
-function TWStueliPos.FeldNamensListe():String;
-const trenn = ' ; ' ;
-var
-  txt,key:string;
-
-begin
-  txt:='';
-  for key in PosData.Keys do
-  begin
-     txt:= txt + key + trenn;
-  end;
-  Result:= txt;
-end;
-
-function TWStueliPos.ToStr(KeyListe:TWFilter;var header:String):String;
-const trenn = ' ; ' ;
-var
-  ValueTxt,KeyTxt,key,value:string;
-  myField:TField;
-
-begin
-
-  ValueTxt:='';
-  KeyTxt:='';
-
-  for key in  KeyListe do
-  begin
-    KeyTxt:= KeyTxt + key + trenn;
-    if PosData.TryGetValue(key,value) then
-      ValueTxt:= ValueTxt + value + trenn
-    else
-      ValueTxt:= ValueTxt + trenn;
-  end;
-  header:=KeyTxt;
-  Result:=ValueTxt;
-
-end;
-
-function TWStueliPos.ToStr(KeyListe:TWFilter):String;
-var header:String;
-begin
-   Result:=Self.ToStr(KeyListe,header);
-end;
-
-function TWStueliPos.ToStr():String;
-const trenn = ' ; ' ;
-var
-  val,txt:string;
-  myfield:TField;
-begin
-  txt:='';
-  for val in  PosData.Values do
-  begin
-    txt:= txt + val + trenn;
-  end;
-  Result:=txt;
-
-
-end;
-
 //--------------------------------------------------------------
 //Holt sortierte Key Liste fuer Stueckliste
 function TWStueliPos.SortedKeys(): TWSortedKeyArray;
@@ -254,6 +171,30 @@ begin
   keyArray:=Stueli.Keys.ToArray;
   TArray.Sort<Integer>(keyArray);
   Result:=keyArray;
+end;
+
+//Liefert gefilterte Eigenschaften als Result
+//und die Liste der zugehoerigen keys in header
+function TWStueliPos.ToStr(KeyListe:TWFilter;var header:String):String;
+begin
+  Result:=Ausgabe.ToStr(KeyListe, header);
+//  if hatTeil then
+//       Result:=Result + Teil.Ausgabe.ToStr(KeyListe, header);
+//       Result:=Result + Self.GetTeileEigenschaften;
+//          StueliTeil.Ausgabe.ToStr(KeyListe, header);
+end;
+
+//Liefert gefilterte Eigenschaften
+function TWStueliPos.ToStr(KeyListe:TWFilter):String;
+var header:String;
+begin
+   Result:=Ausgabe.ToStr(KeyListe,header);
+end;
+
+//Liefert alle Eigenschaften
+function TWStueliPos.ToStr():String;
+begin
+  Result:=Ausgabe.ToStr;
 end;
 
 
