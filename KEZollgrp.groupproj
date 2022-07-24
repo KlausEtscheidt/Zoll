@@ -6,6 +6,9 @@
         <Projects Include="Zoll.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="dies und das\Vererbubg\Vererbung.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +26,23 @@
     <Target Name="Zoll:Make">
         <MSBuild Projects="Zoll.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Vererbung">
+        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj"/>
+    </Target>
+    <Target Name="Vererbung:Clean">
+        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Vererbung:Make">
+        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll"/>
+        <CallTarget Targets="Zoll;Vererbung"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean"/>
+        <CallTarget Targets="Zoll:Clean;Vererbung:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make"/>
+        <CallTarget Targets="Zoll:Make;Vererbung:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

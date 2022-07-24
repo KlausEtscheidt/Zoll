@@ -108,9 +108,7 @@ const trenn = ' ; ' ;
 var
   ValueTxt,KeyTxt,key,value:string;
   myField:TField;
-
 begin
-
   ValueTxt:='';
   KeyTxt:='';
 

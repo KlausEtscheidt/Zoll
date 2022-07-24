@@ -1,7 +1,7 @@
 ﻿unit UnippsStueliPos;
 
 interface
-  uses System.RTTI, System.SysUtils, System.Generics.Collections,
+  uses System.RTTI, System.SysUtils,System.Generics.Collections,
        System.Classes,
        Teil,Exceptions,Data.DB,Logger,Stueckliste,
        Tools;
@@ -25,7 +25,7 @@ interface
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
         function GetTeileEigenschaften():String;
-
+//        procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
 
       end;
 
@@ -119,7 +119,7 @@ begin
       Teil:= TWTeil.Create(Qry);
 
       //Teil zusätzlich in Vaterklasse
-      StueliTeil:=Teil;
+      StueliTeil:=TValue.From<TWTeil>(Teil);
       //merken das Pos Teil hat
       hatTeil:=True;
 
@@ -267,6 +267,50 @@ begin
     Result:=True;
 
 end;
+
+//--------------------------------------------------------------------------
+// Struktur Loops
+//--------------------------------------------------------------------------
+{
+procedure TWUniStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
+
+var
+  StueliPos: TWStueliPos;
+  StueliPosTyp: TWStueliPos;
+  StueliPosKey: Integer;
+  Header:String;
+  Values:String;
+begin
+
+  //Position (Self) ausgeben; aber nicht fuer Topknoten
+  if not FirstRun then
+  begin
+     Values:=Self.ToStr(Filter,Header);
+//     OutFile.Log(Header);
+     OutFile.Log(Values);
+  end;
+
+//  Tools.ErrLog.Log(Self.FeldNamensListe);
+
+  //Zurueck, wenn Pos keine Kinder hat
+  if Stueli.Count=0 then
+    exit;
+
+  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
+
+  //In sortierter Reihenfolge
+  for StueliPosKey in SortedKeys  do
+  begin
+    // spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
+    StueliPosTyp:= Stueli[StueliPosKey].TypeInfo;
+    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;
+
+    //Ausgabe
+    StueliPos.ToTextFile(OutFile, Filter, False);
+  end;
+
+end;
+}
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen
