@@ -3,12 +3,10 @@ unit Stueckliste;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.TypInfo,
-       StueliEigenschaften,StueliTeil,
+       StueliEigenschaften,Teil,
        Exceptions,Data.DB,Tools,Logger;
 
  type
-    TWStueliClass = class of TWStueliPos;
-    TWStueliTeilClass = class of TWStueliTeil;
     TWValue = TValue; //alias
     TWFilter = TArray<String>;
     TWSortedKeyArray = TArray<Integer>;
@@ -29,9 +27,8 @@ interface
         Stueli: TWStueli;    //Hält die Kinder-Positionen
 
         Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
-        StueliTeil: TValue;  //optionales Teile-Objekt auf dieser Pos
 //        StueliTeil: TWStueliTeil;  //optionales Teile-Objekt auf dieser Pos
-//        Teil: TValue;  //optionales Teile-Objekt auf dieser Pos
+        Teil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
 
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
@@ -74,20 +71,12 @@ begin
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
   Ausgabe:=TWEigenschaften.Create;
-//  StueliTeil:=TWStueliTeil.Create;
-//  StuPosFelder:=TWStuPosFelder.Create;
-//  TeileEigenschaften:=TWTeileEigenschaften.Create;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
-//  inherited;
 end;
 
-//procedure TWStueliPos.SetStueliTeil(Teil: TValue);
-//begin
-//  FStueliTeil:=Teil;
-//end;
 //--------------------------------------------------------------------------
 // Ausgabe-Funktionen
 //--------------------------------------------------------------------------
@@ -125,17 +114,10 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-    // spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
-//    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;
+      Stueli[StueliPosKey].AsType<TWStueliPos>
+                           .ToTextFile(OutFile, Filter, False);
 
-//    StueliPos:=Stueli[StueliPosKey];
-//    StueliPosTyp:=StueliPos.TypeInfo;
-//    if StueliPosTyp.Name = 'TWKundenauftragsPos' then
-//      StueliPos.AsType<TWKundenauftragsPos>.ToTextFile(
-//                             OutFile, Filter, False);
-    var cname:string;
-    cname:=Self.ClassName;
-//TWKundenauftrag,TWTeilAlsStuPos,TWFAPos
+    {
     StueliPosObj:=Stueli[StueliPosKey].AsObject;
     if StueliPosObj is TWKundenauftrag then
       TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, Filter, False);
@@ -147,9 +129,7 @@ begin
       TWFAPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
     if StueliPosObj is TWTeilAlsStuPos then
       TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
-
-    //Ausgabe
-//    StueliPos.ToTextFile(OutFile, Filter, False);
+    }
   end;
 
 end;
@@ -205,18 +185,11 @@ end;
 function TWStueliPos.ToStr(KeyListe:TWFilter;var header:String):String;
 var
   TeileDaten:String;
-  mTeil:TWTeil;
-//  mTeil:TObject;
 begin
   Result:=Ausgabe.ToStr(KeyListe, header);
   if hatTeil then
   begin
-//      mTeil:= StueliTeil.AsType<TWTeil>;
-//      TeileDaten:=mTeil.Ausgabe.ToStr(KeyListe, header);
-//      mTeil:= StueliTeil.AsObject;
-//      TeileDaten:=TWTeil(mTeil).Ausgabe.ToStr(KeyListe, header);
-      mTeil:= TWTeil(StueliTeil.AsObject);
-      TeileDaten:=mTeil.Ausgabe.ToStr(KeyListe, header);
+      TeileDaten:=Teil.ToStr(KeyListe, header);
       Result:=Result + TeileDaten
   end;
 end;

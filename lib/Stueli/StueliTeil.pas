@@ -18,16 +18,16 @@ uses System.Generics.Collections,Data.DB,
     public
       //  constructor Create; override;
       //  destructor Destroy; override;
-      function ToStr():String;
+      function ToStr(KeyListe:TWFilter;var header:String):String;
 
     end;
 
 implementation
 
-function TWStueliTeil.ToStr():String;
+function TWStueliTeil.ToStr(KeyListe:TWFilter;var header:String):String;
   var trenn :String;
 begin
-  Result:=Ausgabe.ToStr();
+  Result:='####################';
 end;
 
 

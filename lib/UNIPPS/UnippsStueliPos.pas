@@ -16,7 +16,7 @@ interface
       public
 
         PosTyp:String;
-        Teil: TWTeil;
+//        Teil: TWTeil;
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
                       aIdStu:String;aIdPos: Integer;eMenge:Double);
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
@@ -35,7 +35,8 @@ var
 
 implementation
 
-uses FertigungsauftragsKopf,TeilAlsStuPos;
+uses Kundenauftrag,KundenauftragsPos,FertigungsauftragsKopf,
+     FertigungsauftragsPos,TeilAlsStuPos;
 
 // Create
 //---------------------------------------------------------------------
@@ -108,7 +109,6 @@ procedure TWUniStueliPos.SucheTeilzurStueliPos();
 var
   Qry: TWUNIPPSQry;
   gefunden: Boolean;
-//  meinTeil: TWTeil;
 
 begin
     Qry:=Tools.getQuery();
@@ -117,9 +117,6 @@ begin
     begin
       //Teil anlegen
       Teil:= TWTeil.Create(Qry);
-
-      //Teil zusätzlich in Vaterklasse
-      StueliTeil:=TValue.From<TWTeil>(Teil);
       //merken das Pos Teil hat
       hatTeil:=True;
 
@@ -276,8 +273,8 @@ procedure TWUniStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Bo
 
 var
   StueliPos: TWStueliPos;
-  StueliPosTyp: TWStueliPos;
   StueliPosKey: Integer;
+  StueliPosObj:TObject;
   Header:String;
   Values:String;
 begin
@@ -301,12 +298,20 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-    // spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
-    StueliPosTyp:= Stueli[StueliPosKey].TypeInfo;
+    // TValue in Original-Objekt wandeln
     StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;
+    StueliPosObj:=Stueli[StueliPosKey].AsObject;
+    if StueliPosObj is TWKundenauftrag then
+      TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, Filter, False);
+    if StueliPosObj is TWKundenauftragsPos then
+      TWKundenauftragsPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
+    if StueliPosObj is TWFAKopf then
+      TWFAKopf(StueliPosObj).ToTextFile(OutFile, Filter, False);
+    if StueliPosObj is TWFAPos then
+      TWFAPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
+    if StueliPosObj is TWTeilAlsStuPos then
+      TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
 
-    //Ausgabe
-    StueliPos.ToTextFile(OutFile, Filter, False);
   end;
 
 end;

@@ -175,7 +175,6 @@
         <DCCReference Include="mainNonGui.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
         <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
-        <DCCReference Include="lib\Stueli\StueliTeil.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -206,6 +205,12 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Zoll.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
@@ -214,12 +219,6 @@
                 </DeployFile>
                 <DeployFile LocalName="Win64\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Zoll.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
-                    <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

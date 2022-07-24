@@ -7,12 +7,13 @@ program Vererbung;
 uses
   System.SysUtils,
   Unit1 in 'Unit1.pas',
-  Unit2 in 'Unit2.pas';
+  Unit2 in 'Unit2.pas',
+  Unit3 in 'Unit3.pas';
 
 begin
   try
     { TODO -oUser -cConsole Main : Code hier einfügen }
-    testrun2;
+    testrun3;
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);

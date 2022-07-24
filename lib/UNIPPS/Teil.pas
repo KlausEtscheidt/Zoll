@@ -3,11 +3,10 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
-      StueliEigenschaften, Tools,
-      StueliTeil;
+      StueliEigenschaften, Tools;
 
 type
-  TWTeil = class(TWStueliTeil)
+  TWTeil = class
   private
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
@@ -41,7 +40,7 @@ type
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
-    function ToStr():String;
+    function ToStr(KeyListe:TWFilter;var header:String):String;
 
   end;
 
@@ -200,10 +199,10 @@ end;
 //
 //end;
 
-function TWTeil.ToStr():String;
+function TWTeil.ToStr(KeyListe:TWFilter;var header:String):String;
   var trenn :String;
 begin
-  Result:=Ausgabe.ToStr();
+  Result:=Ausgabe.ToStr(KeyListe, header);
 end;
 
 end.
