@@ -60,7 +60,8 @@ begin
   begin
     msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
     Tools.Log.Log(msg);
-    Tools.Log.Close;
+    Tools.ErrLog.Log(msg);
+    Tools.ErrLog.Flush;
     raise EStuBaumFaKopfErr.Create(msg);
   end;
 

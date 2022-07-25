@@ -11,23 +11,16 @@ type
     { private declarations }
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
+    function GetDruckDaten:TWWertliste;
+    function GetDruckDatenAuswahl:TWWertliste;
   protected
     { protected declarations }
   public
+    class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     TeilTeilenummer: String; //= t_tg_nr
     Ausgabe:TWEigenschaften;
-//    besch_art: Integer;
-    //oa: Integer;
+
     praeferenzkennung: Integer;
-    //t_tg_nr: String;
-//    unipps_typ: String;
-//    sme: Integer;
-//    lme: Integer;
-//    faktlme_sme: Double;
-
-
-//    Bezeichnung:String;
-
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
@@ -40,8 +33,9 @@ type
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
-    function ToStr(KeyListe:TWFilter;var header:String):String;
-
+    function ToStr():String;
+    property DruckDaten:TWWertliste read GetDruckDaten;
+    property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
   end;
 
 implementation
@@ -70,13 +64,11 @@ begin
     PreisErmittelt:= False;
 
     besch_art:=Ausgabe['besch_art'];
-    if besch_art ='1' then
-      istKaufteil:=True
-    else if besch_art ='2' then
-      istEigenfertigung:=True
-    else if besch_art ='4' then
-      istFremdfertigung:=True
-    else
+    istKaufteil:= (besch_art ='1');
+    istEigenfertigung:=(besch_art ='2');
+    istFremdfertigung:=(besch_art ='4');
+
+    if not (istKaufteil or istEigenfertigung or istFremdfertigung) then
       raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
       + besch_art + '< in >TWTeil.Create<');
 
@@ -89,6 +81,30 @@ begin
   end;
 
 end;
+
+function TWTeil.GetDruckDatenAuswahl:TWWertliste;
+var
+Werte, WerteBestellung: TWWertliste;
+begin
+  if length(Filter)=0 then
+    //Alle ausgeben
+    Werte:=Ausgabe.Wertliste()
+  else
+    //gefiltert ausgeben
+    Werte:=Ausgabe.Wertliste(Filter);
+
+  if PreisErmittelt Then
+    WerteBestellung:=Bestellung.DruckDatenAuswahl;
+  Werte.AddRange(WerteBestellung);
+  Result:= Werte;
+end;
+
+function TWTeil.GetDruckDaten:TWWertliste;
+begin
+  //Alle ausgeben
+  Result:=Ausgabe.Wertliste()
+end;
+
 
 procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
@@ -199,10 +215,9 @@ end;
 //
 //end;
 
-function TWTeil.ToStr(KeyListe:TWFilter;var header:String):String;
-  var trenn :String;
+function TWTeil.ToStr():String;
 begin
-  Result:=Ausgabe.ToStr(KeyListe, header);
+  Result:=Self.Ausgabe.ToCsv(Self.DruckDaten);
 end;
 
 end.

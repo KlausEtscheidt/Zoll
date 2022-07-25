@@ -3,7 +3,7 @@ unit Stueckliste;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.TypInfo,
-       StueliEigenschaften,Teil,
+       StueliEigenschaften,StueliTeil,Teil,
        Exceptions,Data.DB,Tools,Logger;
 
  type
@@ -14,10 +14,8 @@ interface
 
     TWStueliPos = class
       private
-//        FStueliTeil: TValue; //bel. Objekt
-
-      protected
-
+        function GetDruckDaten:TWWertliste;
+        function GetDruckDatenAuswahl:TWWertliste;
       public
         Ebene: Integer;
         Vater: TWStueliPos;  //Vaterknoten
@@ -27,22 +25,21 @@ interface
         Stueli: TWStueli;    //Hält die Kinder-Positionen
 
         Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
-//        StueliTeil: TWStueliTeil;  //optionales Teile-Objekt auf dieser Pos
-        Teil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
+        class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
+
+        StueliTeil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
+//        Teil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
 
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
-        procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
+        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
-        function ToStr():String;overload;
-        function ToStr(KeyListe:TWFilter;var header:String):String;overload;
-        function ToStr(KeyListe:TWFilter):String;overload;
-        function GetTeileEigenschaften():String;virtual;abstract;
-//        procedure SetzeEigenschaften(Eigenschaften:TWStuPosFelder);
+        function ToStr(const Trennzeichen:String=';'):String;
+//        function GetTeileEigenschaften():String;virtual;abstract;
         procedure SetzeEbenen(level:Integer);
-//        procedure SetStueliTeil(Teil: TValue);
-//        property StueliTeil:TValue read FStueliTeil write SetStueliTeil;
+        property DruckDaten:TWWertliste read GetDruckDaten;
+        property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
 
     end;
 
@@ -83,7 +80,7 @@ end;
 
 // Ergebnis als Text ausgeben
 //--------------------------------------------------------------------------
-procedure TWStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
+procedure TWStueliPos.ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
 
 var
 //  StueliPos: TWStueliPos;
@@ -91,16 +88,26 @@ var
   StueliPosTyp: PTypeInfo;
   StueliPosKey: Integer;
   StueliPosObj:TObject;
-  Header:String;
-  Values:String;
+  Werte,WerteTeil:TWWertliste;
+  WerteCSV:String;
 begin
 
   //Position (Self) ausgeben; aber nicht fuer Topknoten
   if not FirstRun then
   begin
-     Values:=Self.ToStr(Filter,Header);
+
+     //Erst Werte zur Position holen
+     Werte:=Self.DruckDatenAuswahl;
+     //Dann Werte zum Teil();
+     if hatTeil then
+     begin
+       WerteTeil:=TWTeil(StueliTeil).DruckDatenAuswahl;
+       Werte.AddRange(WerteTeil);
+     end;
+
+     WerteCSV:=self.Ausgabe.ToCSV(Werte);
 //     OutFile.Log(Header);
-     OutFile.Log(Values);
+     OutFile.Log(WerteCSV);
   end;
 
 //  Tools.ErrLog.Log(Self.FeldNamensListe);
@@ -114,24 +121,42 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-      Stueli[StueliPosKey].AsType<TWStueliPos>
-                           .ToTextFile(OutFile, Filter, False);
+//      Stueli[StueliPosKey].AsType<TWStueliPos>
+//                           .ToTextFile(OutFile, False);
 
-    {
+//    {
     StueliPosObj:=Stueli[StueliPosKey].AsObject;
     if StueliPosObj is TWKundenauftrag then
-      TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, Filter, False);
+      TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, False);
     if StueliPosObj is TWKundenauftragsPos then
-      TWKundenauftragsPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
+      TWKundenauftragsPos(StueliPosObj).ToTextFile(OutFile, False);
     if StueliPosObj is TWFAKopf then
-      TWFAKopf(StueliPosObj).ToTextFile(OutFile, Filter, False);
+      TWFAKopf(StueliPosObj).ToTextFile(OutFile, False);
     if StueliPosObj is TWFAPos then
-      TWFAPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
+      TWFAPos(StueliPosObj).ToTextFile(OutFile, False);
     if StueliPosObj is TWTeilAlsStuPos then
-      TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
-    }
+      TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, False);
+//    }
   end;
 
+end;
+
+// Hole Eigenschaften zum Drucken
+//--------------------------------------------------------------------------
+function TWStueliPos.GetDruckDatenAuswahl:TWWertliste;
+begin
+  if length(Filter)=0 then
+    //Alle ausgeben
+    Result:=Ausgabe.Wertliste()
+  else
+    //gefiltert ausgeben
+    Result:=Ausgabe.Wertliste(Filter);
+end;
+
+function TWStueliPos.GetDruckDaten:TWWertliste;
+begin
+  //Alle ausgeben
+  Result:=Ausgabe.Wertliste()
 end;
 
 // Hinzufügen der Ebenen
@@ -180,31 +205,10 @@ begin
   Result:=keyArray;
 end;
 
-//Liefert gefilterte Eigenschaften als Result
-//und die Liste der zugehoerigen keys in header
-function TWStueliPos.ToStr(KeyListe:TWFilter;var header:String):String;
-var
-  TeileDaten:String;
+//Liefert alle Eigenschaften in Werte in einem String verkettet
+function TWStueliPos.ToStr(const Trennzeichen:String=';'):String;
 begin
-  Result:=Ausgabe.ToStr(KeyListe, header);
-  if hatTeil then
-  begin
-      TeileDaten:=Teil.ToStr(KeyListe, header);
-      Result:=Result + TeileDaten
-  end;
-end;
-
-//Liefert gefilterte Eigenschaften
-function TWStueliPos.ToStr(KeyListe:TWFilter):String;
-var header:String;
-begin
-   Result:=Ausgabe.ToStr(KeyListe,header);
-end;
-
-//Liefert alle Eigenschaften
-function TWStueliPos.ToStr():String;
-begin
-  Result:=Ausgabe.ToStr;
+  Result:=self.Ausgabe.ToCSV(Self.DruckDaten);
 end;
 
 

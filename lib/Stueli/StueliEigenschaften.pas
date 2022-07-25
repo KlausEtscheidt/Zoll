@@ -8,6 +8,7 @@ uses System.SysUtils, Data.DB,System.Generics.Collections,
 type
 
 TWFilter = TArray<String>;
+TWWertliste = TList<String>;
 
 EEigenschaften = class(Exception);
 
@@ -21,9 +22,9 @@ public
   procedure AddData(Felder:TFields;PreFix:String='');overload;
   procedure AddData(Key:String;Felder:TFields;PreFix:String='');overload;
   procedure AddData(Key:String;Val:String);overload;
-  function ToStr():String;overload;
-  function ToStr(KeyListe:TWFilter):String;overload;
-  function ToStr(KeyListe:TWFilter;var header:String):String;overload;
+  function Wertliste():TWWertliste;overload;
+  function Wertliste(KeyListe:TWFilter):TWWertliste;overload;
+  function ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
   function FeldNamensListe():String;
 
 end;
@@ -56,11 +57,12 @@ begin
     on E: EDataBaseError do
       begin
         msg:=Self.Classname + ' Feld ' + Key + ' nicht in Query-Daten gefunden.';
-      Tools.Log.Log(msg);
-      Tools.ErrLog.Log(msg);
-      raise EEigenschaften.Create(Self.Classname + ' Feld '+Key+' nicht in Daten gefunden');
+        Tools.Log.Log(msg);
+        Tools.ErrLog.Log(msg);
+        raise EEigenschaften.Create(Self.Classname + ' Feld '+Key+' nicht in Daten gefunden');
       end;
-
+    on E: Exception do
+      raise;
   end;
 end;
 
@@ -93,51 +95,49 @@ begin
   Result:= txt;
 end;
 
-//Liefert gefilterte Eigenschaften
-function TWEigenschaften.ToStr(KeyListe:TWFilter):String;
-var header:String;
+//liefert alle Werte des Objektes
+function TWEigenschaften.Wertliste():TWWertliste;
+var
+  val:String;
+  Liste:TWWertliste;
 begin
-   Result:=Self.ToStr(KeyListe,header);
+  Liste:=TWWertliste.Create();
+  for val in  Self.Values do
+  begin
+    Liste.Add(val);
+  end;
+  Result:=Liste;
 end;
 
-
-//Liefert gefilterte Eigenschaften als Result
-//und die Liste der zugehoerigen keys in header
-function TWEigenschaften.ToStr(KeyListe:TWFilter;var header:String):String;
-const trenn = ' ; ' ;
+function TWEigenschaften.Wertliste(KeyListe:TWFilter):TWWertliste;
 var
-  ValueTxt,KeyTxt,key,value:string;
-  myField:TField;
+  key,val:String;
+  Liste:TWWertliste;
 begin
-  ValueTxt:='';
-  KeyTxt:='';
+  Liste:=TWWertliste.Create();
 
   for key in  KeyListe do
   begin
-    KeyTxt:= KeyTxt + key + trenn;
-    if TryGetValue(key,value) then
-      ValueTxt:= ValueTxt + value + trenn
-    else
-      ValueTxt:= ValueTxt + trenn;
-  end;
-  header:=KeyTxt;
-  Result:=ValueTxt;
 
+    if TryGetValue(key,val) then
+      Liste.Add(val);
+
+  end;
+
+  Result:=Liste;
 end;
 
-//Liefert alle Eigenschaften
-function TWEigenschaften.ToStr():String;
-const trenn = ' ; ' ;
-var
-  val,txt:string;
-  myfield:TField;
+
+//Liefert alle Eigenschaften in Werte in einem String verkettet
+function TWEigenschaften.ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
+var value:String;
 begin
-  txt:='';
-  for val in  Values do
+  Result:='';
+  for value in Werte do
   begin
-    txt:= txt + val + trenn;
+    Result:=Result+value + Trennzeichen;
   end;
-  Result:=txt;
+
 end;
 
 end.

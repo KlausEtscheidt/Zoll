@@ -4,7 +4,7 @@ interface
 
 uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
         System.Generics.Collections, System.TimeSpan, Windows,
-        KundenauftragsPos, Stueckliste, UnippsStueliPos, Tools;
+        KundenauftragsPos, Stueckliste, Bestellung, UnippsStueliPos, Tools;
 
 type
   TWKundenauftrag = class(TWUniStueliPos)
@@ -32,7 +32,7 @@ end;
 
 procedure TWKundenauftrag.auswerten();
 var
-  startzeit,zzeit,endzeit: Int64;
+  startzeit,endzeit: Int64;
   delta:Double;
   msg:String;
 
@@ -61,17 +61,27 @@ const trenn = ' ; ' ;
   meineFelder: TWFilter = ['id_stu','pos_nr','t_tg_nr','Bezeichnung'];
 begin
   Tools.CSVKurz.OpenNew(Tools.LogDir, ka_id + '_Kalk.txt');
-  ToTextFile(Tools.CSVKurz, meineFelder);
+  ToTextFile(Tools.CSVKurz);
   Tools.CSVLang.Close;
 end;
 
 procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
-  meineFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr',
+//  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
+//      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr',
+//      'oa','Bezeichnung', 'unipps_typ','besch_art',
+//      'urspr_land', 'ausl_u_land', 'praeferenzkennung','menge', 'sme',
+//      'faktlme_sme', 'lme'];
+  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
+      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr'];
+
+  TeilFelder: TWFilter = ['t_tg_nr',
       'oa','Bezeichnung', 'unipps_typ','besch_art',
       'urspr_land', 'ausl_u_land', 'praeferenzkennung','menge', 'sme',
       'faktlme_sme', 'lme'];
+
+  BestellFelder: TWFilter = ['bestell_id', 'lieferant','kurzname'];
+
       {T_lme ; Ebene ; ds ; t_tg_nr ; set_block ; typ ; id_pos ; T_oa ;
       ueb_s_nr ; EbeneNice ; pos_nr ; oa ; T_unipps_typ ; T_faktlme_sme ;
        T_praeferenzkennung ; Bezeichnung ; PosTyp ; T_besch_art ;
@@ -85,11 +95,13 @@ excel
           faktlme_sme	lme	bestell_id	bestell_datum	preis	basis	pme	bme
           	faktlme_bme	faktbme_pme	id_lief	lieferant	pos_menge	preis_eu
             	preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
-
          }
 begin
   Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
-  ToTextFile(Tools.CSVLang, meineFelder);
+  TWStueliPos.Filter:=StueliPosFelder;
+  TWTeil.Filter:=TeilFelder;
+  TWBestellung.Filter:=BestellFelder;
+  ToTextFile(Tools.CSVLang);
   Tools.CSVLang.Close;
 end;
 
@@ -107,7 +119,7 @@ begin
   KAQry := Tools.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
   if not gefunden then
-    raise Exception.Create('KA '+ka_id + ' nicht gefunden.');
+    raise Exception.Create('Keine Positionen zu KA '+ka_id + ' gefunden.');
   Rabatt:=0;
 
   if gefunden then

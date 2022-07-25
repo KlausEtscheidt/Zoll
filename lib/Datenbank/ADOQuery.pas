@@ -200,12 +200,8 @@ begin
     on E: Exception do
     begin
   //          Tools.ErrLog.Log('in SQLiteConnect.Store' + E.Message);
-        if ContainsText(E.Message, 'UNIQUE constraint failed') then
-            writeln('Doppelte')
-        else
+        if not ContainsText(E.Message, 'UNIQUE constraint failed') then
             raise
-//            if ContainsText(E.Message, 'database is locked') then
-//              raise
     end;
 
   end;

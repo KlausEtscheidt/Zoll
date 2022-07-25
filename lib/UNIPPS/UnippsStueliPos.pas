@@ -2,7 +2,7 @@
 
 interface
   uses System.RTTI, System.SysUtils,System.Generics.Collections,
-       System.Classes,
+       System.Classes,System.StrUtils,
        Teil,Exceptions,Data.DB,Logger,Stueckliste,
        Tools;
 
@@ -16,7 +16,7 @@ interface
       public
 
         PosTyp:String;
-//        Teil: TWTeil;
+        Teil: TWTeil;
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
                       aIdStu:String;aIdPos: Integer;eMenge:Double);
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
@@ -24,8 +24,6 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
-        function GetTeileEigenschaften():String;
-//        procedure ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
 
       end;
 
@@ -54,23 +52,30 @@ begin
 
 end;
 
-function TWUniStueliPos.GetTeileEigenschaften():String;
-begin
-  Result:=Self.Ausgabe.ToStr();
-end;
-
+//function TWUniStueliPos.GetTeileEigenschaften():String;
+//begin
+//  Result:=Self.Ausgabe.ToStr();
+//end;
+//
 procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
+var fieldnames:System.TArray<String>;
+
 begin
+
+    //Debuggen
+//    fieldnames:=Qry.GetFieldNames; //zum Debuggen
+//    if (IndexStr('unipps_typ', fieldnames) = -1) then
+//      fieldnames:=Qry.GetFieldNames; //zum Debuggen
+
 
     //Allgemeingueltige Felder
     //-----------------------------------------------
     Ausgabe.AddData('PosTyp', PosTyp);
-
     Ausgabe.AddData('id_stu', Qry.Fields);
     Ausgabe.AddData('pos_nr', Qry.Fields);
     Ausgabe.AddData('oa', Qry.Fields);
     Ausgabe.AddData('t_tg_nr', Qry.Fields);
-    Ausgabe.AddData('typ', Qry.Fields);
+    Ausgabe.AddData('unipps_typ', Qry.Fields);
 
     //typspezifische Felder
     //-----------------------------------------------
@@ -117,6 +122,7 @@ begin
     begin
       //Teil anlegen
       Teil:= TWTeil.Create(Qry);
+      StueliTeil:=Teil;
       //merken das Pos Teil hat
       hatTeil:=True;
 

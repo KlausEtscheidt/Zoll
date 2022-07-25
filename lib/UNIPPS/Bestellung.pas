@@ -1,18 +1,21 @@
 unit Bestellung;
 
-
-
 interface
 
-uses Data.Db;
+uses StueliEigenschaften,Data.Db;
 
 type
   TWBestellung = class
   private
+    function GetDruckDaten:TWWertliste;
+    function GetDruckDatenAuswahl:TWWertliste;
 
   protected
 
   public
+    class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
+    Ausgabe:TWEigenschaften;
+
     bestell_id: Integer;
     bestell_datum: Double;
     preis: Double;
@@ -28,12 +31,18 @@ type
     kurzname: String;
     t_tg_nr: String;
     constructor Create(myRecord: TFields);
+    property DruckDaten:TWWertliste read GetDruckDaten;
+    property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+
   end;
 
 implementation
 
 constructor TWBestellung.Create(myRecord: TFields);
 begin
+    //Alle Daten in Ausgabespeicher
+    Ausgabe:=TWEigenschaften.Create(myRecord);
+
     bestell_id := myRecord.FieldByName('bestell_id').AsInteger;
     bestell_datum:= myRecord.FieldByName('bestell_datum').AsFloat;
     preis:= myRecord.FieldByName('preis').AsFloat;
@@ -48,6 +57,24 @@ begin
     lieferant:= myRecord.FieldByName('lieferant').AsInteger;
     kurzname:= myRecord.FieldByName('kurzname').AsString;
     t_tg_nr:= myRecord.FieldByName('t_tg_nr').AsString;
+
 end;
+
+function TWBestellung.GetDruckDatenAuswahl:TWWertliste;
+begin
+  if length(Filter)=0 then
+    //Alle ausgeben
+    Result:=Ausgabe.Wertliste()
+  else
+    //gefiltert ausgeben
+    Result:=Ausgabe.Wertliste(Filter);
+end;
+
+function TWBestellung.GetDruckDaten:TWWertliste;
+begin
+  //Alle ausgeben
+  Result:=Ausgabe.Wertliste()
+end;
+
 
 end.
