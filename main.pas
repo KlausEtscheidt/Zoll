@@ -52,12 +52,7 @@ end;
 //Zum Testen, wird automatisch von OnShow gestartet
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-//  mainNonGui.KaAuswerten('142591'); //Error
-  mainNonGui.KaAuswerten('144729');
-//  mainNonGui.KaAuswerten('142567'); //2Pumpen
-
-//  mainNonGui.KaAuswerten('142302'); //Ersatz
-
+mainNonGui.RunIt;
 end;
 
 

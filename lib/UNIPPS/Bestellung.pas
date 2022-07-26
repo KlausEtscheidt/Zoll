@@ -9,11 +9,11 @@ type
   private
     function GetDruckDaten:TWWertliste;
     function GetDruckDatenAuswahl:TWWertliste;
+    class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
 
   protected
 
   public
-    class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     Ausgabe:TWEigenschaften;
 
     bestell_id: Integer;
@@ -33,6 +33,8 @@ type
     constructor Create(myRecord: TFields);
     property DruckDaten:TWWertliste read GetDruckDaten;
     property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+    class property Filter:TWFilter read FFilter write FFilter;
+
 
   end;
 

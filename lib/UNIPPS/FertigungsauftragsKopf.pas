@@ -27,14 +27,20 @@ constructor TWFAKopf.Create(einVater: TWUniStueliPos; einTyp: String;
 var
   Menge:Double;
 begin
-  //UNIPPS-Mapping
-  // f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr,  f_auftragkopf.ident_nr as FA_Nr
+  {UNIPPS-Mapping
+  Komm-FA
+  f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr,
+  f_auftragkopf.ident_nr as FA_Nr
+  Serien-FA
+  auftr_nr und auftr_pos sind 0 daher:
+  f_auftragkopf.t_tg_nr as id_stu, 1 as pos_nr
+  }
 
   Qry:=AQry;  //merken fuer weitere Suche
 
   FA_Nr:=Qry.FieldByName('FA_Nr').AsString;
 
-  FaIdStu:=Qry.FieldByName('id_stu').AsString;
+  FaIdStu:=Trim(Qry.FieldByName('id_stu').AsString);
   FaIdPos:=Qry.FieldByName('pos_nr').Value;
   Menge:=1; //bei FA immer 1
   inherited Create(einVater, einTyp, FaIdStu, FaIdPos, Menge);
@@ -52,6 +58,7 @@ var Qry: TWUNIPPSQry;
   msg : String;
 
 begin
+  try
   //Hole die Positionen des FA's aus der Unipps-Tabelle ASTUELIPOS
   Qry := Tools.getQuery;
   gefunden := Qry.SuchePosZuFA(FA_Nr);
@@ -107,6 +114,10 @@ begin
           Qry.Next;
 
     end; //while
+
+  finally
+      Qry.Free;
+  end;
 
 end;
 

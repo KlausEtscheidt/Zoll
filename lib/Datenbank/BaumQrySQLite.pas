@@ -101,7 +101,7 @@ end;
 function TWBaumQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
 begin
   var sql: String;
-  sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
+  sql:= 'SELECT t_tg_nr as id_stu, 1 as pos_nr, auftragsart, verurs_art, '
       + 't_tg_nr, oa, unipps_typ, FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where t_tg_nr="' + t_tg_nr + '" and oa<9 ORDER BY FA_Nr desc limit 1';

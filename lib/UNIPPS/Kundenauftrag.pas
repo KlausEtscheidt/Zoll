@@ -4,7 +4,8 @@ interface
 
 uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
         System.Generics.Collections, System.TimeSpan, Windows,
-        KundenauftragsPos, Stueckliste, Bestellung, UnippsStueliPos, Tools;
+        KundenauftragsPos, Stueckliste, Bestellung,
+        StueliEigenschaften, UnippsStueliPos, Tools;
 
 type
   TWKundenauftrag = class(TWUniStueliPos)
@@ -42,7 +43,7 @@ begin
               ' um ' + DateTimeToStr(startzeit));
   liesKopfundPositionen;
   holeKinder;
-  SetzeEbenen(0);
+  SetzeEbenenUndMengen(0,1);
   CSV_volle_Ausgabe;
   CSV_kurze_Ausgabe;
 
@@ -67,42 +68,45 @@ end;
 
 procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
-//  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-//      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr',
-//      'oa','Bezeichnung', 'unipps_typ','besch_art',
-//      'urspr_land', 'ausl_u_land', 'praeferenzkennung','menge', 'sme',
-//      'faktlme_sme', 'lme'];
   StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 't_tg_nr'];
+      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal'];
 
   TeilFelder: TWFilter = ['t_tg_nr',
       'oa','Bezeichnung', 'unipps_typ','besch_art',
-      'urspr_land', 'ausl_u_land', 'praeferenzkennung','menge', 'sme',
+      'praeferenzkennung', 'sme',
       'faktlme_sme', 'lme'];
 
-  BestellFelder: TWFilter = ['bestell_id', 'lieferant','kurzname'];
+  BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis',
+         'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
+         'kurzname'];
 
-      {T_lme ; Ebene ; ds ; t_tg_nr ; set_block ; typ ; id_pos ; T_oa ;
-      ueb_s_nr ; EbeneNice ; pos_nr ; oa ; T_unipps_typ ; T_faktlme_sme ;
-       T_praeferenzkennung ; Bezeichnung ; PosTyp ; T_besch_art ;
-        T_t_tg_nr ; id_stu ; T_sme ;
-        EbeneNice ; pos_nr ; FA_Nr ; oa ; t_tg_nr ; verurs_art ;
-        PosTyp ; menge ; id_stu ;
-excel
+{excel
         Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr
         	verurs_art	t_tg_nr	oa	Bezchng	typ	v_besch_art
           urspr_land	ausl_u_land	praeferenzkennung	menge	sme
-          faktlme_sme	lme	bestell_id	bestell_datum	preis	basis	pme	bme
-          	faktlme_bme	faktbme_pme	id_lief	lieferant	pos_menge	preis_eu
+          faktlme_sme	lme
+          	bestell_id	bestell_datum	preis
+            basis	pme	bme	faktlme_bme	faktbme_pme	id_lief
+            lieferant	pos_menge	preis_eu
             	preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
          }
+var
+  FeldNamen:TWWertliste;
+  FeldNamenStr:String;
 begin
+  FeldNamen:=TWWertliste.Create;
   Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
   TWStueliPos.Filter:=StueliPosFelder;
   TWTeil.Filter:=TeilFelder;
   TWBestellung.Filter:=BestellFelder;
+  FeldNamen.AddRange(StueliPosFelder);
+  FeldNamen.AddRange(TeilFelder);
+  FeldNamen.AddRange(BestellFelder);
+  FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
+  Tools.CSVLang.Log(FeldNamenStr);
   ToTextFile(Tools.CSVLang);
   Tools.CSVLang.Close;
+  FeldNamen.Free;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();
@@ -153,7 +157,7 @@ begin
     Stueli.Add(KAPos.KaPosIdPos, KAPos);
     KAQry.next;
   end;
-
+  KAQry.Free;
 end;
 
 
@@ -179,55 +183,59 @@ begin
   //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
   //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste EndKnoten vermerkt
   //---------------------------------------------------------------------------------------------
+  try
+    //Liste fuer "Kinderlose" erzeugen:
+    EndKnotenListe:=TWEndKnotenListe.Create;
+    alteEndKnotenListe:=TWEndKnotenListe.Create;
 
-  //Liste fuer "Kinderlose" erzeugen:
-  EndKnotenListe:=TWEndKnotenListe.Create;
-  alteEndKnotenListe:=TWEndKnotenListe.Create;
+    //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
+    keyArray:=Stueli.Keys.ToArray;
+    TArray.Sort<Integer>(keyArray);
 
-  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
-  keyArray:=Stueli.Keys.ToArray;
-  TArray.Sort<Integer>(keyArray);
-
-  //Loop �ber alle Pos des Kundenauftrages
-  for StueliPosKey in keyArray do
-  begin
-    KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
-
-    //Fuer Kaufteile muss nicht weiter gesucht werden
-    if not KaPos.Teil.istKaufteil then
-      //Falls ein Komm-Fa zur Pos vorhanden, werden dessen Kinder aus
-      //Unipps-Tabelle ASTUELIPOS geholt
-      //Falls kein Komm-Fa zur Pos vorhanden, landet der Knoten in EndKnoten
-      KaPos.holeKinderAusASTUELIPOS;
-
-  end;
-
-
-  // Weitere Schritte wiederholen, bis EndKnoten leer
-  //-----------------------------------------------------------------
-
-  while EndKnotenListe.Count>0 do
-  begin
-    //Liste kopieren und leeren
-    alteEndKnotenListe.Clear;
-    alteEndKnotenListe.AddRange(EndKnotenListe);
-    EndKnotenListe.Clear;
-    txt:=alteEndKnotenListe.ToStr();
-    alteEndKnotenListe.WriteToLog;
-
-    //Suche weiter
-    //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
-    for EndKnoten in alteEndKnotenListe do
+    //Loop �ber alle Pos des Kundenauftrages
+    for StueliPosKey in keyArray do
     begin
-      StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
-      Tools.Log.Log('------Suche fuer Endknoten ----------');
-      txt:=StueliPos.ToStr;
-      Tools.Log.Log(txt);
-      StueliPos.holeKindervonEndKnoten;
+      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
+
+      //Fuer Kaufteile muss nicht weiter gesucht werden
+      if not KaPos.Teil.istKaufteil then
+        //Falls ein Komm-Fa zur Pos vorhanden, werden dessen Kinder aus
+        //Unipps-Tabelle ASTUELIPOS geholt
+        //Falls kein Komm-Fa zur Pos vorhanden, landet der Knoten in EndKnoten
+        KaPos.holeKinderAusASTUELIPOS;
+
     end;
 
-  end;
 
+    // Weitere Schritte wiederholen, bis EndKnoten leer
+    //-----------------------------------------------------------------
+
+    while EndKnotenListe.Count>0 do
+    begin
+      //Liste kopieren und leeren
+      alteEndKnotenListe.Clear;
+      alteEndKnotenListe.AddRange(EndKnotenListe);
+      EndKnotenListe.Clear;
+      txt:=alteEndKnotenListe.ToStr();
+      alteEndKnotenListe.WriteToLog;
+
+      //Suche weiter
+      //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
+      for EndKnoten in alteEndKnotenListe do
+      begin
+        StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
+        Tools.Log.Log('------Suche fuer Endknoten ----------');
+        txt:=StueliPos.ToStr;
+        Tools.Log.Log(txt);
+        StueliPos.holeKindervonEndKnoten;
+      end;
+
+    end;
+
+  finally
+      EndKnotenListe.Free;
+      alteEndKnotenListe.Free;
+  end;
 
 end;
 

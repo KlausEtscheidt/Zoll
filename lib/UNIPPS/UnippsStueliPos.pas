@@ -52,11 +52,8 @@ begin
 
 end;
 
-//function TWUniStueliPos.GetTeileEigenschaften():String;
-//begin
-//  Result:=Self.Ausgabe.ToStr();
-//end;
-//
+// Speichert fuer die Ausgabe relevante Daten in Ausgabe
+//---------------------------------------------------------------------
 procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
 var fieldnames:System.TArray<String>;
 
@@ -99,9 +96,11 @@ begin
       Ausgabe.AddData('ueb_s_nr', Qry.Fields);
       Ausgabe.AddData('ds', Qry.Fields);
       Ausgabe.AddData('set_block', Qry.Fields);
+      Ausgabe.AddData('menge', Qry.Fields);
     end
     else
     if PosTyp='Teil' then
+      Ausgabe.AddData('menge', Qry.Fields)
     else
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp );
 
@@ -117,15 +116,19 @@ var
 
 begin
     Qry:=Tools.getQuery();
-    gefunden:=Qry.SucheDatenzumTeil(Ausgabe['t_tg_nr']);
-    if gefunden then
-    begin
-      //Teil anlegen
-      Teil:= TWTeil.Create(Qry);
-      StueliTeil:=Teil;
-      //merken das Pos Teil hat
-      hatTeil:=True;
+    try
+      gefunden:=Qry.SucheDatenzumTeil(Ausgabe['t_tg_nr']);
+      if gefunden then
+      begin
+        //Teil anlegen
+        Teil:= TWTeil.Create(Qry);
+        StueliTeil:=Teil;
+        //merken das Pos Teil hat
+        hatTeil:=True;
 
+      end;
+    finally
+      Qry.Free;
     end;
 
 end;
@@ -205,6 +208,7 @@ begin
   begin
     //Suche hier abbrechen
     Result:=False;
+    Qry.Free;
     Exit;
   end;
 
@@ -212,17 +216,21 @@ begin
   //Zu Doku und Testzwecken wirden der FA-Kopf als Dummy-St�cklisten-Eintrag
   //in die St�ckliste mit aufgenommen
 
-  //Erzeuge Objekt fuer einen Serien FA
-  FAKopf:=TWFAKopf.Create(Self,'FA_Serie', Qry);
-  Tools.Log.Log(FAKopf.ToStr);
+  try
+    //Erzeuge Objekt fuer einen Serien FA
+    FAKopf:=TWFAKopf.Create(Self,'FA_Serie', Qry);
+    Tools.Log.Log(FAKopf.ToStr);
 
-  // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
-  Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
+    // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
+    Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
 
-  // Kinder suchen
-  FAKopf.holeKinderAusASTUELIPOS;
+    // Kinder suchen
+    FAKopf.holeKinderAusASTUELIPOS;
+    Result:=True;
 
-  Result:=True;
+  finally
+    Qry.Free;
+  end;
 
 end;
 
@@ -243,85 +251,43 @@ begin
     begin
       //Suche hier abbrechen
       Result:=False;
+      Qry.Free;
       Exit;
     end;
 
 
-    //Wenn Stu gefunden
-    While Not Qry.EOF do
-    begin
+  try
+      //Wenn Stu gefunden
+      While Not Qry.EOF do
+      begin
 
-        //aktuellen Datensatz in StueliPos-Objekt wandeln
-        TeilInStu:=TWTeilAlsStuPos.Create(Self, Qry);
-        Tools.Log.Log(TeilInStu.ToStr);
+          //aktuellen Datensatz in StueliPos-Objekt wandeln
+          TeilInStu:=TWTeilAlsStuPos.Create(Self, Qry);
+          Tools.Log.Log(TeilInStu.ToStr);
 
-        //in Stueck-Liste �bernehmen
-        Stueli.Add(TeilInStu.TeilIdPos, TeilInStu);
+          //in Stueck-Liste �bernehmen
+          Stueli.Add(TeilInStu.TeilIdPos, TeilInStu);
 
-        //merken als Teil noch ohne Kinder fuer weitere Suchl�ufe
-        if not TeilInStu.Teil.istKaufteil then
-          EndKnotenListe.Add(TeilInStu);
+          //merken als Teil noch ohne Kinder fuer weitere Suchl�ufe
+          if not TeilInStu.Teil.istKaufteil then
+            EndKnotenListe.Add(TeilInStu);
 
-        //Naechster Datensatz
-        Qry.Next;
+          //Naechster Datensatz
+          Qry.Next;
 
-    end;
+      end;
 
-    Result:=True;
+      Result:=True;
+
+  finally
+    Qry.Free;
+  end;
 
 end;
 
 //--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
-{
-procedure TWUniStueliPos.ToTextFile(OutFile:TLogFile;Filter:TWFilter;FirstRun:Boolean=True);
-
-var
-  StueliPos: TWStueliPos;
-  StueliPosKey: Integer;
-  StueliPosObj:TObject;
-  Header:String;
-  Values:String;
-begin
-
-  //Position (Self) ausgeben; aber nicht fuer Topknoten
-  if not FirstRun then
-  begin
-     Values:=Self.ToStr(Filter,Header);
-//     OutFile.Log(Header);
-     OutFile.Log(Values);
-  end;
-
-//  Tools.ErrLog.Log(Self.FeldNamensListe);
-
-  //Zurueck, wenn Pos keine Kinder hat
-  if Stueli.Count=0 then
-    exit;
-
-  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
-
-  //In sortierter Reihenfolge
-  for StueliPosKey in SortedKeys  do
-  begin
-    // TValue in Original-Objekt wandeln
-    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;
-    StueliPosObj:=Stueli[StueliPosKey].AsObject;
-    if StueliPosObj is TWKundenauftrag then
-      TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, Filter, False);
-    if StueliPosObj is TWKundenauftragsPos then
-      TWKundenauftragsPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
-    if StueliPosObj is TWFAKopf then
-      TWFAKopf(StueliPosObj).ToTextFile(OutFile, Filter, False);
-    if StueliPosObj is TWFAPos then
-      TWFAPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
-    if StueliPosObj is TWTeilAlsStuPos then
-      TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, Filter, False);
-
-  end;
-
-end;
-}
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen

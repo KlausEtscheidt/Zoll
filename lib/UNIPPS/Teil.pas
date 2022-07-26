@@ -8,15 +8,12 @@ uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
 type
   TWTeil = class
   private
-    { private declarations }
+    class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
     function GetDruckDaten:TWWertliste;
     function GetDruckDatenAuswahl:TWWertliste;
-  protected
-    { protected declarations }
   public
-    class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     TeilTeilenummer: String; //= t_tg_nr
     Ausgabe:TWEigenschaften;
 
@@ -36,11 +33,18 @@ type
     function ToStr():String;
     property DruckDaten:TWWertliste read GetDruckDaten;
     property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+    class property Filter:TWFilter read FFilter write FFilter;
+
   end;
 
 implementation
 
 constructor TWTeil.Create(TeileQry: TWUNIPPSQry);
+{UNIPPS-Mapping
+  teil_uw.t_tg_nr, teil_uw.oa, teil_uw.v_besch_art besch_art, '
+  teil.typ as unipps_typ, teil.praeferenzkennung, teil.sme,
+  teil.faktlme_sme, teil.lme
+}
 var
   besch_art:String;
 begin
@@ -51,11 +55,6 @@ begin
     //Einige wichtige Daten direkt in Felder
     TeilTeilenummer:=Ausgabe['t_tg_nr'];
 
-//    praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
-//    unipps_typ:=Trim(TeileQry.FieldByName('unipps_typ').AsString);
-//    sme:=TeileQry.FieldByName('sme').AsInteger;
-//    faktlme_sme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
-//    lme:=TeileQry.FieldByName('lme').AsInteger;
 
     //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
@@ -92,11 +91,17 @@ begin
   else
     //gefiltert ausgeben
     Werte:=Ausgabe.Wertliste(Filter);
-  WerteBestellung:=TWWertliste.Create;
+
+  //Evtl Daten aus Bestellung dazu
+//  WerteBestellung:=TWWertliste.Create;
   if PreisErmittelt Then
+  begin
     WerteBestellung:=Bestellung.DruckDatenAuswahl;
-  Werte.AddRange(WerteBestellung);
+    Werte.AddRange(WerteBestellung);
+  end;
+
   Result:= Werte;
+
 end;
 
 function TWTeil.GetDruckDaten:TWWertliste;
@@ -110,11 +115,16 @@ procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
-  if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
-    Ausgabe.AddData('Bezeichnung',Qry.Fields);
-  { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
-   if istKaufteil then
-        holeMaxPreisAus3Bestellungen;
+  try
+    if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
+      Ausgabe.AddData('Bezeichnung',Qry.Fields);
+    { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
+     if istKaufteil then
+          holeMaxPreisAus3Bestellungen;
+
+  finally
+    Qry.Free;
+  end;
 
 end;
 
@@ -132,35 +142,40 @@ begin
 
   Qry:=Tools.getQuery();
 
-  PreisGesucht:= True;
-  gefunden:=Qry.SucheLetzte3Bestellungen(TeilTeilenummer);
+  try
+    PreisGesucht:= True;
+    gefunden:=Qry.SucheLetzte3Bestellungen(TeilTeilenummer);
 
-  if not gefunden then
-  begin
-      //Fehler ausgeben
-      exit;
-  end;
-
-  maxPreis:=0;
-  maxFields:=nil;
-
-  while not Qry.Eof do
-  begin
-    PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
-    If PreisJeLME > maxPreis Then
+    if not gefunden then
     begin
-          //Datensatz und Preis merken
-          maxPreis := PreisJeLME;
-          maxFields:=Qry.Fields;
+        //Fehler ausgeben
+        exit;
     end;
 
-    Qry.next;
+    maxPreis:=0;
+    maxFields:=nil;
+
+    while not Qry.Eof do
+    begin
+      PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
+      If PreisJeLME > maxPreis Then
+      begin
+            //Datensatz und Preis merken
+            maxPreis := PreisJeLME;
+            maxFields:=Qry.Fields;
+      end;
+
+      Qry.next;
+    end;
+
+    PreisErmittelt:= True;
+
+    //Übertrage gemerkten Datensatz in Ojekt
+    Bestellung := TWBestellung.Create(maxFields);
+
+  finally
+    Qry.Free;
   end;
-
-  PreisErmittelt:= True;
-
-  //Übertrage gemerkten Datensatz in Ojekt
-  Bestellung := TWBestellung.Create(maxFields);
 
 end;
 

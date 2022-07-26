@@ -24,8 +24,9 @@ public
   procedure AddData(Key:String;Val:String);overload;
   function Wertliste():TWWertliste;overload;
   function Wertliste(KeyListe:TWFilter):TWWertliste;overload;
-  function ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
-  function FeldNamensListe():String;
+  function FeldNamen():TWWertliste;overload;
+  function FeldNamen(KeyListe:TWFilter):TWWertliste;overload;
+  class function ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
 
 end;
 
@@ -36,7 +37,6 @@ constructor TWEigenschaften.Create(Felder:TFields);
 begin
   inherited Create;
   Self.AddData(Felder);
-
 end;
 
 
@@ -81,18 +81,29 @@ begin
 end;
 
 //Liefert Liste aller keys
-function TWEigenschaften.FeldNamensListe():String;
-const trenn = ' ; ' ;
+function TWEigenschaften.FeldNamen(KeyListe:TWFilter):TWWertliste;
 var
-  txt,key:string;
-
+  key:String;
+  Liste:TWWertliste;
 begin
-  txt:='';
+  for key in  KeyListe do
+  begin
+    if Self.ContainsKey(key) then
+      Liste.Add(key);
+  end;
+  Result:= Liste;
+end;
+
+function TWEigenschaften.FeldNamen():TWWertliste;
+var
+  key:String;
+  Liste:TWWertliste;
+begin
   for key in Keys do
   begin
-     txt:= txt + key + trenn;
+    Liste.Add(key);
   end;
-  Result:= txt;
+  Result:= Liste;
 end;
 
 //liefert alle Werte des Objektes
@@ -120,7 +131,9 @@ begin
   begin
 
     if TryGetValue(key,val) then
-      Liste.Add(val);
+      Liste.Add(val)
+    else
+      Liste.Add('');
 
   end;
 
@@ -129,7 +142,7 @@ end;
 
 
 //Liefert alle Eigenschaften in Werte in einem String verkettet
-function TWEigenschaften.ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
+class function TWEigenschaften.ToCSV(Werte:TWWertliste; const Trennzeichen:String=';'):String;
 var value:String;
 begin
   Result:='';

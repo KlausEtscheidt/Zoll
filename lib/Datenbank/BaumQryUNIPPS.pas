@@ -19,6 +19,7 @@ interface
 
   type
     TWBaumQryUNIPPS = class(TWADOQuery)
+      destructor Destroy; override;
       function SucheKundenRabatt(kunden_id:string):Boolean;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
       function SucheDatenzumTeil(t_tg_nr:string):Boolean;
@@ -41,16 +42,16 @@ interface
 
 implementation
 
-function TWBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+destructor TWBaumQryUNIPPS.Destroy;
 begin
-  var sql: String;
-  {siehe Access Abfrage "b_hole_KAPositionen"
-   sql = "SELECT auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos, auftragkopf.kunde,
-     auftragpos.besch_art, auftragkopf.klassifiz, auftragpos.pos as pos_nr, " _
-    & "auftragpos.t_tg_nr, auftragpos.oa, auftragpos.typ, auftragpos.menge, auftragpos.preis " _
-    & "FROM auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 " _
-    & "WHERE auftragpos.ident_nr1 = """ & ka_id & """ "
-  }
+  inherited;
+end;
+
+
+function TWBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+var sql: String;
+begin
+  //siehe Access Abfrage "b_hole_KAPositionen"
   sql := 'select auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos, '
       +  ' auftragkopf.kunde, auftragpos.besch_art, '
       +  ' auftragkopf.klassifiz, auftragpos.pos as pos_nr, '
@@ -64,14 +65,9 @@ begin
 end;
 
 function TWBaumQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
+var sql: String;
 begin
-  var sql: String;
-  {siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
-    sql = "SELECT ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis " _
-        & "FROM kunde_zuab " _
-        & "WHERE ident_nr1 = """ & kunden_id & """ AND datum_von<=" & heute_datum_str _
-                 & " AND datum_bis>" & heute_datum_str & " ; "
-  }
+  //siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
        + 'from kunde_zuab where ident_nr1 = "' + kunden_id + '";';
   Result:= RunSelectQuery(sql);
@@ -81,22 +77,11 @@ end;
 
 
 function TWBaumQryUNIPPS.SucheDatenzumTeil(t_tg_nr:string):Boolean;
-{siehe Access Abfrage "b_hole_Daten_zu Teil"
-sql = "SELECT teil_uw.t_tg_nr, teil_uw.oa, " _
-    & "teil_uw.v_besch_art as besch_art, teil.typ, teil.urspr_land,
-       teil.ausl_u_land,
-       teil.praeferenzkennung, " _
-    & "teil.sme, teil.faktlme_sme, teil.lme " _
-    & "FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa " _
-    & "Where teil_uw.t_tg_nr=""" & t_tg_nr _
-    & """ and teil_uw.oa<9 AND teil_uw.uw=1; "
-
-}
-
+//siehe Access Abfrage "b_hole_Daten_zu Teil"
+var sql: String;
 begin
-  var sql: String;
-  sql:= 'SELECT trim(teil_uw.t_tg_nr) as t_tg_nr , teil_uw.oa, teil_uw.v_besch_art besch_art, '
-      + 'trim(teil.typ) as unipps_typ, '
+  sql:= 'SELECT trim(teil_uw.t_tg_nr) as t_tg_nr , teil_uw.oa, '
+      + 'teil_uw.v_besch_art as besch_art, trim(teil.typ) as unipps_typ, '
 //      + 'teil.urspr_land, teil.ausl_u_land, '
       + 'teil.praeferenzkennung, teil.sme, teil.faktlme_sme, teil.lme '
       + 'FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa '
@@ -110,9 +95,8 @@ function TWBaumQryUNIPPS.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
 {siehe Access Abfrage "b_Bestelldaten"
     'Suche �ber unipps_bestellpos.t_tg_nr=t_tg_nr; bestellkopf.datum muss aus der Unterabfrage hervorgehen (neuestes Datum)
 }
-
+var sql: String;
 begin
-  var sql: String;
   sql:= 'SELECT first 3 bestellkopf.ident_nr as bestell_id, bestellkopf.datum as bestell_datum, '
       + 'bestellpos.preis, bestellpos.basis, bestellpos.pme, bestellpos.bme, '
       + 'bestellpos.faktlme_bme, bestellpos.faktbme_pme, bestellpos.netto_poswert, bestellpos.menge,  '
@@ -134,9 +118,8 @@ function TWBaumQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
      WHERE ident_nr1=""" & t_tg_nr$ & """ and teil_bez.sprache=""D""
      AND teil_bez.art=1 ;"
 }
-
+var sql: String;
 begin
-  var sql: String;
   sql:= 'SELECT trim(teil_bez.ident_nr1) AS teil_bez_id, trim(teil_bez.Text) AS Bezeichnung '
       + 'FROM teil_bez where ident_nr1="' + t_tg_nr
       + '" and teil_bez.sprache="D" AND teil_bez.art=1 ;' ;
@@ -152,8 +135,8 @@ function TWBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
   Es existieren z.T. unterschiedlich Stücklisten wegen mehrerer Arbeitspläne (Ausweichmaschine mit anderen Rohteilen)
   Es wird daher zu TEIL_APLNKOPF gejoined und dort teil_aplnkopf.art=1 gefordert (Standardarbeitsplan)
 }
+var sql: String;
 begin
-  var sql: String;
   sql:= 'SELECT trim(teil_stuelipos.ident_nr1) As id_stu, teil_stuelipos.pos_nr, '
       + 'trim(teil_stuelipos.t_tg_nr) as t_tg_nr, teil_stuelipos.oa, trim(teil_stuelipos.typ) as unipps_typ, teil_stuelipos.menge '
       + 'FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1 '
@@ -177,8 +160,8 @@ function TWBaumQryUNIPPS.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
  Suche in Fertigunsauftraegen (Tabelle f_auftragkopf)
  über f_auftragkopf.auftr_nr=KaId und f_auftragkopf.auftr_pos=id_pos
 }
+var sql: String;
 begin
-  var sql: String;
   sql:= 'SELECT f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, '
       + 'f_auftragkopf.verurs_art, trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, '
       + 'trim(f_auftragkopf.typ) as unipps_typ, f_auftragkopf.ident_nr as FA_Nr '
@@ -194,11 +177,11 @@ end;
 function TWBaumQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
  Suche über f_auftragkopf.t_tg_nr}
+var sql: String;
 begin
-  var sql: String;
   { TODO 1 : nur freigegebene nehmen }
-  sql:= 'SELECT first 1 f_auftragkopf.auftr_nr as id_stu, '
-      + 'f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art, '
+  sql:= 'SELECT first 1 f_auftragkopf.t_tg_nr as id_stu, '
+      + '1 as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art, '
       + 'trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, trim(f_auftragkopf.typ) as unipps_typ, '
       + 'f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
@@ -214,8 +197,8 @@ end;
 //Suche alle Positionen zu einem FA (ASTUELIPOS)
 function TWBaumQryUNIPPS.SuchePosZuFA(FA_Nr:String): Boolean;
 //siehe Access Abfrage "b_hole_Pos_zu_FA"
+var sql: String;
 begin
-  var sql: String;
   sql:= 'SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, '
       + 'astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, '
       + 'astuelipos.pos_nr, trim(astuelipos.t_tg_nr) as t_tg_nr, astuelipos.oa, '

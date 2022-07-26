@@ -23,6 +23,7 @@ interface
         IdStu: String;     //Id der übergeordneten Stueli
         IdPos: Integer;    //Pos von Self in IdStu
         Menge: Double;     //Menge von Self in IdStu (beliebige Einheiten)
+        MengeTotal: Double; //Gesamt-Menge (mit übergeordneten Mengen mult.)
         Stueli: TWStueli;    //Hält die Kinder-Positionen
 
         Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
@@ -36,7 +37,7 @@ interface
         procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
-        procedure SetzeEbenen(level:Integer);
+        procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
         property DruckDaten:TWWertliste read GetDruckDaten;
         property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
         class property Filter:TWFilter read FFilter write FFilter;
@@ -121,10 +122,10 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-//      Stueli[StueliPosKey].AsType<TWStueliPos>
-//                           .ToTextFile(OutFile, False);
+      Stueli[StueliPosKey].AsType<TWStueliPos>
+                           .ToTextFile(OutFile, False);
 
-//    {
+    {
     StueliPosObj:=Stueli[StueliPosKey].AsObject;
     if StueliPosObj is TWKundenauftrag then
       TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, False);
@@ -136,12 +137,12 @@ begin
       TWFAPos(StueliPosObj).ToTextFile(OutFile, False);
     if StueliPosObj is TWTeilAlsStuPos then
       TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, False);
-//    }
+    }
   end;
 
 end;
 
-// Hole Eigenschaften zum Drucken
+// Hole gefilterte Eigenschaften zum Drucken
 //--------------------------------------------------------------------------
 function TWStueliPos.GetDruckDatenAuswahl:TWWertliste;
 begin
@@ -153,15 +154,17 @@ begin
     Result:=Ausgabe.Wertliste(Filter);
 end;
 
+// Hole alle Eigenschaften zum Drucken
+//--------------------------------------------------------------------------
 function TWStueliPos.GetDruckDaten:TWWertliste;
 begin
   //Alle ausgeben
   Result:=Ausgabe.Wertliste()
 end;
 
-// Hinzufügen der Ebenen
+// Hinzufügen der Ebenen und Gesamtmengen
 //--------------------------------------------------------------------------
-procedure TWStueliPos.SetzeEbenen(Level:Integer);
+procedure TWStueliPos.SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
 
 var
   StueliPos: TWStueliPos;
@@ -173,6 +176,8 @@ begin
   Ebene:=Level;
   levelString:=IntToStr(Ebene);
   EbeneNice := StringOfChar('.', Ebene-1);
+  MengeTotal:=Menge*UebMenge;  //Eigene Menge mal übergeordnete
+  Self.Ausgabe.AddData('MengeTotal', FloatToStr(MengeTotal));
   Self.Ausgabe.AddData('Ebene', levelString);
   Self.Ausgabe.AddData('EbeneNice', EbeneNice+levelString);
 
@@ -188,7 +193,7 @@ begin
     //spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
     StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;;
     //Ausgabe
-    StueliPos.SetzeEbenen(Ebene+1);
+    StueliPos.SetzeEbenenUndMengen(Ebene+1,MengeTotal);
   end;
 
 end;

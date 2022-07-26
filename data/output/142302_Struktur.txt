@@ -1,8 +1,0 @@
-1 ; 2 ; 1 ; 505D24968SXK019 ; NE/NK/SP/WK, Gr. 1 ; 89 ; KA_Pos ; 1 ; 1 ; 142302 ; 89 ; 505D24968SXK019, 1, 2, NE/NK/SP/WK, Gr. 1, 0, 1, 1, 1, Schulterring 
-2 ; 2 ; 1 ; 507I24969SXK019 ; NE/NK/SP/WK, Gr. 1 ; 197 ; KA_Pos ; 2 ; 1 ; 142302 ; 197 ; 507I24969SXK019, 1, 2, NE/NK/SP/WK, Gr. 1, 0, 1, 1, 1, Spritzring 
-3 ; 2 ; 1 ; 210A22335SCB019 ; NE-Größe 1 ; 509 ; KA_Pos ; 3 ; 1 ; 142302 ; 509 ; 210A22335SCB019, 1, 2, NE-Größe 1, 0, 1, 1, 1, Welle 
-4 ; 2 ; 1 ; 501E22339SCA019 ; NE/NK-Größe 1 ; 18 ; KA_Pos ; 4 ; 1 ; 142302 ; 18 ; 501E22339SCA019, 1, 2, NE/NK-Größe 1, 0, 1, 1, 1, Ring, zweiteilig 
-5 ; 1 ; 1 ; 400AF0051EVW074 ; Ø74/51x5 ; 23 ; KA_Pos ; 5 ; 2 ; 142302 ; 23 ; 400AF0051EVW074, 1, 1, Ø74/51x5, 1, 1, 1, 1, Flachdichtung 
-6 ; 2 ; 1 ; 455A27206PEK229 ; NKP 40/50-200 ; 932 ; KA_Pos ; 6 ; 1 ; 142302 ; 932 ; 455A27206PEK229, 1, 2, NKP 40/50-200, 0, 1, 1, 1, Stopfbuchseinsatz 
-10 ; 1 ; 233A22345PER003 ; 3 ; 0 ; 40+50-200 ; FA_Pos ; 1 ; 0 ; 614516 ; 233A22345PER003, 1, 2, 40+50-200, 0, 1, 1, 1, Linkslaufrad, geschlossen 
-8 ; 1 ; 1 ; 472I30140ISA019 ; Größe 1 ; 238 ; KA_Pos ; 8 ; 2 ; 142302 ; 238 ; 472I30140ISA019, 1, 1, Größe 1, 1, 1, 1, 1, Gleitring 

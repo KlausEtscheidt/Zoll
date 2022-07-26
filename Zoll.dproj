@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -206,6 +206,12 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Zoll.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
@@ -214,12 +220,6 @@
                 </DeployFile>
                 <DeployFile LocalName="Win64\Debug\Zoll.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Zoll.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
-                    <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

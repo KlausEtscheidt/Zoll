@@ -50,7 +50,7 @@ begin
   set_block:=Self.Ausgabe['set_block'];
 
   istToplevel:= ueb_s_nr='0';
-  KinderInASTUELIPOSerwartet:=Self.Ausgabe['set_block']='1';
+  KinderInASTUELIPOSerwartet:=(set_block='1');
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();
