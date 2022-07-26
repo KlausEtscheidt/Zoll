@@ -14,6 +14,7 @@ interface
 
     TWStueliPos = class
       private
+        class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
         function GetDruckDaten:TWWertliste;
         function GetDruckDatenAuswahl:TWWertliste;
       public
@@ -25,7 +26,6 @@ interface
         Stueli: TWStueli;    //Hält die Kinder-Positionen
 
         Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
-        class var Filter:TWFilter; //Filter zur Ausgabe der Eigenschaften
 
         StueliTeil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
 //        Teil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
@@ -36,10 +36,10 @@ interface
         procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
-//        function GetTeileEigenschaften():String;virtual;abstract;
         procedure SetzeEbenen(level:Integer);
         property DruckDaten:TWWertliste read GetDruckDaten;
         property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+        class property Filter:TWFilter read FFilter write FFilter;
 
     end;
 

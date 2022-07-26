@@ -92,7 +92,7 @@ begin
   else
     //gefiltert ausgeben
     Werte:=Ausgabe.Wertliste(Filter);
-
+  WerteBestellung:=TWWertliste.Create;
   if PreisErmittelt Then
     WerteBestellung:=Bestellung.DruckDatenAuswahl;
   Werte.AddRange(WerteBestellung);

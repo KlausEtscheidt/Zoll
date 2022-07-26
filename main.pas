@@ -53,7 +53,9 @@ end;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
 //  mainNonGui.KaAuswerten('142591'); //Error
-  mainNonGui.KaAuswerten('142567'); //2Pumpen
+  mainNonGui.KaAuswerten('144729');
+//  mainNonGui.KaAuswerten('142567'); //2Pumpen
+
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 
 end;
