@@ -44,6 +44,7 @@ begin
   liesKopfundPositionen;
   holeKinder;
   SetzeEbenenUndMengen(0,1);
+  SummierePreise;
   CSV_volle_Ausgabe;
   CSV_kurze_Ausgabe;
 

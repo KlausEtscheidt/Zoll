@@ -30,6 +30,7 @@ type
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
+    function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
     property DruckDaten:TWWertliste read GetDruckDaten;
     property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
@@ -54,7 +55,6 @@ begin
 
     //Einige wichtige Daten direkt in Felder
     TeilTeilenummer:=Ausgabe['t_tg_nr'];
-
 
     //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
@@ -229,6 +229,27 @@ end;
 //  Result := preis * Qry.FieldByName('faktlme_bme').AsFloat;
 //
 //end;
+
+// Gesamt-Preis einer Stuecklistenposition
+// aus Menge und Preis je Lagermengeeinheit berechnen
+function TWTeil.StueliPosGesamtPreis(menge: Double;
+                            faktlme_sme: Double) : Double;
+{Beipiel
+ SME=mm
+ LME=m
+ Preis je Liefermengeneinheit=10,35 EUR/m
+ faktlme_sme=1000 [mm/m];  1000 SME [mm] ergeben eine LME  [m]
+
+ Preis je Stuecklistenmengeneinheit ist:
+       Preis je Lagermengeeinheit "Preis_je_LME" geteilt durch faktlme_sme
+ Preis_je_SME also 10,35 EUR/m (Preis_je_LME) / (1000 mm/m) = 0,01035 EUR/mm
+}
+begin
+  Result:= PreisJeLME / faktlme_sme;
+  Result:= Result * menge;
+end;
+
+
 
 function TWTeil.ToStr():String;
 begin

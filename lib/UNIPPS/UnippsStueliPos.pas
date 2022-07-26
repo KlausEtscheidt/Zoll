@@ -15,8 +15,11 @@ interface
 
       public
 
-        PosTyp:String;
-        Teil: TWTeil;
+        PosTyp : String;
+        Teil : TWTeil;
+        SummeEU, SummeNonEU : Double;
+        PreisEU, PreisNonEU : Double;
+
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
                       aIdStu:String;aIdPos: Integer;eMenge:Double);
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
@@ -24,12 +27,14 @@ interface
         procedure holeKindervonEndKnoten();
         function holeKinderAusASTUELIPOS(): Boolean;
         function holeKinderAusTeileStu(): Boolean;
+        procedure SummierePreise;
+        procedure BerechnePreisDerPosition;
+
 
       end;
 
 var
   EndKnotenListe: TWEndKnotenListe;
-//  CSVLang,CSVKurz: TLogFile;
 
 implementation
 
@@ -288,6 +293,77 @@ end;
 //--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
+
+{Summiere Preise fuer ein Teil
+ aus der Summe der Kosten aller Teile in seiner Stueckliste
+ und einem evtl zusaetzlich vorhandenen eigenen Preis
+
+'eispiel Laufraeder: wir kaufen 233I26543PERF03 bei Ottenstein
+in der Stueckliste ist aber die Gewindebuchse 544D26265NKM019, die wir auch kaufen
+Der Gesatmpreis ist also Summe aller Teile in der Stueckliste + eigener Preis
+}
+procedure TWUniStueliPos.SummierePreise;
+var
+  StueliPos: TWUniStueliPos;
+  StueliPosKey: Integer;
+
+begin
+
+    SummeEU:=0; SummeNonEU:=0;
+    {Fa's mit verursacher_art <> 1 sind untergeordnete FA z.B zu einer Pumpenmontage
+     Deren Teile sind schon im Haupt-FA enthalten und d�rfen daher hier nicht nochmals in die Preissumme einflie�en
+     Sie sollen zum debuggen aber in der Struktur enthalten sein }
+      If PosTyp='FA_Komm' Then
+          If Ausgabe['verurs_art'] <> '1' Then
+              Exit;
+
+  //Preise der Unterpositionen summieren
+  for StueliPosKey in SortedKeys  do
+  begin
+    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;;
+    //Rekursion
+    StueliPos.SummierePreise;
+
+    //Gesamtsumme ist Summe der Summen aller Kinder
+    SummeEU := SummeEU + StueliPos.SummeEU;
+    SummeNonEU := SummeNonEU + StueliPos.SummeNonEU;
+
+  end;
+
+  // Eigen-Preis der Position ermitteln
+  // Umrechnung mit Gesamtmenge und Einheiten
+  BerechnePreisDerPosition;
+
+  //Eigenen Preis dazu
+  SummeEU := SummeEU + PreisEU;
+  SummeNonEU := SummeNonEU + PreisNonEU;
+
+end;
+
+// rechnet den Einzelpreis aus der Bestellung mit Gesamtmenge
+// und dem  Faktor faktlme_sme (Stuecklistenmengeneinheit zu Lagermengeneinheit)
+// um auf den Preis der konkreten Stuecklistenposition
+procedure TWUniStueliPos.BerechnePreisDerPosition;
+var
+  Preis : Double;
+
+begin
+
+    PreisEU := 0;
+    PreisNonEU := 0;
+
+    if Self.hatTeil then
+      If Teil.PreisErmittelt Then
+      begin
+          Preis := Teil.StueliPosGesamtPreis(MengeTotal,
+                              StrToFloat(Teil.Ausgabe['faktlme_sme']));
+          If Teil.Praeferenzkennung = 1 Then
+              PreisEU := Preis
+          Else
+              PreisNonEU := Preis
+      end
+
+end;
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen

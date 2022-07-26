@@ -62,6 +62,7 @@ begin
 
 end;
 
+
 function TWBestellung.GetDruckDatenAuswahl:TWWertliste;
 begin
   if length(Filter)=0 then
