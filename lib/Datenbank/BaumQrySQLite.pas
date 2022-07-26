@@ -37,7 +37,7 @@ begin
   var sql: String;
   sql := 'select id_stu, id_pos, kunde, besch_art, klassifiz, pos_nr, t_tg_nr, '
       +  'oa, unipps_typ, menge, preis '
-      +  'from auftragkopf where id_stu = "' + ka_id + '"order by id_pos;';
+      +  'from auftragkopf where id_stu like "' + ka_id + '" order by id_pos;';
   Result:= RunSelectQuery(sql);
 end;
 

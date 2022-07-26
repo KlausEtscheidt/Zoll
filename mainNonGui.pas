@@ -53,6 +53,8 @@ var
   ka:TWKundenauftrag;
 
 begin
+  {$IFNDEF HOME}
+
   //Logger oeffnen
 //  Tools.Log.OpenAppend(Tools.LogDir, 'FullLog.txt');
 //  Tools.ErrLog.OpenAppend(Tools.logdir, 'ErrLog.txt');
@@ -69,7 +71,6 @@ begin
   KaNurAuswerten('144729');
   KaNurAuswerten('142567'); //2Pumpen
   KaNurAuswerten('142302'); //Ersatz
-
 
   //Query fuer UNIPPS anlegen und Verbindung setzen
   QryUNIPPS:=Tools.GetQuery;
@@ -109,7 +110,7 @@ begin
 
   Tools.Log.Close;
   Tools.ErrLog.Close;
-
+{$ENDIF}
 end;
 
 procedure RunIt;
@@ -117,7 +118,7 @@ begin
 //  mainNonGui.KaAuswerten('142591'); //Error
 //  mainNonGui.KaAuswerten('144729');
   mainNonGui.KaAuswerten('142567'); //2Pumpen
-
+//  mainNonGui.KaAuswerten('144734');
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 
 end;
