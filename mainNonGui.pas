@@ -79,7 +79,6 @@ begin
   KaNurAuswerten('144729');
 //  KaNurAuswerten('142567'); //2Pumpen
   KaNurAuswerten('142302'); //Ersatz
-  exit;
 
   //Abfragen ueber flex. Query: 200 Kundenaufträeg
   sql := 'select first 401 ident_nr as ka_id from auftragkopf order by ka_id desc;';
