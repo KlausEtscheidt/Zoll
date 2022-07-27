@@ -96,7 +96,6 @@ begin
       + 't_tg_nr, oa, unipps_typ, FA_Nr '
       + 'FROM f_auftragkopf where id_stu = ? and pos_nr= ? '
       + 'and oa<9 ORDER BY FA_Nr';
-//  Result:= RunSelectQuery(sql);
   Result:= RunSelectQueryWithParam(sql,[KaId,IntToStr(id_pos)]);
 
 end;

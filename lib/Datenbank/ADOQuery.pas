@@ -59,6 +59,8 @@ interface
       function RunSelectQueryWithParam(sql:string;paramlist:TWParamlist): Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
       function InsertFields(tablename: String; myFields:TFields):Boolean;
+      procedure PrepareQuery(SQL:String); //Fuehrt aus
+      procedure ExecuteQuery(WithResult:Boolean); //Fuehrt aus
 
       function GetFieldValues(): System.TArray<String>;
       function GetFieldValuesAsText(): String;
@@ -87,22 +89,12 @@ end;
 //-----------------------------------------------------------
 function TWADOQuery.RunSelectQuery(sql:string):Boolean;
 begin
+  //Verbinden und SQL befuellen
+  PrepareQuery(sql);
 
-  //Pr�ft of Datenbank verbunden
-  Self.IsConnected;
+  //Ausfuehren per Open da Ergebnis geliefert wird
+  Self.ExecuteQuery(True);
 
-  //�bertr�ge die Klassen-Connection ins Objekt
-  Self.Connection:=FConnector.Connection;
-
-  //sql ins Qry-Objekt
-  Self.SQL.Clear;
-  Self.SQL.Add(sql);
-
-  //Qry ausf�hren
-  Self.Open;
-
-  n_records:=self.GetRecordCount();
-  gefunden:=n_records>0;
   Result:= gefunden;
 end;
 
@@ -112,29 +104,19 @@ function TWADOQuery.RunSelectQueryWithParam(sql:string;paramlist:TWParamlist):Bo
 var I:Integer;
 begin
 
-  //Pr�ft of Datenbank verbunden
-  Self.IsConnected;
+  //Verbinden und SQL befuellen
+  PrepareQuery(sql);
 
-  //�bertr�ge die Klassen-Connection ins Objekt
-  Self.Connection:=FConnector.Connection;
-
-  //sql ins Qry-Objekt
-    Self.SQL.BeginUpdate;
-    Self.SQL.Clear;
-    Self.SQL.Add(sql);
-    Self.SQL.EndUpdate;
-
+  //Parameter in Qry-Objekt uebernehmen
   for I := 0 to length(paramlist)-1 do
   begin
     Self.Parameters.Items[I].DataType := ftString;
     Self.Parameters.Items[I].Value := paramlist[I];
   end;
 
-  //Qry ausf�hren
-  Self.Open;
+  //Ausfuehren per Open da Ergebnis geliefert wird
+  Self.ExecuteQuery(True);
 
-  n_records:=self.GetRecordCount();
-  gefunden:=n_records>0;
   Result:= gefunden;
 end;
 
@@ -144,20 +126,12 @@ end;
 function TWADOQuery.RunExecSQLQuery(sql:string):Boolean;
 var n_records:Integer;
 begin
-  //Pr�ft of Datenbank verbunden
-  Self.IsConnected;
+  //Verbinden und SQL befuellen
+  PrepareQuery(sql);
 
-  //�bertr�ge die Klassen-Connection ins Objekt
-  Self.Connection:=FConnector.Connection;
+  //Ausfuehren per ExecSQL da kein Ergebnis geliefert wird
+  Self.ExecuteQuery(False);
 
-  //sql ins Qry-Objekt
-  Self.SQL.Clear;
-  Self.SQL.Add(sql);
-
-  //Qry ausf�hren
-  n_records:=Self.ExecSQL();
-
-  gefunden:=n_records>0;
   Result:= gefunden;
 end;
 
@@ -175,37 +149,25 @@ begin
 
   Result:=False;
 
-  //Pr�ft of Datenbank verbunden
-  Self.IsConnected;
-
-  try
-
-    //SQL aus FEldnamen
-    felder:='';
-    werte:='';
-    for myField in myFields do
-    begin
-        felder:=felder + myField.FieldName + ', ';
-        werte:=werte +':'+ myField.FieldName + ', ';
+  //SQL aus FEldnamen erzeugen
+  felder:='';
+  werte:='';
+  for myField in myFields do
+  begin
+      felder:=felder + myField.FieldName + ', ';
+      werte:=werte +':'+ myField.FieldName + ', ';
 //        werte:=werte +'"'+ myField.AsString + '", ';
-    end;
+  end;
 
-    System.delete(felder,length(felder)-1,5);
-    System.delete(werte,length(werte)-1,5);
-    sql:= 'INSERT INTO ' + tablename + '(' + felder +
-            ') VALUES(' + werte + ');';
+  System.delete(felder,length(felder)-1,5);
+  System.delete(werte,length(werte)-1,5);
+  sql:= 'INSERT INTO ' + tablename + '(' + felder +
+          ') VALUES(' + werte + ');';
 
-    //�bertr�ge die Klassen-Connection ins Objekt
-    //
-    // !!! Muss vor dem �ndern des SQL erfolgen damit Parameter angelegt werden.
-    //
-    Self.Connection:=FConnector.Connection;
+  //Verbinden und SQL befuellen
+  PrepareQuery(sql);
 
-    //SQL in Query (erst leeren)
-    Self.SQL.BeginUpdate;
-    Self.SQL.Clear;
-    Self.SQL.Add(sql);
-    Self.SQL.EndUpdate;
+    try
 
     //Daten als Parameter in Query
     for myField in myFields do
@@ -220,10 +182,8 @@ begin
         Self.Parameters.ParamByName(myField.FieldName).Value := myField.Value;
     end;
 
-    //Ausf�hren
-    n_records:=Self.ExecSQL();
-    gefunden:=n_records>0;
-    Result:= gefunden;
+    //AUsfuehren
+    ExecuteQuery(False);
 
   except
 
@@ -237,6 +197,47 @@ begin
   end;
 
 end;
+
+//Bereitet Query zum Ausführen vor
+procedure TWADOQuery.PrepareQuery(SQL:String);
+begin
+  //Pr�ft of Datenbank verbunden
+  Self.IsConnected;
+
+  //�bertr�ge die Klassen-Connection ins Objekt
+  Self.Connection:=FConnector.Connection;
+
+  //sql ins Qry-Objekt
+  Self.SQL.BeginUpdate;
+  Self.SQL.Clear;
+  Self.SQL.Add(sql);
+  Self.SQL.EndUpdate;
+
+end;
+
+//Fuehrt ExecSQL oder Open (bei WithResult:=True) aus
+procedure TWADOQuery.ExecuteQuery(WithResult:Boolean);
+begin
+  //Ausf�hren
+  if WithResult then
+  begin
+    //Qry ausf�hren
+    Self.Open;
+    n_records:=self.GetRecordCount();
+  end
+  else
+    n_records:=Self.ExecSQL();
+
+  gefunden:=n_records>0;
+
+end;
+
+//-----------------------------------------------------------
+// Zusatzinfo zu Query-Inhalt
+//-----------------------------------------------------------
+{ TODO :
+Klären was doppelt ist
+s. auch Stueli-Eigenschaftem }
 
 //-----------------------------------------------------------
 function TWADOQuery.GetFieldValuesAsText(): String;
