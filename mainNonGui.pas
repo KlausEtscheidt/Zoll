@@ -52,6 +52,7 @@ var
 
 begin
 {$IFNDEF SQLITE}
+{$IFNDEF HOME}
 
   //Logger oeffnen
 //  Tools.Log.OpenAppend(Tools.LogDir, 'FullLog.txt');
@@ -108,6 +109,7 @@ begin
 
   Tools.Log.Close;
   Tools.ErrLog.Close;
+{$ENDIF}
 {$ENDIF}
 end;
 

@@ -70,12 +70,13 @@ end;
 procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
   StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal'];
+      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal',
+       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
 
   TeilFelder: TWFilter = ['t_tg_nr',
       'oa','Bezeichnung', 'unipps_typ','besch_art',
       'praeferenzkennung', 'sme',
-      'faktlme_sme', 'lme'];
+      'faktlme_sme', 'lme', 'PreisJeLME'];
 
   BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis',
          'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',

@@ -14,8 +14,6 @@ interface
       private
         procedure raiseNixGefunden();
 
-      protected
-
       public
 
         PosTyp : String;
@@ -297,7 +295,7 @@ end;
  aus der Summe der Kosten aller Teile in seiner Stueckliste
  und einem evtl zusaetzlich vorhandenen eigenen Preis
 
-'eispiel Laufraeder: wir kaufen 233I26543PERF03 bei Ottenstein
+'Beispiel Laufraeder: wir kaufen 233I26543PERF03 bei Ottenstein
 in der Stueckliste ist aber die Gewindebuchse 544D26265NKM019, die wir auch kaufen
 Der Gesatmpreis ist also Summe aller Teile in der Stueckliste + eigener Preis
 }
@@ -338,6 +336,8 @@ begin
   //Eigenen Preis dazu
   SummeEU := SummeEU + PreisEU;
   SummeNonEU := SummeNonEU + PreisNonEU;
+  Ausgabe.AddData('SummeEU', FloatToStr(SummeEU));
+  Ausgabe.AddData('SummeNonEU', FloatToStr(SummeNonEU));
 
 end;
 
@@ -358,11 +358,14 @@ begin
       begin
           Preis := Teil.StueliPosGesamtPreis(MengeTotal,
                               StrToFloat(Teil.Ausgabe['faktlme_sme']));
-          If Teil.Praeferenzkennung = 1 Then
+          If Teil.Ausgabe['praeferenzkennung'] = '1' Then
               PreisEU := Preis
           Else
               PreisNonEU := Preis
-      end
+      end;
+
+    Ausgabe.AddData('PreisEU', FloatToStr(PreisEU));
+    Ausgabe.AddData('PreisNonEU', FloatToStr(PreisNonEU));
 
 end;
 

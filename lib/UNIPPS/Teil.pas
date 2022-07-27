@@ -18,7 +18,6 @@ type
     TeilTeilenummer: String; //= t_tg_nr
     Ausgabe:TWEigenschaften;
 
-    praeferenzkennung: Integer;
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
@@ -73,6 +72,10 @@ begin
       + besch_art + '< in >TWTeil.Create<');
 
     holeBenennung;
+  { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
+   if istKaufteil then
+        holeMaxPreisAus3Bestellungen;
+
   except
    on EDatabaseError do
       Tools.ErrLog.Log('Fehler');
@@ -122,17 +125,9 @@ procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
-  try
-    if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
-      Ausgabe.AddData('Bezeichnung',Qry.Fields);
-    { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
-     if istKaufteil then
-          holeMaxPreisAus3Bestellungen;
-
-  finally
-    Qry.Free;
-  end;
-
+  if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
+    Ausgabe.AddData('Bezeichnung',Qry.Fields);
+  Qry.Free;
 end;
 
 
@@ -149,7 +144,6 @@ begin
 
   Qry:=Tools.getQuery();
 
-  try
     PreisGesucht:= True;
     gefunden:=Qry.SucheLetzte3Bestellungen(TeilTeilenummer);
 
@@ -176,13 +170,12 @@ begin
     end;
 
     PreisErmittelt:= True;
+    Ausgabe.AddData('PreisJeLME', FloatToStr(PreisJeLME));
 
     //Übertrage gemerkten Datensatz in Ojekt
     Bestellung := TWBestellung.Create(maxFields);
 
-  finally
     Qry.Free;
-  end;
 
 end;
 
