@@ -54,7 +54,7 @@ procedure TWKundenauftragsPos.holeKinderAusASTUELIPOS;
 var gefunden: Boolean;
 var Qry: TWUNIPPSQry;
 var FAKopf:TWFAKopf;
-var FAStueliKey:String; //Stueli Key f�r FA's
+//var FAStueliKey:String; //Stueli Key f�r FA's
 var lfn: Integer;
 
 begin

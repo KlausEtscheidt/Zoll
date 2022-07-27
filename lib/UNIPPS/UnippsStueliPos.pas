@@ -60,7 +60,7 @@ end;
 // Speichert fuer die Ausgabe relevante Daten in Ausgabe
 //---------------------------------------------------------------------
 procedure TWUniStueliPos.PosDatenSpeichern(Qry: TWUNIPPSQry);
-var fieldnames:System.TArray<String>;
+//var fieldnames:System.TArray<String>;
 
 begin
 
@@ -317,7 +317,9 @@ begin
   //Preise der Unterpositionen summieren
   for StueliPosKey in SortedKeys  do
   begin
-    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;;
+//    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;
+    StueliPos:= Stueli[StueliPosKey] As TWUniStueliPos;
+
     //Rekursion
     StueliPos.SummierePreise;
 

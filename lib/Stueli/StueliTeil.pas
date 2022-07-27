@@ -25,7 +25,6 @@ uses System.Generics.Collections,Data.DB,
 implementation
 
 function TWStueliTeil.ToStr(KeyListe:TWFilter;var header:String):String;
-  var trenn :String;
 begin
   Result:='####################';
 end;

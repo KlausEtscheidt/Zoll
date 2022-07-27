@@ -124,7 +124,6 @@ end;
 //Query ohne Ergebnis ausf�hren
 //-----------------------------------------------------------
 function TWADOQuery.RunExecSQLQuery(sql:string):Boolean;
-var n_records:Integer;
 begin
   //Verbinden und SQL befuellen
   PrepareQuery(sql);
@@ -243,7 +242,7 @@ s. auch Stueli-Eigenschaftem }
 function TWADOQuery.GetFieldValuesAsText(): String;
 var
   Werte : System.TArray<String>;
-  Wert, Text : String;
+  Text : String;
   I:Integer;
 begin
   Werte:=GetFieldValues();
@@ -259,7 +258,7 @@ end;
 //-----------------------------------------------------------
 function TWADOQuery.GetFieldValues(): System.TArray<String>;
 var
-  felder,werte,sql:String;
+  felder,werte:String;
   myfield : TField;
   Names: TStringList;
 begin
@@ -279,7 +278,7 @@ end;
 function TWADOQuery.GetFieldNamesAsText(): String;
 var
   Werte : System.TArray<String>;
-  Wert, Text : String;
+  Text : String;
   I:Integer;
 begin
   Werte:=GetFieldNames();

@@ -42,15 +42,13 @@ end;
 procedure check100;
 var
   dbSQLiteConn: TWADOConnector;
-  QrySQLite: TWBaumQrySQLite;
+//  QrySQLite: TWBaumQrySQLite;
   QryUNIPPS: TWBaumQryUNIPPS;
   Sql:String;
   ka_id: string;
   I: Integer;
-  gefunden:Boolean;
   StartRecord: Integer;
   LastRecord: Integer;
-  ka:TWKundenauftrag;
 
 begin
 {$IFNDEF SQLITE}
@@ -82,7 +80,7 @@ begin
 
   //Abfragen ueber flex. Query: 200 Kundenaufträeg
   sql := 'select first 401 ident_nr as ka_id from auftragkopf order by ka_id desc;';
-  gefunden := QryUNIPPS.RunSelectQuery(Sql);
+  QryUNIPPS.RunSelectQuery(Sql);
 
   StartRecord :=200;
   LastRecord:=400;

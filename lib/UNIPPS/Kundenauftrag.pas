@@ -173,7 +173,7 @@ procedure TWKundenauftrag.holeKinder();
 }
 var StueliPos: TWUniStueliPos;
 var StueliPosKey: Integer;
-var keyArray: System.TArray<Integer>;
+//var keyArray: System.TArray<Integer>;
 var KaPos: TWKundenauftragsPos;
 var alteEndKnotenListe: TWEndKnotenListe;
 var EndKnoten: TWValue;
@@ -184,59 +184,58 @@ begin
   //Fuer alle Pos, die kein Kaufteil sind, rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen
   //Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben werden in der Liste EndKnoten vermerkt
   //---------------------------------------------------------------------------------------------
-  try
-    //Liste fuer "Kinderlose" erzeugen:
-    EndKnotenListe:=TWEndKnotenListe.Create;
-    alteEndKnotenListe:=TWEndKnotenListe.Create;
 
-    //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
-    keyArray:=Stueli.Keys.ToArray;
-    TArray.Sort<Integer>(keyArray);
+  //Liste fuer "Kinderlose" erzeugen:
+  EndKnotenListe:=TWEndKnotenListe.Create;
+  alteEndKnotenListe:=TWEndKnotenListe.Create;
 
-    //Loop �ber alle Pos des Kundenauftrages
-    for StueliPosKey in keyArray do
-    begin
-      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
+  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
+//    keyArray:=Stueli.Keys.ToArray;
+//    TArray.Sort<Integer>(keyArray);
 
-      //Fuer Kaufteile muss nicht weiter gesucht werden
-      if not KaPos.Teil.istKaufteil then
-        //Falls ein Komm-Fa zur Pos vorhanden, werden dessen Kinder aus
-        //Unipps-Tabelle ASTUELIPOS geholt
-        //Falls kein Komm-Fa zur Pos vorhanden, landet der Knoten in EndKnoten
-        KaPos.holeKinderAusASTUELIPOS;
+  //Loop �ber alle Pos des Kundenauftrages
+  for StueliPosKey in SortedKeys do
+  begin
+//      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
+    KaPos:= Stueli[StueliPosKey] As TWKundenauftragsPos;
 
-    end;
+    //Fuer Kaufteile muss nicht weiter gesucht werden
+    if not KaPos.Teil.istKaufteil then
+      //Falls ein Komm-Fa zur Pos vorhanden, werden dessen Kinder aus
+      //Unipps-Tabelle ASTUELIPOS geholt
+      //Falls kein Komm-Fa zur Pos vorhanden, landet der Knoten in EndKnoten
+      KaPos.holeKinderAusASTUELIPOS;
 
-
-    // Weitere Schritte wiederholen, bis EndKnoten leer
-    //-----------------------------------------------------------------
-
-    while EndKnotenListe.Count>0 do
-    begin
-      //Liste kopieren und leeren
-      alteEndKnotenListe.Clear;
-      alteEndKnotenListe.AddRange(EndKnotenListe);
-      EndKnotenListe.Clear;
-      txt:=alteEndKnotenListe.ToStr();
-      alteEndKnotenListe.WriteToLog;
-
-      //Suche weiter
-      //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
-      for EndKnoten in alteEndKnotenListe do
-      begin
-        StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
-        Tools.Log.Log('------Suche fuer Endknoten ----------');
-        txt:=StueliPos.ToStr;
-        Tools.Log.Log(txt);
-        StueliPos.holeKindervonEndKnoten;
-      end;
-
-    end;
-
-  finally
-      EndKnotenListe.Free;
-      alteEndKnotenListe.Free;
   end;
+
+
+  // Weitere Schritte wiederholen, bis EndKnoten leer
+  //-----------------------------------------------------------------
+
+  while EndKnotenListe.Count>0 do
+  begin
+    //Liste kopieren und leeren
+    alteEndKnotenListe.Clear;
+    alteEndKnotenListe.AddRange(EndKnotenListe);
+    EndKnotenListe.Clear;
+    txt:=alteEndKnotenListe.ToStr();
+    alteEndKnotenListe.WriteToLog;
+
+    //Suche weiter
+    //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
+    for EndKnoten in alteEndKnotenListe do
+    begin
+      StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
+      Tools.Log.Log('------Suche fuer Endknoten ----------');
+      txt:=StueliPos.ToStr;
+      Tools.Log.Log(txt);
+      StueliPos.holeKindervonEndKnoten;
+    end;
+
+  end;
+
+  EndKnotenListe.Free;
+  alteEndKnotenListe.Free;
 
 end;
 
