@@ -58,8 +58,8 @@ begin
       +  ' trim(auftragpos.t_tg_nr) as t_tg_nr, '
       +  'auftragpos.oa, trim(auftragpos.typ) as unipps_typ, auftragpos.menge, auftragpos.preis '
       +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 '
-      +  'where auftragpos.ident_nr1 = "' + ka_id + '" order by id_pos;';
-  Result:= RunSelectQuery(sql);
+      +  'where auftragpos.ident_nr1 = ? order by id_pos;';
+  Result:= RunSelectQueryWithParam(sql,[ka_id]);
   UNI2SQLite('auftragkopf');
 
 end;
@@ -69,8 +69,8 @@ var sql: String;
 begin
   //siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
-       + 'from kunde_zuab where ident_nr1 = "' + kunden_id + '";';
-  Result:= RunSelectQuery(sql);
+       + 'from kunde_zuab where ident_nr1 = ? ;';
+  Result:= RunSelectQueryWithParam(sql,[kunden_id]);
   UNI2SQLite('kunde_zuab');
 
 end;
@@ -85,8 +85,8 @@ begin
 //      + 'teil.urspr_land, teil.ausl_u_land, '
       + 'teil.praeferenzkennung, teil.sme, teil.faktlme_sme, teil.lme '
       + 'FROM teil INNER JOIN teil_uw ON teil.ident_nr = teil_uw.t_tg_nr AND teil.art = teil_uw.oa '
-      + 'where teil_uw.t_tg_nr = "' + t_tg_nr + '" and teil_uw.oa<9 and teil_uw.uw=1;';
-  Result:= RunSelectQuery(sql);
+      + 'where teil_uw.t_tg_nr = ? and teil_uw.oa<9 and teil_uw.uw=1;';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
   UNI2SQLite('teil');
 
 end;
@@ -104,9 +104,8 @@ begin
       + 'trim(bestellpos.t_tg_nr) as t_tg_nr '
       + 'FROM bestellpos INNER JOIN bestellkopf ON bestellpos.ident_nr1 = bestellkopf.ident_nr '
       + 'JOIN adresse ON bestellkopf.lieferant = adresse.ident_nr '
-      + 'WHERE bestellpos.t_tg_nr="' + t_tg_nr + '" order by bestellkopf.datum desc ;';
-  Result:= RunSelectQuery(sql);
-
+      + 'WHERE bestellpos.t_tg_nr=? order by bestellkopf.datum desc ;';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
   UNI2SQLite('bestellungen');
 
 end;
@@ -121,9 +120,9 @@ function TWBaumQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 var sql: String;
 begin
   sql:= 'SELECT trim(teil_bez.ident_nr1) AS teil_bez_id, trim(teil_bez.Text) AS Bezeichnung '
-      + 'FROM teil_bez where ident_nr1="' + t_tg_nr
-      + '" and teil_bez.sprache="D" AND teil_bez.art=1 ;' ;
-  Result:= RunSelectQuery(sql);
+      + 'FROM teil_bez where ident_nr1= ? '
+      + 'and teil_bez.sprache="D" AND teil_bez.art=1 ;' ;
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
   UNI2SQLite('teil_bez');
 end;
 
@@ -141,10 +140,9 @@ begin
       + 'trim(teil_stuelipos.t_tg_nr) as t_tg_nr, teil_stuelipos.oa, trim(teil_stuelipos.typ) as unipps_typ, teil_stuelipos.menge '
       + 'FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1 '
       + 'AND teil_aplnkopf.ident_nr2 = teil_stuelipos.ident_nr2 AND teil_aplnkopf.ident_nr3 = teil_stuelipos.ident_nr3 '
-      + 'Where teil_stuelipos.ident_nr1="' + t_tg_nr + '" And teil_aplnkopf.art="1"'
+      + 'Where teil_stuelipos.ident_nr1= ? And teil_aplnkopf.art="1"'
       + 'ORDER BY teil_stuelipos.pos_nr ;';
-  Result:= RunSelectQuery(sql);
-
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
   UNI2SQLite('teil_stuelipos');
 
 end;
@@ -166,9 +164,9 @@ begin
       + 'f_auftragkopf.verurs_art, trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, '
       + 'trim(f_auftragkopf.typ) as unipps_typ, f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
-      + 'Where f_auftragkopf.auftr_nr="' + KaId + '" and f_auftragkopf.auftr_pos="' + IntToStr(id_pos)
-      + '" and f_auftragkopf.oa<9 and status>4 ORDER BY FA_Nr';
-  Result:= RunSelectQuery(sql);
+      + 'Where f_auftragkopf.auftr_nr= ? and f_auftragkopf.auftr_pos= ? '
+      + 'and f_auftragkopf.oa<9 and status>4 ORDER BY FA_Nr';
+    Result:= RunSelectQueryWithParam(sql,[KaId,IntToStr(id_pos)]);
 
   UNI2SQLite('f_auftragkopf');
 
@@ -185,9 +183,9 @@ begin
       + 'trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, trim(f_auftragkopf.typ) as unipps_typ, '
       + 'f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
-      + 'Where f_auftragkopf.t_tg_nr="' + t_tg_nr
-      + '" and f_auftragkopf.oa<9 and status>4 ORDER BY FA_Nr desc';
-  Result:= RunSelectQuery(sql);
+      + 'Where f_auftragkopf.t_tg_nr= ? '
+      + 'and f_auftragkopf.oa<9 and status>4 ORDER BY FA_Nr desc';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 
   UNI2SQLite('f_auftragkopf');
 
@@ -203,9 +201,9 @@ begin
       + 'astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, '
       + 'astuelipos.pos_nr, trim(astuelipos.t_tg_nr) as t_tg_nr, astuelipos.oa, '
       + 'trim(astuelipos.typ) as unipps_typ, astuelipos.menge '
-      + 'FROM astuelipos where astuelipos.ident_nr1 = "' + FA_Nr
-      + '" and astuelipos.oa<9 ORDER BY astuelipos.pos_nr';
-  Result:= RunSelectQuery(sql);
+      + 'FROM astuelipos where astuelipos.ident_nr1 = ? '
+      + 'and astuelipos.oa<9 ORDER BY astuelipos.pos_nr';
+  Result:= RunSelectQueryWithParam(sql,[FA_Nr]);
 
   UNI2SQLite('astuelipos');
 

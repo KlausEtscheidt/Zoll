@@ -3,14 +3,14 @@ unit Stueckliste;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.TypInfo,
-       StueliEigenschaften,StueliTeil,Teil,
-       Exceptions,Data.DB,Tools,Logger;
+       StueliEigenschaften,
+//       StueliTeil,
+       Data.DB,Tools,Logger;
 
  type
     TWValue = TValue; //alias
     TWFilter = TArray<String>;
     TWSortedKeyArray = TArray<Integer>;
-    TWStueli = TDictionary<Integer, TValue>;
 
     TWStueliPos = class
       private
@@ -24,17 +24,14 @@ interface
         IdPos: Integer;    //Pos von Self in IdStu
         Menge: Double;     //Menge von Self in IdStu (beliebige Einheiten)
         MengeTotal: Double; //Gesamt-Menge (mit übergeordneten Mengen mult.)
-        Stueli: TWStueli;    //Hält die Kinder-Positionen
+        Stueli: TDictionary<Integer, TWStueliPos>;    //Hält die Kinder-Positionen
 
         Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
-
-        StueliTeil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
-//        Teil: TWTeil;  //optionales Teile-Objekt auf dieser Pos
 
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
-        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
+//        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
@@ -44,7 +41,9 @@ interface
 
     end;
 
-    TWEndKnotenListe = class(TList<TValue>)
+    TWStueli = TDictionary<Integer, TWStueliPos>;
+
+    TWEndKnotenListe = class(TList<TWStueliPos>)
         private
         public
           Liste: TList<TValue>;
@@ -79,68 +78,6 @@ end;
 // Ausgabe-Funktionen
 //--------------------------------------------------------------------------
 
-// Ergebnis als Text ausgeben
-//--------------------------------------------------------------------------
-procedure TWStueliPos.ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
-
-var
-//  StueliPos: TWStueliPos;
-  StueliPos: TValue;
-  StueliPosTyp: PTypeInfo;
-  StueliPosKey: Integer;
-  StueliPosObj:TObject;
-  Werte,WerteTeil:TWWertliste;
-  WerteCSV:String;
-begin
-
-  //Position (Self) ausgeben; aber nicht fuer Topknoten
-  if not FirstRun then
-  begin
-
-     //Erst Werte zur Position holen
-     Werte:=Self.DruckDatenAuswahl;
-     //Dann Werte zum Teil();
-     if hatTeil then
-     begin
-       WerteTeil:=TWTeil(StueliTeil).DruckDatenAuswahl;
-       Werte.AddRange(WerteTeil);
-     end;
-
-     WerteCSV:=self.Ausgabe.ToCSV(Werte);
-//     OutFile.Log(Header);
-     OutFile.Log(WerteCSV);
-  end;
-
-//  Tools.ErrLog.Log(Self.FeldNamensListe);
-
-  //Zurueck, wenn Pos keine Kinder hat
-  if Stueli.Count=0 then
-    exit;
-
-  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
-
-  //In sortierter Reihenfolge
-  for StueliPosKey in SortedKeys  do
-  begin
-      Stueli[StueliPosKey].AsType<TWStueliPos>
-                           .ToTextFile(OutFile, False);
-
-    {
-    StueliPosObj:=Stueli[StueliPosKey].AsObject;
-    if StueliPosObj is TWKundenauftrag then
-      TWKundenauftrag(StueliPosObj).ToTextFile(OutFile, False);
-    if StueliPosObj is TWKundenauftragsPos then
-      TWKundenauftragsPos(StueliPosObj).ToTextFile(OutFile, False);
-    if StueliPosObj is TWFAKopf then
-      TWFAKopf(StueliPosObj).ToTextFile(OutFile, False);
-    if StueliPosObj is TWFAPos then
-      TWFAPos(StueliPosObj).ToTextFile(OutFile, False);
-    if StueliPosObj is TWTeilAlsStuPos then
-      TWTeilAlsStuPos(StueliPosObj).ToTextFile(OutFile, False);
-    }
-  end;
-
-end;
 
 // Hole gefilterte Eigenschaften zum Drucken
 //--------------------------------------------------------------------------
@@ -191,7 +128,9 @@ begin
   for StueliPosKey in SortedKeys  do
   begin
     //spezielle Position (zB KA) in Allgemeine TWStueliPos wandeln
-    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;;
+//    StueliPos:= Stueli[StueliPosKey].AsType<TWStueliPos>;;
+{ TODO : gehts auch ohne cast ? }
+    StueliPos:= Stueli[StueliPosKey] As TWStueliPos;
     //Ausgabe
     StueliPos.SetzeEbenenUndMengen(Ebene+1,MengeTotal);
   end;

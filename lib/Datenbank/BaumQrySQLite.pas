@@ -55,7 +55,10 @@ begin
   sql:= 'SELECT t_tg_nr, oa, besch_art, unipps_typ, praeferenzkennung, '
       + 'sme, faktlme_sme, lme '
       + 'FROM teil where t_tg_nr = "' + t_tg_nr + '" and oa<9;';
-  Result:= RunSelectQuery(sql);
+  sql:= 'SELECT t_tg_nr, oa, besch_art, unipps_typ, praeferenzkennung, '
+      + 'sme, faktlme_sme, lme '
+      + 'FROM teil where t_tg_nr = (?) and oa<9;';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 end;
 
 function TWBaumQrySQLite.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
@@ -64,26 +67,26 @@ begin
   sql:= 'SELECT bestell_id, bestell_datum, preis, basis, pme, bme, '
       + 'faktlme_bme, faktbme_pme, netto_poswert, menge, '
       + 'we_menge, lieferant, kurzname, t_tg_nr '
-      + 'FROM bestellungen where t_tg_nr = "' + t_tg_nr
-      + '" order by bestell_datum desc limit 3;';
-  Result:= RunSelectQuery(sql);
+      + 'FROM bestellungen where t_tg_nr = ? '
+      + 'order by bestell_datum desc limit 3;';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 end;
 
 function TWBaumQrySQLite.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 begin
   var sql: String;
   sql:= 'SELECT teil_bez_id, Bezeichnung '
-      + 'FROM teil_bez where teil_bez_id="' + t_tg_nr + '" ;' ;
-  Result:= RunSelectQuery(sql);
+      + 'FROM teil_bez where teil_bez_id= ? ;' ;
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 end;
 
 function TWBaumQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 begin
   var sql: String;
   sql:= 'SELECT id_stu, pos_nr, t_tg_nr, oa, unipps_typ, menge '
-      + 'FROM teil_stuelipos where id_stu="' + t_tg_nr
-      + '" ORDER BY pos_nr ;';
-  Result:= RunSelectQuery(sql);
+      + 'FROM teil_stuelipos where id_stu= ? '
+      + 'ORDER BY pos_nr ;';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 end;
 
 function TWBaumQrySQLite.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
@@ -91,10 +94,9 @@ begin
   var sql: String;
   sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
       + 't_tg_nr, oa, unipps_typ, FA_Nr '
-      + 'FROM f_auftragkopf where id_stu = "' + KaId
-      + '" and pos_nr="' + IntToStr(id_pos)
-      + '" and oa<9 ORDER BY FA_Nr';
-  Result:= RunSelectQuery(sql);
+      + 'FROM f_auftragkopf where id_stu = ? and pos_nr= ? '
+      + 'and oa<9 ORDER BY FA_Nr';
+  Result:= RunSelectQueryWithParam(sql,[KaId,IntToStr(id_pos)]);
 
 end;
 
@@ -104,8 +106,8 @@ begin
   sql:= 'SELECT t_tg_nr as id_stu, 1 as pos_nr, auftragsart, verurs_art, '
       + 't_tg_nr, oa, unipps_typ, FA_Nr '
       + 'FROM f_auftragkopf '
-      + 'Where t_tg_nr="' + t_tg_nr + '" and oa<9 ORDER BY FA_Nr desc limit 1';
-  Result:= RunSelectQuery(sql);
+      + 'Where t_tg_nr= ? and oa<9 ORDER BY FA_Nr desc limit 1';
+  Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
 
 end;
 
@@ -115,9 +117,10 @@ begin
   var sql: String;
   sql:= 'SELECT id_stu, id_pos, '
       + 'ueb_s_nr, ds, set_block, pos_nr, t_tg_nr, oa, unipps_typ, menge '
-      + 'FROM astuelipos where id_stu = "' + FA_Nr
-      + '" and oa<9 ORDER BY pos_nr';
-  Result:= RunSelectQuery(sql);
+      + 'FROM astuelipos where id_stu = ? '
+      + 'and oa<9 ORDER BY pos_nr';
+  Result:= RunSelectQueryWithParam(sql,[FA_Nr]);
+
 end;
 
 end.

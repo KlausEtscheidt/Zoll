@@ -58,7 +58,7 @@ var Qry: TWUNIPPSQry;
   msg : String;
 
 begin
-  try
+
   //Hole die Positionen des FA's aus der Unipps-Tabelle ASTUELIPOS
   Qry := Tools.getQuery;
   gefunden := Qry.SuchePosZuFA(FA_Nr);
@@ -115,9 +115,7 @@ begin
 
     end; //while
 
-  finally
       Qry.Free;
-  end;
 
 end;
 

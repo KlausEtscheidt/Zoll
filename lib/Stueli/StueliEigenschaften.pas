@@ -42,7 +42,6 @@ end;
 
 //Ein Wertepaar direkt übernehmen
 procedure TWEigenschaften.AddData(Key:String;Val:String);
-var msg:String;
 begin
     Add(Key, Val);
 end;
@@ -86,6 +85,7 @@ var
   key:String;
   Liste:TWWertliste;
 begin
+  Liste:=TWWertliste.Create;
   for key in  KeyListe do
   begin
     if Self.ContainsKey(key) then
@@ -99,6 +99,7 @@ var
   key:String;
   Liste:TWWertliste;
 begin
+  Liste:=TWWertliste.Create;
   for key in Keys do
   begin
     Liste.Add(key);

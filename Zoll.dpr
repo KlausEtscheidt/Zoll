@@ -21,8 +21,7 @@ uses
   BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas',
   mainNonGui in 'mainNonGui.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
-  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
-  StueliTeil in 'lib\Stueli\StueliTeil.pas';
+  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas';
 
 {$R *.res}
 

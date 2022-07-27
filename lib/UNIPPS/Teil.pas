@@ -2,7 +2,8 @@
 
 interface
 
-uses  System.SysUtils, Data.Db,  Bestellung, Exceptions,
+uses  System.SysUtils, Data.Db,  Bestellung,
+      Exceptions,
       StueliEigenschaften, Tools;
 
 type
@@ -104,10 +105,16 @@ begin
 
 end;
 
+//Alle ausgeben
 function TWTeil.GetDruckDaten:TWWertliste;
 begin
-  //Alle ausgeben
-  Result:=Ausgabe.Wertliste()
+
+  Result:=Ausgabe.Wertliste();
+
+  //Evtl Daten aus Bestellung dazu
+  if PreisErmittelt Then
+    Result.AddRange(Bestellung.DruckDatenAuswahl);
+
 end;
 
 
