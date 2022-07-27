@@ -3,14 +3,17 @@
 interface
   uses System.RTTI, System.SysUtils,System.Generics.Collections,
        System.Classes,System.StrUtils,
-       Teil,Exceptions,Data.DB,Logger,Stueckliste,
+       Teil,Exceptions,Data.DB,Logger,
+       Stueckliste,StueliEigenschaften,
        Tools;
 
   type
     TWTeil= Teil.TWTeil;
+
     TWUniStueliPos = class(TWStueliPos)
       private
         procedure raiseNixGefunden();
+
       protected
 
       public
@@ -29,8 +32,7 @@ interface
         function holeKinderAusTeileStu(): Boolean;
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
-
-
+        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
       end;
 
 var
@@ -126,7 +128,7 @@ begin
     begin
       //Teil anlegen
       Teil:= TWTeil.Create(Qry);
-      StueliTeil:=Teil;
+//      StueliTeil:=Teil;
       //merken das Pos Teil hat
       hatTeil:=True;
 
@@ -363,6 +365,50 @@ begin
       end
 
 end;
+
+// Ergebnis als Text ausgeben
+//--------------------------------------------------------------------------
+procedure TWUniStueliPos.ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
+
+var
+  StueliPosKey: Integer;
+  Werte,WerteTeil:TWWertliste;
+  WerteCSV:String;
+begin
+
+  //Position (Self) ausgeben; aber nicht fuer Topknoten
+  if not FirstRun then
+  begin
+
+     //Erst Werte zur Position holen
+     Werte:=Self.DruckDatenAuswahl;
+     //Dann Werte zum Teil();
+     if hatTeil then
+     begin
+//       WerteTeil:=TWTeil(StueliTeil).DruckDatenAuswahl;
+       WerteTeil:=Teil.DruckDatenAuswahl;
+       Werte.AddRange(WerteTeil);
+     end;
+
+     WerteCSV:=self.Ausgabe.ToCSV(Werte);
+//     OutFile.Log(Header);
+     OutFile.Log(WerteCSV);
+  end;
+
+  //Zurueck, wenn Pos keine Kinder hat
+  if Stueli.Count=0 then
+    exit;
+
+  //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
+
+  //In sortierter Reihenfolge
+  for StueliPosKey in SortedKeys  do
+  begin
+      TWUniStueliPos(Stueli[StueliPosKey]).ToTextFile(OutFile, False);
+  end;
+
+end;
+
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen

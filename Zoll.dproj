@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Office SQLite</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -194,7 +194,6 @@
         <DCCReference Include="mainNonGui.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
         <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
-        <DCCReference Include="lib\Stueli\StueliTeil.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -242,6 +241,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="Win32\Home\Zoll.exe" Configuration="Home" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Zoll.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Office SQLite\Zoll.exe" Configuration="Office SQLite" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoll.exe</RemoteName>
                         <Overwrite>true</Overwrite>
