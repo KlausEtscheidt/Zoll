@@ -1,4 +1,4 @@
-unit ADOConnector;
+﻿unit ADOConnector;
 
 interface
 
@@ -50,6 +50,7 @@ var
  }
   ConnString :=
         'Provider=MSDASQL.1;Persist Security Info=False;' +
+//        'Data Source=SQLite UTF-8 Datasource;' +
         'Data Source=SQLite3 Datasource;' +
         'Database=' + PathTODBFile + ';';
   Provider := 'MSDASQL.1';
