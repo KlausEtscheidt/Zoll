@@ -6,9 +6,6 @@
         <Projects Include="Zoll.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="dies und das\Vererbubg\Vererbung.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Batchlauf.dproj">
             <Dependencies/>
         </Projects>
@@ -29,15 +26,6 @@
     <Target Name="Zoll:Make">
         <MSBuild Projects="Zoll.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Vererbung">
-        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj"/>
-    </Target>
-    <Target Name="Vererbung:Clean">
-        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Vererbung:Make">
-        <MSBuild Projects="dies und das\Vererbubg\Vererbung.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Batchlauf">
         <MSBuild Projects="Batchlauf.dproj"/>
     </Target>
@@ -48,13 +36,13 @@
         <MSBuild Projects="Batchlauf.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;Vererbung;Batchlauf"/>
+        <CallTarget Targets="Zoll;Batchlauf"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;Vererbung:Clean;Batchlauf:Clean"/>
+        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;Vererbung:Make;Batchlauf:Make"/>
+        <CallTarget Targets="Zoll:Make;Batchlauf:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

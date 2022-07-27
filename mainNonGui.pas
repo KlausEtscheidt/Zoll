@@ -44,33 +44,27 @@ var
   dbSQLiteConn: TWADOConnector;
   QrySQLite: TWBaumQrySQLite;
   QryUNIPPS: TWBaumQryUNIPPS;
-  gefunden:Boolean;
   Sql:String;
   ka_id: string;
   I: Integer;
+  gefunden:Boolean;
   StartRecord: Integer;
   LastRecord: Integer;
   ka:TWKundenauftrag;
 
 begin
-  {$IFNDEF HOME}
+{$IFNDEF SQLITE}
 
   //Logger oeffnen
 //  Tools.Log.OpenAppend(Tools.LogDir, 'FullLog.txt');
 //  Tools.ErrLog.OpenAppend(Tools.logdir, 'ErrLog.txt');
   //Logger oeffnen
-  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'TestLog.txt');
-  Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'TestErrLog.txt');
+  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\TestLog.txt');
+  Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\TestErrLog.txt');
 
   //SQLite-DB oeffnen  Pfad aus globaler Tools.SQLiteFile
   dbSQLiteConn:=TWADOConnector.Create(nil);
   dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
-
-  //Einige Einzelaufträge
-  KaNurAuswerten('142591'); //Error
-  KaNurAuswerten('144729');
-  KaNurAuswerten('142567'); //2Pumpen
-  KaNurAuswerten('142302'); //Ersatz
 
   //Query fuer UNIPPS anlegen und Verbindung setzen
   QryUNIPPS:=Tools.GetQuery;
@@ -79,6 +73,13 @@ begin
   //Flag und SQLite-Verbindung einmalig in Klassenvariable
   QryUNIPPS.Export2SQLite:=True;
   QryUNIPPS.SQLiteConnector:=dbSQLiteConn;
+
+  //Einige Einzelaufträge
+  KaNurAuswerten('142591'); //Error  Keine Positionen zum FA >616451< gefunden.
+  KaNurAuswerten('144729');
+//  KaNurAuswerten('142567'); //2Pumpen
+  KaNurAuswerten('142302'); //Ersatz
+  exit;
 
   //Abfragen ueber flex. Query: 200 Kundenaufträeg
   sql := 'select first 401 ident_nr as ka_id from auftragkopf order by ka_id desc;';
@@ -143,7 +144,7 @@ begin
     //auswerten
     ka.auswerten;
 
-  except
+  finally
     //Logger schlie�en
     Tools.Log.Close;
     Tools.ErrLog.Close;

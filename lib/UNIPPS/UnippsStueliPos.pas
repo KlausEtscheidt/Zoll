@@ -121,20 +121,17 @@ var
 
 begin
     Qry:=Tools.getQuery();
-    try
-      gefunden:=Qry.SucheDatenzumTeil(Ausgabe['t_tg_nr']);
-      if gefunden then
-      begin
-        //Teil anlegen
-        Teil:= TWTeil.Create(Qry);
-        StueliTeil:=Teil;
-        //merken das Pos Teil hat
-        hatTeil:=True;
+    gefunden:=Qry.SucheDatenzumTeil(Ausgabe['t_tg_nr']);
+    if gefunden then
+    begin
+      //Teil anlegen
+      Teil:= TWTeil.Create(Qry);
+      StueliTeil:=Teil;
+      //merken das Pos Teil hat
+      hatTeil:=True;
 
-      end;
-    finally
-      Qry.Free;
     end;
+    Qry.Free;
 
 end;
 

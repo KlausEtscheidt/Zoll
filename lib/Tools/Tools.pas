@@ -22,10 +22,16 @@ const LogDir: String =
     'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
                    'Zoll\data\output';
 const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
+                 'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
 
-type
-  TWUNIPPSQry = TWBaumQryUNIPPS;
+  {$IFDEF SQLITE}
+  //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
+  type
+    TWUNIPPSQry = TWBaumQrySQLite;
+  {$ELSE}
+  type
+    TWUNIPPSQry = TWBaumQryUNIPPS;
+  {$ENDIF}
 
 {$ENDIF}
 
@@ -54,7 +60,13 @@ begin
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(SQLiteDBFileName);
    {$ELSE}
-   DbConnector.ConnectToUNIPPS();
+      {$IFDEF SQLITE}
+      //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
+         DbConnector.ConnectToSQLite(SQLiteDBFileName);
+      {$ELSE}
+         DbConnector.ConnectToUNIPPS();
+      {$ENDIF}
+
   {$ENDIF}
 
 

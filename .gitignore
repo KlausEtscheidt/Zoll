@@ -63,7 +63,8 @@ __recovery/
 Win32/
 Win64/
 dies und das/csv/
-#data/output/
+data/
+
 *.~*
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)

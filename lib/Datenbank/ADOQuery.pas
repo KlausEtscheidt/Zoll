@@ -39,6 +39,7 @@ interface
             StrUtils,Data.DB,Data.Win.ADODB, ADOConnector;
 
   type
+    TWParamlist = array of String;
     TWADOQuery = class(TADOQuery)
     private
       FConnector:TWADOConnector;
@@ -55,6 +56,7 @@ interface
       destructor Destroy; override;
 
       function RunSelectQuery(sql:string):Boolean;
+      function RunSelectQueryWithParam(sql:string;paramlist:TWParamlist): Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
       function InsertFields(tablename: String; myFields:TFields):Boolean;
 
@@ -103,6 +105,39 @@ begin
   gefunden:=n_records>0;
   Result:= gefunden;
 end;
+
+//parametrisierte Query mit Ergebnis ausf�hren (setzt Felder n_records und gefunden)
+//-----------------------------------------------------------
+function TWADOQuery.RunSelectQueryWithParam(sql:string;paramlist:TWParamlist):Boolean;
+var I:Integer;
+begin
+
+  //Pr�ft of Datenbank verbunden
+  Self.IsConnected;
+
+  //�bertr�ge die Klassen-Connection ins Objekt
+  Self.Connection:=FConnector.Connection;
+
+  //sql ins Qry-Objekt
+    Self.SQL.BeginUpdate;
+    Self.SQL.Clear;
+    Self.SQL.Add(sql);
+    Self.SQL.EndUpdate;
+
+  for I := 0 to length(paramlist)-1 do
+  begin
+    Self.Parameters.Items[I].DataType := ftString;
+    Self.Parameters.Items[I].Value := paramlist[I];
+  end;
+
+  //Qry ausf�hren
+  Self.Open;
+
+  n_records:=self.GetRecordCount();
+  gefunden:=n_records>0;
+  Result:= gefunden;
+end;
+
 
 //Query ohne Ergebnis ausf�hren
 //-----------------------------------------------------------
