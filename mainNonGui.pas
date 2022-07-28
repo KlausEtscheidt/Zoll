@@ -174,8 +174,8 @@ procedure RunIt;
 begin
 //  mainNonGui.KaAuswerten('142591'); //Error
 //  mainNonGui.KaAuswerten('144729');
-//  mainNonGui.KaAuswerten('142567'); //2Pumpen
-  Tests.Bestellung;
+  mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734');
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 

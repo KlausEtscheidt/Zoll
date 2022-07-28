@@ -73,7 +73,7 @@ begin
 
     holeBenennung;
   { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
-   if istKaufteil then
+   if istKaufteil or istFremdfertigung then
         holeMaxPreisAus3Bestellungen;
 
   except
@@ -134,12 +134,12 @@ end;
 procedure TWTeil.holeMaxPreisAus3Bestellungen;
   var gefunden: Boolean;
   var Qry: TWUNIPPSQry;
-  var maxPreis:Double;
+  var Preis,maxPreis:Double;
   var Merker:TBookmark;
 
 begin
 
-  if not istKaufteil then
+  if not (istKaufteil or istFremdfertigung) then
     exit;
 
   Qry:=Tools.getQuery();
@@ -158,11 +158,11 @@ begin
     while not Qry.Eof do
     begin
 //      Tools.Log.Log(Qry.GetFieldValuesAsText);
-      PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
-      If PreisJeLME > maxPreis Then
+      Preis:=BerechnePreisJeLMERabattiert(Qry);
+      If Preis > maxPreis Then
       begin
             //Datensatz und Preis merken
-            maxPreis := PreisJeLME;
+            maxPreis := Preis;
             Merker:=Qry.GetBookmark;
       end;
 
@@ -170,6 +170,8 @@ begin
     end;
 
     PreisErmittelt:= True;
+    //Eregbnis in Ausgabespeicher und als Objekt-Feld
+    PreisJeLME:=maxPreis;
     Ausgabe.AddData('PreisJeLME', FloatToStr(PreisJeLME));
 
     //Übertrage gemerkten Datensatz in Ojekt
