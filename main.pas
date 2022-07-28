@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
-  FireDAC.Comp.UI;
+  FireDAC.Comp.UI, Datasnap.DBClient;
 
 type
   TmainFrm = class(TForm)
@@ -16,6 +16,9 @@ type
     KA_id_ctrl: TEdit;
     Label1: TLabel;
     Ende_Btn: TButton;
+    ClientDataSet: TClientDataSet;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
 
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);

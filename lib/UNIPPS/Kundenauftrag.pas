@@ -96,17 +96,31 @@ var
   FeldNamen:TWWertliste;
   FeldNamenStr:String;
 begin
-  FeldNamen:=TWWertliste.Create;
-  Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
+  //Setze Filter in den Klassen fuer Stuecklistenpos, Teile und Bestellungen
   TWStueliPos.Filter:=StueliPosFelder;
   TWTeil.Filter:=TeilFelder;
   TWBestellung.Filter:=BestellFelder;
+
+  //Liste aller Feldnamen
+  FeldNamen:=TWWertliste.Create;
   FeldNamen.AddRange(StueliPosFelder);
   FeldNamen.AddRange(TeilFelder);
   FeldNamen.AddRange(BestellFelder);
+
+  InitAusgabenFabrik;
+  Self.AusgabenFabrik.DefiniereTabelle(StueliPosFelder,True,False);
+  Self.AusgabenFabrik.DefiniereTabelle(TeilFelder,False,False);
+  Self.AusgabenFabrik.DefiniereTabelle(BestellFelder,False,True);
+
+  //Feldnamen als CSV
   FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
+  //Ausgabedatei oeffnen
+  Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
+  //Feldnamen als Header in Ausgabedatei
   Tools.CSVLang.Log(FeldNamenStr);
+  //Daten als CSV  in Ausgabedatei
   ToTextFile(Tools.CSVLang);
+
   Tools.CSVLang.Close;
   FeldNamen.Free;
 end;

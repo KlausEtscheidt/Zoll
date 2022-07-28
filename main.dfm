@@ -47,4 +47,37 @@ object mainFrm: TmainFrm
     TabOrder = 2
     OnClick = Ende_BtnClick
   end
+  object DBGrid1: TDBGrid
+    Left = 296
+    Top = 96
+    Width = 456
+    Height = 120
+    DataSource = DataSource1
+    TabOrder = 3
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
+  object ClientDataSet: TClientDataSet
+    Aggregates = <>
+    FileName = 
+      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
+      'ta\output\test'
+    FieldDefs = <
+      item
+        Name = 'ClientDataSetField2'
+      end>
+    IndexDefs = <>
+    Params = <>
+    StoreDefs = True
+    Left = 80
+    Top = 200
+  end
+  object DataSource1: TDataSource
+    DataSet = ClientDataSet
+    Left = 184
+    Top = 216
+  end
 end

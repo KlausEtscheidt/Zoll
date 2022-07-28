@@ -5,7 +5,7 @@ interface
        System.Classes,System.StrUtils,
        Teil,Exceptions,Data.DB,Logger,
        Stueckliste,StueliEigenschaften,
-       Tools;
+       AusgabenFactory, Tools;
 
   type
     TWTeil= Teil.TWTeil;
@@ -13,6 +13,7 @@ interface
     TWUniStueliPos = class(TWStueliPos)
       private
         procedure raiseNixGefunden();
+        class var FAusgFabr:TWAusgabenFact;
 
       public
 
@@ -31,6 +32,9 @@ interface
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
         procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
+        class procedure InitAusgabenFabrik;
+        class property AusgabenFabrik:TWAusgabenFact read FAusgFabr write FAusgFabr;
+
       end;
 
 var
@@ -393,6 +397,7 @@ begin
        Werte.AddRange(WerteTeil);
      end;
 
+     Self.AusgabenFabrik.ZuTabelle(Werte);
      WerteCSV:=self.Ausgabe.ToCSV(Werte);
 //     OutFile.Log(Header);
      OutFile.Log(WerteCSV);
@@ -412,6 +417,10 @@ begin
 
 end;
 
+class procedure TWUniStueliPos.InitAusgabenFabrik;
+begin
+  AusgabenFabrik:=TWAusgabenFact.Create;
+end;
 
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen
