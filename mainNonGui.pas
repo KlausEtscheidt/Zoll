@@ -2,7 +2,7 @@
 
 interface
 
-uses  System.SysUtils, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
+uses  System.SysUtils, Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS ;
 
 procedure RunIt;
@@ -174,7 +174,8 @@ procedure RunIt;
 begin
 //  mainNonGui.KaAuswerten('142591'); //Error
 //  mainNonGui.KaAuswerten('144729');
-  mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  mainNonGui.KaAuswerten('142567'); //2Pumpen
+  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734');
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 

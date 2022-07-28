@@ -135,7 +135,7 @@ procedure TWTeil.holeMaxPreisAus3Bestellungen;
   var gefunden: Boolean;
   var Qry: TWUNIPPSQry;
   var maxPreis:Double;
-  var maxFields:TFields;
+  var Merker:TBookmark;
 
 begin
 
@@ -154,16 +154,16 @@ begin
     end;
 
     maxPreis:=0;
-    maxFields:=nil;
 
     while not Qry.Eof do
     begin
+//      Tools.Log.Log(Qry.GetFieldValuesAsText);
       PreisJeLME:=BerechnePreisJeLMERabattiert(Qry);
       If PreisJeLME > maxPreis Then
       begin
             //Datensatz und Preis merken
             maxPreis := PreisJeLME;
-            maxFields:=Qry.Fields;
+            Merker:=Qry.GetBookmark;
       end;
 
       Qry.next;
@@ -173,7 +173,9 @@ begin
     Ausgabe.AddData('PreisJeLME', FloatToStr(PreisJeLME));
 
     //Übertrage gemerkten Datensatz in Ojekt
-    Bestellung := TWBestellung.Create(maxFields);
+    Qry.GotoBookmark(Merker);
+//    Tools.Log.Log(Qry.GetFieldValuesAsText);
+    Bestellung := TWBestellung.Create(Qry.Fields);
 
     Qry.Free;
 

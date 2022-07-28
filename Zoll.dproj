@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Office SQLite</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -194,6 +194,7 @@
         <DCCReference Include="mainNonGui.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
         <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
+        <DCCReference Include="Tests.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
