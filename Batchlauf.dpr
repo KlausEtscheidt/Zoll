@@ -19,7 +19,7 @@ var answer:string;
     //Globals setzen und initialiseren
     Tools.Init;
 
-    mainNonGui.check100;
+    mainNonGui.RunInBatchmode;
 
   except
     on E: Exception do
