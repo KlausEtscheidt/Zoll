@@ -13,6 +13,7 @@ type
       public
         procedure OpenAppend(filedir:string;filename:string);
         procedure OpenNew(filedir:string;filename:string);
+//        constructor Create(); override;
         destructor Destroy(); override;
         procedure Log(msg: String);
     end;
@@ -37,10 +38,11 @@ begin
   fullpath:= filedir + '\' + filename;
 
   try
-    if Append then
-      inherited Create(fullpath,True)
-    else
-      inherited Create(fullpath,False);
+      inherited Create(fullpath,Append,TEncoding.UTF8);
+//    if Append then
+//      inherited Create(fullpath,True);
+//    else
+//      inherited Create(fullpath,False);
   except
     raise Exception.Create('Logger: Kann Datei ' + fullpath + ' nicht öffnen');
 
