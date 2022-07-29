@@ -11,9 +11,9 @@ type
     protected
       { protected declarations }
     public
-      ueb_s_nr:String;
-      pos_nr:String;
-      set_block:String;
+      ueb_s_nr:Integer;
+      pos_nr:Integer;
+      set_block:Integer;
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
 
@@ -45,12 +45,12 @@ begin
 
   //Felder die zur weiteren Auswertung gebraucht werden,
   // zusätzlich als Feld ablegen
-  ueb_s_nr:=Self.Ausgabe['ueb_s_nr'];
-  pos_nr:=Self.Ausgabe['pos_nr'];
-  set_block:=Self.Ausgabe['set_block'];
+  ueb_s_nr:=Qry.FieldByName('ueb_s_nr').AsInteger;
+  pos_nr:=Qry.FieldByName('pos_nr').AsInteger;
+  set_block:=Qry.FieldByName('set_block').AsInteger;
 
-  istToplevel:= ueb_s_nr='0';
-  KinderInASTUELIPOSerwartet:=(set_block='1');
+  istToplevel:= (ueb_s_nr=0);
+  KinderInASTUELIPOSerwartet:=(set_block=1);
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();
@@ -74,7 +74,7 @@ begin
 
     //Gehört der Eintrag zur übergeordneten Stückliste => speichern; sonst rücksprung
     //Achtung auch hier verlassen wir uns auf die korrekte Reihenfolge in ASTUELIPOS
-    If FAPos.ueb_s_nr = IntToStr(id_pos_vater) Then
+    If FAPos.ueb_s_nr = id_pos_vater Then
     begin
 
       // in Stueck-Liste übernehmen

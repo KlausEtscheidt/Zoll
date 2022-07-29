@@ -35,7 +35,8 @@ implementation
 function TWBaumQrySQLite.SucheKundenAuftragspositionen(ka_id:string):Boolean;
 begin
   var sql: String;
-  sql := 'select id_stu, id_pos, kunde, besch_art, klassifiz, pos_nr, t_tg_nr, '
+  sql := 'select id_stu, id_pos, kunde, besch_art, klassifiz, pos_nr, '
+      +  't_tg_nr as stu_t_tg_nr, '
       +  'oa, unipps_typ, menge, preis '
       +  'from auftragkopf where id_stu like "' + ka_id + '" order by id_pos;';
   Result:= RunSelectQuery(sql);
@@ -66,7 +67,7 @@ begin
   var sql: String;
   sql:= 'SELECT bestell_id, bestell_datum, preis, basis, pme, bme, '
       + 'faktlme_bme, faktbme_pme, netto_poswert, menge, '
-      + 'we_menge, lieferant, kurzname, t_tg_nr '
+      + 'we_menge, lieferant, kurzname, t_tg_nr as best_t_tg_nr '
       + 'FROM bestellungen where t_tg_nr = ? '
       + 'order by bestell_datum desc limit 3;';
   Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
@@ -83,7 +84,8 @@ end;
 function TWBaumQrySQLite.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 begin
   var sql: String;
-  sql:= 'SELECT id_stu, pos_nr, t_tg_nr, oa, unipps_typ, menge '
+  //####################################
+  sql:= 'SELECT id_stu, pos_nr, t_tg_nr as stu_t_tg_nr, oa, unipps_typ, menge '
       + 'FROM teil_stuelipos where id_stu= ? '
       + 'ORDER BY pos_nr ;';
   Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
@@ -93,7 +95,7 @@ function TWBaumQrySQLite.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
 begin
   var sql: String;
   sql:= 'SELECT id_stu, pos_nr, auftragsart, verurs_art, '
-      + 't_tg_nr, oa, unipps_typ, FA_Nr '
+      + 't_tg_nr as stu_t_tg_nr, oa, unipps_typ, FA_Nr '
       + 'FROM f_auftragkopf where id_stu = ? and pos_nr= ? '
       + 'and oa<9 ORDER BY FA_Nr';
   Result:= RunSelectQueryWithParam(sql,[KaId,IntToStr(id_pos)]);
@@ -104,7 +106,7 @@ function TWBaumQrySQLite.SucheFAzuTeil(t_tg_nr:String): Boolean;
 begin
   var sql: String;
   sql:= 'SELECT t_tg_nr as id_stu, 1 as pos_nr, auftragsart, verurs_art, '
-      + 't_tg_nr, oa, unipps_typ, FA_Nr '
+      + 't_tg_nr as stu_t_tg_nr, oa, unipps_typ, FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where t_tg_nr= ? and oa<9 ORDER BY FA_Nr desc limit 1';
   Result:= RunSelectQueryWithParam(sql,[t_tg_nr]);
@@ -116,7 +118,7 @@ function TWBaumQrySQLite.SuchePosZuFA(FA_Nr:String): Boolean;
 begin
   var sql: String;
   sql:= 'SELECT id_stu, id_pos, '
-      + 'ueb_s_nr, ds, set_block, pos_nr, t_tg_nr, oa, unipps_typ, menge '
+      + 'ueb_s_nr, ds, set_block, pos_nr, t_tg_nr as stu_t_tg_nr, oa, unipps_typ, menge '
       + 'FROM astuelipos where id_stu = ? '
       + 'and oa<9 ORDER BY pos_nr';
   Result:= RunSelectQueryWithParam(sql,[FA_Nr]);

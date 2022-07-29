@@ -37,7 +37,7 @@ begin
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);
 
-  TeilInStuTeilenummer:=Self.Ausgabe['t_tg_nr'];
+  TeilInStuTeilenummer:=Qry.FieldByName('stu_t_tg_nr').AsString;
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();

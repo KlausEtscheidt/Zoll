@@ -3,29 +3,34 @@ unit DatenModul;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient;
+  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient, PumpenDataSet;
 
 type
   TDataModule1 = class(TDataModule)
-    CDSBestellung: TClientDataSet;
-    CDSBestellungbestell_id: TIntegerField;
-    CDSBestellungbestell_datum: TDateField;
-    CDSBestellungpreis: TFloatField;
-    CDSStueliPOs: TClientDataSet;
-    CDSTeil: TClientDataSet;
-    CDSStueliPOspos_nr: TIntegerField;
-    CDSStueliPOsPosTyp: TStringField;
-    CDSStueliPOsid_stu: TStringField;
-    CDSStueliPOst_tg_nr: TStringField;
-    CDSStueliPOsunipps_typ: TStringField;
-    CDSTeilt_tg_nr: TStringField;
-    CDSTeiloa: TIntegerField;
-    CDSTeilbesch_art: TIntegerField;
-    CDSTeilunipps_typ: TStringField;
-    CDSTeilpraeferenzkennung: TIntegerField;
-    CDSTeilsme: TIntegerField;
-    CDSTeilfaktlme_sme: TFloatField;
-    CDSTeillme: TIntegerField;
+    StueliPosDS: TWDataSet;
+    StueliPosDSid_stu: TStringField;
+    StueliPosDSpos_nr: TIntegerField;
+    StueliPosDSoa: TIntegerField;
+    StueliPosDSbesch_art: TIntegerField;
+    StueliPosDSmenge: TFloatField;
+    StueliPosDSFA_Nr: TStringField;
+    StueliPosDSid_pos: TIntegerField;
+    StueliPosDSverurs_art: TIntegerField;
+    StueliPosDSueb_s_nr: TIntegerField;
+    StueliPosDSds: TIntegerField;
+    StueliPosDSset_block: TIntegerField;
+    StueliPosDSPosTyp: TStringField;
+    TeilDS: TWDataSet;
+    BestellungDS: TWDataSet;
+    BestellungDSbestell_id: TIntegerField;
+    BestellungDSbestell_datum: TDateTimeField;
+    StueliPosDSstu_t_tg_nr: TStringField;
+    StueliPosDSunipps_typ: TStringField;
+    TeilDSBezeichnung: TStringField;
+    TeilDSPreisJeLME: TFloatField;
+    TeilDSPreisNonEU: TFloatField;
+    TeilDSPreisEU: TFloatField;
+    BestellungDSbest_t_tg_nr: TStringField;
   private
     { Private-Deklarationen }
   public

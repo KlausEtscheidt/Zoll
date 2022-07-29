@@ -2,70 +2,112 @@ object DataModule1: TDataModule1
   OldCreateOrder = False
   Height = 367
   Width = 587
-  object CDSBestellung: TClientDataSet
+  object StueliPosDS: TWDataSet
     Aggregates = <>
     Params = <>
-    Left = 136
-    Top = 120
-    object CDSBestellungbestell_id: TIntegerField
-      FieldName = 'bestell_id'
-    end
-    object CDSBestellungbestell_datum: TDateField
-      FieldName = 'bestell_datum'
-    end
-    object CDSBestellungpreis: TFloatField
-      FieldName = 'preis'
-    end
-  end
-  object CDSStueliPOs: TClientDataSet
-    Aggregates = <>
-    Params = <>
-    Left = 256
-    Top = 128
-    object CDSStueliPOsPosTyp: TStringField
-      FieldName = 'PosTyp'
-    end
-    object CDSStueliPOsid_stu: TStringField
+    Left = 112
+    Top = 200
+    object StueliPosDSid_stu: TStringField
       FieldName = 'id_stu'
     end
-    object CDSStueliPOspos_nr: TIntegerField
+    object StueliPosDSpos_nr: TIntegerField
       FieldName = 'pos_nr'
     end
-    object CDSStueliPOst_tg_nr: TStringField
-      FieldName = 't_tg_nr'
+    object StueliPosDSoa: TIntegerField
+      FieldName = 'oa'
     end
-    object CDSStueliPOsunipps_typ: TStringField
+    object StueliPosDSbesch_art: TIntegerField
+      FieldName = 'besch_art'
+    end
+    object StueliPosDSmenge: TFloatField
+      FieldName = 'menge'
+    end
+    object StueliPosDSFA_Nr: TStringField
+      FieldName = 'FA_Nr'
+    end
+    object StueliPosDSid_pos: TIntegerField
+      FieldName = 'id_pos'
+    end
+    object StueliPosDSverurs_art: TIntegerField
+      FieldName = 'verurs_art'
+    end
+    object StueliPosDSueb_s_nr: TIntegerField
+      FieldName = 'ueb_s_nr'
+    end
+    object StueliPosDSds: TIntegerField
+      FieldName = 'ds'
+    end
+    object StueliPosDSset_block: TIntegerField
+      FieldName = 'set_block'
+    end
+    object StueliPosDSPosTyp: TStringField
+      FieldName = 'PosTyp'
+    end
+    object StueliPosDSstu_t_tg_nr: TStringField
+      FieldName = 'stu_t_tg_nr'
+    end
+    object StueliPosDSunipps_typ: TStringField
       FieldName = 'unipps_typ'
     end
   end
-  object CDSTeil: TClientDataSet
+  object TeilDS: TWDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 248
+    Top = 208
+    object TeilDSt_tg_nr: TStringField
+      FieldName = 't_tg_nr'
+    end
+    object TeilDSoa: TIntegerField
+      FieldName = 'oa'
+    end
+    object TeilDSbesch_art: TIntegerField
+      FieldName = 'besch_art'
+    end
+    object TeilDSunipps_typ: TStringField
+      FieldName = 'unipps_typ'
+    end
+    object TeilDSpraeferenzkennung: TIntegerField
+      FieldName = 'praeferenzkennung'
+    end
+    object TeilDSsme: TIntegerField
+      FieldName = 'sme'
+    end
+    object TeilDSfaktlme_sme: TFloatField
+      FieldName = 'faktlme_sme'
+    end
+    object TeilDSlme: TIntegerField
+      FieldName = 'lme'
+    end
+    object TeilDSBezeichnung: TStringField
+      FieldName = 'Bezeichnung'
+    end
+    object TeilDSPreisJeLME: TFloatField
+      FieldName = 'PreisJeLME'
+    end
+    object TeilDSPreisNonEU: TFloatField
+      FieldName = 'PreisNonEU'
+    end
+    object TeilDSPreisEU: TFloatField
+      FieldName = 'PreisEU'
+    end
+  end
+  object BestellungDS: TWDataSet
     Aggregates = <>
     Params = <>
     Left = 368
-    Top = 136
-    object CDSTeilt_tg_nr: TStringField
-      FieldName = 't_tg_nr'
+    Top = 96
+    object BestellungDSpreis: TFloatField
+      FieldName = 'preis'
     end
-    object CDSTeiloa: TIntegerField
-      FieldName = 'oa'
+    object BestellungDSbestell_id: TIntegerField
+      FieldName = 'bestell_id'
     end
-    object CDSTeilbesch_art: TIntegerField
-      FieldName = 'besch_art'
+    object BestellungDSbestell_datum: TDateTimeField
+      FieldName = 'bestell_datum'
     end
-    object CDSTeilunipps_typ: TStringField
-      FieldName = 'unipps_typ'
-    end
-    object CDSTeilpraeferenzkennung: TIntegerField
-      FieldName = 'praeferenzkennung'
-    end
-    object CDSTeilsme: TIntegerField
-      FieldName = 'sme'
-    end
-    object CDSTeilfaktlme_sme: TFloatField
-      FieldName = 'faktlme_sme'
-    end
-    object CDSTeillme: TIntegerField
-      FieldName = 'lme'
+    object BestellungDSbest_t_tg_nr: TStringField
+      FieldName = 'best_t_tg_nr'
     end
   end
 end

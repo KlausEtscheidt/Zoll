@@ -25,7 +25,8 @@ uses
   Tests in 'Tests.pas',
   AusgabenFactory in 'AusgabenFactory.pas',
   DatenModul in 'DatenModul.pas' {DataModule1: TDataModule},
-  Datenspeicher in 'lib\Stueli\Datenspeicher.pas';
+  Datenspeicher in 'lib\Stueli\Datenspeicher.pas',
+  PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas';
 
 {$R *.res}
 

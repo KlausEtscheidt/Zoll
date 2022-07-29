@@ -2,13 +2,14 @@
 
 interface
 
-uses StueliEigenschaften,Data.Db, Datenspeicher, Datenmodul;
+uses StueliEigenschaften,Data.Db, PumpenDataSet,
+      AusgabenFactory,Datenmodul;
 
 type
   TWBestellung = class
   private
     class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
-    class var FDaten:TWDatenspeicher;
+    class var FDaten:TWDataSet;
     var Datensatz:TBookmark;
     function GetDruckDaten:TWWertliste;
     function GetDruckDatenAuswahl:TWWertliste;
@@ -36,8 +37,9 @@ type
     constructor Create(myRecord: TFields);
     property DruckDaten:TWWertliste read GetDruckDaten;
     property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+    procedure DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
     class property Filter:TWFilter read FFilter write FFilter;
-    class property Daten:TWDatenspeicher read FDaten write FDaten;
+    class property Daten:TWDataSet read FDaten write FDaten;
 
   end;
 
@@ -48,13 +50,14 @@ begin
     //Datenspeicher erzeugen, wenn noch nicht geschehen
     if FDaten=nil then
     begin
-      FDaten:=TWDatenspeicher.Create(DataModule1.CDSBestellung);
+      FDaten:=DataModule1.BestellungDS;
+      FDaten.CreateDataSet;
+      FDaten.Active:=True;
     end;
 
     //Alle Daten in Ausgabespeicher
     Ausgabe:=TWEigenschaften.Create(myRecord);
     FDaten.Append;
-    Datensatz:=FDaten.GetBookmark;
 
     FDaten.AddData('bestell_id',myRecord);
     FDaten.AddData('bestell_datum',myRecord);
@@ -74,6 +77,9 @@ begin
 //    lieferant:= myRecord.FieldByName('lieferant').AsInteger;
 //    kurzname:= myRecord.FieldByName('kurzname').AsString;
 //    t_tg_nr:= myRecord.FieldByName('t_tg_nr').AsString;
+
+    FDaten.Post;
+    Datensatz:=FDaten.GetBookmark;
 
 end;
 
@@ -96,8 +102,23 @@ end;
 
 function TWBestellung.GetDaten:TFields;
 begin
-  Daten.DataSet.GotoBookmark(Datensatz);
-  Result:=Daten.DataSet.Fields;
+  Daten.GotoBookmark(Datensatz);
+  Result:=Daten.Fields;
+end;
+
+procedure TWBestellung.DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
+var
+  FeldName:String;
+begin
+  //In Tabelle auf aktuellen Datensatz positionieren
+  Daten.GotoBookmark(Datensatz);
+
+  for FeldName in Filter do
+  begin
+      AusFact.AddData(Daten.FieldByName(FeldName));
+  end;
+
+
 end;
 
 end.

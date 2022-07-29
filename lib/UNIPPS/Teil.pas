@@ -3,44 +3,43 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung,
-      Datenspeicher, Datenmodul,
-      Exceptions,
+      PumpenDataSet, Datenmodul,
+      Exceptions, AusgabenFactory,
       StueliEigenschaften, Tools;
 
 type
   TWTeil = class
   private
     class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
-    class var FDaten:TWDatenspeicher;
+    class var FDaten:TWDataSet;
     Datensatz:TBookmark;
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
-    function GetDruckDaten:TWWertliste;
-    function GetDruckDatenAuswahl:TWWertliste;
     function GetDaten:TFields;
 
   public
     TeilTeilenummer: String; //= t_tg_nr
-    Ausgabe:TWEigenschaften;
 
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
     PreisJeLME: Double;
+    FaktorLmeSme: Double;
+    IstPraeferenzberechtigt:Boolean;
 
-    istKaufteil:Boolean;
-    istEigenfertigung:Boolean;
-    istFremdfertigung:Boolean;
+    BeschaffungsArt:Integer;
+    IstKaufteil:Boolean;
+    IstEigenfertigung:Boolean;
+    IstFremdfertigung:Boolean;
 
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
     function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
-    property DruckDaten:TWWertliste read GetDruckDaten;
-    property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+    procedure DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
     class property Filter:TWFilter read FFilter write FFilter;
-    class property Daten:TWDatenspeicher read FDaten write FDaten;
+    class property Daten:TWDataSet read FDaten write FDaten;
 
   end;
 
@@ -59,18 +58,22 @@ begin
     //Datenspeicher erzeugen, wenn noch nicht geschehen
     if FDaten=nil then
     begin
-      FDaten:=TWDatenspeicher.Create(DataModule1.CDSTeil);
+      FDaten:=DataModule1.TeilDS;
+      FDaten.CreateDataSet;
+      FDaten.Active:=True;
     end;
 
     //Alle Daten in Ausgabespeicher
     FDaten.Append;
     FDaten.AddData(TeileQry.Fields);
-    Datensatz:=FDaten.GetBookmark;
-
-    Ausgabe:=TWEigenschaften.Create(TeileQry.Fields);
 
     //Einige wichtige Daten direkt in Felder
-    TeilTeilenummer:=Ausgabe['t_tg_nr'];
+    TeilTeilenummer:=TeileQry.FieldByName('t_tg_nr').AsString;
+    BeschaffungsArt:=TeileQry.FieldByName('besch_art').AsInteger;
+    FaktorLmeSme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
+    IstPraeferenzberechtigt:=
+          (TeileQry.FieldByName('praeferenzkennung').AsInteger=1);
+
 
     //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
@@ -78,19 +81,21 @@ begin
     PreisGesucht:= False;
     PreisErmittelt:= False;
 
-    besch_art:=Ausgabe['besch_art'];
-    istKaufteil:= (besch_art ='1');
-    istEigenfertigung:=(besch_art ='2');
-    istFremdfertigung:=(besch_art ='4');
+    istKaufteil:= (BeschaffungsArt =1);
+    istEigenfertigung:=(BeschaffungsArt =2);
+    istFremdfertigung:=(BeschaffungsArt =4);
 
     if not (istKaufteil or istEigenfertigung or istFremdfertigung) then
       raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
-      + besch_art + '< in >TWTeil.Create<');
+      + IntToSTr(BeschaffungsArt) + '< in >TWTeil.Create<');
 
     holeBenennung;
   { TODO : Preise für Kaufteile in eigenem Lauf  oder konfiguriert ?? }
    if istKaufteil or istFremdfertigung then
         holeMaxPreisAus3Bestellungen;
+
+   FDaten.Post;
+   Datensatz:=FDaten.GetBookmark;
 
   except
    on EDatabaseError do
@@ -101,58 +106,40 @@ begin
 
 end;
 
-function TWTeil.GetDruckDatenAuswahl:TWWertliste;
-var
-Werte, WerteBestellung: TWWertliste;
-begin
-  if length(Filter)=0 then
-    //Alle ausgeben
-    Werte:=Ausgabe.Wertliste()
-  else
-    //gefiltert ausgeben
-    Werte:=Ausgabe.Wertliste(Filter);
-
-  //Evtl Daten aus Bestellung dazu
-//  WerteBestellung:=TWWertliste.Create;
-  if PreisErmittelt Then
-  begin
-    WerteBestellung:=Bestellung.DruckDatenAuswahl;
-    Werte.AddRange(WerteBestellung);
-  end;
-
-  Result:= Werte;
-
-end;
-
-//Alle ausgeben
-function TWTeil.GetDruckDaten:TWWertliste;
-begin
-
-  Result:=Ausgabe.Wertliste();
-
-  //Evtl Daten aus Bestellung dazu
-  if PreisErmittelt Then
-    Result.AddRange(Bestellung.DruckDatenAuswahl);
-
-end;
 
 function TWTeil.GetDaten:TFields;
 begin
-  Daten.DataSet.GotoBookmark(Datensatz);
-  Result:=Daten.DataSet.Fields;
+  Daten.GotoBookmark(Datensatz);
+  Result:=Daten.Fields;
   //Evtl Daten aus Bestellung dazu
-  if PreisErmittelt Then
-    Result.AddRange(Bestellung.DruckDatenAuswahl);
+//  if PreisErmittelt Then
+//    Result.AddRange(Bestellung.DruckDatenAuswahl);
 
 end;
 
+procedure TWTeil.DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
+var
+  FeldName:String;
+begin
+  //In Tabelle auf aktuellen Datensatz positionieren
+  Daten.GotoBookmark(Datensatz);
+
+  for FeldName in Filter do
+  begin
+      AusFact.AddData(Daten.FieldByName(FeldName));
+  end;
+
+  if PreisErmittelt Then
+    Bestellung.DatenAuswahlInTabelle(AusFact);
+
+end;
 
 procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
-    Ausgabe.AddData('Bezeichnung',Qry.Fields);
+    FDaten.AddData('Bezeichnung',Qry.Fields);
   Qry.Free;
 end;
 
@@ -198,7 +185,8 @@ begin
     PreisErmittelt:= True;
     //Eregbnis in Ausgabespeicher und als Objekt-Feld
     PreisJeLME:=maxPreis;
-    Ausgabe.AddData('PreisJeLME', FloatToStr(PreisJeLME));
+
+    Daten.AddData('PreisJeLME', FloatToStr(PreisJeLME));
 
     //Übertrage gemerkten Datensatz in Ojekt
     Qry.GotoBookmark(Merker);
@@ -283,7 +271,7 @@ end;
 
 function TWTeil.ToStr():String;
 begin
-  Result:=Self.Ausgabe.ToCsv(Self.DruckDaten);
+  Result:=Daten.ToCsv;
 end;
 
 end.

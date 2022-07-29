@@ -55,7 +55,7 @@ begin
   sql := 'select auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos, '
       +  ' auftragkopf.kunde, auftragpos.besch_art, '
       +  ' auftragkopf.klassifiz, auftragpos.pos as pos_nr, '
-      +  ' trim(auftragpos.t_tg_nr) as t_tg_nr, '
+      +  ' trim(auftragpos.t_tg_nr) as stu_t_tg_nr, '
       +  'auftragpos.oa, trim(auftragpos.typ) as unipps_typ, auftragpos.menge, auftragpos.preis '
       +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 '
       +  'where auftragpos.ident_nr1 = ? order by id_pos;';
@@ -101,7 +101,7 @@ begin
       + 'bestellpos.preis, bestellpos.basis, bestellpos.pme, bestellpos.bme, '
       + 'bestellpos.faktlme_bme, bestellpos.faktbme_pme, bestellpos.netto_poswert, bestellpos.menge,  '
       + 'bestellpos.we_menge,bestellkopf.lieferant, trim(adresse.kurzname) as kurzname, '
-      + 'trim(bestellpos.t_tg_nr) as t_tg_nr '
+      + 'trim(bestellpos.t_tg_nr) as best_t_tg_nr '
       + 'FROM bestellpos INNER JOIN bestellkopf ON bestellpos.ident_nr1 = bestellkopf.ident_nr '
       + 'JOIN adresse ON bestellkopf.lieferant = adresse.ident_nr '
       + 'WHERE bestellpos.t_tg_nr=? order by bestellkopf.datum desc ;';
@@ -137,7 +137,7 @@ function TWBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 var sql: String;
 begin
   sql:= 'SELECT trim(teil_stuelipos.ident_nr1) As id_stu, teil_stuelipos.pos_nr, '
-      + 'trim(teil_stuelipos.t_tg_nr) as t_tg_nr, teil_stuelipos.oa, trim(teil_stuelipos.typ) as unipps_typ, teil_stuelipos.menge '
+      + 'trim(teil_stuelipos.t_tg_nr) as stu_t_tg_nr, teil_stuelipos.oa, trim(teil_stuelipos.typ) as unipps_typ, teil_stuelipos.menge '
       + 'FROM teil_aplnkopf INNER JOIN teil_stuelipos ON teil_aplnkopf.ident_nr1 = teil_stuelipos.ident_nr1 '
       + 'AND teil_aplnkopf.ident_nr2 = teil_stuelipos.ident_nr2 AND teil_aplnkopf.ident_nr3 = teil_stuelipos.ident_nr3 '
       + 'Where teil_stuelipos.ident_nr1= ? And teil_aplnkopf.art="1"'
@@ -161,7 +161,7 @@ function TWBaumQryUNIPPS.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
 var sql: String;
 begin
   sql:= 'SELECT f_auftragkopf.auftr_nr as id_stu, f_auftragkopf.auftr_pos as pos_nr, f_auftragkopf.auftragsart, '
-      + 'f_auftragkopf.verurs_art, trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, '
+      + 'f_auftragkopf.verurs_art, trim(f_auftragkopf.t_tg_nr) as stu_t_tg_nr, f_auftragkopf.oa, '
       + 'trim(f_auftragkopf.typ) as unipps_typ, f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where f_auftragkopf.auftr_nr= ? and f_auftragkopf.auftr_pos= ? '
@@ -180,7 +180,7 @@ begin
   { TODO 1 : nur freigegebene nehmen }
   sql:= 'SELECT first 1 f_auftragkopf.t_tg_nr as id_stu, '
       + '1 as pos_nr, f_auftragkopf.auftragsart, f_auftragkopf.verurs_art, '
-      + 'trim(f_auftragkopf.t_tg_nr) as t_tg_nr, f_auftragkopf.oa, trim(f_auftragkopf.typ) as unipps_typ, '
+      + 'trim(f_auftragkopf.t_tg_nr) as stu_t_tg_nr, f_auftragkopf.oa, trim(f_auftragkopf.typ) as unipps_typ, '
       + 'f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where f_auftragkopf.t_tg_nr= ? '
@@ -199,7 +199,7 @@ var sql: String;
 begin
   sql:= 'SELECT astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos, '
       + 'astuelipos.ueb_s_nr, astuelipos.ds, astuelipos.set_block, '
-      + 'astuelipos.pos_nr, trim(astuelipos.t_tg_nr) as t_tg_nr, astuelipos.oa, '
+      + 'astuelipos.pos_nr, trim(astuelipos.t_tg_nr) as stu_t_tg_nr, astuelipos.oa, '
       + 'trim(astuelipos.typ) as unipps_typ, astuelipos.menge '
       + 'FROM astuelipos where astuelipos.ident_nr1 = ? '
       + 'and astuelipos.oa<9 ORDER BY astuelipos.pos_nr';

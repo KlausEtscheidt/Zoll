@@ -14,6 +14,7 @@ interface
       private
         procedure raiseNixGefunden();
         class var FAusgFabr:TWAusgabenFact;
+        function getTeileNrzuPos:String;
 
       public
 
@@ -31,9 +32,12 @@ interface
         function holeKinderAusTeileStu(): Boolean;
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
-        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
+        procedure InGesamtTabelle(FirstRun:Boolean=True);
         class procedure InitAusgabenFabrik;
+        procedure DatenAuswahlInTabelle;
         class property AusgabenFabrik:TWAusgabenFact read FAusgFabr write FAusgFabr;
+        //t_tg_nr des Teils auf dieser Stu-Pos als stu_t_tg_nr in Daten-Tabelle
+        property TeilNrzuPos:String read getTeileNrzuPos;
 
       end;
 
@@ -78,47 +82,44 @@ begin
     //-----------------------------------------------
         //Alle Daten in Ausgabespeicher
     Daten.Append;
-    Datensatz:=Daten.GetBookmark;
     Daten.AddData('PosTyp',PosTyp);
     Daten.AddData('id_stu',Qry.Fields);
     Daten.AddData('pos_nr',Qry.Fields);
-
-    Ausgabe.AddData('PosTyp', PosTyp);
-    Ausgabe.AddData('id_stu', Qry.Fields);
-    Ausgabe.AddData('pos_nr', Qry.Fields);
-    Ausgabe.AddData('oa', Qry.Fields);
-    Ausgabe.AddData('t_tg_nr', Qry.Fields);
-    Ausgabe.AddData('unipps_typ', Qry.Fields);
+    Daten.AddData('oa',Qry.Fields);
+    Daten.AddData('stu_t_tg_nr',Qry.Fields);
+    Daten.AddData('unipps_typ',Qry.Fields);
 
     //typspezifische Felder
     //-----------------------------------------------
     if PosTyp='KA_Pos' then
     begin
-      Ausgabe.AddData('id_pos', Qry.Fields);
-      Ausgabe.AddData('besch_art', Qry.Fields);
-      Ausgabe.AddData('menge', Qry.Fields);
+      Daten.AddData('id_pos',Qry.Fields);
+      Daten.AddData('besch_art',Qry.Fields);
+      Daten.AddData('menge',Qry.Fields);
     end
     else
     if (PosTyp='FA_Serie') or (PosTyp='FA_Komm') then
     begin
-      Ausgabe.AddData('FA_Nr', Qry.Fields);
-      Ausgabe.AddData('verurs_art', Qry.Fields);
-      Ausgabe.AddData('menge', '1.');
+      Daten.AddData('FA_Nr', Qry.Fields);
+      Daten.AddData('verurs_art', Qry.Fields);
+      Daten.AddData('menge', '1.');
     end
     else
     if PosTyp='FA_Pos' then
     begin
-      Ausgabe.AddData('id_pos', Qry.Fields);
-      Ausgabe.AddData('ueb_s_nr', Qry.Fields);
-      Ausgabe.AddData('ds', Qry.Fields);
-      Ausgabe.AddData('set_block', Qry.Fields);
-      Ausgabe.AddData('menge', Qry.Fields);
+      Daten.AddData('id_pos', Qry.Fields);
+      Daten.AddData('ueb_s_nr', Qry.Fields);
+      Daten.AddData('ds', Qry.Fields);
+      Daten.AddData('set_block', Qry.Fields);
+      Daten.AddData('menge', Qry.Fields);
     end
     else
     if PosTyp='Teil' then
-      Ausgabe.AddData('menge', Qry.Fields)
+      Daten.AddData('menge', Qry.Fields)
     else
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp );
+    Daten.Post;
+    Datensatz:=Daten.GetBookmark;
 
 end;
 
@@ -129,10 +130,12 @@ procedure TWUniStueliPos.SucheTeilzurStueliPos();
 var
   Qry: TWUNIPPSQry;
   gefunden: Boolean;
+  TeileNr:String;
 
 begin
     Qry:=Tools.getQuery();
-    gefunden:=Qry.SucheDatenzumTeil(Ausgabe['t_tg_nr']);
+    TeileNr:=Self.TeilNrzuPos;
+    gefunden:=Qry.SucheDatenzumTeil(TeileNr);
     if gefunden then
     begin
       //Teil anlegen
@@ -299,6 +302,13 @@ begin
 end;
 
 //--------------------------------------------------------------------------
+// Getter und Setter
+//--------------------------------------------------------------------------
+function TWUniStueliPos.getTeileNrzuPos:String;
+begin
+     Result:=GetProperty('stu_t_tg_nr').AsString;
+end;
+//--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
 
@@ -367,47 +377,30 @@ begin
     if Self.hatTeil then
       If Teil.PreisErmittelt Then
       begin
-          Preis := Teil.StueliPosGesamtPreis(MengeTotal,
-                              StrToFloat(Teil.Ausgabe['faktlme_sme']));
-          If Teil.Ausgabe['praeferenzkennung'] = '1' Then
+          Preis := Teil.StueliPosGesamtPreis(MengeTotal,Teil.FaktorLmeSme);
+          If Teil.IstPraeferenzberechtigt Then
               PreisEU := Preis
           Else
               PreisNonEU := Preis
       end;
 
-    Ausgabe.AddData('PreisEU', FloatToStr(PreisEU));
-    Ausgabe.AddData('PreisNonEU', FloatToStr(PreisNonEU));
+    Daten.AddData('PreisEU', PreisEU);
+    Daten.AddData('PreisNonEU', PreisNonEU);
 
 end;
 
-// Ergebnis als Text ausgeben
+// Ergebnis in DataSet ausgeben
 //--------------------------------------------------------------------------
-procedure TWUniStueliPos.ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
 
+procedure TWUniStueliPos.InGesamtTabelle(FirstRun:Boolean=True);
 var
   StueliPosKey: Integer;
-  Werte,WerteTeil:TWWertliste;
-  WerteCSV:String;
 begin
-
   //Position (Self) ausgeben; aber nicht fuer Topknoten
   if not FirstRun then
   begin
-
-     //Erst Werte zur Position holen
-     Werte:=Self.DruckDatenAuswahl;
-     //Dann Werte zum Teil();
-     if hatTeil then
-     begin
-//       WerteTeil:=TWTeil(StueliTeil).DruckDatenAuswahl;
-       WerteTeil:=Teil.DruckDatenAuswahl;
-       Werte.AddRange(WerteTeil);
-     end;
-
-     Self.AusgabenFabrik.ZuTabelle(Werte);
-     WerteCSV:=self.Ausgabe.ToCSV(Werte);
-//     OutFile.Log(Header);
-     OutFile.Log(WerteCSV);
+     //Erst Werte zur Position in Tabelle
+     Self.DatenAuswahlInTabelle;
   end;
 
   //Zurueck, wenn Pos keine Kinder hat
@@ -419,10 +412,33 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-      TWUniStueliPos(Stueli[StueliPosKey]).ToTextFile(OutFile, False);
+      TWUniStueliPos(Stueli[StueliPosKey]).InGesamtTabelle(False);
   end;
 
 end;
+
+
+procedure TWUniStueliPos.DatenAuswahlInTabelle;
+var
+  FeldName:String;
+begin
+  //In Tabelle auf aktuellen Datensatz positionieren
+  Daten.GotoBookmark(Datensatz);
+  Self.AusgabenFabrik.Append;
+
+  for FeldName in Filter do
+  begin
+      Self.AusgabenFabrik.AddData(Daten.FieldByName(FeldName));
+  end;
+
+  //Dann Werte zum Teil();
+  if hatTeil then
+    Teil.DatenAuswahlInTabelle(Self.AusgabenFabrik);
+
+  Self.AusgabenFabrik.Post;
+
+end;
+
 
 class procedure TWUniStueliPos.InitAusgabenFabrik;
 begin

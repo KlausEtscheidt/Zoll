@@ -6,7 +6,7 @@ interface
        StueliEigenschaften,
 //       StueliTeil,
        Data.DB,Tools,
-       Datenspeicher, Datenmodul,
+       PumpenDataSet, Datenmodul,
        Logger;
 
  type
@@ -17,7 +17,9 @@ interface
     TWStueliPos = class
       private
         class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
-        class var FDaten:TWDatenspeicher;
+
+        class var FDaten:TWDataSet;
+
         function GetDruckDaten:TWWertliste;
         function GetDaten:TFields;
         function GetDruckDatenAuswahl:TWWertliste;
@@ -37,14 +39,14 @@ interface
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
-//        procedure ToTextFile(OutFile:TLogFile;FirstRun:Boolean=True);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
         property DruckDaten:TWWertliste read GetDruckDaten;
         property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
+        function GetProperty(FeldName:String):TField;
         class property Filter:TWFilter read FFilter write FFilter;
-        class property Daten:TWDatenspeicher read FDaten write FDaten;
+        class property Daten:TWDataSet read FDaten write FDaten;
 
     end;
 
@@ -79,7 +81,10 @@ begin
   //Datenspeicher erzeugen, wenn noch nicht geschehen
   if FDaten=nil then
   begin
-    FDaten:=TWDatenspeicher.Create(DataModule1.CDSStueliPos);
+    FDaten:=DataModule1.StueliPosDS;
+    FDaten.CreateDataSet;
+    FDaten.Active:=True;
+
   end;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
@@ -110,6 +115,22 @@ function TWStueliPos.GetDruckDaten:TWWertliste;
 begin
   //Alle ausgeben
   Result:=Ausgabe.Wertliste()
+end;
+
+function TWStueliPos.GetDaten:TFields;
+begin
+  Daten.GotoBookmark(Datensatz);
+  Result:=Daten.Fields;
+  //Evtl Daten aus Bestellung dazu
+//  if PreisErmittelt Then
+//    Result.AddRange(Bestellung.DruckDatenAuswahl);
+
+end;
+
+function TWStueliPos.GetProperty(FeldName:String):TField;
+begin
+  Daten.GotoBookmark(Datensatz);
+  Result:=Daten.FieldByName(FeldName);
 end;
 
 // Hinzufügen der Ebenen und Gesamtmengen

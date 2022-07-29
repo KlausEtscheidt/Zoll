@@ -63,24 +63,42 @@ const trenn = ' ; ' ;
   meineFelder: TWFilter = ['id_stu','pos_nr','t_tg_nr','Bezeichnung'];
 begin
   Tools.CSVKurz.OpenNew(Tools.LogDir, ka_id + '_Kalk.txt');
-  ToTextFile(Tools.CSVKurz);
+//  ToTextFile(Tools.CSVKurz);
   Tools.CSVLang.Close;
 end;
 
 procedure TWKundenauftrag.CSV_volle_Ausgabe();
 const trenn = ' ; ' ;
-  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal',
-       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
+//  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
+//      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal',
+//       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
+
+  StueliPosFelder: TWFilter = ['PosTyp', 'id_stu', 'pos_nr'];
+
+//  TeilFelder: TWFilter = ['t_tg_nr',
+//      'oa','Bezeichnung', 'unipps_typ','besch_art',
+//      'praeferenzkennung', 'sme',
+//      'faktlme_sme', 'lme', 'PreisJeLME'];
 
   TeilFelder: TWFilter = ['t_tg_nr',
-      'oa','Bezeichnung', 'unipps_typ','besch_art',
+      'oa','unipps_typ','besch_art',
       'praeferenzkennung', 'sme',
-      'faktlme_sme', 'lme', 'PreisJeLME'];
+      'faktlme_sme', 'lme'];
 
-  BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis',
-         'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
-         'kurzname'];
+//  BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis',
+//         'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
+//         'kurzname'];
+
+   BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis'];
+
+  AlleFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
+      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art',
+      't_tg_nr','oa','Bezeichnung', 'unipps_typ','besch_art',
+       'praeferenzkennung', 'menge',  'sme', 'faktlme_sme', 'lme',
+       'bestell_id', 'bestell_datum', 'preis',
+       'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
+       'MengeTotal',
+       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
 
 {excel
         Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr
@@ -107,10 +125,10 @@ begin
   FeldNamen.AddRange(TeilFelder);
   FeldNamen.AddRange(BestellFelder);
 
-  InitAusgabenFabrik;
-  Self.AusgabenFabrik.DefiniereTabelle(StueliPosFelder,True,False);
-  Self.AusgabenFabrik.DefiniereTabelle(TeilFelder,False,False);
-  Self.AusgabenFabrik.DefiniereTabelle(BestellFelder,False,True);
+  Self.InitAusgabenFabrik;
+  Self.AusgabenFabrik.DefiniereTabelle(AlleFelder,True,True);
+//  Self.AusgabenFabrik.DefiniereTabelle(TeilFelder,False,False);
+//  Self.AusgabenFabrik.DefiniereTabelle(BestellFelder,False,True);
 
   //Feldnamen als CSV
   FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
@@ -119,7 +137,8 @@ begin
   //Feldnamen als Header in Ausgabedatei
   Tools.CSVLang.Log(FeldNamenStr);
   //Daten als CSV  in Ausgabedatei
-  ToTextFile(Tools.CSVLang);
+//  ToTextFile(Tools.CSVLang);
+  InGesamtTabelle(True);
 
   Tools.CSVLang.Close;
   FeldNamen.Free;

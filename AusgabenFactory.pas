@@ -12,6 +12,10 @@ type
     CDS:TClientDataSet;
     procedure DefiniereTabelle(FeldNamen:TWFilter;Clear:Boolean;Create:Boolean);
     procedure ZuTabelle(Felder:TWWertliste);
+    procedure Append;
+    procedure Post;
+    procedure AddData(Feld:TField);
+    constructor Create;
 
   end;
 
@@ -19,6 +23,26 @@ implementation
 
   uses main;
 
+  constructor TWAusgabenFact.Create;
+  begin
+    CDS:=mainFrm.ClientDataSet;
+  end;
+
+  procedure TWAusgabenFact.Append();
+  begin
+    CDS.Active:=True;
+    CDS.Append;
+  end;
+
+  procedure TWAusgabenFact.Post;
+  begin
+    CDS.Post;
+  end;
+
+  procedure TWAusgabenFact.AddData(Feld:TField);
+  begin
+    CDS.FieldByName(Feld.FieldName).Value:=Feld.Value;
+  end;
 
   procedure TWAusgabenFact.ZuTabelle(Felder:TWWertliste);
   var
@@ -28,7 +52,7 @@ implementation
     Feld:TField;
   begin
 
-    CDS:=mainFrm.ClientDataSet;
+
     CDS.Active:=True;
     CDS.Append;
     for I := 0 to Felder.Count -1 do

@@ -162,7 +162,7 @@ begin
   KaNurAuswerten('142567'); //2Pumpen
 //  KaNurAuswerten('142302'); //Ersatz
 
-  Check100;
+//  Check100;
 
   Tools.Log.Close;
   Tools.ErrLog.Close;
