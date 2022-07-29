@@ -5,7 +5,9 @@ interface
        System.TypInfo,
        StueliEigenschaften,
 //       StueliTeil,
-       Data.DB,Tools,Logger;
+       Data.DB,Tools,
+       Datenspeicher, Datenmodul,
+       Logger;
 
  type
     TWValue = TValue; //alias
@@ -15,9 +17,13 @@ interface
     TWStueliPos = class
       private
         class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
+        class var FDaten:TWDatenspeicher;
         function GetDruckDaten:TWWertliste;
+        function GetDaten:TFields;
         function GetDruckDatenAuswahl:TWWertliste;
+      protected
       public
+        Datensatz:TBookmark;
         Ebene: Integer;
         Vater: TWStueliPos;  //Vaterknoten
         IdStu: String;     //Id der übergeordneten Stueli
@@ -38,6 +44,7 @@ interface
         property DruckDaten:TWWertliste read GetDruckDaten;
         property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
         class property Filter:TWFilter read FFilter write FFilter;
+        class property Daten:TWDatenspeicher read FDaten write FDaten;
 
     end;
 
@@ -68,6 +75,12 @@ begin
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
   Ausgabe:=TWEigenschaften.Create;
+
+  //Datenspeicher erzeugen, wenn noch nicht geschehen
+  if FDaten=nil then
+  begin
+    FDaten:=TWDatenspeicher.Create(DataModule1.CDSStueliPos);
+  end;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;

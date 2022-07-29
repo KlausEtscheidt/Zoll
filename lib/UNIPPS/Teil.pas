@@ -3,6 +3,7 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung,
+      Datenspeicher, Datenmodul,
       Exceptions,
       StueliEigenschaften, Tools;
 
@@ -10,10 +11,14 @@ type
   TWTeil = class
   private
     class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
+    class var FDaten:TWDatenspeicher;
+    Datensatz:TBookmark;
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
     function GetDruckDaten:TWWertliste;
     function GetDruckDatenAuswahl:TWWertliste;
+    function GetDaten:TFields;
+
   public
     TeilTeilenummer: String; //= t_tg_nr
     Ausgabe:TWEigenschaften;
@@ -35,6 +40,7 @@ type
     property DruckDaten:TWWertliste read GetDruckDaten;
     property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
     class property Filter:TWFilter read FFilter write FFilter;
+    class property Daten:TWDatenspeicher read FDaten write FDaten;
 
   end;
 
@@ -50,7 +56,17 @@ var
   besch_art:String;
 begin
   try
+    //Datenspeicher erzeugen, wenn noch nicht geschehen
+    if FDaten=nil then
+    begin
+      FDaten:=TWDatenspeicher.Create(DataModule1.CDSTeil);
+    end;
+
     //Alle Daten in Ausgabespeicher
+    FDaten.Append;
+    FDaten.AddData(TeileQry.Fields);
+    Datensatz:=FDaten.GetBookmark;
+
     Ausgabe:=TWEigenschaften.Create(TeileQry.Fields);
 
     //Einige wichtige Daten direkt in Felder
@@ -114,6 +130,16 @@ begin
 
   Result:=Ausgabe.Wertliste();
 
+  //Evtl Daten aus Bestellung dazu
+  if PreisErmittelt Then
+    Result.AddRange(Bestellung.DruckDatenAuswahl);
+
+end;
+
+function TWTeil.GetDaten:TFields;
+begin
+  Daten.DataSet.GotoBookmark(Datensatz);
+  Result:=Daten.DataSet.Fields;
   //Evtl Daten aus Bestellung dazu
   if PreisErmittelt Then
     Result.AddRange(Bestellung.DruckDatenAuswahl);

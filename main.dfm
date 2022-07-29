@@ -62,12 +62,11 @@ object mainFrm: TmainFrm
   end
   object ClientDataSet: TClientDataSet
     Aggregates = <>
-    FileName = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
-      'ta\output\test'
     FieldDefs = <
       item
-        Name = 'ClientDataSetField2'
+        Name = 'id_stu'
+        DataType = ftString
+        Size = 20
       end>
     IndexDefs = <>
     Params = <>

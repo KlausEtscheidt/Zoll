@@ -76,6 +76,13 @@ begin
 
     //Allgemeingueltige Felder
     //-----------------------------------------------
+        //Alle Daten in Ausgabespeicher
+    Daten.Append;
+    Datensatz:=Daten.GetBookmark;
+    Daten.AddData('PosTyp',PosTyp);
+    Daten.AddData('id_stu',Qry.Fields);
+    Daten.AddData('pos_nr',Qry.Fields);
+
     Ausgabe.AddData('PosTyp', PosTyp);
     Ausgabe.AddData('id_stu', Qry.Fields);
     Ausgabe.AddData('pos_nr', Qry.Fields);

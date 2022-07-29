@@ -56,7 +56,7 @@ begin
   CSVLang:=TLogFile.Create();
   ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
   ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
-   DbConnector:=TWADOConnector.Create(nil);
+  DbConnector:=TWADOConnector.Create(nil);
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(SQLiteDBFileName);
    {$ELSE}

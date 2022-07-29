@@ -23,7 +23,9 @@ uses
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
   StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   Tests in 'Tests.pas',
-  AusgabenFactory in 'AusgabenFactory.pas';
+  AusgabenFactory in 'AusgabenFactory.pas',
+  DatenModul in 'DatenModul.pas' {DataModule1: TDataModule},
+  Datenspeicher in 'lib\Stueli\Datenspeicher.pas';
 
 {$R *.res}
 
@@ -31,5 +33,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
+  Application.CreateForm(TDataModule1, DataModule1);
   Application.Run;
 end.
