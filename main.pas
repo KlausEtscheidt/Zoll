@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
-  FireDAC.Comp.UI, Datasnap.DBClient, PumpenDataSet;
+  FireDAC.Comp.UI, Datasnap.DBClient, Tools, PumpenDataSet;
 
 type
   TmainFrm = class(TForm)
@@ -16,7 +16,6 @@ type
     KA_id_ctrl: TEdit;
     Label1: TLabel;
     Ende_Btn: TButton;
-    ClientDataSet: TClientDataSet;
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     AusgabeDS: TWDataSet;
@@ -56,7 +55,9 @@ end;
 //Zum Testen, wird automatisch von OnShow gestartet
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-mainNonGui.RunIt;
+Tools.Init;
+Tools.GuiMode:=True;
+mainNonGui.RunItGui;
 end;
 
 

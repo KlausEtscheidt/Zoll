@@ -5,8 +5,8 @@ object DataModule1: TDataModule1
   object StueliPosDS: TWDataSet
     Aggregates = <>
     Params = <>
-    Left = 112
-    Top = 200
+    Left = 96
+    Top = 56
     object StueliPosDSid_stu: TStringField
       FieldName = 'id_stu'
     end
@@ -80,8 +80,8 @@ object DataModule1: TDataModule1
   object TeilDS: TWDataSet
     Aggregates = <>
     Params = <>
-    Left = 248
-    Top = 208
+    Left = 200
+    Top = 64
     object TeilDSt_tg_nr: TStringField
       FieldName = 't_tg_nr'
     end
@@ -122,8 +122,8 @@ object DataModule1: TDataModule1
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 368
-    Top = 96
+    Left = 280
+    Top = 64
     object BestellungDSpreis: TFloatField
       FieldName = 'preis'
     end
@@ -166,5 +166,33 @@ object DataModule1: TDataModule1
     object BestellungDSbest_menge: TFloatField
       FieldName = 'best_menge'
     end
+  end
+  object BatchMoveTextWriter: TFDBatchMoveTextWriter
+    DataDef.Fields = <>
+    DataDef.EndOfLine = elWindows
+    DataDef.RecordFormat = rfSemicolonDoubleQuote
+    DataDef.WithFieldNames = True
+    DataDef.FormatSettings.DateSeparator = ';'
+    Encoding = ecUTF8
+    Left = 456
+    Top = 248
+  end
+  object BatchMoveDSReader: TFDBatchMoveDataSetReader
+    DataSet = StueliPosDS
+    Left = 312
+    Top = 248
+  end
+  object BatchMove: TFDBatchMove
+    Reader = BatchMoveDSReader
+    Writer = BatchMoveTextWriter
+    Options = [poClearDest, poIdentityInsert, poCreateDest, poUseTransactions]
+    Mappings = <>
+    LogFileAction = laCreate
+    LogFileName = 
+      'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\z' +
+      'oll\data\output\Data.log'
+    LogFileEncoding = ecUTF8
+    Left = 392
+    Top = 200
   end
 end

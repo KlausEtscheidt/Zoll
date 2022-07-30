@@ -1,8 +1,11 @@
-﻿                { TODO : Constructor einfuehren, der Verbindung �bernimmt }
+﻿///<summary>Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
+///</summary>
+///<remarks>
+/// Vor der ersten "Benutzung" einer neuen Instanz muss
+/// ein TWADOConnector f�r die Klasse gesetzt werden
+///</remarks>
 unit ADOQuery;
-{Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
- Vor der ersten "Benutzung" einer neuen Instanz muss
- ein TWADOConnector f�r die Klasse gesetzt werden
+{
  Beispiel (die Owner sind auf nil gesetzt)
  1. Connector erzeugen
    dbUniConn:=TWADOConnector.Create(nil);
@@ -40,6 +43,12 @@ interface
 
   type
     TWParamlist = array of String;
+    ///<summary>Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
+    ///</summary>
+    ///<remarks>
+    /// Vor der ersten "Benutzung" einer neuen Instanz muss
+    /// ein TWADOConnector für die Klasse gesetzt werden
+    ///</remarks>
     TWADOQuery = class(TADOQuery)
     private
       FConnector:TWADOConnector;

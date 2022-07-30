@@ -3,7 +3,9 @@ unit DatenModul;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient, PumpenDataSet;
+  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient, PumpenDataSet,
+  FireDAC.Comp.BatchMove.DataSet, FireDAC.Stan.Intf, FireDAC.Comp.BatchMove,
+  FireDAC.Comp.BatchMove.Text;
 
 type
   TDataModule1 = class(TDataModule)
@@ -49,6 +51,9 @@ type
     StueliPosDSEbene: TIntegerField;
     StueliPosDSEbeneNice: TStringField;
     TeilDSid: TAutoIncField;
+    BatchMoveTextWriter: TFDBatchMoveTextWriter;
+    BatchMoveDSReader: TFDBatchMoveDataSetReader;
+    BatchMove: TFDBatchMove;
   private
     { Private-Deklarationen }
   public

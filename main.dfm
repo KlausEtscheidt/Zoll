@@ -12,6 +12,9 @@ object mainFrm: TmainFrm
   Font.Style = []
   OldCreateOrder = False
   OnActivate = RunIt
+  DesignSize = (
+    612
+    304)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -49,30 +52,18 @@ object mainFrm: TmainFrm
   end
   object DBGrid1: TDBGrid
     Left = 0
-    Top = 56
+    Top = 64
     Width = 752
-    Height = 249
+    Height = 241
+    Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
+    ReadOnly = True
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
-  end
-  object ClientDataSet: TClientDataSet
-    Aggregates = <>
-    FieldDefs = <
-      item
-        Name = 'id_stu'
-        DataType = ftString
-        Size = 20
-      end>
-    IndexDefs = <>
-    Params = <>
-    StoreDefs = True
-    Left = 80
-    Top = 200
   end
   object DataSource1: TDataSource
     DataSet = AusgabeDS

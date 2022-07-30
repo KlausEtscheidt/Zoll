@@ -130,7 +130,8 @@ begin
 //  FeldNamen.AddRange(BestellFelder);
 
 //  Self.InitAusgabenFabrik;
-  AusgabeDS:= mainFrm.AusgabeDS; // TWDataSet.Create(nil);
+//  AusgabeDS:= mainFrm.AusgabeDS; // TWDataSet.Create(nil);
+  AusgabeDS:=  TWDataSet.Create(nil);
   AusgabeDS.DefiniereTabelle(DataModule1.StueliPosDS,True,False);
   AusgabeDS.DefiniereTabelle(DataModule1.TeilDS,False,False);
   AusgabeDS.DefiniereTabelle(DataModule1.BestellungDS,False,True);
@@ -140,19 +141,19 @@ begin
 
   //Feldnamen als CSV
 //  FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
-  //Ausgabedatei oeffnen
-  Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
-  Tools.CSVLang.Log(IntToStr(DataModule1.StueliPosDS.RecordCount));
-  Tools.CSVLang.Log(IntToStr(DataModule1.TeilDS.RecordCount));
-  Tools.CSVLang.Log(IntToStr(DataModule1.BestellungDS.RecordCount));
   //Feldnamen als Header in Ausgabedatei
 //  Tools.CSVLang.Log(FeldNamenStr);
   //Daten als CSV  in Ausgabedatei
 //  ToTextFile(Tools.CSVLang);
   InGesamtTabelle(AusgabeDS, True);
+  DataModule1.BatchMoveDSReader.DataSet:= AusgabeDS;
+  DataModule1.BatchMoveTextWriter.FileName:=
+                        Tools.LogDir+ '\'+ka_id + '_Struktur.csv';
+  DataModule1.BatchMove.Execute;
+  if Tools.GuiMode then
+    mainfrm.DataSource1.DataSet:=AusgabeDS;
 
-  Tools.CSVLang.Close;
-//  FeldNamen.Free;
+  //  FeldNamen.Free;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();

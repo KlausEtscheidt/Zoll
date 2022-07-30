@@ -26,7 +26,8 @@ uses
   StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
   Tools in 'lib\Tools\Tools.pas',
-  Exceptions in 'lib\Tools\Exceptions.pas';
+  Exceptions in 'lib\Tools\Exceptions.pas',
+  DatenModul in 'DatenModul.pas' {DataModule1: TDataModule};
 
 begin
 var answer:string;
@@ -36,8 +37,12 @@ var answer:string;
 
     //Globals setzen und initialiseren
     Tools.Init;
+    Tools.GuiMode:=False;
 
-    mainNonGui.RunInBatchmode;
+    //Datenmodul initialiseren
+    DataModule1 := TDataModule1.Create(nil);
+
+    mainNonGui.RunItKonsole;
 
   except
     on E: Exception do

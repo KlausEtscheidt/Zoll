@@ -45,6 +45,7 @@ var
   CSVLang: TLogFile;
   ApplicationBaseDir: String;
   DbConnector:TWADOConnector;
+  GuiMode:Boolean;
 
 implementation
 

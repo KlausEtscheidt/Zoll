@@ -18,6 +18,9 @@ interface
   uses System.SysUtils,System.Classes,ADOConnector, ADOQuery;
 
   type
+    ///<summary>Abfragengenerator für alle nötigen UNIPPS-Abfragen.
+    ///  s. auch <see cref='TWADOQuery'/>
+    ///</summary>
     TWBaumQryUNIPPS = class(TWADOQuery)
       destructor Destroy; override;
       function SucheKundenAuftragspositionen(ka_id:string):Boolean;
@@ -30,7 +33,7 @@ interface
       function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
       function SucheKundenRabatt(kunden_id:string):Boolean;
-      //NUr zum Testen
+      ///<summary>Kopiert Daten 1:1 nach SQLite</summary>
       procedure UNI2SQLite(tablename: String);
     private
       class var ExportQry: TWADOQuery;
@@ -237,7 +240,7 @@ begin
 
 end;
 
-/////////////nicht fuer produktiv-version
+//Kopiert Daten 1:1 in SQLite-Datebank
 procedure TWBaumQryUNIPPS.UNI2SQLite(tablename: String);
 begin
   if not Export2SQLite then

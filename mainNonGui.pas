@@ -5,8 +5,8 @@ interface
 uses  System.SysUtils, Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS ;
 
-procedure RunIt;
-procedure RunInBatchmode;
+procedure RunItGui;
+procedure RunItKonsole;
 procedure KaAuswerten(ka_id:string);
 procedure KaNurAuswerten(ka_id:string);
 procedure Check100;
@@ -14,6 +14,11 @@ procedure InitCopyUNI2SQLite;
 
 implementation
 
+/// <summary> Initialisiert den Kopiermodus von UNIPPS nach SQLite
+/// </summary>
+///<remarks>  Öffnet SQLite-Connection und übergibt diese
+/// an die UNIPPS-Query.
+///</remarks>
 procedure InitCopyUNI2SQLite;
 var
   dbSQLiteConn: TWADOConnector;
@@ -39,6 +44,8 @@ begin
 
 end;
 
+/// <summary> Analysiert im Batchmodus eine VIelzahl von Aufträgen
+/// </summary>
 procedure Check100;
 var
   QryUNIPPS: TWBaumQryUNIPPS;
@@ -113,7 +120,8 @@ begin
 
 
 end;
-
+///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
+///<summary>
 //Nutzt  TWKundenauftrag.auswerten fuer vollen Ablauf
 procedure KaAuswerten(ka_id:string);
 var ka:TWKundenauftrag;
@@ -148,19 +156,25 @@ begin
 
 end;
 
-//Einsprung fuer Batch-Version
-procedure RunInBatchmode;
+///<summary> Einsprung fuer Konsolen-Version </summary>
+///<remarks> Was hier steht, wird automatisch ausgeführt.
+///Ablaufänderungen also hier vornehmen.
+///</remarks>
+procedure RunItKonsole;
 begin
+
   //Logger oeffnen
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchLog.txt');
   Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchErrLog.txt');
 
-  InitCopyUNI2SQLite;
+//  InitCopyUNI2SQLite;
   //Einige Einzelaufträge
 //  KaNurAuswerten('142591'); //Error  Keine Positionen zum FA >616451< gefunden.
 //  KaNurAuswerten('144729');
-  KaNurAuswerten('142567'); //2Pumpen
+//  KaNurAuswerten('142567'); //2Pumpen
 //  KaNurAuswerten('142302'); //Ersatz
+
+  KaAuswerten('142567'); //2Pumpen
 
 //  Check100;
 
@@ -169,8 +183,9 @@ begin
 
 end;
 
-//Einsprung fuer GUI Version fuer automatischen Testlauf
-procedure RunIt;
+///<summary> Einsprung fuer GUI Version fuer automatischen Testlauf
+///</summary>
+procedure RunItGui;
 begin
 //  mainNonGui.KaAuswerten('142591'); //Error
 //  mainNonGui.KaAuswerten('144729');

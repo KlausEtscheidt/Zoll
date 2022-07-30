@@ -25,7 +25,7 @@ implementation
 
   constructor TWAusgabenFact.Create;
   begin
-    CDS:=mainFrm.ClientDataSet;
+    CDS:=mainFrm.AusgabeDS;
   end;
 
   procedure TWAusgabenFact.Append();
@@ -70,7 +70,7 @@ implementation
 //    MyCDS:TClientDataSet;
     FeldName:String;
   begin
-  CDS:=mainFrm.ClientDataSet;
+  CDS:=mainFrm.AusgabeDS;
 
   if Clear then CDS.FieldDefs.Clear;
 
