@@ -12,10 +12,13 @@ type
   protected
     { Protected-Deklarationen }
   public
-    procedure AddData(Key:String;Felder:TFields);overload;
+    procedure SetEditMode(Datensatz:TBookmark);
     procedure AddData(Felder:TFields);overload;
-    procedure AddData(Key:String;Val:String);overload;
+    procedure AddData(Key:String;Felder:TFields);overload;
     procedure AddData(Key:String;Val:Variant);overload;
+    procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
+    procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
+    procedure DefiniereTabelle(DS2Copy:TWDataSet;Clear:Boolean;Create:Boolean);
     function ToCSV:String;
   published
   end;
@@ -32,7 +35,7 @@ end;
 //Feld mit Namen Key eines Records uebernehmen
 procedure TWDataSet.AddData(Key:String;Felder:TFields);
 begin
-    FieldByName(Key).Value:=Felder.FieldByName(Key).Value
+    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
 end;
 
 
@@ -50,15 +53,31 @@ begin
 end;
 
 //Einen Wert fuer Feld mit Namen Key uebernehmen
-procedure TWDataSet.AddData(Key:String;Val:String);
+procedure TWDataSet.AddData(Key:String;Val:Variant);
 begin
     FieldByName(Key).Value:=Val;
 end;
 
-//Einen Wert fuer Feld mit Namen Key uebernehmen
-procedure TWDataSet.AddData(Key:String;Val:Variant);
+procedure TWDataSet.SetEditMode(Datensatz:TBookmark);
 begin
+    Self.GotoBookmark(Datensatz);
+    Edit;
+end;
+
+procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Felder:TFields);
+begin
+    Self.GotoBookmark(Datensatz);
+    Edit;
+    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
+    Post;
+end;
+
+procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Val:Variant);
+begin
+    Self.GotoBookmark(Datensatz);
+    Edit;
     FieldByName(Key).Value:=Val;
+    Post;
 end;
 
 
@@ -72,8 +91,33 @@ begin
     txt:='';
     for Feld in Self.Fields do
     begin
-      txt:=txt + Feld.Asstring;
+      txt:=txt + Feld.Asstring + Trenner;
     end;
+end;
+
+procedure TWDataSet.DefiniereTabelle(DS2Copy:TWDataSet;
+                                                Clear:Boolean;Create:Boolean);
+var
+  OrigFieldDef:TFieldDef;
+  I:Integer;
+
+begin
+
+  if Clear then FieldDefs.Clear;
+
+  for I:=0 to DS2Copy.FieldDefs.Count-1 do
+  begin
+    OrigFieldDef := DS2Copy.FieldDefs.Items[I];
+    with FieldDefs.AddFieldDef do
+    begin
+      DataType := OrigFieldDef.DataType;
+      Size := OrigFieldDef.Size;
+      Name := OrigFieldDef.Name;
+    end;
+  end;
+
+  if Create then CreateDataSet;
+
 end;
 
 

@@ -12,14 +12,13 @@ type
   private
     class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     class var FDaten:TWDataSet;
-    Datensatz:TBookmark;
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
-    function GetDaten:TFields;
 
   public
     TeilTeilenummer: String; //= t_tg_nr
-
+    DatensatzMerker:TBookmark;
+    RecNo:Integer;
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
@@ -37,7 +36,7 @@ type
     procedure holeMaxPreisAus3Bestellungen;
     function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
-    procedure DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
+    procedure HoleDatensatz(ZielDS:TWDataSet);
     class property Filter:TWFilter read FFilter write FFilter;
     class property Daten:TWDataSet read FDaten write FDaten;
 
@@ -58,18 +57,21 @@ begin
     //Datenspeicher erzeugen, wenn noch nicht geschehen
     if FDaten=nil then
     begin
-      FDaten:=DataModule1.TeilDS;
-      FDaten.CreateDataSet;
-      FDaten.Active:=True;
+      Daten:=DataModule1.TeilDS;
+      Daten.CreateDataSet;
+      Daten.Active:=True;
     end;
 
     //Alle Daten in Ausgabespeicher
-    FDaten.Append;
-    FDaten.AddData(TeileQry.Fields);
+    Daten.Append;
+    Daten.AddData(TeileQry.Fields);
+    Daten.Post;
+    RecNo:=Daten.FieldByName('id').AsInteger;
+    DatensatzMerker:=Daten.GetBookmark;
 
     //Einige wichtige Daten direkt in Felder
     TeilTeilenummer:=TeileQry.FieldByName('t_tg_nr').AsString;
-    BeschaffungsArt:=TeileQry.FieldByName('besch_art').AsInteger;
+    BeschaffungsArt:=TeileQry.FieldByName('v_besch_art').AsInteger;
     FaktorLmeSme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
     IstPraeferenzberechtigt:=
           (TeileQry.FieldByName('praeferenzkennung').AsInteger=1);
@@ -94,8 +96,6 @@ begin
    if istKaufteil or istFremdfertigung then
         holeMaxPreisAus3Bestellungen;
 
-   FDaten.Post;
-   Datensatz:=FDaten.GetBookmark;
 
   except
    on EDatabaseError do
@@ -107,39 +107,12 @@ begin
 end;
 
 
-function TWTeil.GetDaten:TFields;
-begin
-  Daten.GotoBookmark(Datensatz);
-  Result:=Daten.Fields;
-  //Evtl Daten aus Bestellung dazu
-//  if PreisErmittelt Then
-//    Result.AddRange(Bestellung.DruckDatenAuswahl);
-
-end;
-
-procedure TWTeil.DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
-var
-  FeldName:String;
-begin
-  //In Tabelle auf aktuellen Datensatz positionieren
-  Daten.GotoBookmark(Datensatz);
-
-  for FeldName in Filter do
-  begin
-      AusFact.AddData(Daten.FieldByName(FeldName));
-  end;
-
-  if PreisErmittelt Then
-    Bestellung.DatenAuswahlInTabelle(AusFact);
-
-end;
-
 procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
-    FDaten.AddData('Bezeichnung',Qry.Fields);
+    FDaten.EditData(DatensatzMerker,'Bezeichnung',Qry.Fields);
   Qry.Free;
 end;
 
@@ -186,7 +159,7 @@ begin
     //Eregbnis in Ausgabespeicher und als Objekt-Feld
     PreisJeLME:=maxPreis;
 
-    Daten.AddData('PreisJeLME', FloatToStr(PreisJeLME));
+    Daten.EditData(DatensatzMerker, 'PreisJeLME', PreisJeLME);
 
     //Übertrage gemerkten Datensatz in Ojekt
     Qry.GotoBookmark(Merker);
@@ -204,11 +177,11 @@ begin
     wert = Preis_je_BME * Bestellmenge
     => analog
     Wert der Bestellpos mit Rabatt:
-    wert = rs.Fields("netto_poswert") = Preis_je_BME_netto = rs.Fields("netto_poswert") * Bestellmenge
-    also: Preis_je_BME_netto = rs.Fields("netto_poswert") / * Bestellmenge
+    wert = UNIPPS("netto_poswert")= Preis_je_BME_netto * Bestellmenge
+    also: Preis_je_BME_netto = netto_poswert /  Bestellmenge
   }
   var preis : double;
-  preis := Qry.FieldByName('netto_poswert').AsFloat / Qry.FieldByName('menge').AsFloat;
+  preis := Qry.FieldByName('netto_poswert').AsFloat / Qry.FieldByName('best_menge').AsFloat;
 
   //Preis je Lagermengeneinheit
   Result := preis *Qry.FieldByName('faktlme_bme').AsFloat;
@@ -267,10 +240,17 @@ begin
   Result:= Result * menge;
 end;
 
-
+procedure TWTeil.HoleDatensatz(ZielDS:TWDataSet);
+begin
+  Daten.GotoBookmark(DatensatzMerker);
+  ZielDS.AddData(Daten.Fields);
+  if PreisErmittelt Then
+    Bestellung.HoleDatensatz(ZielDS);
+end;
 
 function TWTeil.ToStr():String;
 begin
+  Daten.GotoBookmark(DatensatzMerker);
   Result:=Daten.ToCsv;
 end;
 

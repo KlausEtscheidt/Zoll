@@ -28,9 +28,27 @@ type
     StueliPosDSunipps_typ: TStringField;
     TeilDSBezeichnung: TStringField;
     TeilDSPreisJeLME: TFloatField;
-    TeilDSPreisNonEU: TFloatField;
-    TeilDSPreisEU: TFloatField;
     BestellungDSbest_t_tg_nr: TStringField;
+    StueliPosDSPreisEU: TFloatField;
+    StueliPosDSPreisNonEU: TFloatField;
+    StueliPosDSSummeEU: TFloatField;
+    StueliPosDSSummeNonEU: TFloatField;
+    BestellungDSbasis: TFloatField;
+    BestellungDSpme: TIntegerField;
+    BestellungDSbme: TIntegerField;
+    BestellungDSfaktlme_bme: TFloatField;
+    BestellungDSfaktbme_pme: TFloatField;
+    BestellungDSnetto_poswert: TFloatField;
+    BestellungDSwe_menge: TFloatField;
+    BestellungDSlieferant: TIntegerField;
+    BestellungDSkurzname: TStringField;
+    BestellungDSbest_menge: TFloatField;
+    StueliPosDSvk_netto: TFloatField;
+    StueliPosDSvk_brutto: TFloatField;
+    StueliPosDSMengeTotal: TFloatField;
+    StueliPosDSEbene: TIntegerField;
+    StueliPosDSEbeneNice: TStringField;
+    TeilDSid: TAutoIncField;
   private
     { Private-Deklarationen }
   public

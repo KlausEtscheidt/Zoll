@@ -14,7 +14,7 @@ object DataModule1: TDataModule1
       FieldName = 'pos_nr'
     end
     object StueliPosDSoa: TIntegerField
-      FieldName = 'oa'
+      FieldName = 'stu_oa'
     end
     object StueliPosDSbesch_art: TIntegerField
       FieldName = 'besch_art'
@@ -47,7 +47,34 @@ object DataModule1: TDataModule1
       FieldName = 'stu_t_tg_nr'
     end
     object StueliPosDSunipps_typ: TStringField
-      FieldName = 'unipps_typ'
+      FieldName = 'stu_unipps_typ'
+    end
+    object StueliPosDSPreisEU: TFloatField
+      FieldName = 'PreisEU'
+    end
+    object StueliPosDSPreisNonEU: TFloatField
+      FieldName = 'PreisNonEU'
+    end
+    object StueliPosDSSummeEU: TFloatField
+      FieldName = 'SummeEU'
+    end
+    object StueliPosDSSummeNonEU: TFloatField
+      FieldName = 'SummeNonEU'
+    end
+    object StueliPosDSvk_netto: TFloatField
+      FieldName = 'vk_netto'
+    end
+    object StueliPosDSvk_brutto: TFloatField
+      FieldName = 'vk_brutto'
+    end
+    object StueliPosDSMengeTotal: TFloatField
+      FieldName = 'MengeTotal'
+    end
+    object StueliPosDSEbene: TIntegerField
+      FieldName = 'Ebene'
+    end
+    object StueliPosDSEbeneNice: TStringField
+      FieldName = 'EbeneNice'
     end
   end
   object TeilDS: TWDataSet
@@ -62,7 +89,7 @@ object DataModule1: TDataModule1
       FieldName = 'oa'
     end
     object TeilDSbesch_art: TIntegerField
-      FieldName = 'besch_art'
+      FieldName = 'v_besch_art'
     end
     object TeilDSunipps_typ: TStringField
       FieldName = 'unipps_typ'
@@ -85,16 +112,16 @@ object DataModule1: TDataModule1
     object TeilDSPreisJeLME: TFloatField
       FieldName = 'PreisJeLME'
     end
-    object TeilDSPreisNonEU: TFloatField
-      FieldName = 'PreisNonEU'
-    end
-    object TeilDSPreisEU: TFloatField
-      FieldName = 'PreisEU'
+    object TeilDSid: TAutoIncField
+      FieldName = 'id'
     end
   end
   object BestellungDS: TWDataSet
     Aggregates = <>
+    FieldDefs = <>
+    IndexDefs = <>
     Params = <>
+    StoreDefs = True
     Left = 368
     Top = 96
     object BestellungDSpreis: TFloatField
@@ -108,6 +135,36 @@ object DataModule1: TDataModule1
     end
     object BestellungDSbest_t_tg_nr: TStringField
       FieldName = 'best_t_tg_nr'
+    end
+    object BestellungDSbasis: TFloatField
+      FieldName = 'basis'
+    end
+    object BestellungDSpme: TIntegerField
+      FieldName = 'pme'
+    end
+    object BestellungDSbme: TIntegerField
+      FieldName = 'bme'
+    end
+    object BestellungDSfaktlme_bme: TFloatField
+      FieldName = 'faktlme_bme'
+    end
+    object BestellungDSfaktbme_pme: TFloatField
+      FieldName = 'faktbme_pme'
+    end
+    object BestellungDSnetto_poswert: TFloatField
+      FieldName = 'netto_poswert'
+    end
+    object BestellungDSwe_menge: TFloatField
+      FieldName = 'we_menge'
+    end
+    object BestellungDSlieferant: TIntegerField
+      FieldName = 'lieferant'
+    end
+    object BestellungDSkurzname: TStringField
+      FieldName = 'kurzname'
+    end
+    object BestellungDSbest_menge: TFloatField
+      FieldName = 'best_menge'
     end
   end
 end

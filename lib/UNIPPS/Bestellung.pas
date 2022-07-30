@@ -10,17 +10,13 @@ type
   private
     class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     class var FDaten:TWDataSet;
-    var Datensatz:TBookmark;
-    function GetDruckDaten:TWWertliste;
-    function GetDruckDatenAuswahl:TWWertliste;
-    function GetDaten:TFields;
+    var DatensatzMerker:TBookmark;
 
   protected
 
   public
-    Ausgabe:TWEigenschaften;
 
-    bestell_id: Integer;
+    BestellId: Integer;
 //    bestell_datum: Double;
 //    preis: Double;
 //    basis: Double;
@@ -35,9 +31,7 @@ type
 //    kurzname: String;
 //    t_tg_nr: String;
     constructor Create(myRecord: TFields);
-    property DruckDaten:TWWertliste read GetDruckDaten;
-    property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
-    procedure DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
+    procedure HoleDatensatz(ZielDS:TWDataSet);
     class property Filter:TWFilter read FFilter write FFilter;
     class property Daten:TWDataSet read FDaten write FDaten;
 
@@ -56,69 +50,20 @@ begin
     end;
 
     //Alle Daten in Ausgabespeicher
-    Ausgabe:=TWEigenschaften.Create(myRecord);
     FDaten.Append;
-
-    FDaten.AddData('bestell_id',myRecord);
-    FDaten.AddData('bestell_datum',myRecord);
-    FDaten.AddData('preis',myRecord);
-//    FDaten.AddData(myRecord);
-    bestell_id := myRecord.FieldByName('bestell_id').AsInteger;
-//    bestell_datum:= myRecord.FieldByName('bestell_datum').AsFloat;
-//    preis:= myRecord.FieldByName('preis').AsFloat;
-//    basis:= myRecord.FieldByName('basis').AsFloat;
-//    pme:= myRecord.FieldByName('pme').AsInteger;
-//    bme:= myRecord.FieldByName('bme').AsInteger;
-//    faktlme_bme:= myRecord.FieldByName('faktlme_bme').AsFloat;
-//    faktbme_pme:= myRecord.FieldByName('faktbme_pme').AsFloat;
-//    netto_poswert:= myRecord.FieldByName('netto_poswert').AsFloat;
-//    menge:= myRecord.FieldByName('menge').AsFloat;
-//    we_menge:= myRecord.FieldByName('we_menge').AsFloat;
-//    lieferant:= myRecord.FieldByName('lieferant').AsInteger;
-//    kurzname:= myRecord.FieldByName('kurzname').AsString;
-//    t_tg_nr:= myRecord.FieldByName('t_tg_nr').AsString;
+    FDaten.AddData(myRecord);
+    BestellId := myRecord.FieldByName('bestell_id').AsInteger;
 
     FDaten.Post;
-    Datensatz:=FDaten.GetBookmark;
+    DatensatzMerker:=FDaten.GetBookmark;
 
 end;
 
-
-function TWBestellung.GetDruckDatenAuswahl:TWWertliste;
+procedure TWBestellung.HoleDatensatz(ZielDS:TWDataSet);
 begin
-  if length(Filter)=0 then
-    //Alle ausgeben
-    Result:=Ausgabe.Wertliste()
-  else
-    //gefiltert ausgeben
-    Result:=Ausgabe.Wertliste(Filter);
+  Daten.GotoBookmark(DatensatzMerker);
+  ZielDS.AddData(Daten.Fields);
 end;
 
-function TWBestellung.GetDruckDaten:TWWertliste;
-begin
-  //Alle ausgeben
-  Result:=Ausgabe.Wertliste()
-end;
-
-function TWBestellung.GetDaten:TFields;
-begin
-  Daten.GotoBookmark(Datensatz);
-  Result:=Daten.Fields;
-end;
-
-procedure TWBestellung.DatenAuswahlInTabelle(AusFact: TWAusgabenFact);
-var
-  FeldName:String;
-begin
-  //In Tabelle auf aktuellen Datensatz positionieren
-  Daten.GotoBookmark(Datensatz);
-
-  for FeldName in Filter do
-  begin
-      AusFact.AddData(Daten.FieldByName(FeldName));
-  end;
-
-
-end;
 
 end.

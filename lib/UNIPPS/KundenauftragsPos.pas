@@ -41,8 +41,8 @@ begin
   Rabatt:=Kundenrabatt;
   vk_brutto:=Qry.FieldByName('preis').AsFloat;
   vk_netto:=vk_brutto * (1 + Rabatt); //Rabbat hat Minuszeichen in UNIPPS
-  Ausgabe.AddData('vk_netto',FloatToStr(vk_netto));
-  Ausgabe.AddData('vk_brutto',FloatToStr(vk_brutto));
+  Daten.EditData(DatensatzMerker,'vk_netto',vk_netto);
+  Daten.EditData(DatensatzMerker,'vk_brutto',vk_brutto);
 
   //Suche Teil zur Position  (ueber Vaterklasse TWUniStueliPos)
   SucheTeilzurStueliPos();

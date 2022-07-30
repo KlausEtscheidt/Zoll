@@ -4,7 +4,7 @@ interface
   uses System.RTTI, System.SysUtils,System.Generics.Collections,
        System.Classes,System.StrUtils,
        Teil,Exceptions,Data.DB,Logger,
-       Stueckliste,StueliEigenschaften,
+       Stueckliste, PumpenDataSet,
        AusgabenFactory, Tools;
 
   type
@@ -32,9 +32,8 @@ interface
         function holeKinderAusTeileStu(): Boolean;
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
-        procedure InGesamtTabelle(FirstRun:Boolean=True);
+        procedure InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
         class procedure InitAusgabenFabrik;
-        procedure DatenAuswahlInTabelle;
         class property AusgabenFabrik:TWAusgabenFact read FAusgFabr write FAusgFabr;
         //t_tg_nr des Teils auf dieser Stu-Pos als stu_t_tg_nr in Daten-Tabelle
         property TeilNrzuPos:String read getTeileNrzuPos;
@@ -85,9 +84,9 @@ begin
     Daten.AddData('PosTyp',PosTyp);
     Daten.AddData('id_stu',Qry.Fields);
     Daten.AddData('pos_nr',Qry.Fields);
-    Daten.AddData('oa',Qry.Fields);
+    Daten.AddData('stu_oa',Qry.Fields);
     Daten.AddData('stu_t_tg_nr',Qry.Fields);
-    Daten.AddData('unipps_typ',Qry.Fields);
+    Daten.AddData('stu_unipps_typ',Qry.Fields);
 
     //typspezifische Felder
     //-----------------------------------------------
@@ -119,7 +118,7 @@ begin
     else
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp );
     Daten.Post;
-    Datensatz:=Daten.GetBookmark;
+    DatensatzMerker:=Daten.GetBookmark;
 
 end;
 
@@ -332,7 +331,7 @@ begin
      Deren Teile sind schon im Haupt-FA enthalten und d�rfen daher hier nicht nochmals in die Preissumme einflie�en
      Sie sollen zum debuggen aber in der Struktur enthalten sein }
       If PosTyp='FA_Komm' Then
-          If Ausgabe['verurs_art'] <> '1' Then
+          If Daten.FieldByName('verurs_art').AsInteger <> 1 Then
               Exit;
 
   //Preise der Unterpositionen summieren
@@ -357,8 +356,8 @@ begin
   //Eigenen Preis dazu
   SummeEU := SummeEU + PreisEU;
   SummeNonEU := SummeNonEU + PreisNonEU;
-  Ausgabe.AddData('SummeEU', FloatToStr(SummeEU));
-  Ausgabe.AddData('SummeNonEU', FloatToStr(SummeNonEU));
+  Daten.EditData(DatensatzMerker, 'SummeEU', SummeEU);
+  Daten.EditData(DatensatzMerker, 'SummeNonEU', SummeNonEU);
 
 end;
 
@@ -384,23 +383,28 @@ begin
               PreisNonEU := Preis
       end;
 
-    Daten.AddData('PreisEU', PreisEU);
-    Daten.AddData('PreisNonEU', PreisNonEU);
+    Daten.EditData(DatensatzMerker,'PreisEU', PreisEU);
+    Daten.EditData(DatensatzMerker,'PreisNonEU', PreisNonEU);
 
 end;
 
 // Ergebnis in DataSet ausgeben
 //--------------------------------------------------------------------------
 
-procedure TWUniStueliPos.InGesamtTabelle(FirstRun:Boolean=True);
+procedure TWUniStueliPos.InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 var
   StueliPosKey: Integer;
 begin
   //Position (Self) ausgeben; aber nicht fuer Topknoten
   if not FirstRun then
   begin
-     //Erst Werte zur Position in Tabelle
-     Self.DatenAuswahlInTabelle;
+    ZielDS.Append;
+    //Erst Werte zur Position in Tabelle
+    Self.HoleDatensatz(ZielDS);
+    //Evtl Daten des Teils dazu
+    if hatTeil Then
+      Teil.HoleDatensatz(ZielDS);
+    ZielDS.Post;
   end;
 
   //Zurueck, wenn Pos keine Kinder hat
@@ -412,30 +416,8 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-      TWUniStueliPos(Stueli[StueliPosKey]).InGesamtTabelle(False);
+      TWUniStueliPos(Stueli[StueliPosKey]).InGesamtTabelle(ZielDS, False);
   end;
-
-end;
-
-
-procedure TWUniStueliPos.DatenAuswahlInTabelle;
-var
-  FeldName:String;
-begin
-  //In Tabelle auf aktuellen Datensatz positionieren
-  Daten.GotoBookmark(Datensatz);
-  Self.AusgabenFabrik.Append;
-
-  for FeldName in Filter do
-  begin
-      Self.AusgabenFabrik.AddData(Daten.FieldByName(FeldName));
-  end;
-
-  //Dann Werte zum Teil();
-  if hatTeil then
-    Teil.DatenAuswahlInTabelle(Self.AusgabenFabrik);
-
-  Self.AusgabenFabrik.Post;
 
 end;
 

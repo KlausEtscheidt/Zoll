@@ -90,8 +90,26 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="lib\Tools\Tools.pas"/>
         <DCCReference Include="mainNonGui.pas"/>
+        <DCCReference Include="lib\Tools\Logger.pas"/>
+        <DCCReference Include="lib\Datenbank\ADOConnector.pas"/>
+        <DCCReference Include="lib\Datenbank\ADOQuery.pas"/>
+        <DCCReference Include="lib\Datenbank\BaumQrySQLite.pas"/>
+        <DCCReference Include="lib\Datenbank\BaumQryUNIPPS.pas"/>
+        <DCCReference Include="lib\Datenbank\PumpenDataSet.pas"/>
+        <DCCReference Include="lib\UNIPPS\Bestellung.pas"/>
+        <DCCReference Include="lib\UNIPPS\FertigungsauftragsKopf.pas"/>
+        <DCCReference Include="lib\UNIPPS\FertigungsauftragsPos.pas"/>
+        <DCCReference Include="lib\UNIPPS\Kundenauftrag.pas"/>
+        <DCCReference Include="lib\UNIPPS\KundenauftragsPos.pas"/>
+        <DCCReference Include="lib\UNIPPS\Teil.pas"/>
+        <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
+        <DCCReference Include="lib\Stueli\Datenspeicher.pas"/>
+        <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
+        <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
+        <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
+        <DCCReference Include="lib\Tools\Tools.pas"/>
+        <DCCReference Include="lib\Tools\Exceptions.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

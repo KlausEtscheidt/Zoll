@@ -3,8 +3,6 @@ unit Stueckliste;
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
        System.TypInfo,
-       StueliEigenschaften,
-//       StueliTeil,
        Data.DB,Tools,
        PumpenDataSet, Datenmodul,
        Logger;
@@ -17,15 +15,11 @@ interface
     TWStueliPos = class
       private
         class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
-
         class var FDaten:TWDataSet;
 
-        function GetDruckDaten:TWWertliste;
-        function GetDaten:TFields;
-        function GetDruckDatenAuswahl:TWWertliste;
       protected
       public
-        Datensatz:TBookmark;
+        DatensatzMerker:TBookmark;
         Ebene: Integer;
         Vater: TWStueliPos;  //Vaterknoten
         IdStu: String;     //Id der übergeordneten Stueli
@@ -34,16 +28,13 @@ interface
         MengeTotal: Double; //Gesamt-Menge (mit übergeordneten Mengen mult.)
         Stueli: TDictionary<Integer, TWStueliPos>;    //Hält die Kinder-Positionen
 
-        Ausgabe:TWEigenschaften;   //Positions-Daten fuer Ausgaben
-
         hatTeil:Boolean;
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
+        procedure HoleDatensatz(ZielDS:TWDataSet);
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
-        property DruckDaten:TWWertliste read GetDruckDaten;
-        property DruckDatenAuswahl:TWWertliste read GetDruckDatenAuswahl;
         function GetProperty(FeldName:String):TField;
         class property Filter:TWFilter read FFilter write FFilter;
         class property Daten:TWDataSet read FDaten write FDaten;
@@ -76,7 +67,6 @@ begin
 
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
-  Ausgabe:=TWEigenschaften.Create;
 
   //Datenspeicher erzeugen, wenn noch nicht geschehen
   if FDaten=nil then
@@ -96,40 +86,15 @@ end;
 // Ausgabe-Funktionen
 //--------------------------------------------------------------------------
 
-
-// Hole gefilterte Eigenschaften zum Drucken
-//--------------------------------------------------------------------------
-function TWStueliPos.GetDruckDatenAuswahl:TWWertliste;
+procedure TWStueliPos.HoleDatensatz(ZielDS:TWDataSet);
 begin
-  if length(Filter)=0 then
-    //Alle ausgeben
-    Result:=Ausgabe.Wertliste()
-  else
-    //gefiltert ausgeben
-    Result:=Ausgabe.Wertliste(Filter);
-end;
-
-// Hole alle Eigenschaften zum Drucken
-//--------------------------------------------------------------------------
-function TWStueliPos.GetDruckDaten:TWWertliste;
-begin
-  //Alle ausgeben
-  Result:=Ausgabe.Wertliste()
-end;
-
-function TWStueliPos.GetDaten:TFields;
-begin
-  Daten.GotoBookmark(Datensatz);
-  Result:=Daten.Fields;
-  //Evtl Daten aus Bestellung dazu
-//  if PreisErmittelt Then
-//    Result.AddRange(Bestellung.DruckDatenAuswahl);
-
+  Daten.GotoBookmark(DatensatzMerker);
+  ZielDS.AddData(Daten.Fields);
 end;
 
 function TWStueliPos.GetProperty(FeldName:String):TField;
 begin
-  Daten.GotoBookmark(Datensatz);
+  Daten.GotoBookmark(DatensatzMerker);
   Result:=Daten.FieldByName(FeldName);
 end;
 
@@ -148,9 +113,12 @@ begin
   levelString:=IntToStr(Ebene);
   EbeneNice := StringOfChar('.', Ebene-1);
   MengeTotal:=Menge*UebMenge;  //Eigene Menge mal übergeordnete
-  Self.Ausgabe.AddData('MengeTotal', FloatToStr(MengeTotal));
-  Self.Ausgabe.AddData('Ebene', levelString);
-  Self.Ausgabe.AddData('EbeneNice', EbeneNice+levelString);
+
+  Self.Daten.SetEditMode(Datensatzmerker);
+  Self.Daten.AddData('MengeTotal', MengeTotal);
+  Self.Daten.AddData('Ebene', levelString);
+  Self.Daten.AddData('EbeneNice', EbeneNice+levelString);
+  Self.Daten.Post;
 
   //Zurueck, wenn Pos keine Kinder hat
   if Stueli.Count=0 then
@@ -186,7 +154,7 @@ end;
 //Liefert alle Eigenschaften in Werte in einem String verkettet
 function TWStueliPos.ToStr(const Trennzeichen:String=';'):String;
 begin
-  Result:=self.Ausgabe.ToCSV(Self.DruckDaten);
+  Result:=self.Daten.ToCSV;
 end;
 
 

@@ -5,7 +5,7 @@ interface
 uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
         System.Generics.Collections, System.TimeSpan, Windows,
         KundenauftragsPos, Stueckliste, Bestellung,
-        StueliEigenschaften, UnippsStueliPos, Tools;
+        PumpenDataSet, UnippsStueliPos, Tools, Datenmodul;
 
 type
   TWKundenauftrag = class(TWUniStueliPos)
@@ -23,6 +23,8 @@ type
   end;
 
 implementation
+
+uses main;
 
 constructor TWKundenauftrag.Create(new_ka_id: String);
 begin
@@ -111,37 +113,46 @@ const trenn = ' ; ' ;
             	preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
          }
 var
-  FeldNamen:TWWertliste;
+//  FeldNamen:TWWertliste;
   FeldNamenStr:String;
+  AusgabeDS:TWDataSet;
+
 begin
   //Setze Filter in den Klassen fuer Stuecklistenpos, Teile und Bestellungen
-  TWStueliPos.Filter:=StueliPosFelder;
-  TWTeil.Filter:=TeilFelder;
-  TWBestellung.Filter:=BestellFelder;
+//  TWStueliPos.Filter:=StueliPosFelder;
+//  TWTeil.Filter:=TeilFelder;
+//  TWBestellung.Filter:=BestellFelder;
 
   //Liste aller Feldnamen
-  FeldNamen:=TWWertliste.Create;
-  FeldNamen.AddRange(StueliPosFelder);
-  FeldNamen.AddRange(TeilFelder);
-  FeldNamen.AddRange(BestellFelder);
+//  FeldNamen:=TWWertliste.Create;
+//  FeldNamen.AddRange(StueliPosFelder);
+//  FeldNamen.AddRange(TeilFelder);
+//  FeldNamen.AddRange(BestellFelder);
 
-  Self.InitAusgabenFabrik;
-  Self.AusgabenFabrik.DefiniereTabelle(AlleFelder,True,True);
+//  Self.InitAusgabenFabrik;
+  AusgabeDS:= mainFrm.AusgabeDS; // TWDataSet.Create(nil);
+  AusgabeDS.DefiniereTabelle(DataModule1.StueliPosDS,True,False);
+  AusgabeDS.DefiniereTabelle(DataModule1.TeilDS,False,False);
+  AusgabeDS.DefiniereTabelle(DataModule1.BestellungDS,False,True);
+
 //  Self.AusgabenFabrik.DefiniereTabelle(TeilFelder,False,False);
 //  Self.AusgabenFabrik.DefiniereTabelle(BestellFelder,False,True);
 
   //Feldnamen als CSV
-  FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
+//  FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
   //Ausgabedatei oeffnen
   Tools.CSVLang.OpenNew(Tools.LogDir, ka_id + '_Struktur.txt');
+  Tools.CSVLang.Log(IntToStr(DataModule1.StueliPosDS.RecordCount));
+  Tools.CSVLang.Log(IntToStr(DataModule1.TeilDS.RecordCount));
+  Tools.CSVLang.Log(IntToStr(DataModule1.BestellungDS.RecordCount));
   //Feldnamen als Header in Ausgabedatei
-  Tools.CSVLang.Log(FeldNamenStr);
+//  Tools.CSVLang.Log(FeldNamenStr);
   //Daten als CSV  in Ausgabedatei
 //  ToTextFile(Tools.CSVLang);
-  InGesamtTabelle(True);
+  InGesamtTabelle(AusgabeDS, True);
 
   Tools.CSVLang.Close;
-  FeldNamen.Free;
+//  FeldNamen.Free;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();
