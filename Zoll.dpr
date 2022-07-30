@@ -24,7 +24,7 @@ uses
   StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   Tests in 'Tests.pas',
   AusgabenFactory in 'AusgabenFactory.pas',
-  DatenModul in 'DatenModul.pas' {DataModule1: TDataModule},
+  DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   Datenspeicher in 'lib\Stueli\Datenspeicher.pas',
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas';
 
@@ -34,6 +34,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
-  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TKaDataModule, KaDataModule);
   Application.Run;
 end.

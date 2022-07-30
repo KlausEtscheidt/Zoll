@@ -44,7 +44,7 @@ begin
     //Datenspeicher erzeugen, wenn noch nicht geschehen
     if FDaten=nil then
     begin
-      FDaten:=DataModule1.BestellungDS;
+      FDaten:=KaDataModule.BestellungDS;
       FDaten.CreateDataSet;
       FDaten.Active:=True;
     end;

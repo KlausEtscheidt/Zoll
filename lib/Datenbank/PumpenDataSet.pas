@@ -6,6 +6,7 @@ uses
   System.SysUtils, System.Classes,  Data.DB, Datasnap.DBClient;
 
 type
+  TWFeldNamen = array of String;
   TWDataSet = class(TClientDataSet)
   private
     { Private-Deklarationen }
@@ -18,7 +19,9 @@ type
     procedure AddData(Key:String;Val:Variant);overload;
     procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
     procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
-    procedure DefiniereTabelle(DS2Copy:TWDataSet;Clear:Boolean;Create:Boolean);
+    procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
+    procedure DefiniereTabelle(DS2Copy:TWDataSet;
+                 Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);
     function ToCSV:String;
   published
   end;
@@ -95,19 +98,53 @@ begin
     end;
 end;
 
+procedure TWDataSet.DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
+var
+  OrigFieldDef:TFieldDef;
+  I:Integer;
+  OrigName:String;
+//  WasActive:Boolean;
+
+begin
+
+//  WasActive:=Active;
+  Active:=False;
+
+  FieldDefs.Clear;
+
+  for I:=0 to length(Filter)-1 do
+  begin
+
+    OrigFieldDef:=DS2Copy.FieldDefs.Find(Filter[i]);
+    with FieldDefs.AddFieldDef do
+    begin
+      DataType := OrigFieldDef.DataType;
+      Size := OrigFieldDef.Size;
+      Name := OrigFieldDef.Name;
+    end;
+
+  end;
+
+  CreateDataSet;
+
+end;
+
 procedure TWDataSet.DefiniereTabelle(DS2Copy:TWDataSet;
-                                                Clear:Boolean;Create:Boolean);
+                    Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);
 var
   OrigFieldDef:TFieldDef;
   I:Integer;
 
 begin
 
+  Active:=False;
   if Clear then FieldDefs.Clear;
+
 
   for I:=0 to DS2Copy.FieldDefs.Count-1 do
   begin
     OrigFieldDef := DS2Copy.FieldDefs.Items[I];
+
     with FieldDefs.AddFieldDef do
     begin
       DataType := OrigFieldDef.DataType;

@@ -10,16 +10,16 @@ uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
 type
   TWKundenauftrag = class(TWUniStueliPos)
   private
-    procedure CSV_volle_Ausgabe();
-    procedure CSV_kurze_Ausgabe();
   public
     ka_id: String;
     komm_nr: String;
     kunden_id: Integer;
     constructor Create(new_ka_id: String);
+    procedure auswerten;
     procedure liesKopfundPositionen;
     procedure holeKinder;
-    procedure auswerten;
+    procedure SammleAusgabeDaten;
+    procedure Ausgabe;
   end;
 
 implementation
@@ -47,9 +47,9 @@ begin
   holeKinder;
   SetzeEbenenUndMengen(0,1);
   SummierePreise;
-  CSV_volle_Ausgabe;
-  CSV_kurze_Ausgabe;
 
+  SammleAusgabeDaten;
+  Ausgabe;
 
   endzeit:=  GetTickCount;
   delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
@@ -60,100 +60,40 @@ begin
 
 end;
 
-procedure TWKundenauftrag.CSV_kurze_Ausgabe();
-const trenn = ' ; ' ;
-  meineFelder: TWFilter = ['id_stu','pos_nr','t_tg_nr','Bezeichnung'];
+
+procedure TWKundenauftrag.SammleAusgabeDaten;
 begin
-  Tools.CSVKurz.OpenNew(Tools.LogDir, ka_id + '_Kalk.txt');
-//  ToTextFile(Tools.CSVKurz);
-  Tools.CSVLang.Close;
+  //Einmalig DataSet fuer Gesamtausgabe mit allen Feldern
+  //der Stücklistenpos, der Teile und der Bestellungen definieren
+  KaDataModule.DefiniereGesamtErgebnisTabelle;
+
+  //Sammle rekursiv alle Daten ein
+  InGesamtTabelle(KaDataModule.ErgebnisDS, True);
+
+  if Tools.GuiMode then
+  begin
+    mainfrm.langBtn.Enabled:=True;
+    mainfrm.langBtn.Enabled:=True;
+  end;
+
 end;
 
-procedure TWKundenauftrag.CSV_volle_Ausgabe();
-const trenn = ' ; ' ;
-//  StueliPosFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-//      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art', 'menge', 'MengeTotal',
-//       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
-
-  StueliPosFelder: TWFilter = ['PosTyp', 'id_stu', 'pos_nr'];
-
-//  TeilFelder: TWFilter = ['t_tg_nr',
-//      'oa','Bezeichnung', 'unipps_typ','besch_art',
-//      'praeferenzkennung', 'sme',
-//      'faktlme_sme', 'lme', 'PreisJeLME'];
-
-  TeilFelder: TWFilter = ['t_tg_nr',
-      'oa','unipps_typ','besch_art',
-      'praeferenzkennung', 'sme',
-      'faktlme_sme', 'lme'];
-
-//  BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis',
-//         'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
-//         'kurzname'];
-
-   BestellFelder: TWFilter = ['bestell_id', 'bestell_datum', 'preis'];
-
-  AlleFelder: TWFilter = ['EbeneNice','PosTyp', 'id_stu','FA_Nr',
-      'id_pos','ueb_s_nr','ds', 'pos_nr','verurs_art',
-      't_tg_nr','oa','Bezeichnung', 'unipps_typ','besch_art',
-       'praeferenzkennung', 'menge',  'sme', 'faktlme_sme', 'lme',
-       'bestell_id', 'bestell_datum', 'preis',
-       'basis','pme','bme','faktlme_bme',	'faktbme_pme', 'lieferant',
-       'MengeTotal',
-       'PreisEU', 'PreisNonEU', 'SummeEU', 'SummeNonEU', 'vk_netto'];
-
-{excel
-        Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr
-        	verurs_art	t_tg_nr	oa	Bezchng	typ	v_besch_art
-          urspr_land	ausl_u_land	praeferenzkennung	menge	sme
-          faktlme_sme	lme
-          	bestell_id	bestell_datum	preis
-            basis	pme	bme	faktlme_bme	faktbme_pme	id_lief
-            lieferant	pos_menge	preis_eu
-            	preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
-         }
-var
-//  FeldNamen:TWWertliste;
-  FeldNamenStr:String;
-  AusgabeDS:TWDataSet;
-
+procedure TWKundenauftrag.Ausgabe;
 begin
-  //Setze Filter in den Klassen fuer Stuecklistenpos, Teile und Bestellungen
-//  TWStueliPos.Filter:=StueliPosFelder;
-//  TWTeil.Filter:=TeilFelder;
-//  TWBestellung.Filter:=BestellFelder;
+  //Fülle Tabelle mit vollem Umfang (z Debuggen)
+  KaDataModule.ErzeugeAusgabeVollFuerDebug;
+  //Ausgabe als CSV
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir+ '\'+ka_id + '_Struktur.csv');
 
-  //Liste aller Feldnamen
-//  FeldNamen:=TWWertliste.Create;
-//  FeldNamen.AddRange(StueliPosFelder);
-//  FeldNamen.AddRange(TeilFelder);
-//  FeldNamen.AddRange(BestellFelder);
+  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
+  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+  //Ausgabe als CSV
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir+ '\'+ka_id + '_Kalk.csv');
 
-//  Self.InitAusgabenFabrik;
-//  AusgabeDS:= mainFrm.AusgabeDS; // TWDataSet.Create(nil);
-  AusgabeDS:=  TWDataSet.Create(nil);
-  AusgabeDS.DefiniereTabelle(DataModule1.StueliPosDS,True,False);
-  AusgabeDS.DefiniereTabelle(DataModule1.TeilDS,False,False);
-  AusgabeDS.DefiniereTabelle(DataModule1.BestellungDS,False,True);
-
-//  Self.AusgabenFabrik.DefiniereTabelle(TeilFelder,False,False);
-//  Self.AusgabenFabrik.DefiniereTabelle(BestellFelder,False,True);
-
-  //Feldnamen als CSV
-//  FeldNamenStr:=TWEigenschaften.ToCSV(FeldNamen);
-  //Feldnamen als Header in Ausgabedatei
-//  Tools.CSVLang.Log(FeldNamenStr);
-  //Daten als CSV  in Ausgabedatei
-//  ToTextFile(Tools.CSVLang);
-  InGesamtTabelle(AusgabeDS, True);
-  DataModule1.BatchMoveDSReader.DataSet:= AusgabeDS;
-  DataModule1.BatchMoveTextWriter.FileName:=
-                        Tools.LogDir+ '\'+ka_id + '_Struktur.csv';
-  DataModule1.BatchMove.Execute;
+  //Daten anzeigen
   if Tools.GuiMode then
-    mainfrm.DataSource1.DataSet:=AusgabeDS;
+    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
 
-  //  FeldNamen.Free;
 end;
 
 procedure TWKundenauftrag.liesKopfundPositionen();

@@ -197,7 +197,7 @@
         <DCCReference Include="Tests.pas"/>
         <DCCReference Include="AusgabenFactory.pas"/>
         <DCCReference Include="DatenModul.pas">
-            <Form>DataModule1</Form>
+            <Form>KaDataModule</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>

@@ -5,6 +5,9 @@ interface
 uses  System.SysUtils, Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS ;
 
+type
+    EStuBaumMainExc = class(Exception);
+
 procedure RunItGui;
 procedure RunItKonsole;
 procedure KaAuswerten(ka_id:string);
@@ -142,16 +145,16 @@ begin
     //auswerten
     ka.auswerten;
 
-  except
     Tools.Log.Log('--------- Kundenauftrag: '+ka_id + ' fertig.');
     Tools.ErrLog.Log('--------- Kundenauftrag: '+ka_id + ' fertig.');
 
-    //Logger schlie�en
-    Tools.Log.Close;
-    Tools.ErrLog.Close;
-    ka.Free;
-    //Exception zeigen
-    raise;
+  finally
+
+      //Logger schlie�en
+      Tools.Log.Close;
+      Tools.ErrLog.Close;
+      ka.Free;
+
   end;
 
 end;
@@ -187,6 +190,7 @@ end;
 ///</summary>
 procedure RunItGui;
 begin
+
 //  mainNonGui.KaAuswerten('142591'); //Error
 //  mainNonGui.KaAuswerten('144729');
   mainNonGui.KaAuswerten('142567'); //2Pumpen

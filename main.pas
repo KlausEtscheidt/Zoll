@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
-  FireDAC.Comp.UI, Datasnap.DBClient, Tools, PumpenDataSet;
+  FireDAC.Comp.UI, Datasnap.DBClient, Tools, DatenModul, PumpenDataSet;
 
 type
   TmainFrm = class(TForm)
@@ -19,10 +19,14 @@ type
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     AusgabeDS: TWDataSet;
+    langBtn: TButton;
+    kurzBtn: TButton;
 
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
     procedure RunIt(Sender: TObject);
+    procedure kurzBtnClick(Sender: TObject);
+    procedure langBtnClick(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -53,10 +57,27 @@ begin
 end;
 
 //Zum Testen, wird automatisch von OnShow gestartet
+procedure TmainFrm.kurzBtnClick(Sender: TObject);
+begin
+  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
+  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+  DataSource1.DataSet:=KaDataModule.AusgabeDS;
+end;
+
+procedure TmainFrm.langBtnClick(Sender: TObject);
+begin
+  //Fülle Tabelle mit vollem Umfang (z Debuggen)
+  KaDataModule.ErzeugeAusgabeVollFuerDebug;
+  DataSource1.DataSet:=KaDataModule.AusgabeDS;
+
+end;
+
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
 Tools.Init;
 Tools.GuiMode:=True;
+mainfrm.langBtn.Enabled:=True;
+mainfrm.kurzBtn.Enabled:=True;
 mainNonGui.RunItGui;
 end;
 

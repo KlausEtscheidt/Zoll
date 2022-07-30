@@ -65,6 +65,26 @@ object mainFrm: TmainFrm
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
   end
+  object langBtn: TButton
+    Left = 306
+    Top = 25
+    Width = 75
+    Height = 25
+    Caption = 'Lang'
+    Enabled = False
+    TabOrder = 4
+    OnClick = langBtnClick
+  end
+  object kurzBtn: TButton
+    Left = 387
+    Top = 25
+    Width = 75
+    Height = 25
+    Caption = 'Kurz'
+    Enabled = False
+    TabOrder = 5
+    OnClick = kurzBtnClick
+  end
   object DataSource1: TDataSource
     DataSet = AusgabeDS
     Left = 184

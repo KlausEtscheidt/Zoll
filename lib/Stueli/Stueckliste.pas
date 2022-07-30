@@ -71,10 +71,9 @@ begin
   //Datenspeicher erzeugen, wenn noch nicht geschehen
   if FDaten=nil then
   begin
-    FDaten:=DataModule1.StueliPosDS;
+    FDaten:=KaDataModule.StueliPosDS;
     FDaten.CreateDataSet;
     FDaten.Active:=True;
-
   end;
 
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)

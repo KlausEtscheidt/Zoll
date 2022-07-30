@@ -1,5 +1,6 @@
-object DataModule1: TDataModule1
+object KaDataModule: TKaDataModule
   OldCreateOrder = False
+  OnCreate = DataModuleCreate
   Height = 367
   Width = 587
   object StueliPosDS: TWDataSet
@@ -194,5 +195,21 @@ object DataModule1: TDataModule1
     LogFileEncoding = ecUTF8
     Left = 392
     Top = 200
+  end
+  object BatchMoveDSWriter: TFDBatchMoveDataSetWriter
+    Left = 440
+    Top = 304
+  end
+  object ErgebnisDS: TWDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 352
+    Top = 64
+  end
+  object AusgabeDS: TWDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 416
+    Top = 72
   end
 end

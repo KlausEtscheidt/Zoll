@@ -57,7 +57,7 @@ begin
     //Datenspeicher erzeugen, wenn noch nicht geschehen
     if FDaten=nil then
     begin
-      Daten:=DataModule1.TeilDS;
+      Daten:=KaDataModule.TeilDS;
       Daten.CreateDataSet;
       Daten.Active:=True;
     end;

@@ -27,7 +27,7 @@ uses
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
   Tools in 'lib\Tools\Tools.pas',
   Exceptions in 'lib\Tools\Exceptions.pas',
-  DatenModul in 'DatenModul.pas' {DataModule1: TDataModule};
+  DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule};
 
 begin
 var answer:string;
@@ -40,7 +40,7 @@ var answer:string;
     Tools.GuiMode:=False;
 
     //Datenmodul initialiseren
-    DataModule1 := TDataModule1.Create(nil);
+    DatenModul.KaDataModule := TKaDataModule.Create(nil);
 
     mainNonGui.RunItKonsole;
 

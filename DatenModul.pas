@@ -3,12 +3,13 @@ unit DatenModul;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient, PumpenDataSet,
+  System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient,
   FireDAC.Comp.BatchMove.DataSet, FireDAC.Stan.Intf, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.Text;
+  FireDAC.Comp.BatchMove.Text,
+  PumpenDataSet;
 
 type
-  TDataModule1 = class(TDataModule)
+  TKaDataModule = class(TDataModule)
     StueliPosDS: TWDataSet;
     StueliPosDSid_stu: TStringField;
     StueliPosDSpos_nr: TIntegerField;
@@ -54,19 +55,109 @@ type
     BatchMoveTextWriter: TFDBatchMoveTextWriter;
     BatchMoveDSReader: TFDBatchMoveDataSetReader;
     BatchMove: TFDBatchMove;
+    BatchMoveDSWriter: TFDBatchMoveDataSetWriter;
+    ErgebnisDS: TWDataSet;
+    AusgabeDS: TWDataSet;
+    procedure DataModuleCreate(Sender: TObject);
   private
     { Private-Deklarationen }
+    procedure BefuelleAusgabeTabelle;
+
   public
-    { Public-Deklarationen }
+    procedure DefiniereGesamtErgebnisTabelle;
+    procedure ErzeugeAusgabeKurzFuerDoku;
+    procedure ErzeugeAusgabeVollFuerDebug;
+    procedure AusgabeAlsCSV(DateiPfad:String);
   end;
 
 var
-  DataModule1: TDataModule1;
+  KaDataModule: TKaDataModule;
 
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
+
+
+procedure TKaDataModule.DataModuleCreate(Sender: TObject);
+begin
+  //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
+  //der Stücklistenpos, der Teile und der Bestellungen
+//  DefiniereGesamtErgebnisTabelle;
+end;
+
+
+//Schreibt AusgabeDatenset in CSV-Datei
+procedure TKaDataModule.AusgabeAlsCSV(DateiPfad:String);
+begin
+  //Verbinde BatchMoveDSReader mit Ausgabetabelle
+  BatchMoveDSReader.DataSet:= AusgabeDS;
+  //Verbinde BatchMove mit BatchMoveTextWriter als Ausgabmodul
+  BatchMove.Writer:=BatchMoveTextWriter;
+  //Setze Filenamen fuer BatchMoveTextWriter
+  BatchMoveTextWriter.FileName:=DateiPfad;
+  //Transferiere Daten in CSV-Datei
+  BatchMove.Execute;
+
+end;
+
+//Überträgt GesamtDatenset in AusgabeDatenset
+procedure TKaDataModule.BefuelleAusgabeTabelle;
+begin
+  //Verbinde BatchMoveDSReader mit GesamtTabelle
+  BatchMoveDSReader.DataSet:= ErgebnisDS;
+  //Verbinde BatchMoveDSWriter mit AusgabeTabelle
+  BatchMoveDSWriter.DataSet:= AusgabeDS;
+  //Verbinde BatchMove mit BatchMoveDSWriter als Ausgabmodul
+  BatchMove.Writer:=BatchMoveDSWriter;
+  //Transferiere Daten in Ausgabetabelle
+  BatchMove.Execute;
+end;
+
+//Definert und belegt die Ausgabe-Tabelle für den
+// vollen Datenumfang zu Debug-Zwecken
+procedure TKaDataModule.ErzeugeAusgabeVollFuerDebug;
+const
+  Felder: TWFeldNamen = ['EbeneNice','PosTyp', 'id_stu','FA_Nr','id_pos',
+    'ueb_s_nr','ds', 'pos_nr','verurs_art','t_tg_nr','oa','Bezeichnung',
+    'unipps_typ','besch_art','praeferenzkennung','menge','sme','faktlme_sme',
+    'lme','bestell_id','bestell_datum','preis','basis','pme','bme',
+    'faktlme_bme','faktbme_pme', 'lieferant','MengeTotal','PreisEU',
+    'PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
+{excel
+  Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr verurs_art  t_tg_nr
+  oa	Bezchng	typ	v_besch_art urspr_land ausl_u_land praeferenzkennung
+  menge	sme faktlme_sme	lme	bestell_id	bestell_datum	preis basis	pme	bme
+  faktlme_bme	faktbme_pme	id_lief lieferant	pos_menge	preis_eu
+  preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
+}
+
+
+begin
+  //Definiere die Spalten des Ausgabe-Datensets
+  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  BefuelleAusgabeTabelle;
+end;
+
+//Definert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
+procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
+const
+  Felder: TWFeldNamen = ['EbeneNice','PosTyp', 'id_stu','FA_Nr','id_pos',
+                'ueb_s_nr','ds', 'pos_nr'];
+begin
+  //Definiere die Spalten des Ausgabe-Datensets
+  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  BefuelleAusgabeTabelle;
+end;
+
+//Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
+//der Stücklistenpositionen, der Teile und der Bestellungen
+procedure TKaDataModule.DefiniereGesamtErgebnisTabelle;
+begin
+  Self.ErgebnisDS.DefiniereTabelle(SElf.StueliPosDS,True,False);
+  ErgebnisDS.DefiniereTabelle(TeilDS,False,False);
+  ErgebnisDS.DefiniereTabelle(BestellungDS,False,True);
+end;
 
 end.
