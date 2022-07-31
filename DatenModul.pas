@@ -57,6 +57,53 @@ type
     BatchMoveDSWriter: TFDBatchMoveDataSetWriter;
     ErgebnisDS: TWDataSet;
     AusgabeDS: TWDataSet;
+    ErgebnisDSid_stu: TStringField;
+    ErgebnisDSpos_nr: TIntegerField;
+    ErgebnisDSstu_t_tg_nr: TStringField;
+    ErgebnisDSstu_oa: TIntegerField;
+    ErgebnisDSstu_unipps_typ: TStringField;
+    ErgebnisDSid_pos: TIntegerField;
+    ErgebnisDSbesch_art: TIntegerField;
+    ErgebnisDSmenge: TFloatField;
+    ErgebnisDSFA_Nr: TStringField;
+    ErgebnisDSverurs_art: TIntegerField;
+    ErgebnisDSueb_s_nr: TIntegerField;
+    ErgebnisDSds: TIntegerField;
+    ErgebnisDSset_block: TIntegerField;
+    ErgebnisDSPosTyp: TStringField;
+    ErgebnisDSPreisEU: TFloatField;
+    ErgebnisDSPreisNonEU: TFloatField;
+    ErgebnisDSSummeEU: TFloatField;
+    ErgebnisDSSummeNonEU: TFloatField;
+    ErgebnisDSvk_netto: TFloatField;
+    ErgebnisDSvk_brutto: TFloatField;
+    ErgebnisDSMengeTotal: TFloatField;
+    ErgebnisDSEbene: TIntegerField;
+    ErgebnisDSEbeneNice: TStringField;
+    ErgebnisDSt_tg_nr: TStringField;
+    ErgebnisDSoa: TIntegerField;
+    ErgebnisDSunipps_typ: TStringField;
+    ErgebnisDSBezeichnung: TStringField;
+    ErgebnisDSv_besch_art: TIntegerField;
+    ErgebnisDSpraeferenzkennung: TIntegerField;
+    ErgebnisDSsme: TIntegerField;
+    ErgebnisDSfaktlme_sme: TFloatField;
+    ErgebnisDSlme: TIntegerField;
+    ErgebnisDSPreisJeLME: TFloatField;
+    ErgebnisDSpreis: TFloatField;
+    ErgebnisDSbestell_id: TIntegerField;
+    ErgebnisDSbestell_datum: TDateTimeField;
+    ErgebnisDSbest_t_tg_nr: TStringField;
+    ErgebnisDSbasis: TFloatField;
+    ErgebnisDSpme: TIntegerField;
+    ErgebnisDSbme: TIntegerField;
+    ErgebnisDSfaktlme_bme: TFloatField;
+    ErgebnisDSfaktbme_pme: TFloatField;
+    ErgebnisDSnetto_poswert: TFloatField;
+    ErgebnisDSwe_menge: TFloatField;
+    ErgebnisDSlieferant: TIntegerField;
+    ErgebnisDSkurzname: TStringField;
+    ErgebnisDSbest_menge: TFloatField;
     procedure DataModuleCreate(Sender: TObject);
     procedure StueliPosDSstu_t_tg_nrChange(Sender: TField);
   private
@@ -176,9 +223,10 @@ end;
 //der Stücklistenpositionen, der Teile und der Bestellungen
 procedure TKaDataModule.DefiniereGesamtErgebnisTabelle;
 begin
-  Self.ErgebnisDS.DefiniereTabelle(SElf.StueliPosDS,True,False);
-  ErgebnisDS.DefiniereTabelle(TeilDS,False,False);
-  ErgebnisDS.DefiniereTabelle(BestellungDS,False,True);
+//  Self.ErgebnisDS.DefiniereTabelle(SElf.StueliPosDS,True,False);
+//  ErgebnisDS.DefiniereTabelle(TeilDS,False,False);
+//  ErgebnisDS.DefiniereTabelle(BestellungDS,False,True);
+  ErgebnisDS.CreateDataSet;
 end;
 
 end.

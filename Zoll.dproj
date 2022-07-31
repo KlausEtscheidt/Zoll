@@ -193,7 +193,6 @@
         <DCCReference Include="lib\Datenbank\BaumQryUNIPPS.pas"/>
         <DCCReference Include="mainNonGui.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
-        <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
         <DCCReference Include="Tests.pas"/>
         <DCCReference Include="AusgabenFactory.pas"/>
         <DCCReference Include="DatenModul.pas">
@@ -201,8 +200,8 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="lib\Stueli\Datenspeicher.pas"/>
         <DCCReference Include="lib\Datenbank\PumpenDataSet.pas"/>
+        <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

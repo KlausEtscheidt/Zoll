@@ -1,2 +1,13 @@
 ﻿--------- Kundenauftrag: 142567 begonnen.
---------- Kundenauftrag: 142120 begonnen.
+Keine Bestellungen zu Teil >800EK2201090020< gefunden.
+Keine Bestellungen zu Teil >477L30224BHF009< gefunden.
+Keine Bestellungen zu Teil >554CA0105SAA000< gefunden.
+Keine Bestellungen zu Teil >683F30881PETF23< gefunden.
+Keine Bestellungen zu Teil >901DB0012SAA035< gefunden.
+Keine Bestellungen zu Teil >554AL0082PAM016< gefunden.
+Keine Bestellungen zu Teil >477H30224SKG01A< gefunden.
+Keine Bestellungen zu Teil >233H28353PERFT3< gefunden.
+Keine Bestellungen zu Teil >233D23538PERF03< gefunden.
+Keine Bestellungen zu Teil >233H28353PERFT3< gefunden.
+Keine Bestellungen zu Teil >233D23538PERF03< gefunden.
+--------- Kundenauftrag: 142567 fertig.

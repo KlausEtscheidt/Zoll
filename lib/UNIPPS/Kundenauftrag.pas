@@ -128,6 +128,7 @@ begin
     if RabattQry.n_records = 1 then
       Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100
     else
+      raise Exception.Create('mehr als ein Rabatt gefunden.');
       Rabatt := 0;
   end;
 
@@ -205,7 +206,7 @@ begin
     alteEndKnotenListe.AddRange(EndKnotenListe);
     EndKnotenListe.Clear;
     txt:=alteEndKnotenListe.ToStr();
-    alteEndKnotenListe.WriteToLog;
+    Tools.Log.Log(txt);
 
     //Suche weiter
     //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein

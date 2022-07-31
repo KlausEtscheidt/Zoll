@@ -3,8 +3,7 @@
 interface
 
 uses  System.SysUtils, Data.Db,  Bestellung,
-      PumpenDataSet, Datenmodul,
-      StueliEigenschaften, Tools;
+      PumpenDataSet, Datenmodul, Tools;
 
 type
     EWTeil = class(Exception);
@@ -12,7 +11,6 @@ type
 type
   TWTeil = class
   private
-    class var FDaten:TWDataSet;
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
 
@@ -41,17 +39,12 @@ type
     //Berechnet, zum Ausgeben
     PreisJeLME: Double;
 
-    DatensatzMerker:TBookmark;
-
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
     procedure holeMaxPreisAus3Bestellungen;
     function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
-    procedure HoleDatensatz(ZielDS:TWDataSet);
     procedure DatenInAusgabe(ZielDS:TWDataSet);
-
-    class property Daten:TWDataSet read FDaten write FDaten;
 
   end;
 
@@ -67,33 +60,19 @@ var
   besch_art:String;
 begin
   try
-    //Datenspeicher erzeugen, wenn noch nicht geschehen
-    if FDaten=nil then
-    begin
-      Daten:=KaDataModule.TeilDS;
-      Daten.CreateDataSet;
-      Daten.Active:=True;
-    end;
-
-    //Alle Daten in Ausgabespeicher
-    Daten.Append;
-    Daten.AddData(TeileQry.Fields);
-    Daten.Post;
-    DatensatzMerker:=Daten.GetBookmark;
 
     //Daten aus UNIPPS-Abfrage in Felder
     TeileNr:=TeileQry.FieldByName('t_tg_nr').AsString;
     OA:=TeileQry.FieldByName('oa').AsInteger;
     UnippsTyp:=TeileQry.FieldByName('unipps_typ').AsString;
-    Bezeichnung:=TeileQry.FieldByName('Bezeichnung').AsString;
+//    Bezeichnung:=TeileQry.FieldByName('Bezeichnung').AsString;
     BeschaffungsArt:=TeileQry.FieldByName('v_besch_art').AsInteger;
     Praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
     Sme:=TeileQry.FieldByName('sme').AsInteger;
     FaktorLmeSme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
     Lme:=TeileQry.FieldByName('lme').AsInteger;
 
-    IstPraeferenzberechtigt:=
-          (TeileQry.FieldByName('praeferenzkennung').AsInteger=1);
+    IstPraeferenzberechtigt:= (Praeferenzkennung=1);
 
     //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
@@ -130,7 +109,6 @@ begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(TeileNr) then
     Bezeichnung:=Qry.Fields.FieldByName('Bezeichnung').AsString;
-    FDaten.EditData(DatensatzMerker,'Bezeichnung',Qry.Fields);
   Qry.Free;
 end;
 
@@ -181,7 +159,6 @@ begin
     PreisErmittelt:= True;
     //Eregbnis in Ausgabespeicher und als Objekt-Feld
     PreisJeLME:=maxPreis;
-    Daten.EditData(DatensatzMerker, 'PreisJeLME', PreisJeLME);
 
     //Übertrage gemerkten Datensatz in Ojekt
     Qry.GotoBookmark(Merker);
@@ -263,14 +240,6 @@ begin
   Result:= Result * menge;
 end;
 
-procedure TWTeil.HoleDatensatz(ZielDS:TWDataSet);
-begin
-  Daten.GotoBookmark(DatensatzMerker);
-  ZielDS.AddData(Daten.Fields);
-  if PreisErmittelt Then
-    Bestellung.HoleDatensatz(ZielDS);
-end;
-
 procedure TWTeil.DatenInAusgabe(ZielDS:TWDataSet);
 
 begin
@@ -293,8 +262,8 @@ end;
 
 function TWTeil.ToStr():String;
 begin
-  Daten.GotoBookmark(DatensatzMerker);
-  Result:=Daten.ToCsv;
+  Result:='Teil:' + TeileNr + ' ' + Bezeichnung + ' Preis: '
+      + FloatToStr(PreisJeLme);
 end;
 
 end.

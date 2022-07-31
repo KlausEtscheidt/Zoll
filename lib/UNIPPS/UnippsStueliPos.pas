@@ -3,12 +3,14 @@
 interface
   uses System.RTTI, System.SysUtils,System.Generics.Collections,
        System.Classes,System.StrUtils,
-       Teil,Exceptions,Data.DB,Logger,
-       Stueckliste, PumpenDataSet,
-       Tools;
+       Data.DB,Logger,
+       Teil, Stueckliste, PumpenDataSet,Tools;
 
   type
-    TWTeil= Teil.TWTeil;
+    EWStueliPos=class(Exception);
+
+  type
+//    TWTeil= Teil.TWTeil;
 
     TWUniStueliPos = class(TWStueliPos)
       private
@@ -23,7 +25,7 @@ interface
         OA:Integer;
         UnippsTyp:String;
         BeschaffungsArt:Integer;
-        Menge:Double;
+//        Menge:Double;   geerbt
         FANr:Integer;
         VerursacherArt:Integer;
         UebergeordneteStueNr:Integer;
@@ -34,8 +36,8 @@ interface
         PreisEU, PreisNonEU : Double;
         VerkaufsPreisRabattiert : Double;
         VerkaufsPreisUnRabattiert : Double;
-        Ebene:Integer;
-        EbeneNice:String;
+//        Ebene:Integer;
+//        EbeneNice:String;
 
         //Teile-Objekt zu dieser Stueli-Pos
         Teil : TWTeil;
@@ -49,10 +51,17 @@ interface
         function holeKinderAusTeileStu(): Boolean;
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
+        function ToStr():String;
         procedure DatenInAusgabe(ZielDS:TWDataSet);
         procedure InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 
       end;
+
+  type
+    TWEndKnotenListe = class(TList<TWUniStueliPos>)
+        public
+          function ToStr():String;
+    end;
 
 var
   EndKnotenListe: TWEndKnotenListe;
@@ -129,7 +138,7 @@ begin
     if PosTyp='Teil' then
       Menge:=Qry.Fields.FieldByName('menge').AsFloat
     else
-      raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp );
+      raise EWStueliPos.Create('Unbekannter Postyp '+PosTyp );
 
 end;
 
@@ -140,7 +149,6 @@ procedure TWUniStueliPos.SucheTeilzurStueliPos();
 var
   Qry: TWUNIPPSQry;
   gefunden: Boolean;
-  TeileNr:String;
 
 begin
     Qry:=Tools.getQuery();
@@ -181,7 +189,7 @@ begin
 
   if Teil.istKaufteil then
   begin
-      raise EStuBaumStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
+      raise EWStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
     + Teil.TeileNr + '< gefunden. (holeKindervonEndKnoten)');
     Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
@@ -213,7 +221,7 @@ begin
           raiseNixGefunden
   end
   else
-    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeileNr + '<');
+    raise EWStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeileNr + '<');
 
 end;
 
@@ -310,9 +318,6 @@ begin
 
 end;
 
-//--------------------------------------------------------------------------
-// Getter und Setter
-//--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
@@ -429,6 +434,12 @@ begin
   //ZielDS.Post;
 end;
 
+//Liefert alle Eigenschaften in Werte in einem String verkettet
+function TWUniStueliPos.ToStr():String;
+begin
+  Result:=Format('%s Stu %s Pos %d',[PosTyp, IdStu, IdPos ]);
+end;
+
 
 procedure TWUniStueliPos.InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 var
@@ -470,9 +481,28 @@ procedure TWUniStueliPos.raiseNixGefunden();
 begin
                                 { TODO : kein Abbruch im Batchmodus }
   exit;
-    raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
+    raise EWStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
   + Teil.TeileNr + '< gefunden.')
 end;
 
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+function TWEndKnotenListe.ToStr():String;
+var
+  txt:String;
+//  Member:TWValue;
+  StueliPos: TWUniStueliPos;
+
+begin
+  txt:= 'EndknotenListe: ';
+  for StueliPos in Self do
+  begin
+//    StueliPos:= Member.AsType<TWUniStueliPos>;
+    txt:= txt + '<' + StueliPos.ToStr +  '>'  ;
+  end;
+  Result := txt;
+end;
 
 end.

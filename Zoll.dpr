@@ -21,12 +21,11 @@ uses
   BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas',
   mainNonGui in 'mainNonGui.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
-  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   Tests in 'Tests.pas',
   AusgabenFactory in 'AusgabenFactory.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
-  Datenspeicher in 'lib\Stueli\Datenspeicher.pas',
-  PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas';
+  PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
+  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas';
 
 {$R *.res}
 

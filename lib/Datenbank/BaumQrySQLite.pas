@@ -149,8 +149,10 @@ function TWBaumQrySQLite.SucheKundenRabatt(ka_id:string):Boolean;
 begin
   var sql: String;
   sql := 'select kunden_id, zu_ab_proz, datum_von, datum_bis '
-       + 'from kunde_zuab where kunden_id = "' + ka_id + '";';
-  Result:= RunSelectQuery(sql);
+       + 'from kunde_zuab where kunden_id = ? '
+       + 'and DATUM_VON <date() and date()<DATUM_BIS;';
+  Result:= RunSelectQueryWithParam(sql,[ka_id]);
+
 end;
 
 

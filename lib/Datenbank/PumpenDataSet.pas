@@ -111,7 +111,6 @@ begin
   Active:=False;
 
   FieldDefs.Clear;
-
   for I:=0 to length(Filter)-1 do
   begin
 
@@ -119,6 +118,8 @@ begin
     with FieldDefs.AddFieldDef do
     begin
       DataType := OrigFieldDef.DataType;
+      if DataType= ftFloat then
+        Precision:=2;
       Size := OrigFieldDef.Size;
       Name := OrigFieldDef.Name;
     end;
@@ -140,6 +141,8 @@ begin
   Active:=False;
   if Clear then FieldDefs.Clear;
 
+  if not DS2Copy.Active then
+    DS2Copy.CreateDataSet;
 
   for I:=0 to DS2Copy.FieldDefs.Count-1 do
   begin
@@ -148,6 +151,12 @@ begin
     with FieldDefs.AddFieldDef do
     begin
       DataType := OrigFieldDef.DataType;
+      if DataType= ftFloat then
+      begin
+        Precision:=3;
+//        Size:=10;
+      end;
+
       Size := OrigFieldDef.Size;
       Name := OrigFieldDef.Name;
     end;

@@ -28,10 +28,11 @@ var
 begin
   //UNIPPS-Mapping  auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
   // auftragpos.pos as pos_nr,
+  { TODO : einiges doppelt hier ? }
   KaPosIdStu:=Qry.FieldByName('id_stu').AsString;
   KaPosIdPos:=Qry.FieldByName('id_pos').Value;
   KaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
-  Menge:=Qry.FieldByName('menge').Value;
+//  Menge:=Qry.FieldByName('menge').Value;
 //  Menge:=0;
   inherited Create(einVater, 'KA_Pos', KaPosIdStu, KaPosIdPos, Menge);
 
