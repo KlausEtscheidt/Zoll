@@ -66,6 +66,7 @@ type
   public
     procedure DefiniereGesamtErgebnisTabelle;
     procedure ErzeugeAusgabeKurzFuerDoku;
+    procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
     procedure AusgabeAlsCSV(DateiPfad:String);
   end;
@@ -115,7 +116,7 @@ begin
   BatchMove.Execute;
 end;
 
-//Definert und belegt die Ausgabe-Tabelle für den
+//Definiert und belegt die Ausgabe-Tabelle für den
 // vollen Datenumfang zu Debug-Zwecken
 procedure TKaDataModule.ErzeugeAusgabeVollFuerDebug;
 const
@@ -123,7 +124,7 @@ const
     'ueb_s_nr','ds', 'pos_nr','verurs_art','t_tg_nr','oa','Bezeichnung',
     'unipps_typ','besch_art','praeferenzkennung','menge','sme','faktlme_sme',
     'lme','bestell_id','bestell_datum','preis','basis','pme','bme',
-    'faktlme_bme','faktbme_pme', 'lieferant','MengeTotal','PreisEU',
+    'faktlme_bme','faktbme_pme', 'lieferant','kurzname','MengeTotal','PreisEU',
     'PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 {excel
   Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr verurs_art  t_tg_nr
@@ -132,19 +133,34 @@ const
   faktlme_bme	faktbme_pme	id_lief lieferant	pos_menge	preis_eu
   preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
 }
-
-
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
   BefuelleAusgabeTabelle;
 end;
 
-//Definert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
+//Definiert und belegt die Ausgabe-Tabelle für Testausgaben
+//(Ubersichtlicher als Gesamtausgabe)
+procedure TKaDataModule.ErzeugeAusgabeTestumfang;
+const
+  Felder: TWFeldNamen =
+            ['EbeneNice','PosTyp', 'id_stu','FA_Nr','id_pos','pos_nr',
+           't_tg_nr', 'Bezeichnung','MengeTotal',
+           'bestell_id','kurzname','PreisJeLME',
+           'PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
+begin
+  //Definiere die Spalten des Ausgabe-Datensets
+  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  BefuelleAusgabeTabelle;
+end;
+
+
+
+//Definiert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
 procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
 const
-  Felder: TWFeldNamen = ['EbeneNice','PosTyp', 'id_stu','FA_Nr','id_pos',
-                'ueb_s_nr','ds', 'pos_nr'];
+  Felder: TWFeldNamen = ['EbeneNice','t_tg_nr', 'Bezeichnung','MengeTotal',
+           'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);

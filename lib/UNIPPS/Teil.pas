@@ -4,13 +4,14 @@ interface
 
 uses  System.SysUtils, Data.Db,  Bestellung,
       PumpenDataSet, Datenmodul,
-      Exceptions, AusgabenFactory,
       StueliEigenschaften, Tools;
+
+type
+    EWTeil = class(Exception);
 
 type
   TWTeil = class
   private
-    class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
     class var FDaten:TWDataSet;
     function BerechnePreisJeLMERabattiert(Qry: TWUNIPPSQry): Double;
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
@@ -37,7 +38,6 @@ type
     function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
     procedure HoleDatensatz(ZielDS:TWDataSet);
-    class property Filter:TWFilter read FFilter write FFilter;
     class property Daten:TWDataSet read FDaten write FDaten;
 
   end;
@@ -88,7 +88,7 @@ begin
     istFremdfertigung:=(BeschaffungsArt =4);
 
     if not (istKaufteil or istEigenfertigung or istFremdfertigung) then
-      raise EStuBaumTeileErr.Create('Unzulässige Beschaffungsart >'
+      raise EWTeil.Create('Unzulässige Beschaffungsart >'
       + IntToSTr(BeschaffungsArt) + '< in >TWTeil.Create<');
 
     holeBenennung;
@@ -122,6 +122,7 @@ procedure TWTeil.holeMaxPreisAus3Bestellungen;
   var Qry: TWUNIPPSQry;
   var Preis,maxPreis:Double;
   var Merker:TBookmark;
+  var msg:String;
 
 begin
 
@@ -136,6 +137,10 @@ begin
     if not gefunden then
     begin
         //Fehler ausgeben
+        msg:= 'Keine Bestellungen zu Teil >' + TeilTeilenummer + '< gefunden.';
+        Tools.ErrLog.Log(msg);
+        Tools.Log.Log(msg);
+//        raise EWTeil.Create(msg);
         exit;
     end;
 
@@ -158,12 +163,12 @@ begin
     PreisErmittelt:= True;
     //Eregbnis in Ausgabespeicher und als Objekt-Feld
     PreisJeLME:=maxPreis;
-
     Daten.EditData(DatensatzMerker, 'PreisJeLME', PreisJeLME);
 
     //Übertrage gemerkten Datensatz in Ojekt
     Qry.GotoBookmark(Merker);
-//    Tools.Log.Log(Qry.GetFieldValuesAsText);
+    Tools.Log.Log('Preis zu Teil: ' + TeilTeilenummer + '=' +
+                       FloatToSTr(PreisJeLME) + Qry.GetFieldValuesAsText);
     Bestellung := TWBestellung.Create(Qry.Fields);
 
     Qry.Free;

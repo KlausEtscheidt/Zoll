@@ -22,6 +22,7 @@ interface
         Teil : TWTeil;
         SummeEU, SummeNonEU : Double;
         PreisEU, PreisNonEU : Double;
+        VerursArt:Integer;
 
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
                       aIdStu:String;aIdPos: Integer;eMenge:Double);
@@ -101,6 +102,7 @@ begin
     begin
       Daten.AddData('FA_Nr', Qry.Fields);
       Daten.AddData('verurs_art', Qry.Fields);
+      VerursArt:=Qry.Fields.FieldByName('verurs_art').AsInteger;
       Daten.AddData('menge', '1.');
     end
     else
@@ -331,7 +333,7 @@ begin
      Deren Teile sind schon im Haupt-FA enthalten und d�rfen daher hier nicht nochmals in die Preissumme einflie�en
      Sie sollen zum debuggen aber in der Struktur enthalten sein }
       If PosTyp='FA_Komm' Then
-          If Daten.FieldByName('verurs_art').AsInteger <> 1 Then
+          If VerursArt <> 1 Then
               Exit;
 
   //Preise der Unterpositionen summieren

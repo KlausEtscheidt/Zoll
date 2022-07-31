@@ -12,6 +12,7 @@ object mainFrm: TmainFrm
   Font.Style = []
   OldCreateOrder = False
   OnActivate = RunIt
+  OnDestroy = FormDestroy
   DesignSize = (
     612
     304)
@@ -84,6 +85,16 @@ object mainFrm: TmainFrm
     Enabled = False
     TabOrder = 5
     OnClick = kurzBtnClick
+  end
+  object TestBtn: TButton
+    Left = 468
+    Top = 25
+    Width = 75
+    Height = 25
+    Caption = 'Test'
+    Enabled = False
+    TabOrder = 6
+    OnClick = TestBtnClick
   end
   object DataSource1: TDataSource
     DataSet = AusgabeDS

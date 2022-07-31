@@ -21,12 +21,15 @@ type
     AusgabeDS: TWDataSet;
     langBtn: TButton;
     kurzBtn: TButton;
+    TestBtn: TButton;
 
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
     procedure RunIt(Sender: TObject);
     procedure kurzBtnClick(Sender: TObject);
     procedure langBtnClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure TestBtnClick(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -56,7 +59,22 @@ begin
   close
 end;
 
-//Zum Testen, wird automatisch von OnShow gestartet
+procedure TmainFrm.FormDestroy(Sender: TObject);
+begin
+  //Logger schließen
+  Tools.Log.Close;
+  Tools.ErrLog.Close;
+end;
+
+procedure TmainFrm.TestBtnClick(Sender: TObject);
+begin
+  //Fülle Tabelle mit Teilumfang zur Ausgabe von Testinfos
+  KaDataModule.ErzeugeAusgabeTestumfang;
+  DataSource1.DataSet:=KaDataModule.AusgabeDS;
+
+end;
+
+
 procedure TmainFrm.kurzBtnClick(Sender: TObject);
 begin
   //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
@@ -72,13 +90,19 @@ begin
 
 end;
 
+//Nur zum Testen, wird automatisch von OnActivate gestartet
+//und erspart CLick auf Button;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-Tools.Init;
-Tools.GuiMode:=True;
-mainfrm.langBtn.Enabled:=True;
-mainfrm.kurzBtn.Enabled:=True;
-mainNonGui.RunItGui;
+  Tools.Init;
+  Tools.GuiMode:=True;
+  //Logger oeffnen
+  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\Log.txt');
+  Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\ErrLog.txt');
+  mainfrm.langBtn.Enabled:=True;
+  mainfrm.TestBtn.Enabled:=True;
+  mainfrm.kurzBtn.Enabled:=True;
+  mainNonGui.RunItGui;
 end;
 
 

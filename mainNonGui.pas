@@ -132,15 +132,11 @@ begin
 
   try
 
-    //Globals setzen und initialiseren
-    Tools.Init;
-
     //Ka anlegen
     ka:=TWKundenauftrag.Create(ka_id);
 
-    //Logger oeffnen
-    Tools.Log.OpenAppend(Tools.LogDir,'FullLog.txt');
-    Tools.ErrLog.OpenAppend(Tools.logdir,'ErrLog.txt');
+    Tools.Log.Log('--------- Kundenauftrag: '+ka_id + ' begonnen.');
+    Tools.ErrLog.Log('--------- Kundenauftrag: '+ka_id + ' begonnen.');
 
     //auswerten
     ka.auswerten;
@@ -150,9 +146,6 @@ begin
 
   finally
 
-      //Logger schlie�en
-      Tools.Log.Close;
-      Tools.ErrLog.Close;
       ka.Free;
 
   end;
