@@ -18,8 +18,8 @@ type
 
   public
     TeilTeilenummer: String; //= t_tg_nr
+    Bezeichnung:String;
     DatensatzMerker:TBookmark;
-    RecNo:Integer;
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
@@ -66,7 +66,6 @@ begin
     Daten.Append;
     Daten.AddData(TeileQry.Fields);
     Daten.Post;
-    RecNo:=Daten.FieldByName('id').AsInteger;
     DatensatzMerker:=Daten.GetBookmark;
 
     //Einige wichtige Daten direkt in Felder
@@ -113,6 +112,7 @@ begin
   Qry:=Tools.getQuery();
   if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
     FDaten.EditData(DatensatzMerker,'Bezeichnung',Qry.Fields);
+    Bezeichnung:=Qry.Fields.FieldByName('Bezeichnung').AsString;
   Qry.Free;
 end;
 
