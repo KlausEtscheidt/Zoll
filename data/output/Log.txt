@@ -1,0 +1,4 @@
+﻿--------- Kundenauftrag: 142567 begonnen.
+Starte Auswertung fuer: 142567 um 03.06.41148
+--------- Kundenauftrag: 142120 begonnen.
+Starte Auswertung fuer: 142120 um 21.02.41211
