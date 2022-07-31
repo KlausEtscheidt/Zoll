@@ -17,20 +17,31 @@ type
 //    function BerechnePreisJeLMEUnrabattiert(Qry: TWQry): Double;
 
   public
-    TeilTeilenummer: String; //= t_tg_nr
+    //aus UNIPPS
+    TeileNr: String; //= t_tg_nr
+    OA: Integer;
+    UnippsTyp: String;
     Bezeichnung:String;
-    DatensatzMerker:TBookmark;
+    BeschaffungsArt: Integer;
+    Praeferenzkennung: Integer;
+    Sme: Integer;
+    FaktorLmeSme: Double;
+    Lme: Integer;
+
+    //Berechnet, nicht zum Ausgeben
     PreisGesucht: Boolean;
     PreisErmittelt: Boolean;
     Bestellung: TWBestellung;
-    PreisJeLME: Double;
-    FaktorLmeSme: Double;
-    IstPraeferenzberechtigt:Boolean;
 
-    BeschaffungsArt:Integer;
+    IstPraeferenzberechtigt:Boolean;
     IstKaufteil:Boolean;
     IstEigenfertigung:Boolean;
     IstFremdfertigung:Boolean;
+
+    //Berechnet, zum Ausgeben
+    PreisJeLME: Double;
+
+    DatensatzMerker:TBookmark;
 
     constructor Create(TeileQry: TWUNIPPSQry);
     procedure holeBenennung;
@@ -38,6 +49,8 @@ type
     function StueliPosGesamtPreis(menge:Double; faktlme_sme:Double) :Double;
     function ToStr():String;
     procedure HoleDatensatz(ZielDS:TWDataSet);
+    procedure DatenInAusgabe(ZielDS:TWDataSet);
+
     class property Daten:TWDataSet read FDaten write FDaten;
 
   end;
@@ -68,13 +81,19 @@ begin
     Daten.Post;
     DatensatzMerker:=Daten.GetBookmark;
 
-    //Einige wichtige Daten direkt in Felder
-    TeilTeilenummer:=TeileQry.FieldByName('t_tg_nr').AsString;
+    //Daten aus UNIPPS-Abfrage in Felder
+    TeileNr:=TeileQry.FieldByName('t_tg_nr').AsString;
+    OA:=TeileQry.FieldByName('oa').AsInteger;
+    UnippsTyp:=TeileQry.FieldByName('unipps_typ').AsString;
+    Bezeichnung:=TeileQry.FieldByName('Bezeichnung').AsString;
     BeschaffungsArt:=TeileQry.FieldByName('v_besch_art').AsInteger;
+    Praeferenzkennung:=TeileQry.FieldByName('praeferenzkennung').AsInteger;
+    Sme:=TeileQry.FieldByName('sme').AsInteger;
     FaktorLmeSme:=TeileQry.FieldByName('faktlme_sme').AsFloat;
+    Lme:=TeileQry.FieldByName('lme').AsInteger;
+
     IstPraeferenzberechtigt:=
           (TeileQry.FieldByName('praeferenzkennung').AsInteger=1);
-
 
     //Daten, die im weiteren Ablauf ermittelt werden
     Bestellung:=nil;
@@ -95,7 +114,6 @@ begin
    if istKaufteil or istFremdfertigung then
         holeMaxPreisAus3Bestellungen;
 
-
   except
    on EDatabaseError do
       Tools.ErrLog.Log('Fehler');
@@ -110,9 +128,9 @@ procedure TWTeil.holeBenennung;
   var Qry: TWUNIPPSQry;
 begin
   Qry:=Tools.getQuery();
-  if Qry.SucheBenennungZuTeil(TeilTeilenummer) then
-    FDaten.EditData(DatensatzMerker,'Bezeichnung',Qry.Fields);
+  if Qry.SucheBenennungZuTeil(TeileNr) then
     Bezeichnung:=Qry.Fields.FieldByName('Bezeichnung').AsString;
+    FDaten.EditData(DatensatzMerker,'Bezeichnung',Qry.Fields);
   Qry.Free;
 end;
 
@@ -132,12 +150,12 @@ begin
   Qry:=Tools.getQuery();
 
     PreisGesucht:= True;
-    gefunden:=Qry.SucheLetzte3Bestellungen(TeilTeilenummer);
+    gefunden:=Qry.SucheLetzte3Bestellungen(TeileNr);
 
     if not gefunden then
     begin
         //Fehler ausgeben
-        msg:= 'Keine Bestellungen zu Teil >' + TeilTeilenummer + '< gefunden.';
+        msg:= 'Keine Bestellungen zu Teil >' + TeileNr + '< gefunden.';
         Tools.ErrLog.Log(msg);
         Tools.Log.Log(msg);
 //        raise EWTeil.Create(msg);
@@ -167,7 +185,7 @@ begin
 
     //Übertrage gemerkten Datensatz in Ojekt
     Qry.GotoBookmark(Merker);
-    Tools.Log.Log('Preis zu Teil: ' + TeilTeilenummer + '=' +
+    Tools.Log.Log('Preis zu Teil: ' + TeileNr + '=' +
                        FloatToSTr(PreisJeLME) + Qry.GetFieldValuesAsText);
     Bestellung := TWBestellung.Create(Qry.Fields);
 
@@ -251,6 +269,26 @@ begin
   ZielDS.AddData(Daten.Fields);
   if PreisErmittelt Then
     Bestellung.HoleDatensatz(ZielDS);
+end;
+
+procedure TWTeil.DatenInAusgabe(ZielDS:TWDataSet);
+
+begin
+  //ZielDS.Append;
+  ZielDS.AddData('t_tg_nr',TeileNr);
+  ZielDS.AddData('oa',OA);
+  ZielDS.AddData('unipps_typ',UnippsTyp);
+  ZielDS.AddData('Bezeichnung',Bezeichnung);
+  ZielDS.AddData('v_besch_art',BeschaffungsArt);
+  ZielDS.AddData('praeferenzkennung',Praeferenzkennung);
+  ZielDS.AddData('sme',Sme);
+  ZielDS.AddData('faktlme_sme',FaktorLmeSme);
+  ZielDS.AddData('lme',Lme);
+  ZielDS.AddData('PreisJeLme',PreisJeLme);
+  if PreisErmittelt Then
+    Bestellung.DatenInAusgabe(ZielDS);
+
+  //ZielDS.Post;
 end;
 
 function TWTeil.ToStr():String;

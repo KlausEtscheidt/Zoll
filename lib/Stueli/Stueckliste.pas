@@ -14,12 +14,9 @@ interface
 
     TWStueliPos = class
       private
-        class var FFilter:TWFilter; //Filter zur Ausgabe der Eigenschaften
-        class var FDaten:TWDataSet;
 
       protected
       public
-        DatensatzMerker:TBookmark;
         Ebene: Integer;
         Vater: TWStueliPos;  //Vaterknoten
         IdStu: String;     //Id der übergeordneten Stueli
@@ -33,11 +30,7 @@ interface
                                aIdPos: Integer;eineMenge:Double);
         function SortedKeys(): TWSortedKeyArray;
         function ToStr(const Trennzeichen:String=';'):String;
-        procedure HoleDatensatz(ZielDS:TWDataSet);
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
-        function GetProperty(FeldName:String):TField;
-        class property Filter:TWFilter read FFilter write FFilter;
-        class property Daten:TWDataSet read FDaten write FDaten;
 
     end;
 
@@ -68,14 +61,6 @@ begin
   //untergeordenete Stueli anlegen
   Stueli:= TWStueli.Create;
 
-  //Datenspeicher erzeugen, wenn noch nicht geschehen
-  if FDaten=nil then
-  begin
-    FDaten:=KaDataModule.StueliPosDS;
-    FDaten.CreateDataSet;
-    FDaten.Active:=True;
-  end;
-
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
@@ -85,17 +70,6 @@ end;
 // Ausgabe-Funktionen
 //--------------------------------------------------------------------------
 
-procedure TWStueliPos.HoleDatensatz(ZielDS:TWDataSet);
-begin
-  Daten.GotoBookmark(DatensatzMerker);
-  ZielDS.AddData(Daten.Fields);
-end;
-
-function TWStueliPos.GetProperty(FeldName:String):TField;
-begin
-  Daten.GotoBookmark(DatensatzMerker);
-  Result:=Daten.FieldByName(FeldName);
-end;
 
 // Hinzufügen der Ebenen und Gesamtmengen
 //--------------------------------------------------------------------------
@@ -112,12 +86,6 @@ begin
   levelString:=IntToStr(Ebene);
   EbeneNice := StringOfChar('.', Ebene-1);
   MengeTotal:=Menge*UebMenge;  //Eigene Menge mal übergeordnete
-
-  Self.Daten.SetEditMode(Datensatzmerker);
-  Self.Daten.AddData('MengeTotal', MengeTotal);
-  Self.Daten.AddData('Ebene', levelString);
-  Self.Daten.AddData('EbeneNice', EbeneNice+levelString);
-  Self.Daten.Post;
 
   //Zurueck, wenn Pos keine Kinder hat
   if Stueli.Count=0 then
@@ -153,7 +121,7 @@ end;
 //Liefert alle Eigenschaften in Werte in einem String verkettet
 function TWStueliPos.ToStr(const Trennzeichen:String=';'):String;
 begin
-  Result:=self.Daten.ToCSV;
+  Result:='noch nicht realisiert';
 end;
 
 

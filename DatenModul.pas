@@ -51,7 +51,6 @@ type
     StueliPosDSMengeTotal: TFloatField;
     StueliPosDSEbene: TIntegerField;
     StueliPosDSEbeneNice: TStringField;
-    TeilDSid: TAutoIncField;
     BatchMoveTextWriter: TFDBatchMoveTextWriter;
     BatchMoveDSReader: TFDBatchMoveDataSetReader;
     BatchMove: TFDBatchMove;
@@ -59,6 +58,7 @@ type
     ErgebnisDS: TWDataSet;
     AusgabeDS: TWDataSet;
     procedure DataModuleCreate(Sender: TObject);
+    procedure StueliPosDSstu_t_tg_nrChange(Sender: TField);
   private
     { Private-Deklarationen }
     procedure BefuelleAusgabeTabelle;
@@ -137,6 +137,11 @@ begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
   BefuelleAusgabeTabelle;
+end;
+
+procedure TKaDataModule.StueliPosDSstu_t_tg_nrChange(Sender: TField);
+begin
+
 end;
 
 //Definiert und belegt die Ausgabe-Tabelle für Testausgaben

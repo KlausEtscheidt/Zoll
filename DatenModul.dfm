@@ -14,8 +14,18 @@ object KaDataModule: TKaDataModule
     object StueliPosDSpos_nr: TIntegerField
       FieldName = 'pos_nr'
     end
+    object StueliPosDSstu_t_tg_nr: TStringField
+      FieldName = 'stu_t_tg_nr'
+      OnChange = StueliPosDSstu_t_tg_nrChange
+    end
     object StueliPosDSoa: TIntegerField
       FieldName = 'stu_oa'
+    end
+    object StueliPosDSunipps_typ: TStringField
+      FieldName = 'stu_unipps_typ'
+    end
+    object StueliPosDSid_pos: TIntegerField
+      FieldName = 'id_pos'
     end
     object StueliPosDSbesch_art: TIntegerField
       FieldName = 'besch_art'
@@ -25,9 +35,6 @@ object KaDataModule: TKaDataModule
     end
     object StueliPosDSFA_Nr: TStringField
       FieldName = 'FA_Nr'
-    end
-    object StueliPosDSid_pos: TIntegerField
-      FieldName = 'id_pos'
     end
     object StueliPosDSverurs_art: TIntegerField
       FieldName = 'verurs_art'
@@ -43,12 +50,6 @@ object KaDataModule: TKaDataModule
     end
     object StueliPosDSPosTyp: TStringField
       FieldName = 'PosTyp'
-    end
-    object StueliPosDSstu_t_tg_nr: TStringField
-      FieldName = 'stu_t_tg_nr'
-    end
-    object StueliPosDSunipps_typ: TStringField
-      FieldName = 'stu_unipps_typ'
     end
     object StueliPosDSPreisEU: TFloatField
       FieldName = 'PreisEU'
@@ -89,11 +90,14 @@ object KaDataModule: TKaDataModule
     object TeilDSoa: TIntegerField
       FieldName = 'oa'
     end
-    object TeilDSbesch_art: TIntegerField
-      FieldName = 'v_besch_art'
-    end
     object TeilDSunipps_typ: TStringField
       FieldName = 'unipps_typ'
+    end
+    object TeilDSBezeichnung: TStringField
+      FieldName = 'Bezeichnung'
+    end
+    object TeilDSbesch_art: TIntegerField
+      FieldName = 'v_besch_art'
     end
     object TeilDSpraeferenzkennung: TIntegerField
       FieldName = 'praeferenzkennung'
@@ -107,14 +111,8 @@ object KaDataModule: TKaDataModule
     object TeilDSlme: TIntegerField
       FieldName = 'lme'
     end
-    object TeilDSBezeichnung: TStringField
-      FieldName = 'Bezeichnung'
-    end
     object TeilDSPreisJeLME: TFloatField
       FieldName = 'PreisJeLME'
-    end
-    object TeilDSid: TAutoIncField
-      FieldName = 'id'
     end
   end
   object BestellungDS: TWDataSet

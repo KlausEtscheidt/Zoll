@@ -5,7 +5,7 @@ interface
        System.Classes,System.StrUtils,
        Teil,Exceptions,Data.DB,Logger,
        Stueckliste, PumpenDataSet,
-       AusgabenFactory, Tools;
+       Tools;
 
   type
     TWTeil= Teil.TWTeil;
@@ -13,16 +13,32 @@ interface
     TWUniStueliPos = class(TWStueliPos)
       private
         procedure raiseNixGefunden();
-        class var FAusgFabr:TWAusgabenFact;
-        function getTeileNrzuPos:String;
 
       public
 
         PosTyp : String;
-        Teil : TWTeil;
+        //Daten direkt aus UNIPPS
+        TeileNr:String;
+        PosNr:String;
+        OA:Integer;
+        UnippsTyp:String;
+        BeschaffungsArt:Integer;
+        Menge:Double;
+        FANr:Integer;
+        VerursacherArt:Integer;
+        UebergeordneteStueNr:Integer;
+        Ds:Integer;
+        SetBlock:Integer;
+        //Ermittelte Daten
         SummeEU, SummeNonEU : Double;
         PreisEU, PreisNonEU : Double;
-        VerursArt:Integer;
+        VerkaufsPreisRabattiert : Double;
+        VerkaufsPreisUnRabattiert : Double;
+        Ebene:Integer;
+        EbeneNice:String;
+
+        //Teile-Objekt zu dieser Stueli-Pos
+        Teil : TWTeil;
 
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
                       aIdStu:String;aIdPos: Integer;eMenge:Double);
@@ -33,11 +49,8 @@ interface
         function holeKinderAusTeileStu(): Boolean;
         procedure SummierePreise;
         procedure BerechnePreisDerPosition;
+        procedure DatenInAusgabe(ZielDS:TWDataSet);
         procedure InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
-        class procedure InitAusgabenFabrik;
-        class property AusgabenFabrik:TWAusgabenFact read FAusgFabr write FAusgFabr;
-        //t_tg_nr des Teils auf dieser Stu-Pos als stu_t_tg_nr in Daten-Tabelle
-        property TeilNrzuPos:String read getTeileNrzuPos;
 
       end;
 
@@ -80,47 +93,43 @@ begin
 
     //Allgemeingueltige Felder
     //-----------------------------------------------
-        //Alle Daten in Ausgabespeicher
-    Daten.Append;
-    Daten.AddData('PosTyp',PosTyp);
-    Daten.AddData('id_stu',Qry.Fields);
-    Daten.AddData('pos_nr',Qry.Fields);
-    Daten.AddData('stu_oa',Qry.Fields);
-    Daten.AddData('stu_t_tg_nr',Qry.Fields);
-    Daten.AddData('stu_unipps_typ',Qry.Fields);
+    IdStu:=Qry.Fields.FieldByName('id_stu').AsString;
+    PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
+    TeileNr:=Qry.Fields.FieldByName('stu_t_tg_nr').AsString;
+    OA:=Qry.Fields.FieldByName('stu_oa').AsInteger;
+    UnippsTyp:=Qry.Fields.FieldByName('stu_unipps_typ').AsString;
 
     //typspezifische Felder
     //-----------------------------------------------
     if PosTyp='KA_Pos' then
     begin
-      Daten.AddData('id_pos',Qry.Fields);
-      Daten.AddData('besch_art',Qry.Fields);
-      Daten.AddData('menge',Qry.Fields);
+      IdPos:=Qry.Fields.FieldByName('id_pos').AsInteger;
+      BeschaffungsArt:=Qry.Fields.FieldByName('besch_art').AsInteger;
+      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+
     end
     else
     if (PosTyp='FA_Serie') or (PosTyp='FA_Komm') then
     begin
-      Daten.AddData('FA_Nr', Qry.Fields);
-      Daten.AddData('verurs_art', Qry.Fields);
-      VerursArt:=Qry.Fields.FieldByName('verurs_art').AsInteger;
-      Daten.AddData('menge', '1.');
+      FANr:=Qry.Fields.FieldByName('FA_Nr').AsInteger;
+      VerursacherArt:=Qry.Fields.FieldByName('verurs_art').AsInteger;
+      Menge:=1.;
     end
     else
     if PosTyp='FA_Pos' then
     begin
-      Daten.AddData('id_pos', Qry.Fields);
-      Daten.AddData('ueb_s_nr', Qry.Fields);
-      Daten.AddData('ds', Qry.Fields);
-      Daten.AddData('set_block', Qry.Fields);
-      Daten.AddData('menge', Qry.Fields);
+      IdPos:=Qry.Fields.FieldByName('id_pos').AsInteger;
+      UebergeordneteStueNr:=Qry.Fields.FieldByName('ueb_s_nr').AsInteger;
+      Ds:=Qry.Fields.FieldByName('ds').AsInteger;
+      SetBlock:=Qry.Fields.FieldByName('set_block').AsInteger;
+      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+
     end
     else
     if PosTyp='Teil' then
-      Daten.AddData('menge', Qry.Fields)
+      Menge:=Qry.Fields.FieldByName('menge').AsFloat
     else
       raise EStuBaumStueliPos.Create('Unbekannter Postyp '+PosTyp );
-    Daten.Post;
-    DatensatzMerker:=Daten.GetBookmark;
 
 end;
 
@@ -135,7 +144,6 @@ var
 
 begin
     Qry:=Tools.getQuery();
-    TeileNr:=Self.TeilNrzuPos;
     gefunden:=Qry.SucheDatenzumTeil(TeileNr);
     if gefunden then
     begin
@@ -174,7 +182,7 @@ begin
   if Teil.istKaufteil then
   begin
       raise EStuBaumStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
-    + Teil.TeilTeilenummer + '< gefunden. (holeKindervonEndKnoten)');
+    + Teil.TeileNr + '< gefunden. (holeKindervonEndKnoten)');
     Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
   else
@@ -205,7 +213,7 @@ begin
           raiseNixGefunden
   end
   else
-    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeilTeilenummer + '<');
+    raise EStuBaumStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeileNr + '<');
 
 end;
 
@@ -219,7 +227,7 @@ var FAKopf:TWFAKopf;
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := Tools.getQuery;
-  gefunden := Qry.SucheFAzuTeil(Teil.TeilTeilenummer);
+  gefunden := Qry.SucheFAzuTeil(Teil.TeileNr);
 
   if not gefunden then
   begin
@@ -262,7 +270,7 @@ function TWUniStueliPos.holeKinderAusTeileStu(): Boolean;
 begin
     //Gibt es eine St�ckliste zum Teil
     Qry := Tools.getQuery;
-    gefunden := Qry.SucheStuelizuTeil(Teil.TeilTeilenummer);
+    gefunden := Qry.SucheStuelizuTeil(Teil.TeileNr);
 
     if not gefunden then
     begin
@@ -305,10 +313,6 @@ end;
 //--------------------------------------------------------------------------
 // Getter und Setter
 //--------------------------------------------------------------------------
-function TWUniStueliPos.getTeileNrzuPos:String;
-begin
-     Result:=GetProperty('stu_t_tg_nr').AsString;
-end;
 //--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
@@ -333,7 +337,7 @@ begin
      Deren Teile sind schon im Haupt-FA enthalten und d�rfen daher hier nicht nochmals in die Preissumme einflie�en
      Sie sollen zum debuggen aber in der Struktur enthalten sein }
       If PosTyp='FA_Komm' Then
-          If VerursArt <> 1 Then
+          If VerursacherArt <> 1 Then
               Exit;
 
   //Preise der Unterpositionen summieren
@@ -358,8 +362,6 @@ begin
   //Eigenen Preis dazu
   SummeEU := SummeEU + PreisEU;
   SummeNonEU := SummeNonEU + PreisNonEU;
-  Daten.EditData(DatensatzMerker, 'SummeEU', SummeEU);
-  Daten.EditData(DatensatzMerker, 'SummeNonEU', SummeNonEU);
 
 end;
 
@@ -385,13 +387,48 @@ begin
               PreisNonEU := Preis
       end;
 
-    Daten.EditData(DatensatzMerker,'PreisEU', PreisEU);
-    Daten.EditData(DatensatzMerker,'PreisNonEU', PreisNonEU);
-
 end;
 
 // Ergebnis in DataSet ausgeben
 //--------------------------------------------------------------------------
+procedure TWUniStueliPos.DatenInAusgabe(ZielDS:TWDataSet);
+
+begin
+  //ZielDS.Append;
+
+  ZielDS.AddData('id_stu',IdStu);  //In Basisklasse
+  ZielDS.AddData('pos_nr',PosNr);
+  ZielDS.AddData('stu_t_tg_nr',TeileNr);
+  ZielDS.AddData('stu_oa',OA);
+  ZielDS.AddData('stu_unipps_typ',UnippsTyp);
+  //'KA POs'
+  ZielDS.AddData('id_pos',IdPos); //In Basisklasse
+  ZielDS.AddData('besch_art',BeschaffungsArt);
+  ZielDS.AddData('menge',Menge);
+  //'FA_Serie' oder 'FA_Komm'
+  ZielDS.AddData('FA_Nr',FANr);
+  ZielDS.AddData('verurs_art',VerursacherArt);
+ //FA_POs
+  ZielDS.AddData('ueb_s_nr',UebergeordneteStueNr);
+  ZielDS.AddData('ds',Ds);
+  ZielDS.AddData('set_block',SetBlock);
+ //Teil in STU
+
+ //ermittelt
+  ZielDS.AddData('PosTyp',PosTyp);
+  ZielDS.AddData('PreisEU',PreisEU);
+  ZielDS.AddData('PreisNonEU',PreisNonEU);
+  ZielDS.AddData('SummeEU',SummeEU);
+  ZielDS.AddData('SummeNonEU',SummeNonEU);
+  ZielDS.AddData('vk_netto',VerkaufsPreisRabattiert);
+  ZielDS.AddData('vk_brutto',VerkaufsPreisUnRabattiert);
+  ZielDS.AddData('MengeTotal',MengeTotal);
+  ZielDS.AddData('Ebene',Ebene);
+  ZielDS.AddData('EbeneNice',EbeneNice);
+
+  //ZielDS.Post;
+end;
+
 
 procedure TWUniStueliPos.InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 var
@@ -402,10 +439,10 @@ begin
   begin
     ZielDS.Append;
     //Erst Werte zur Position in Tabelle
-    Self.HoleDatensatz(ZielDS);
+    Self.DatenInAusgabe(ZielDS);
     //Evtl Daten des Teils dazu
     if hatTeil Then
-      Teil.HoleDatensatz(ZielDS);
+      Teil.DatenInAusgabe(ZielDS);
     ZielDS.Post;
   end;
 
@@ -423,12 +460,6 @@ begin
 
 end;
 
-
-class procedure TWUniStueliPos.InitAusgabenFabrik;
-begin
-  AusgabenFabrik:=TWAusgabenFact.Create;
-end;
-
 //--------------------------------------------------------------------------
 // Hilfs-Funktionen
 //--------------------------------------------------------------------------
@@ -440,7 +471,7 @@ begin
                                 { TODO : kein Abbruch im Batchmodus }
   exit;
     raise EStuBaumStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
-  + Teil.TeilTeilenummer + '< gefunden.')
+  + Teil.TeileNr + '< gefunden.')
 end;
 
 

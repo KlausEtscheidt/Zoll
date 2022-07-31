@@ -20,7 +20,7 @@ Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\TestErrLog.txt');
 StuPos:=TWUniStueliPos.Create(nil,'Test','1',1,1);
 
 //StuPos.Ausgabe.AddData('t_tg_nr','ESTØ45D');
-StuPos.Daten.AddData('t_tg_nr','233D23538PERF03');
+StuPos.TeileNr:='233D23538PERF03';
 
 StuPos.SucheTeilzurStueliPos;
 StuPos.MengeTotal:=1.0;
