@@ -2,15 +2,17 @@
 
 interface
 
-uses  System.SysUtils, Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
-      BaumQrySQLite, BaumQryUNIPPS ;
+uses  System.SysUtils, Vcl.Controls,
+// Vcl.Forms, Vcl.Dialogs,
+      Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
+      BaumQrySQLite, BaumQryUNIPPS,DatenModul,Preiseingabe ;
 
 type
     EStuBaumMainExc = class(Exception);
 
 procedure RunItGui;
 procedure RunItKonsole;
-procedure KaAuswerten(ka_id:string);
+procedure KaAuswerten(KaId:string);
 procedure KaNurAuswerten(ka_id:string);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
@@ -126,23 +128,37 @@ end;
 ///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
 ///<summary>
 //Nutzt  TWKundenauftrag.auswerten fuer vollen Ablauf
-procedure KaAuswerten(ka_id:string);
-var ka:TWKundenauftrag;
+procedure KaAuswerten(KaId:string);
+var KA:TWKundenauftrag;
 begin
 
   try
 
     //Ka anlegen
-    ka:=TWKundenauftrag.Create(ka_id);
+    ka:=TWKundenauftrag.Create(KaId);
 
-    Tools.Log.Log('--------- Kundenauftrag: '+ka_id + ' begonnen.');
-    Tools.ErrLog.Log('--------- Kundenauftrag: '+ka_id + ' begonnen.');
+    Tools.Log.Log('--------- Kundenauftrag: '+KaId + ' begonnen.');
+    Tools.ErrLog.Log('--------- Kundenauftrag: '+KaId + ' begonnen.');
 
-    //auswerten
-    ka.auswerten;
 
-    Tools.Log.Log('--------- Kundenauftrag: '+ka_id + ' fertig.');
-    Tools.ErrLog.Log('--------- Kundenauftrag: '+ka_id + ' fertig.');
+    KA.liesKopfundPositionen;
+    KA.SammleAusgabeDaten;
+//    PreisFrm.PreisDS.CreateDataSet;
+    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
+
+    if not (PreisFrm.ShowModal=mrOK) then
+      exit;
+
+    KA.holeKinder;
+    KA.SetzeEbenenUndMengen(0,1);
+    KA.SummierePreise;
+
+    KA.SammleAusgabeDaten;
+    KA.Ausgabe;
+
+    Tools.Log.Log('--------- Kundenauftrag: '+KaId + ' fertig.');
+    Tools.ErrLog.Log('--------- Kundenauftrag: '+KaId + ' fertig.');
 
   finally
 

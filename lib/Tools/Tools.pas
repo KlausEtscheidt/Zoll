@@ -70,7 +70,7 @@ begin
 
   {$ENDIF}
   Datenmodul.KaDataModule.BatchMove.LogFileName:= LogDir +'\BatchMoveLog.txt';
-  Datenmodul.KaDataModule.ErgebnisDS.FileName:= '';//LogDir +'\Erg.xml';
+  Datenmodul.KaDataModule.ErgebnisDS.FileName:= LogDir +'\Erg.xml';
   Datenmodul.KaDataModule.ErgebnisDS.CreateDataSet;
 
 end;

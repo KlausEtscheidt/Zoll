@@ -19,7 +19,6 @@ object KaDataModule: TKaDataModule
     end
     object StueliPosDSstu_t_tg_nr: TStringField
       FieldName = 'stu_t_tg_nr'
-      OnChange = StueliPosDSstu_t_tg_nrChange
     end
     object StueliPosDSoa: TIntegerField
       FieldName = 'stu_oa'
@@ -206,259 +205,8 @@ object KaDataModule: TKaDataModule
   end
   object ErgebnisDS: TWDataSet
     Aggregates = <>
-    FileName = 
-      'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\z' +
-      'oll\data\output\erg.xml'
-    FieldDefs = <
-      item
-        Name = 'id_stu'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'pos_nr'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'stu_t_tg_nr'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'stu_oa'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'stu_unipps_typ'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'id_pos'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'besch_art'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'menge'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'FA_Nr'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'verurs_art'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'ueb_s_nr'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'ds'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'set_block'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'PosTyp'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'PreisEU'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'PreisNonEU'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'SummeEU'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'SummeNonEU'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'vk_netto'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'vk_brutto'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'MengeTotal'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'Ebene'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'EbeneNice'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 't_tg_nr'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'oa'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'unipps_typ'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'Bezeichnung'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'v_besch_art'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'praeferenzkennung'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'sme'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'faktlme_sme'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'lme'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'PreisJeLME'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'preis'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'bestell_id'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'bestell_datum'
-        Attributes = [faUnNamed]
-        DataType = ftDateTime
-      end
-      item
-        Name = 'best_t_tg_nr'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'basis'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'pme'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'bme'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'faktlme_bme'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'faktbme_pme'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'netto_poswert'
-        Attributes = [faUnNamed]
-        DataType = ftCurrency
-      end
-      item
-        Name = 'we_menge'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'lieferant'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end
-      item
-        Name = 'kurzname'
-        Attributes = [faUnNamed]
-        DataType = ftString
-        Size = 20
-      end
-      item
-        Name = 'best_menge'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end>
-    IndexDefs = <>
+    FetchOnDemand = False
     Params = <>
-    StoreDefs = True
     Left = 352
     Top = 64
     object ErgebnisDSid_stu: TStringField
@@ -604,11 +352,17 @@ object KaDataModule: TKaDataModule
     object ErgebnisDSbest_menge: TFloatField
       FieldName = 'best_menge'
     end
+    object ErgebnisDSAnteilNonEU: TFloatField
+      FieldName = 'AnteilNonEU'
+    end
+    object ErgebnisDSZuKAPos: TIntegerField
+      FieldName = 'ZuKAPos'
+    end
   end
   object AusgabeDS: TWDataSet
     Aggregates = <>
     Params = <>
-    Left = 416
-    Top = 72
+    Left = 432
+    Top = 64
   end
 end

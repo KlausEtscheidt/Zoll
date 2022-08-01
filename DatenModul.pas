@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient,
   FireDAC.Comp.BatchMove.DataSet, FireDAC.Stan.Intf, FireDAC.Comp.BatchMove,
   FireDAC.Comp.BatchMove.Text,
-  PumpenDataSet;
+  Preiseingabe,PumpenDataSet;
 
 type
   TKaDataModule = class(TDataModule)
@@ -104,17 +104,19 @@ type
     ErgebnisDSlieferant: TIntegerField;
     ErgebnisDSkurzname: TStringField;
     ErgebnisDSbest_menge: TFloatField;
+    ErgebnisDSAnteilNonEU: TFloatField;
+    ErgebnisDSZuKAPos: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
-    procedure StueliPosDSstu_t_tg_nrChange(Sender: TField);
   private
-    { Private-Deklarationen }
-    procedure BefuelleAusgabeTabelle;
+    procedure BefuelleAusgabeTabelle;overload;
 
   public
     procedure DefiniereGesamtErgebnisTabelle;
+    procedure BefuelleAusgabeTabelle(ZielDS :TClientDataSet );overload;
     procedure ErzeugeAusgabeKurzFuerDoku;
     procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
+    procedure ErzeugeAusgabeFuerPreisabfrage;
     procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
 
@@ -150,17 +152,23 @@ begin
 
 end;
 
-//Überträgt GesamtDatenset in AusgabeDatenset
-procedure TKaDataModule.BefuelleAusgabeTabelle;
+procedure TKaDataModule.BefuelleAusgabeTabelle(ZielDS :TClientDataSet );
 begin
   //Verbinde BatchMoveDSReader mit GesamtTabelle
   BatchMoveDSReader.DataSet:= ErgebnisDS;
   //Verbinde BatchMoveDSWriter mit AusgabeTabelle
-  BatchMoveDSWriter.DataSet:= AusgabeDS;
+  BatchMoveDSWriter.DataSet:= ZielDS;
   //Verbinde BatchMove mit BatchMoveDSWriter als Ausgabmodul
   BatchMove.Writer:=BatchMoveDSWriter;
   //Transferiere Daten in Ausgabetabelle
   BatchMove.Execute;
+
+end;
+
+//Überträgt GesamtDatenset in AusgabeDatenset
+procedure TKaDataModule.BefuelleAusgabeTabelle;
+begin
+  Self.BefuelleAusgabeTabelle(Self.AusgabeDS);
 end;
 
 //Definiert und belegt die Ausgabe-Tabelle für den
@@ -172,7 +180,7 @@ const
     'unipps_typ','besch_art','praeferenzkennung','menge','sme','faktlme_sme',
     'lme','bestell_id','bestell_datum','preis','basis','pme','bme',
     'faktlme_bme','faktbme_pme', 'lieferant','kurzname','MengeTotal','PreisEU',
-    'PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
+    'PreisNonEU','SummeEU','SummeNonEU','vk_netto','AnteilNonEU','ZuKAPos'];
 {excel
   Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr verurs_art  t_tg_nr
   oa	Bezchng	typ	v_besch_art urspr_land ausl_u_land praeferenzkennung
@@ -186,10 +194,6 @@ begin
   BefuelleAusgabeTabelle;
 end;
 
-procedure TKaDataModule.StueliPosDSstu_t_tg_nrChange(Sender: TField);
-begin
-
-end;
 
 //Definiert und belegt die Ausgabe-Tabelle für Testausgaben
 //(Ubersichtlicher als Gesamtausgabe)
@@ -206,8 +210,6 @@ begin
   BefuelleAusgabeTabelle;
 end;
 
-
-
 //Definiert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
 procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
 const
@@ -218,6 +220,19 @@ begin
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
   BefuelleAusgabeTabelle;
 end;
+
+
+//Definiert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
+procedure TKaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+const
+  Felder: TWFeldNamen = ['id_pos','Menge', 'stu_t_tg_nr', 'Bezeichnung',
+                            'vk_brutto', 'vk_netto', 'ZuKAPos'];
+begin
+  //Definiere die Spalten des Ausgabe-Datensets
+  PreisFrm.PreisDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  BefuelleAusgabeTabelle(PreisFrm.PreisDS);
+end;
+
 
 //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
 //der Stücklistenpositionen, der Teile und der Bestellungen

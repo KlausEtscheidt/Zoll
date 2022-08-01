@@ -53,7 +53,9 @@ begin
 
   endzeit:=  GetTickCount;
   delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
-  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.',[ka_id, delta]);
+
+  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
+      '%d Datensaetze gefunden.',[ka_id, delta,KaDataModule.ErgebnisDS.RecordCount]);
   ShowMessage(msg);
 
   Tools.Log.Log(msg);
@@ -66,6 +68,9 @@ begin
 
   //Sammle rekursiv alle Daten ein
 //  KaDataModule.ErgebnisDS.Active:=True;
+  //Leeren
+  KaDataModule.ErgebnisDS.Active:=False;
+  KaDataModule.ErgebnisDS.CreateDataSet;
   InGesamtTabelle(KaDataModule.ErgebnisDS, True);
 
   if Tools.GuiMode then
