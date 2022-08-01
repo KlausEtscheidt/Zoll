@@ -53,7 +53,9 @@ begin
 
   endzeit:=  GetTickCount;
   delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
-  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.',[ka_id, delta]);
+
+  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
+      '%d Datensaetze gefunden.',[ka_id, delta,KaDataModule.ErgebnisDS.RecordCount]);
   ShowMessage(msg);
 
   Tools.Log.Log(msg);
@@ -63,11 +65,12 @@ end;
 
 procedure TWKundenauftrag.SammleAusgabeDaten;
 begin
-  //Einmalig DataSet fuer Gesamtausgabe mit allen Feldern
-  //der Stücklistenpos, der Teile und der Bestellungen definieren
-  KaDataModule.DefiniereGesamtErgebnisTabelle;
 
   //Sammle rekursiv alle Daten ein
+//  KaDataModule.ErgebnisDS.Active:=True;
+  //Leeren
+  KaDataModule.ErgebnisDS.Active:=False;
+  KaDataModule.ErgebnisDS.CreateDataSet;
   InGesamtTabelle(KaDataModule.ErgebnisDS, True);
 
   if Tools.GuiMode then
@@ -80,18 +83,19 @@ end;
 
 procedure TWKundenauftrag.Ausgabe;
 begin
-  //Fülle Tabelle mit vollem Umfang (z Debuggen)
+  //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
   //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir+ '\'+ka_id + '_Struktur.csv');
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir, ka_id + '_Struktur.csv');
 
   //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
   //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir+ '\'+ka_id + '_Kalk.csv');
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir, ka_id + '_Kalk.csv');
 
   //Daten anzeigen
   if Tools.GuiMode then
+    KaDataModule.ErzeugeAusgabeVollFuerDebug;
     mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
 
 end;
@@ -109,28 +113,28 @@ begin
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
   KAQry := Tools.getQuery;
   gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+
   if not gefunden then
     raise Exception.Create('Keine Positionen zu KA '+ka_id + ' gefunden.');
+
+  // Daten aus dem Auftragskopf
+  komm_nr := trim(KAQry.FieldByName('klassifiz').AsString);
+  kunden_id := KAQry.FieldByName('kunde').AsInteger;
+
+  // Abfrage des Rabattes zu diesem Kunden
+  // SQL muss mit Datum aus allen Rabatten den gueltigen filtern
+  RabattQry := Tools.getQuery;
+  RabattQry.SucheKundenRabatt(inttostr(kunden_id));
+
+  //Sollte nie vorkommen, wenn Abfrage stimmt => Abbruch
+  if RabattQry.n_records > 1 then
+    raise Exception.Create('Fuer Kunden-Id ' + IntToStr(kunden_id) +
+                         ' wurde mehr als ein Rabatt gefunden.');
+
   Rabatt:=0;
+  if RabattQry.n_records = 1 then
+    Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100;
 
-  if gefunden then
-  begin
-    // Daten aus dem Auftragskopf
-    komm_nr := trim(KAQry.FieldByName('klassifiz').AsString);
-    kunden_id := KAQry.FieldByName('kunde').AsInteger;
-
-    // Abfrage des Rabattes zu diesem Kunden
-    RabattQry := Tools.getQuery;
-    RabattQry.SucheKundenRabatt(inttostr(kunden_id));
-    { TODO :
-      Else-Zweig bearbeiten
-      SQL muss auf aktuelles Datum filtern }
-    if RabattQry.n_records = 1 then
-      Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100
-    else
-      raise Exception.Create('mehr als ein Rabatt gefunden.');
-      Rabatt := 0;
-  end;
 
   //Positionen beabeiten
   while not KAQry.Eof do

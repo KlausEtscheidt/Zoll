@@ -25,7 +25,8 @@ uses
   AusgabenFactory in 'AusgabenFactory.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
-  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas';
+  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
+  Preiseingabe in 'Preiseingabe.pas' {PreisFrm};
 
 {$R *.res}
 
@@ -34,5 +35,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainFrm, mainFrm);
   Application.CreateForm(TKaDataModule, KaDataModule);
+  Application.CreateForm(TPreisFrm, PreisFrm);
   Application.Run;
 end.

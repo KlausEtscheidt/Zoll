@@ -2,8 +2,8 @@ object mainFrm: TmainFrm
   Left = 0
   Top = 0
   Caption = 'Pr'#228'Fix'
-  ClientHeight = 304
-  ClientWidth = 612
+  ClientHeight = 560
+  ClientWidth = 1062
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,8 +14,8 @@ object mainFrm: TmainFrm
   OnActivate = RunIt
   OnDestroy = FormDestroy
   DesignSize = (
-    612
-    304)
+    1062
+    560)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -40,7 +40,7 @@ object mainFrm: TmainFrm
     Width = 121
     Height = 21
     TabOrder = 1
-    Text = '142120'
+    Text = '142567'
   end
   object Ende_Btn: TButton
     Left = 225
@@ -52,10 +52,12 @@ object mainFrm: TmainFrm
     OnClick = Ende_BtnClick
   end
   object DBGrid1: TDBGrid
-    Left = 0
-    Top = 64
-    Width = 752
-    Height = 241
+    Left = 8
+    Top = 56
+    Width = 1049
+    Height = 496
+    Margins.Left = 20
+    Margins.Right = 20
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     ReadOnly = True
@@ -95,6 +97,15 @@ object mainFrm: TmainFrm
     Enabled = False
     TabOrder = 6
     OnClick = TestBtnClick
+  end
+  object PreisBtn: TButton
+    Left = 560
+    Top = 25
+    Width = 75
+    Height = 25
+    Caption = 'Preise'
+    TabOrder = 7
+    OnClick = PreisBtnClick
   end
   object DataSource1: TDataSource
     DataSet = AusgabeDS

@@ -65,7 +65,7 @@ begin
 
   if not gefunden then
   begin
-    msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
+    msg:=Format('Keine Positionen zum FA >%s< >%s<gefunden.',[FA_Nr,FaIdStu]);
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
     Tools.ErrLog.Flush;

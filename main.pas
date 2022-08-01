@@ -8,7 +8,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
-  FireDAC.Comp.UI, Datasnap.DBClient, Tools, DatenModul, PumpenDataSet;
+  FireDAC.Comp.UI, Datasnap.DBClient, Tools, DatenModul, PumpenDataSet,
+  Preiseingabe;
 
 type
   TmainFrm = class(TForm)
@@ -22,6 +23,7 @@ type
     langBtn: TButton;
     kurzBtn: TButton;
     TestBtn: TButton;
+    PreisBtn: TButton;
 
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);
@@ -30,6 +32,7 @@ type
     procedure langBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TestBtnClick(Sender: TObject);
+    procedure PreisBtnClick(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -87,6 +90,14 @@ begin
   //Fülle Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
   DataSource1.DataSet:=KaDataModule.AusgabeDS;
+
+end;
+
+procedure TmainFrm.PreisBtnClick(Sender: TObject);
+begin
+  KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+  PreisFrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+  PreisFrm.ShowModal;
 
 end;
 

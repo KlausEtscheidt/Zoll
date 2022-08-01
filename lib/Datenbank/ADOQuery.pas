@@ -41,6 +41,8 @@ interface
   uses System.SysUtils, System.Classes,
             StrUtils,Data.DB,Data.Win.ADODB, ADOConnector;
 
+  type EWADOQuery = class(Exception);
+
   type
     TWParamlist = array of String;
     ///<summary>Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
@@ -110,14 +112,21 @@ end;
 //parametrisierte Query mit Ergebnis ausf�hren (setzt Felder n_records und gefunden)
 //-----------------------------------------------------------
 function TWADOQuery.RunSelectQueryWithParam(sql:string;paramlist:TWParamlist):Boolean;
-var I:Integer;
+var NParam,I:Integer;
 begin
 
   //Verbinden und SQL befuellen
   PrepareQuery(sql);
 
+  NParam:=length(paramlist) ;
+
+  if Self.Parameters.Count<>NParam then
+    raise EWADOQuery.Create(Format(
+          '>%d< Parameter übergeben; >%d< Parameter verlangt vom SQL: >%s<',
+                       [NParam,Parameters.Count,SQL]));
+
   //Parameter in Qry-Objekt uebernehmen
-  for I := 0 to length(paramlist)-1 do
+  for I := 0 to NParam-1 do
   begin
     Self.Parameters.Items[I].DataType := ftString;
     Self.Parameters.Items[I].Value := paramlist[I];
@@ -220,6 +229,7 @@ begin
   Self.SQL.Clear;
   Self.SQL.Add(sql);
   Self.SQL.EndUpdate;
+
 
 end;
 
