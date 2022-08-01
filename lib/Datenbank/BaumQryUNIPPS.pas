@@ -233,8 +233,11 @@ function TWBaumQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
 var sql: String;
 begin
   //siehe Access Abfrage "b_hole_Rabatt_zum_Kunden"
+  //TODAY = Informix heutiges Datum
   sql := 'select ident_nr1 as kunden_id, zu_ab_proz, datum_von, datum_bis '
-       + 'from kunde_zuab where ident_nr1 = ? ;';
+       + 'from kunde_zuab where ident_nr1 = ? '
+       + 'and DATUM_VON <TODAY and TODAY <DATUM_BIS;';
+
   Result:= RunSelectQueryWithParam(sql,[kunden_id]);
   UNI2SQLite('kunde_zuab');
 

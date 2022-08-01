@@ -35,12 +35,13 @@ var answer:string;
 
     CoInitialize(nil);
 
+    //Datenmodul initialiseren
+    DatenModul.KaDataModule := TKaDataModule.Create(nil);
+
     //Globals setzen und initialiseren
     Tools.Init;
     Tools.GuiMode:=False;
 
-    //Datenmodul initialiseren
-    DatenModul.KaDataModule := TKaDataModule.Create(nil);
 
     mainNonGui.RunItKonsole;
 

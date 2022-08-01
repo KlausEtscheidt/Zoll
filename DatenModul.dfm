@@ -178,7 +178,6 @@ object KaDataModule: TKaDataModule
     DataDef.EndOfLine = elWindows
     DataDef.RecordFormat = rfCustom
     DataDef.WithFieldNames = True
-    DataDef.FormatSettings.DateSeparator = '.'
     Encoding = ecUTF8
     Left = 456
     Top = 248

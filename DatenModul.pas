@@ -115,7 +115,7 @@ type
     procedure ErzeugeAusgabeKurzFuerDoku;
     procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
-    procedure AusgabeAlsCSV(DateiPfad:String);
+    procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
 
 var
@@ -137,14 +137,14 @@ end;
 
 
 //Schreibt AusgabeDatenset in CSV-Datei
-procedure TKaDataModule.AusgabeAlsCSV(DateiPfad:String);
+procedure TKaDataModule.AusgabeAlsCSV(DateiPfad,DateiName:String);
 begin
   //Verbinde BatchMoveDSReader mit Ausgabetabelle
   BatchMoveDSReader.DataSet:= AusgabeDS;
   //Verbinde BatchMove mit BatchMoveTextWriter als Ausgabmodul
   BatchMove.Writer:=BatchMoveTextWriter;
   //Setze Filenamen fuer BatchMoveTextWriter
-  BatchMoveTextWriter.FileName:=DateiPfad;
+  BatchMoveTextWriter.FileName:=DateiPfad+'\'+DateiName;
   //Transferiere Daten in CSV-Datei
   BatchMove.Execute;
 

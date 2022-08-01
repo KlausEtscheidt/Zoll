@@ -3,7 +3,7 @@ unit Tools;
 interface
 
 uses System.IOUtils,System.SysUtils,Logger,
-ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
+ADOConnector, BaumQryUNIPPS, BaumQrySQLite,Datenmodul;
 //Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
@@ -22,7 +22,7 @@ const LogDir: String =
     'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
                    'Zoll\data\output';
 const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll_neu.sqlite';
+                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
 
   {$IFDEF SQLITE}
   //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
@@ -69,7 +69,9 @@ begin
       {$ENDIF}
 
   {$ENDIF}
-
+  Datenmodul.KaDataModule.BatchMove.LogFileName:= LogDir +'\BatchMoveLog.txt';
+  Datenmodul.KaDataModule.ErgebnisDS.FileName:= '';//LogDir +'\Erg.xml';
+  Datenmodul.KaDataModule.ErgebnisDS.CreateDataSet;
 
 end;
 

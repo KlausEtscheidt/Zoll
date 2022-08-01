@@ -163,14 +163,15 @@ begin
   Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchLog.txt');
   Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchErrLog.txt');
 
-//  InitCopyUNI2SQLite;
+  InitCopyUNI2SQLite;
   //Einige Einzelaufträge
 //  KaNurAuswerten('142591'); //Error  Keine Positionen zum FA >616451< gefunden.
 //  KaNurAuswerten('144729');
 //  KaNurAuswerten('142567'); //2Pumpen
 //  KaNurAuswerten('142302'); //Ersatz
+//  KaNurAuswerten('144734');   //Fehler
+  KaNurAuswerten('142120');   //Fehler
 
-  KaAuswerten('142567'); //2Pumpen
 
 //  Check100;
 
@@ -184,12 +185,12 @@ end;
 procedure RunItGui;
 begin
 
-//  mainNonGui.KaAuswerten('142591'); //Error
+  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  mainNonGui.KaAuswerten('144729');
-  mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
-//  mainNonGui.KaAuswerten('144734');
-//  mainNonGui.KaAuswerten('142302'); //Ersatz
+//  mainNonGui.KaAuswerten('144734'); //Error
+//  mainNonGui.KaAuswerten('142591'); //Error
 
 end;
 
