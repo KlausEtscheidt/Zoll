@@ -3,7 +3,7 @@ unit Tools;
 interface
 
 uses System.IOUtils,System.SysUtils,Logger,
-ADOConnector, BaumQryUNIPPS, BaumQrySQLite,Datenmodul;
+ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
 //Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
@@ -69,9 +69,6 @@ begin
       {$ENDIF}
 
   {$ENDIF}
-  Datenmodul.KaDataModule.BatchMove.LogFileName:= LogDir +'\BatchMoveLog.txt';
-  Datenmodul.KaDataModule.ErgebnisDS.FileName:= LogDir +'\Erg.xml';
-  Datenmodul.KaDataModule.ErgebnisDS.CreateDataSet;
 
 end;
 

@@ -67,10 +67,10 @@ procedure TWKundenauftrag.SammleAusgabeDaten;
 begin
 
   //Sammle rekursiv alle Daten ein
-//  KaDataModule.ErgebnisDS.Active:=True;
+  KaDataModule.ErgebnisDS.Active:=True;
   //Leeren
-  KaDataModule.ErgebnisDS.Active:=False;
-  KaDataModule.ErgebnisDS.CreateDataSet;
+//  KaDataModule.ErgebnisDS.Active:=False;
+//  KaDataModule.ErgebnisDS.CreateDataSet;
   InGesamtTabelle(KaDataModule.ErgebnisDS, True);
 
   if Tools.GuiMode then
@@ -83,6 +83,9 @@ end;
 
 procedure TWKundenauftrag.Ausgabe;
 begin
+  //###############
+  mainfrm.DataSource1.DataSet:=KaDataModule.ErgebnisDS;
+  exit;
   //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
   //Ausgabe als CSV

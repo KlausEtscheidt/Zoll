@@ -3,173 +3,6 @@ object KaDataModule: TKaDataModule
   OnCreate = DataModuleCreate
   Height = 367
   Width = 587
-  object StueliPosDS: TWDataSet
-    Aggregates = <>
-    FieldDefs = <>
-    IndexDefs = <>
-    Params = <>
-    StoreDefs = True
-    Left = 96
-    Top = 56
-    object StueliPosDSid_stu: TStringField
-      FieldName = 'id_stu'
-    end
-    object StueliPosDSpos_nr: TIntegerField
-      FieldName = 'pos_nr'
-    end
-    object StueliPosDSstu_t_tg_nr: TStringField
-      FieldName = 'stu_t_tg_nr'
-    end
-    object StueliPosDSoa: TIntegerField
-      FieldName = 'stu_oa'
-    end
-    object StueliPosDSunipps_typ: TStringField
-      FieldName = 'stu_unipps_typ'
-    end
-    object StueliPosDSid_pos: TIntegerField
-      FieldName = 'id_pos'
-    end
-    object StueliPosDSbesch_art: TIntegerField
-      FieldName = 'besch_art'
-    end
-    object StueliPosDSmenge: TFloatField
-      FieldName = 'menge'
-    end
-    object StueliPosDSFA_Nr: TStringField
-      FieldName = 'FA_Nr'
-    end
-    object StueliPosDSverurs_art: TIntegerField
-      FieldName = 'verurs_art'
-    end
-    object StueliPosDSueb_s_nr: TIntegerField
-      FieldName = 'ueb_s_nr'
-    end
-    object StueliPosDSds: TIntegerField
-      FieldName = 'ds'
-    end
-    object StueliPosDSset_block: TIntegerField
-      FieldName = 'set_block'
-    end
-    object StueliPosDSPosTyp: TStringField
-      FieldName = 'PosTyp'
-    end
-    object StueliPosDSPreisEU: TFloatField
-      FieldName = 'PreisEU'
-    end
-    object StueliPosDSPreisNonEU: TFloatField
-      FieldName = 'PreisNonEU'
-    end
-    object StueliPosDSSummeEU: TFloatField
-      FieldName = 'SummeEU'
-      currency = True
-      Precision = 6
-    end
-    object StueliPosDSSummeNonEU: TFloatField
-      FieldName = 'SummeNonEU'
-    end
-    object StueliPosDSvk_netto: TFloatField
-      FieldName = 'vk_netto'
-    end
-    object StueliPosDSvk_brutto: TFloatField
-      FieldName = 'vk_brutto'
-    end
-    object StueliPosDSMengeTotal: TFloatField
-      FieldName = 'MengeTotal'
-    end
-    object StueliPosDSEbene: TIntegerField
-      FieldName = 'Ebene'
-    end
-    object StueliPosDSEbeneNice: TStringField
-      FieldName = 'EbeneNice'
-    end
-  end
-  object TeilDS: TWDataSet
-    Aggregates = <>
-    Params = <>
-    Left = 200
-    Top = 64
-    object TeilDSt_tg_nr: TStringField
-      FieldName = 't_tg_nr'
-    end
-    object TeilDSoa: TIntegerField
-      FieldName = 'oa'
-    end
-    object TeilDSunipps_typ: TStringField
-      FieldName = 'unipps_typ'
-    end
-    object TeilDSBezeichnung: TStringField
-      FieldName = 'Bezeichnung'
-    end
-    object TeilDSbesch_art: TIntegerField
-      FieldName = 'v_besch_art'
-    end
-    object TeilDSpraeferenzkennung: TIntegerField
-      FieldName = 'praeferenzkennung'
-    end
-    object TeilDSsme: TIntegerField
-      FieldName = 'sme'
-    end
-    object TeilDSfaktlme_sme: TFloatField
-      FieldName = 'faktlme_sme'
-    end
-    object TeilDSlme: TIntegerField
-      FieldName = 'lme'
-    end
-    object TeilDSPreisJeLME: TFloatField
-      FieldName = 'PreisJeLME'
-    end
-  end
-  object BestellungDS: TWDataSet
-    Aggregates = <>
-    FieldDefs = <>
-    IndexDefs = <>
-    Params = <>
-    StoreDefs = True
-    Left = 280
-    Top = 64
-    object BestellungDSpreis: TFloatField
-      FieldName = 'preis'
-    end
-    object BestellungDSbestell_id: TIntegerField
-      FieldName = 'bestell_id'
-    end
-    object BestellungDSbestell_datum: TDateTimeField
-      FieldName = 'bestell_datum'
-    end
-    object BestellungDSbest_t_tg_nr: TStringField
-      FieldName = 'best_t_tg_nr'
-    end
-    object BestellungDSbasis: TFloatField
-      FieldName = 'basis'
-    end
-    object BestellungDSpme: TIntegerField
-      FieldName = 'pme'
-    end
-    object BestellungDSbme: TIntegerField
-      FieldName = 'bme'
-    end
-    object BestellungDSfaktlme_bme: TFloatField
-      FieldName = 'faktlme_bme'
-    end
-    object BestellungDSfaktbme_pme: TFloatField
-      FieldName = 'faktbme_pme'
-    end
-    object BestellungDSnetto_poswert: TFloatField
-      FieldName = 'netto_poswert'
-    end
-    object BestellungDSwe_menge: TFloatField
-      FieldName = 'we_menge'
-    end
-    object BestellungDSlieferant: TIntegerField
-      FieldName = 'lieferant'
-    end
-    object BestellungDSkurzname: TStringField
-      FieldName = 'kurzname'
-    end
-    object BestellungDSbest_menge: TFloatField
-      FieldName = 'best_menge'
-    end
-  end
   object BatchMoveTextWriter: TFDBatchMoveTextWriter
     DataDef.Fields = <>
     DataDef.Delimiter = '"'
@@ -204,163 +37,137 @@ object KaDataModule: TKaDataModule
     Top = 304
   end
   object ErgebnisDS: TWDataSet
+    PersistDataPacket.Data = {
+      790000009619E0BD0100000018000000030001000000030000006F000A507265
+      69734A654C4D4508000400100000000A4D656E6765546F74616C080004001000
+      0000075A754B41506F73040001001000000001000A4348414E47455F4C4F4704
+      008200030000000100000000000000040000000414973C9E961FD65E40}
+    Active = True
     Aggregates = <>
+    FileName = 
+      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
+      'ta\output\Ergxx2.xml'
+    FieldDefs = <
+      item
+        Name = 'PreisJeLME'
+        Attributes = [faUnNamed]
+        DataType = ftFloat
+        Precision = 2
+      end
+      item
+        Name = 'MengeTotal'
+        Attributes = [faUnNamed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'ZuKAPos'
+        Attributes = [faUnNamed]
+        DataType = ftInteger
+      end>
+    IndexDefs = <>
     FetchOnDemand = False
     Params = <>
+    StoreDefs = True
     Left = 352
     Top = 64
-    object ErgebnisDSid_stu: TStringField
-      FieldName = 'id_stu'
-    end
-    object ErgebnisDSpos_nr: TIntegerField
-      FieldName = 'pos_nr'
-    end
-    object ErgebnisDSstu_t_tg_nr: TStringField
-      FieldName = 'stu_t_tg_nr'
-    end
-    object ErgebnisDSstu_oa: TIntegerField
-      FieldName = 'stu_oa'
-    end
-    object ErgebnisDSstu_unipps_typ: TStringField
-      FieldName = 'stu_unipps_typ'
-    end
-    object ErgebnisDSid_pos: TIntegerField
-      FieldName = 'id_pos'
-    end
-    object ErgebnisDSbesch_art: TIntegerField
-      FieldName = 'besch_art'
-    end
-    object ErgebnisDSmenge: TFloatField
-      FieldName = 'menge'
-    end
-    object ErgebnisDSFA_Nr: TStringField
-      FieldName = 'FA_Nr'
-    end
-    object ErgebnisDSverurs_art: TIntegerField
-      FieldName = 'verurs_art'
-    end
-    object ErgebnisDSueb_s_nr: TIntegerField
-      FieldName = 'ueb_s_nr'
-    end
-    object ErgebnisDSds: TIntegerField
-      FieldName = 'ds'
-    end
-    object ErgebnisDSset_block: TIntegerField
-      FieldName = 'set_block'
-    end
-    object ErgebnisDSPosTyp: TStringField
-      FieldName = 'PosTyp'
-    end
-    object ErgebnisDSPreisEU: TFloatField
-      FieldName = 'PreisEU'
-    end
-    object ErgebnisDSPreisNonEU: TFloatField
-      FieldName = 'PreisNonEU'
-    end
-    object ErgebnisDSSummeEU: TFloatField
-      FieldName = 'SummeEU'
-      currency = True
-      Precision = 8
-    end
-    object ErgebnisDSSummeNonEU: TFloatField
-      FieldName = 'SummeNonEU'
-    end
-    object ErgebnisDSvk_netto: TFloatField
-      FieldName = 'vk_netto'
-    end
-    object ErgebnisDSvk_brutto: TFloatField
-      FieldName = 'vk_brutto'
-    end
-    object ErgebnisDSMengeTotal: TFloatField
-      FieldName = 'MengeTotal'
-    end
-    object ErgebnisDSEbene: TIntegerField
-      FieldName = 'Ebene'
-    end
-    object ErgebnisDSEbeneNice: TStringField
-      FieldName = 'EbeneNice'
-    end
-    object ErgebnisDSt_tg_nr: TStringField
-      FieldName = 't_tg_nr'
-    end
-    object ErgebnisDSoa: TIntegerField
-      FieldName = 'oa'
-    end
-    object ErgebnisDSunipps_typ: TStringField
-      FieldName = 'unipps_typ'
-    end
-    object ErgebnisDSBezeichnung: TStringField
-      FieldName = 'Bezeichnung'
-    end
-    object ErgebnisDSv_besch_art: TIntegerField
-      FieldName = 'v_besch_art'
-    end
-    object ErgebnisDSpraeferenzkennung: TIntegerField
-      FieldName = 'praeferenzkennung'
-    end
-    object ErgebnisDSsme: TIntegerField
-      FieldName = 'sme'
-    end
-    object ErgebnisDSfaktlme_sme: TFloatField
-      FieldName = 'faktlme_sme'
-    end
-    object ErgebnisDSlme: TIntegerField
-      FieldName = 'lme'
-    end
-    object ErgebnisDSPreisJeLME: TFloatField
-      FieldName = 'PreisJeLME'
-    end
-    object ErgebnisDSpreis: TFloatField
-      FieldName = 'preis'
-    end
-    object ErgebnisDSbestell_id: TIntegerField
-      FieldName = 'bestell_id'
-    end
-    object ErgebnisDSbestell_datum: TDateTimeField
-      FieldName = 'bestell_datum'
-    end
-    object ErgebnisDSbest_t_tg_nr: TStringField
-      FieldName = 'best_t_tg_nr'
-    end
-    object ErgebnisDSbasis: TFloatField
-      FieldName = 'basis'
-    end
-    object ErgebnisDSpme: TIntegerField
-      FieldName = 'pme'
-    end
-    object ErgebnisDSbme: TIntegerField
-      FieldName = 'bme'
-    end
-    object ErgebnisDSfaktlme_bme: TFloatField
-      FieldName = 'faktlme_bme'
-    end
-    object ErgebnisDSfaktbme_pme: TFloatField
-      FieldName = 'faktbme_pme'
-    end
-    object ErgebnisDSnetto_poswert: TFloatField
-      FieldName = 'netto_poswert'
-    end
-    object ErgebnisDSwe_menge: TFloatField
-      FieldName = 'we_menge'
-    end
-    object ErgebnisDSlieferant: TIntegerField
-      FieldName = 'lieferant'
-    end
-    object ErgebnisDSkurzname: TStringField
-      FieldName = 'kurzname'
-    end
-    object ErgebnisDSbest_menge: TFloatField
-      FieldName = 'best_menge'
-    end
-    object ErgebnisDSAnteilNonEU: TFloatField
-      FieldName = 'AnteilNonEU'
-    end
-    object ErgebnisDSZuKAPos: TIntegerField
-      FieldName = 'ZuKAPos'
-    end
   end
   object AusgabeDS: TWDataSet
+    PersistDataPacket.Data = {
+      370B00009619E0BD01000000180000000A001D000000030000006A0209456265
+      6E654E696365010049001000010005574944544802000200140007745F74675F
+      6E7201004900100001000557494454480200020014000B42657A656963686E75
+      6E6701004900100001000557494454480200020014000A4D656E6765546F7461
+      6C0800040010000000086B75727A6E616D650100490010000100055749445448
+      020002001400075072656973455508000400100000000A50726569734E6F6E45
+      5508000400100000000753756D6D65455508000400100000000A53756D6D654E
+      6F6E4555080004001000000008766B5F6E6574746F080004001000000001000A
+      4348414E47455F4C4F4704008200570000000100000000000000040000000200
+      0000000000000400000003000000000000000400000004000000000000000400
+      0000050000000000000004000000060000000000000004000000070000000000
+      0000040000000800000000000000040000000900000000000000040000000A00
+      000000000000040000000B00000000000000040000000C000000000000000400
+      00000D00000000000000040000000E00000000000000040000000F0000000000
+      0000040000001000000000000000040000001100000000000000040000001200
+      0000000000000400000013000000000000000400000014000000000000000400
+      0000150000000000000004000000160000000000000004000000170000000000
+      0000040000001800000000000000040000001900000000000000040000001A00
+      000000000000040000001B00000000000000040000001C000000000000000400
+      00001D00000000000000040000000400010001310F3530354432343936385358
+      4B3031390C536368756C74657272696E67000000000000F03F00000000000000
+      0000000000000000000000000000000000613583E5F5CDF43F21C8410933CD4D
+      4004140100022E32000000000000F03F00000000000000000000000000000000
+      0000000000000000613583E5F5CDF43F000000000000000004000000032E2E33
+      07455354D83535410952756E64737461686C0000000000002440075448595353
+      454E0000000000000000613583E5F5CDF43F0000000000000000613583E5F5CD
+      F43F00000000000000000400010001310F35303749323439363953584B303139
+      0A53707269747A72696E67000000000000F03F00000000000000000000000000
+      000000000000000000000085EB51B81EC50440AF42CA4FAA7460400414010002
+      2E32000000000000F03F00000000000000000000000000000000000000000000
+      000085EB51B81EC50440000000000000000004000000032E2E3306455354D836
+      300952756E64737461686C0000000000002E400548414B454E00000000000000
+      0085EB51B81EC50440000000000000000085EB51B81EC5044000000000000000
+      000400010001310F3231304132323333355343423031390557656C6C65000000
+      000000F03F000000000000000000000000000000000000000000000000A6F8F3
+      FCD3E12C40B0FECF61BE3C754004140100022E32000000000000F03F00000000
+      0000000000000000000000000000000000000000A6F8F3FCD3E12C4000000000
+      0000000004000100032E2E330B455354D834354D303430351052756E64737461
+      686C20676573E46774000000000000F03F000000000000000000000000000000
+      000000000000000000A6F8F3FCD3E12C40000000000000000004140100042E2E
+      2E34000000000000F03F00000000000000000000000000000000000000000000
+      0000A6F8F3FCD3E12C40000000000000000004000000052E2E2E2E3507455354
+      D83435440952756E64737461686CF38E537424C97A40054252DC434B00000000
+      00000000A6F8F3FCD3E12C400000000000000000A6F8F3FCD3E12C4000000000
+      000000000400010001310F3530314532323333395343413031391052696E672C
+      207A7765697465696C6967000000000000F03F00000000000000000000000000
+      0000000000000000000000C9BDE642D294C13F49BA66F2CDD628400414010002
+      2E32000000000000F03F00000000000000000000000000000000000000000000
+      0000C9BDE642D294C13F000000000000000004000000032E2E3307455354D833
+      30420952756E64737461686C00000000000029400548414B454E000000000000
+      0000C9BDE642D294C13F0000000000000000C9BDE642D294C13F000000000000
+      00000400000001310F3430304146303035314556573037340D466C6163686469
+      636874756E6700000000000000400A574F4C544552484F464685EB51B81E8519
+      40000000000000000085EB51B81E85194000000000000000007DB3CD8DE9C92E
+      400400010001310F34353541323732303650454B3232391153746F7066627563
+      687365696E7361747A000000000000F03F000000000000000000000000000000
+      000000000000404040315F5E807D240540102384479B6F834004140100022E32
+      000000000000F03F000000000000000000000000000000000000000000404040
+      315F5E807D240540000000000000000004000000032E2E330A45524FD8323930
+      78373314526F6E64652C204469636874756E677365696E73000000000000F03F
+      054F5454454E0000000000404040000000000000000000000000004040400000
+      000000000000000000000000000004000100032E2E330F353030423330313532
+      5352423035390452696E67000000000000F03F00000000000000000000000000
+      0000000000000000000000315F5E807D24054000000000000000000414010004
+      2E2E2E34000000000000F03F0000000000000000000000000000000000000000
+      00000000315F5E807D240540000000000000000004000000052E2E2E2E350B45
+      5252D832343435783633106E6168746C2E205369656465726F68721904560E2D
+      923C40075448595353454E0000000000000000315F5E807D2405400000000000
+      000000315F5E807D24054000000000000000000400010001310F323333424F4E
+      323030504552303030144C696E6B736C6175667261642C2067657363686C0000
+      000000000040000000000000000000000000000000009CC420B072946440C3F5
+      285C8FC2134037AB3E571B33864004140100022E320000000000000040000000
+      000000000000000000000000009CC420B072946440C3F5285C8FC21340000000
+      000000000004000100032E2E330F323333413232333435504552303033144C69
+      6E6B736C6175667261642C2067657363686C0000000000000040000000000000
+      000000000000000000009CC420B072946440C3F5285C8FC21340000000000000
+      000004140100042E2E2E34000000000000004000000000000000000000000000
+      0000009CC420B072946440C3F5285C8FC2134000000000000000000400000005
+      2E2E2E2E350F323333483232333435504552465433144C696E6B736C61756672
+      61642C2067657363686C0000000000000040054F5454454E3333333333D36340
+      00000000000000009CC420B072946440C3F5285C8FC213400000000000000000
+      04000000062E2E2E2E2E360F3534344931383433314E4B4D3031390D47657769
+      6E646562756368736500000000000000400447454E440000000000000000C3F5
+      285C8FC213400000000000000000C3F5285C8FC2134000000000000000000400
+      0000062E2E2E2E2E360D45525350453130303047524155145045203130303020
+      7265696E2067726175203737AE47E17A14AEFF3F054F5454454E0E2DB29DEF27
+      184000000000000000000E2DB29DEF2718400000000000000000000000000000
+      00000400000001310F34373249333031343049534130313909476C6569747269
+      6E67000000000000004008434552414D5445431F85EB51B81E3F400000000000
+      0000001F85EB51B81E3F4000000000000000007EC6850321DF6340}
+    Active = True
     Aggregates = <>
+    FileName = 
+      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
+      'ta\output\AusgabeKurz.xml'
     Params = <>
     Left = 432
     Top = 64

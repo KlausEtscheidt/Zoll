@@ -12,6 +12,9 @@
         <Projects Include="lib\Datenbank\PumpenDatenspeicher.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="DefiniereDataSet.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="PumpenDatenspeicher:Make">
         <MSBuild Projects="lib\Datenbank\PumpenDatenspeicher.dproj" Targets="Make"/>
     </Target>
+    <Target Name="DefiniereDataSet">
+        <MSBuild Projects="DefiniereDataSet.dproj"/>
+    </Target>
+    <Target Name="DefiniereDataSet:Clean">
+        <MSBuild Projects="DefiniereDataSet.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DefiniereDataSet:Make">
+        <MSBuild Projects="DefiniereDataSet.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher"/>
+        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean"/>
+        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean;DefiniereDataSet:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make"/>
+        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make;DefiniereDataSet:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

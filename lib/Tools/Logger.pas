@@ -6,12 +6,18 @@ uses
   System.SysUtils, System.Classes;
 
 type
+
+  /// <summary>Komfort-Funktionen zum Oeffnen von textfiles
+  /// </summary>
   TLogFile = class(TStreamWriter)
       private
         fullpath:string;
         procedure Open(filedir:string;filename:string;Append:Boolean);
       public
         procedure OpenAppend(filedir:string;filename:string);
+        ///<summary>Oeffnet neue leere Datei </summary>
+        /// <param name="filedir">Pfad ohne slash am Ende </param>
+        /// <param name="filename">Dateiname ohne slash am Anfang</param>
         procedure OpenNew(filedir:string;filename:string);
 //        constructor Create(); override;
         destructor Destroy(); override;
@@ -39,10 +45,6 @@ begin
 
   try
       inherited Create(fullpath,Append,TEncoding.UTF8);
-//    if Append then
-//      inherited Create(fullpath,True);
-//    else
-//      inherited Create(fullpath,False);
   except
     raise Exception.Create('Logger: Kann Datei ' + fullpath + ' nicht öffnen');
 
