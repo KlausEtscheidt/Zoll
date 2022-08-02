@@ -122,9 +122,6 @@ object PreisFrm: TPreisFrm
   object PreisDS: TWDataSet
     Aggregates = <>
     FieldOptions.AutoCreateMode = acCombineAlways
-    FileName = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
-      'ta\output\Preis.xml'
     FieldDefs = <
       item
         Name = 'id_pos'

@@ -44,15 +44,11 @@ object KaDataModule: TKaDataModule
       008200030000000100000000000000040000000414973C9E961FD65E40}
     Active = True
     Aggregates = <>
-    FileName = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
-      'ta\output\Ergxx2.xml'
     FieldDefs = <
       item
         Name = 'PreisJeLME'
         Attributes = [faUnNamed]
         DataType = ftFloat
-        Precision = 2
       end
       item
         Name = 'MengeTotal'
@@ -165,9 +161,6 @@ object KaDataModule: TKaDataModule
       0000001F85EB51B81E3F4000000000000000007EC6850321DF6340}
     Active = True
     Aggregates = <>
-    FileName = 
-      'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\Zoll\da' +
-      'ta\output\AusgabeKurz.xml'
     Params = <>
     Left = 432
     Top = 64

@@ -144,12 +144,14 @@ begin
 
     KA.liesKopfundPositionen;
 //
-//    KaDataModule.DefiniereGesamtErgebnisDataSet;
-//    KA.SammleAusgabeDaten;
+    KaDataModule.DefiniereGesamtErgebnisDataSet;
+    KaDataModule.FiltereSpalten;
+    KA.SammleAusgabeDaten;
+
 //    PreisFrm.PreisDS.CreateDataSet;
 //    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
 //    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
-
+//
 //    if not (PreisFrm.ShowModal=mrOK) then
 //      exit;
 
@@ -160,7 +162,8 @@ begin
     KA.SetzeEbenenUndMengen(0,1);
     KA.SummierePreise;
 
-    KaDataModule.DefiniereGesamtErgebnisDataSet;
+    KaDataModule.ErgebnisDS.EmptyDataSet;
+//    KaDataModule.DefiniereGesamtErgebnisDataSet;
     KA.SammleAusgabeDaten;
 
     //
@@ -188,6 +191,8 @@ begin
     ka:=TWKundenauftrag.Create('142302');
     KaDataModule.ErgebnisDS.FileName:='';
     KaDataModule.DefiniereGesamtErgebnisDataSet;
+    KaDataModule.ErgebnisDS.Active:=True;
+    KaDataModule.ErgebnisDS.EmptyDataSet;
     KaDataModule.ErgebnisDS.Append;
     KaDataModule.ErgebnisDS.AddData('PreisJeLME',123.345678) ;
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx2.xml');
@@ -229,8 +234,8 @@ end;
 procedure RunItGui;
 begin
 
-test;
-//  mainNonGui.KaAuswerten('142302'); //Ersatz
+//test;
+  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  mainNonGui.KaAuswerten('144729');
 //  mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;

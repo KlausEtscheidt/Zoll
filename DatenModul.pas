@@ -10,56 +10,56 @@ uses
 
   const
 //    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
-    AlleAusgabeFelder: array [0..2] of TWFeldTypRecord =
+    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
      (
-//          (N: 'id_stu'; T:ftString; P:3; C:''),
-          (N: 'PreisJeLME'; T:ftFloat; P:3; C:''),
+          (N: 'EbeneNice'; T:ftString; P:3; C:''),
+          (N: 'id_stu'; T:ftString; P:3; C:''),
+          (N: 'PreisJeLME'; T:ftCurrency; P:3; C:''),
           (N: 'MengeTotal'; T:ftFloat; P:3; C:''),
-//          (N: 'faktlme_sme'; T:ftFloat; P:3; C:''),
-//          (N: 'faktlme_bme'; T:ftFloat; P:3; C:''),
-//          (N: 'faktbme_pme'; T:ftFloat; P:3; C:''),
-//          (N: 'netto_poswert'; T:ftFloat; P:3; C:''),
-//          (N: 'pos_nr'; T:ftInteger; P:3; C:''),
-//          (N: 'stu_t_tg_nr'; T:ftString; P:3; C:''),
-//          (N: 'stu_oa'; T:ftInteger; P:3; C:''),
-//          (N: 'stu_unipps_typ'; T:ftString; P:3; C:''),
-//          (N: 'id_pos'; T:ftInteger; P:3; C:''),
-//          (N: 'besch_art'; T:ftInteger; P:3; C:''),
-//          (N: 'menge'; T:ftFloat; P:3; C:''),
-//          (N: 'FA_Nr'; T:ftString; P:3; C:''),
-//          (N: 'verurs_art'; T:ftInteger; P:3; C:''),
-//          (N: 'ueb_s_nr'; T:ftInteger; P:3; C:''),
-//          (N: 'ds'; T:ftInteger; P:3; C:''),
-//          (N: 'set_block'; T:ftInteger; P:3; C:''),
-//          (N: 'PosTyp'; T:ftString; P:3; C:''),
-//          (N: 'PreisEU'; T:ftCurrency; P:3; C:''),
-//          (N: 'PreisNonEU'; T:ftCurrency; P:3; C:''),
-//          (N: 'SummeEU'; T:ftCurrency; P:3; C:''),
-//          (N: 'SummeNonEU'; T:ftCurrency; P:3; C:''),
-//          (N: 'vk_netto'; T:ftCurrency; P:3; C:''),
-//          (N: 'vk_brutto'; T:ftFloat; P:3; C:''),
-//          (N: 'Ebene'; T:ftInteger; P:3; C:''),
-//          (N: 'EbeneNice'; T:ftString; P:3; C:''),
-//          (N: 't_tg_nr'; T:ftString; P:3; C:''),
-//          (N: 'oa'; T:ftInteger; P:3; C:''),
-//          (N: 'unipps_typ'; T:ftString; P:3; C:''),
-//          (N: 'Bezeichnung'; T:ftString; P:3; C:''),
-//          (N: 'v_besch_art'; T:ftInteger; P:3; C:''),
-//          (N: 'praeferenzkennung'; T:ftInteger; P:3; C:''),
-//          (N: 'sme'; T:ftInteger; P:3; C:''),
-//          (N: 'lme'; T:ftInteger; P:3; C:''),
-//          (N: 'preis'; T:ftFloat; P:3; C:''),
-//          (N: 'bestell_id'; T:ftInteger; P:3; C:''),
-//          (N: 'bestell_datum'; T:ftDateTime; P:3; C:''),
-//          (N: 'best_t_tg_nr'; T:ftString; P:3; C:''),
-//          (N: 'basis'; T:ftFloat; P:3; C:''),
-//          (N: 'pme'; T:ftInteger; P:3; C:''),
-//          (N: 'bme'; T:ftInteger; P:3; C:''),
-//          (N: 'we_menge'; T:ftFloat; P:3; C:''),
-//          (N: 'lieferant'; T:ftInteger; P:3; C:''),
-//          (N: 'kurzname'; T:ftString; P:3; C:''),
-//          (N: 'best_menge'; T:ftFloat; P:3; C:''),
-//          (N: 'AnteilNonEU'; T:ftFloat; P:3; C:''),
+          (N: 'faktlme_sme'; T:ftFloat; P:3; C:''),
+          (N: 'faktlme_bme'; T:ftFloat; P:3; C:''),
+          (N: 'faktbme_pme'; T:ftFloat; P:3; C:''),
+          (N: 'netto_poswert'; T:ftCurrency; P:3; C:''),
+          (N: 'pos_nr'; T:ftInteger; P:3; C:''),
+          (N: 'stu_t_tg_nr'; T:ftString; P:3; C:''),
+          (N: 'stu_oa'; T:ftInteger; P:3; C:''),
+          (N: 'stu_unipps_typ'; T:ftString; P:3; C:''),
+          (N: 'id_pos'; T:ftInteger; P:3; C:''),
+          (N: 'besch_art'; T:ftInteger; P:3; C:''),
+          (N: 'menge'; T:ftFloat; P:3; C:''),
+          (N: 'FA_Nr'; T:ftString; P:3; C:''),
+          (N: 'verurs_art'; T:ftInteger; P:3; C:''),
+          (N: 'ueb_s_nr'; T:ftInteger; P:3; C:''),
+          (N: 'ds'; T:ftInteger; P:3; C:''),
+          (N: 'set_block'; T:ftInteger; P:3; C:''),
+          (N: 'PosTyp'; T:ftString; P:3; C:''),
+          (N: 'PreisEU'; T:ftCurrency; P:3; C:''),
+          (N: 'PreisNonEU'; T:ftCurrency; P:3; C:''),
+          (N: 'SummeEU'; T:ftCurrency; P:3; C:''),
+          (N: 'SummeNonEU'; T:ftCurrency; P:3; C:''),
+          (N: 'vk_netto'; T:ftCurrency; P:3; C:''),
+          (N: 'vk_brutto'; T:ftCurrency; P:3; C:''),
+          (N: 'Ebene'; T:ftInteger; P:3; C:''),
+          (N: 't_tg_nr'; T:ftString; P:3; C:''),
+          (N: 'oa'; T:ftInteger; P:3; C:''),
+          (N: 'unipps_typ'; T:ftString; P:3; C:''),
+          (N: 'Bezeichnung'; T:ftString; P:3; C:''),
+          (N: 'v_besch_art'; T:ftInteger; P:3; C:''),
+          (N: 'praeferenzkennung'; T:ftInteger; P:3; C:''),
+          (N: 'sme'; T:ftInteger; P:3; C:''),
+          (N: 'lme'; T:ftInteger; P:3; C:''),
+          (N: 'preis'; T:ftCurrency; P:3; C:''),
+          (N: 'bestell_id'; T:ftInteger; P:3; C:''),
+          (N: 'bestell_datum'; T:ftString; P:3; C:''),
+          (N: 'best_t_tg_nr'; T:ftString; P:3; C:''),
+          (N: 'basis'; T:ftFloat; P:3; C:''),
+          (N: 'pme'; T:ftInteger; P:3; C:''),
+          (N: 'bme'; T:ftInteger; P:3; C:''),
+          (N: 'we_menge'; T:ftFloat; P:3; C:''),
+          (N: 'lieferant'; T:ftInteger; P:3; C:''),
+          (N: 'kurzname'; T:ftString; P:3; C:''),
+          (N: 'best_menge'; T:ftFloat; P:3; C:''),
+          (N: 'AnteilNonEU'; T:ftFloat; P:3; C:''),
           (N: 'ZuKAPos'; T:ftInteger; P:3; C:'')
      );
 
@@ -82,6 +82,7 @@ type
     procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
     procedure ErzeugeAusgabeFuerPreisabfrage;
+    procedure FiltereSpalten();
     procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
 
@@ -203,19 +204,20 @@ begin
   BefuelleAusgabeTabelle(PreisFrm.PreisDS);
 end;
 
-
 //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
 //der Stücklistenpositionen, der Teile und der Bestellungen
 procedure TKaDataModule.DefiniereGesamtErgebnisDataSet;
 begin
-//  Self.ErgebnisDS.DefiniereTabelle(SElf.StueliPosDS,True,False);
-//  ErgebnisDS.DefiniereTabelle(TeilDS,False,False);
-//  ErgebnisDS.DefiniereTabelle(BestellungDS,False,True);
-//  ErgebnisDS.FileName:= LogDir +'\Erg.xml';
-//  ErgebnisDS.Active:=True;
   ErgebnisDS.DefiniereTabelle(AlleAusgabeFelder);
-  ErgebnisDS.Fields.Count;
-//  Datenmodul.KaDataModule.ErgebnisDS.CreateDataSet;
+end;
+
+procedure TKaDataModule.FiltereSpalten();
+const
+  Felder: TWFeldNamen = ['id_pos','Menge', 'stu_t_tg_nr', 'Bezeichnung',
+                            'vk_brutto', 'vk_netto', 'ZuKAPos'];
+begin
+  ErgebnisDS.FiltereSpalten(Felder);
+
 end;
 
 end.

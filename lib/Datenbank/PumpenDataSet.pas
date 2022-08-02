@@ -3,7 +3,7 @@ unit PumpenDataSet;
 interface
 
 uses
-  System.SysUtils, System.Classes,  Data.DB, Datasnap.DBClient,
+  System.SysUtils, System.Classes, StrUtils, Data.DB, Datasnap.DBClient,
   Tools, Logger;
 
 type
@@ -26,14 +26,16 @@ type
     procedure AddData(Key:String;Val:Variant);overload;
     procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
     procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
+
     procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
     procedure TabelleDefInFile();
-
     procedure DefiniereTabelle(Feldliste: array of TWFeldTypRecord);overload;
     procedure DefiniereTabelle(DS2Copy:TWDataSet;
                  Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);overload;
     function ToCSV:String;
     function FieldtypeAsString(aType:TFieldType):String;
+    procedure FiltereSpalten(Felder: TWFeldNamen);
+
   published
   end;
 
@@ -141,6 +143,7 @@ begin
 
 end;
 
+
 procedure TWDataSet.DefiniereTabelle(DS2Copy:TWDataSet;
                     Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);
 var
@@ -205,10 +208,11 @@ var
   myFloatField:TFloatField ;
 begin
 
-    Active:=False;
+    Active:=True;
 
     FieldDefs.Clear;
     Fields.Clear;
+    Active:=False;
 
     //Erst Felder anlegen
     for I := 0 to length(Feldliste)-1 do
@@ -226,38 +230,20 @@ begin
 
     end;
 
-    myFieldDef:=FieldDefs.Find('PreisJeLME');
     CreateDataSet;
-
 
     //Dann Precision setzen
     for I := 0 to length(Feldliste)-1 do
     begin
 
-        myFieldDef:=FieldDefs.Find(Feldliste[I].N);
-
-        if myFieldDef.DataType= ftFloat then
+        if Feldliste[I].T = ftFloat then
         begin
-          myFieldDef.Precision:=Feldliste[I].P;
           myField:=Fields.FieldByName(Feldliste[I].N);
-    active:=False;
-          myFloatField:=TFloatField.Create(self) ;
-          Fields.Remove(myField);
-          myFloatField.Name:=Feldliste[I].N;
-          myFloatField.FieldName:=Feldliste[I].N;
-          myFloatField.DisplayFormat:='##.#';
-          myFloatField.DataSet:=Self;
-//          myFloatField.FieldNo:=FieldNo;
-          Fields.Add(myFloatField);
-    active:=True;
+          myFloatField:=TFloatField(myField) ;
+          myFloatField.DisplayFormat:='0.##';
         end;
 
-
     end;
-
-
-
-    myFieldDef:=FieldDefs.Find('PreisJeLME');
 
 end;
 
@@ -290,6 +276,24 @@ begin
      TxtFile.Log(txt);
   end;
   TxtFile.Close;
+end;
+
+procedure TWDataSet.FiltereSpalten(Felder: TWFeldNamen);
+var
+  I:Integer;
+  myField:TField;
+
+begin
+
+    for I := 0 to Fields.Count-1 do
+    begin
+
+        myField:=Fields.Fields[I];
+        if AnsiIndexText(myField.FieldName,Felder) < 0   then
+          myField.Visible:=False;
+
+    end;
+
 end;
 
 end.
