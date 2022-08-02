@@ -16,13 +16,6 @@ type
     Button2: TButton;
     Panel1: TPanel;
     PreisDS: TWDataSet;
-    PreisDSid_pos: TIntegerField;
-    PreisDSmenge: TFloatField;
-    PreisDSt_tg_nr: TStringField;
-    PreisDSBezeichnung: TStringField;
-    PreisDSvk_brutto: TFloatField;
-    PreisDSvk_netto: TFloatField;
-    PreisDSZuKAPos: TIntegerField;
   private
     { Private-Deklarationen }
   public

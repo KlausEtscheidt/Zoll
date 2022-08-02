@@ -8,110 +8,75 @@ uses
   FireDAC.Comp.BatchMove.Text,
   Preiseingabe,PumpenDataSet;
 
+  const
+//    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
+    AlleAusgabeFelder: array [0..2] of TWFeldTypRecord =
+     (
+//          (N: 'id_stu'; T:ftString; P:3; C:''),
+          (N: 'PreisJeLME'; T:ftFloat; P:3; C:''),
+          (N: 'MengeTotal'; T:ftFloat; P:3; C:''),
+//          (N: 'faktlme_sme'; T:ftFloat; P:3; C:''),
+//          (N: 'faktlme_bme'; T:ftFloat; P:3; C:''),
+//          (N: 'faktbme_pme'; T:ftFloat; P:3; C:''),
+//          (N: 'netto_poswert'; T:ftFloat; P:3; C:''),
+//          (N: 'pos_nr'; T:ftInteger; P:3; C:''),
+//          (N: 'stu_t_tg_nr'; T:ftString; P:3; C:''),
+//          (N: 'stu_oa'; T:ftInteger; P:3; C:''),
+//          (N: 'stu_unipps_typ'; T:ftString; P:3; C:''),
+//          (N: 'id_pos'; T:ftInteger; P:3; C:''),
+//          (N: 'besch_art'; T:ftInteger; P:3; C:''),
+//          (N: 'menge'; T:ftFloat; P:3; C:''),
+//          (N: 'FA_Nr'; T:ftString; P:3; C:''),
+//          (N: 'verurs_art'; T:ftInteger; P:3; C:''),
+//          (N: 'ueb_s_nr'; T:ftInteger; P:3; C:''),
+//          (N: 'ds'; T:ftInteger; P:3; C:''),
+//          (N: 'set_block'; T:ftInteger; P:3; C:''),
+//          (N: 'PosTyp'; T:ftString; P:3; C:''),
+//          (N: 'PreisEU'; T:ftCurrency; P:3; C:''),
+//          (N: 'PreisNonEU'; T:ftCurrency; P:3; C:''),
+//          (N: 'SummeEU'; T:ftCurrency; P:3; C:''),
+//          (N: 'SummeNonEU'; T:ftCurrency; P:3; C:''),
+//          (N: 'vk_netto'; T:ftCurrency; P:3; C:''),
+//          (N: 'vk_brutto'; T:ftFloat; P:3; C:''),
+//          (N: 'Ebene'; T:ftInteger; P:3; C:''),
+//          (N: 'EbeneNice'; T:ftString; P:3; C:''),
+//          (N: 't_tg_nr'; T:ftString; P:3; C:''),
+//          (N: 'oa'; T:ftInteger; P:3; C:''),
+//          (N: 'unipps_typ'; T:ftString; P:3; C:''),
+//          (N: 'Bezeichnung'; T:ftString; P:3; C:''),
+//          (N: 'v_besch_art'; T:ftInteger; P:3; C:''),
+//          (N: 'praeferenzkennung'; T:ftInteger; P:3; C:''),
+//          (N: 'sme'; T:ftInteger; P:3; C:''),
+//          (N: 'lme'; T:ftInteger; P:3; C:''),
+//          (N: 'preis'; T:ftFloat; P:3; C:''),
+//          (N: 'bestell_id'; T:ftInteger; P:3; C:''),
+//          (N: 'bestell_datum'; T:ftDateTime; P:3; C:''),
+//          (N: 'best_t_tg_nr'; T:ftString; P:3; C:''),
+//          (N: 'basis'; T:ftFloat; P:3; C:''),
+//          (N: 'pme'; T:ftInteger; P:3; C:''),
+//          (N: 'bme'; T:ftInteger; P:3; C:''),
+//          (N: 'we_menge'; T:ftFloat; P:3; C:''),
+//          (N: 'lieferant'; T:ftInteger; P:3; C:''),
+//          (N: 'kurzname'; T:ftString; P:3; C:''),
+//          (N: 'best_menge'; T:ftFloat; P:3; C:''),
+//          (N: 'AnteilNonEU'; T:ftFloat; P:3; C:''),
+          (N: 'ZuKAPos'; T:ftInteger; P:3; C:'')
+     );
+
 type
   TKaDataModule = class(TDataModule)
-    StueliPosDS: TWDataSet;
-    StueliPosDSid_stu: TStringField;
-    StueliPosDSpos_nr: TIntegerField;
-    StueliPosDSoa: TIntegerField;
-    StueliPosDSbesch_art: TIntegerField;
-    StueliPosDSmenge: TFloatField;
-    StueliPosDSFA_Nr: TStringField;
-    StueliPosDSid_pos: TIntegerField;
-    StueliPosDSverurs_art: TIntegerField;
-    StueliPosDSueb_s_nr: TIntegerField;
-    StueliPosDSds: TIntegerField;
-    StueliPosDSset_block: TIntegerField;
-    StueliPosDSPosTyp: TStringField;
-    TeilDS: TWDataSet;
-    BestellungDS: TWDataSet;
-    BestellungDSbestell_id: TIntegerField;
-    BestellungDSbestell_datum: TDateTimeField;
-    StueliPosDSstu_t_tg_nr: TStringField;
-    StueliPosDSunipps_typ: TStringField;
-    TeilDSBezeichnung: TStringField;
-    TeilDSPreisJeLME: TFloatField;
-    BestellungDSbest_t_tg_nr: TStringField;
-    StueliPosDSPreisEU: TFloatField;
-    StueliPosDSPreisNonEU: TFloatField;
-    StueliPosDSSummeEU: TFloatField;
-    StueliPosDSSummeNonEU: TFloatField;
-    BestellungDSbasis: TFloatField;
-    BestellungDSpme: TIntegerField;
-    BestellungDSbme: TIntegerField;
-    BestellungDSfaktlme_bme: TFloatField;
-    BestellungDSfaktbme_pme: TFloatField;
-    BestellungDSnetto_poswert: TFloatField;
-    BestellungDSwe_menge: TFloatField;
-    BestellungDSlieferant: TIntegerField;
-    BestellungDSkurzname: TStringField;
-    BestellungDSbest_menge: TFloatField;
-    StueliPosDSvk_netto: TFloatField;
-    StueliPosDSvk_brutto: TFloatField;
-    StueliPosDSMengeTotal: TFloatField;
-    StueliPosDSEbene: TIntegerField;
-    StueliPosDSEbeneNice: TStringField;
     BatchMoveTextWriter: TFDBatchMoveTextWriter;
     BatchMoveDSReader: TFDBatchMoveDataSetReader;
     BatchMove: TFDBatchMove;
     BatchMoveDSWriter: TFDBatchMoveDataSetWriter;
     ErgebnisDS: TWDataSet;
     AusgabeDS: TWDataSet;
-    ErgebnisDSid_stu: TStringField;
-    ErgebnisDSpos_nr: TIntegerField;
-    ErgebnisDSstu_t_tg_nr: TStringField;
-    ErgebnisDSstu_oa: TIntegerField;
-    ErgebnisDSstu_unipps_typ: TStringField;
-    ErgebnisDSid_pos: TIntegerField;
-    ErgebnisDSbesch_art: TIntegerField;
-    ErgebnisDSmenge: TFloatField;
-    ErgebnisDSFA_Nr: TStringField;
-    ErgebnisDSverurs_art: TIntegerField;
-    ErgebnisDSueb_s_nr: TIntegerField;
-    ErgebnisDSds: TIntegerField;
-    ErgebnisDSset_block: TIntegerField;
-    ErgebnisDSPosTyp: TStringField;
-    ErgebnisDSPreisEU: TFloatField;
-    ErgebnisDSPreisNonEU: TFloatField;
-    ErgebnisDSSummeEU: TFloatField;
-    ErgebnisDSSummeNonEU: TFloatField;
-    ErgebnisDSvk_netto: TFloatField;
-    ErgebnisDSvk_brutto: TFloatField;
-    ErgebnisDSMengeTotal: TFloatField;
-    ErgebnisDSEbene: TIntegerField;
-    ErgebnisDSEbeneNice: TStringField;
-    ErgebnisDSt_tg_nr: TStringField;
-    ErgebnisDSoa: TIntegerField;
-    ErgebnisDSunipps_typ: TStringField;
-    ErgebnisDSBezeichnung: TStringField;
-    ErgebnisDSv_besch_art: TIntegerField;
-    ErgebnisDSpraeferenzkennung: TIntegerField;
-    ErgebnisDSsme: TIntegerField;
-    ErgebnisDSfaktlme_sme: TFloatField;
-    ErgebnisDSlme: TIntegerField;
-    ErgebnisDSPreisJeLME: TFloatField;
-    ErgebnisDSpreis: TFloatField;
-    ErgebnisDSbestell_id: TIntegerField;
-    ErgebnisDSbestell_datum: TDateTimeField;
-    ErgebnisDSbest_t_tg_nr: TStringField;
-    ErgebnisDSbasis: TFloatField;
-    ErgebnisDSpme: TIntegerField;
-    ErgebnisDSbme: TIntegerField;
-    ErgebnisDSfaktlme_bme: TFloatField;
-    ErgebnisDSfaktbme_pme: TFloatField;
-    ErgebnisDSnetto_poswert: TFloatField;
-    ErgebnisDSwe_menge: TFloatField;
-    ErgebnisDSlieferant: TIntegerField;
-    ErgebnisDSkurzname: TStringField;
-    ErgebnisDSbest_menge: TFloatField;
-    ErgebnisDSAnteilNonEU: TFloatField;
-    ErgebnisDSZuKAPos: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
   private
     procedure BefuelleAusgabeTabelle;overload;
 
   public
-    procedure DefiniereGesamtErgebnisTabelle;
+    procedure DefiniereGesamtErgebnisDataSet;
     procedure BefuelleAusgabeTabelle(ZielDS :TClientDataSet );overload;
     procedure ErzeugeAusgabeKurzFuerDoku;
     procedure ErzeugeAusgabeTestumfang;
@@ -128,7 +93,7 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
-
+uses Tools;
 
 procedure TKaDataModule.DataModuleCreate(Sender: TObject);
 begin
@@ -154,6 +119,8 @@ end;
 
 procedure TKaDataModule.BefuelleAusgabeTabelle(ZielDS :TClientDataSet );
 begin
+  BatchMove.LogFileName:= LogDir +'\BatchMoveLog.txt';
+
   //Verbinde BatchMoveDSReader mit GesamtTabelle
   BatchMoveDSReader.DataSet:= ErgebnisDS;
   //Verbinde BatchMoveDSWriter mit AusgabeTabelle
@@ -191,6 +158,7 @@ const
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.FileName:=Tools.LogDir+'\AusgabeVoll.xml';
   BefuelleAusgabeTabelle;
 end;
 
@@ -207,6 +175,7 @@ const
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.FileName:=Tools.LogDir+'\AusgabeTest.xml';
   BefuelleAusgabeTabelle;
 end;
 
@@ -218,6 +187,7 @@ const
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.FileName:=Tools.LogDir+'\AusgabeKurz.xml';
   BefuelleAusgabeTabelle;
 end;
 
@@ -229,19 +199,23 @@ const
                             'vk_brutto', 'vk_netto', 'ZuKAPos'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  PreisFrm.PreisDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+//  PreisFrm.PreisDS.DefiniereSubTabelle(ErgebnisDS, Felder);
   BefuelleAusgabeTabelle(PreisFrm.PreisDS);
 end;
 
 
 //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
 //der Stücklistenpositionen, der Teile und der Bestellungen
-procedure TKaDataModule.DefiniereGesamtErgebnisTabelle;
+procedure TKaDataModule.DefiniereGesamtErgebnisDataSet;
 begin
 //  Self.ErgebnisDS.DefiniereTabelle(SElf.StueliPosDS,True,False);
 //  ErgebnisDS.DefiniereTabelle(TeilDS,False,False);
 //  ErgebnisDS.DefiniereTabelle(BestellungDS,False,True);
-  ErgebnisDS.CreateDataSet;
+//  ErgebnisDS.FileName:= LogDir +'\Erg.xml';
+//  ErgebnisDS.Active:=True;
+  ErgebnisDS.DefiniereTabelle(AlleAusgabeFelder);
+  ErgebnisDS.Fields.Count;
+//  Datenmodul.KaDataModule.ErgebnisDS.CreateDataSet;
 end;
 
 end.
