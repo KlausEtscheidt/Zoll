@@ -53,7 +53,8 @@ interface
         procedure BerechnePreisDerPosition;
         function ToStr():String;
         procedure DatenInAusgabe(ZielDS:TWDataSet);
-        procedure InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
+        procedure StrukturInErgebnisTabelle(ZielDS:TWDataSet;
+                                                        FirstRun:Boolean=True);
 
       end;
 
@@ -443,7 +444,7 @@ begin
 end;
 
 
-procedure TWUniStueliPos.InGesamtTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
+procedure TWUniStueliPos.StrukturInErgebnisTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 var
   StueliPosKey: Integer;
 begin
@@ -468,7 +469,7 @@ begin
   //In sortierter Reihenfolge
   for StueliPosKey in SortedKeys  do
   begin
-      TWUniStueliPos(Stueli[StueliPosKey]).InGesamtTabelle(ZielDS, False);
+      TWUniStueliPos(Stueli[StueliPosKey]).StrukturInErgebnisTabelle(ZielDS, False);
   end;
 
 end;

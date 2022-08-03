@@ -10,7 +10,7 @@ uses
 
   const
 //    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
-    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
+    AlleErgebnisFelder: array [0..48] of TWFeldTypRecord =
      (
           (N: 'EbeneNice'; T:ftString; P:3; C:''),
           (N: 'id_stu'; T:ftString; P:3; C:''),
@@ -76,6 +76,7 @@ type
     procedure BefuelleAusgabeTabelle;overload;
 
   public
+    ErgebnisFelderDict: TWFeldTypenDict;
     procedure DefiniereGesamtErgebnisDataSet;
     procedure BefuelleAusgabeTabelle(ZielDS :TClientDataSet );overload;
     procedure ErzeugeAusgabeKurzFuerDoku;
@@ -97,7 +98,15 @@ implementation
 uses Tools;
 
 procedure TKaDataModule.DataModuleCreate(Sender: TObject);
+var I:Integer;
 begin
+  //Erzeuge Dict mit allen Informationen über alle Felder der Ergenistabelle
+  //Hieraus können Teil-Tabellen erzegt werden.
+  ErgebnisFelderDict:= TWFeldTypenDict.Create;
+  for I:=0 To length(AlleErgebnisFelder)-1 do
+    //Lege kompletten Record in Dict ab, key ist der FeldName
+    ErgebnisFelderDict.Add(AlleErgebnisFelder[I].N,AlleErgebnisFelder[I]);
+
   //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
   //der Stücklistenpos, der Teile und der Bestellungen
 //  DefiniereGesamtErgebnisTabelle;
@@ -158,7 +167,7 @@ const
 }
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   AusgabeDS.FileName:=Tools.LogDir+'\AusgabeVoll.xml';
   BefuelleAusgabeTabelle;
 end;
@@ -175,7 +184,7 @@ const
            'PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   AusgabeDS.FileName:=Tools.LogDir+'\AusgabeTest.xml';
   BefuelleAusgabeTabelle;
 end;
@@ -187,7 +196,7 @@ const
            'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS.DefiniereSubTabelle(ErgebnisDS, Felder);
+  AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   AusgabeDS.FileName:=Tools.LogDir+'\AusgabeKurz.xml';
   BefuelleAusgabeTabelle;
 end;
@@ -208,7 +217,7 @@ end;
 //der Stücklistenpositionen, der Teile und der Bestellungen
 procedure TKaDataModule.DefiniereGesamtErgebnisDataSet;
 begin
-  ErgebnisDS.DefiniereTabelle(AlleAusgabeFelder);
+  ErgebnisDS.DefiniereTabelle( AlleErgebnisFelder);
 end;
 
 procedure TKaDataModule.FiltereSpalten();

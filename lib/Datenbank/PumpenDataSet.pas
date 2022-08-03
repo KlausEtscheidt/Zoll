@@ -3,7 +3,8 @@ unit PumpenDataSet;
 interface
 
 uses
-  System.SysUtils, System.Classes, StrUtils, Data.DB, Datasnap.DBClient,
+  System.SysUtils, System.Classes, StrUtils,  System.Generics.Collections,
+   Data.DB, Datasnap.DBClient,
   Tools, Logger;
 
 type
@@ -13,7 +14,10 @@ type
     P:Integer;
     C:String;
   end;
+
+  TWFeldTypenDict = TDictionary<String,TWFeldTypRecord>;
   TWFeldNamen = array of String;
+
   TWDataSet = class(TClientDataSet)
   private
     { Private-Deklarationen }
@@ -29,6 +33,8 @@ type
 
     procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
     procedure TabelleDefInFile();
+    procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
+                                               Felder: TWFeldNamen);overload;
     procedure DefiniereTabelle(Feldliste: array of TWFeldTypRecord);overload;
     procedure DefiniereTabelle(DS2Copy:TWDataSet;
                  Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);overload;
@@ -196,6 +202,54 @@ begin
   else
     raise Exception.Create('Unbekannter Datentyp');
   end; // case
+
+end;
+
+procedure TWDataSet.DefiniereTabelle(FeldTypen:TWFeldTypenDict;
+                                         Felder: TWFeldNamen);
+var
+  I:Integer;
+  FieldNo:Integer;
+  myFieldDef:TFieldDef;
+  myField:TField ;
+  myFloatField:TFloatField ;
+  Name:String;
+  myRec:TWFeldTypRecord;
+
+  begin
+
+    Active:=True;
+
+    FieldDefs.Clear;
+    Fields.Clear;
+    Active:=False;
+
+    //Erst Feld-Def anlegen
+    for I := 0 to length(Felder)-1 do
+    begin
+
+        Name := Felder[I];
+        myRec:=FeldTypen[Name];
+
+        myFieldDef:=FieldDefs.AddFieldDef;
+        myFieldDef.Name := Name;
+        myFieldDef.DataType := myRec.T;
+
+    end;
+
+    //Felder erzeugen
+    CreateDataSet;
+
+    //Dann weitere Eigenschaften fuer Felder setzen
+    for I := 0 to Fields.Count-1 do
+    begin
+        myField:=Fields.Fields[I];
+        if myField.DataType=ftFloat then
+        begin
+          myFloatField:=TFloatField(myField) ;
+          myFloatField.DisplayFormat:='0.##';
+        end;
+    end;
 
 end;
 

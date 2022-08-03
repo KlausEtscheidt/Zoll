@@ -2,10 +2,9 @@
 
 interface
 
-uses  System.SysUtils, Vcl.Controls,
-// Vcl.Forms, Vcl.Dialogs,
+uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
       Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
-      BaumQrySQLite, BaumQryUNIPPS,DatenModul,Preiseingabe ;
+      BaumQrySQLite, BaumQryUNIPPS,DatenModul,Preiseingabe  ;
 
 type
     EStuBaumMainExc = class(Exception);
@@ -14,11 +13,14 @@ procedure RunItGui;
 procedure RunItKonsole;
 procedure KaAuswerten(KaId:string);
 procedure KaNurAuswerten(ka_id:string);
+procedure ErgebnisAusgabe(KaId:string);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
 procedure test;
 
 implementation
+
+uses main;
 
 /// <summary> Initialisiert den Kopiermodus von UNIPPS nach SQLite
 /// </summary>
@@ -126,28 +128,41 @@ begin
 
 
 end;
+
 ///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
 ///<summary>
 //Nutzt  TWKundenauftrag.auswerten fuer vollen Ablauf
 procedure KaAuswerten(KaId:string);
-var KA:TWKundenauftrag;
+var
+  KA:TWKundenauftrag;
+  startzeit,endzeit: Int64;
+  delta:Double;
+  msg:String;
+
 begin
 
   try
 
-    //Ka anlegen
+    //Einmalig die Felder der Gesamt-Tabelle anlegen
+    //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
+    //DAS OnCreate Ereignis ist anscheinend zu früh
+    KaDataModule.DefiniereGesamtErgebnisDataSet;
+
+    //Kundenauftrag anlegen
     ka:=TWKundenauftrag.Create(KaId);
 
-    Tools.Log.Log('--------- Kundenauftrag: '+KaId + ' begonnen.');
-    Tools.ErrLog.Log('--------- Kundenauftrag: '+KaId + ' begonnen.');
+    startzeit:= GetTickCount;
+    msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
+    Tools.Log.Log(msg);
+    Tools.ErrLog.Log(msg);
 
-
+    //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
-//
-    KaDataModule.DefiniereGesamtErgebnisDataSet;
-    KaDataModule.FiltereSpalten;
+
+    //Daten einsammeln; bis hier nur Kundenauftrag mit Positionen
     KA.SammleAusgabeDaten;
 
+    //Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
 //    PreisFrm.PreisDS.CreateDataSet;
 //    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
 //    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
@@ -162,19 +177,25 @@ begin
     KA.SetzeEbenenUndMengen(0,1);
     KA.SummierePreise;
 
-    KaDataModule.ErgebnisDS.EmptyDataSet;
-//    KaDataModule.DefiniereGesamtErgebnisDataSet;
     KA.SammleAusgabeDaten;
 
     //
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx.xml');
     KaDataModule.ErgebnisDS.TabelleDefInFile;
 
+    ErgebnisAusgabe(KaId);
 
-    KA.Ausgabe;
+    endzeit:=  GetTickCount;
+    delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
 
-    Tools.Log.Log('--------- Kundenauftrag: '+KaId + ' fertig.');
-    Tools.ErrLog.Log('--------- Kundenauftrag: '+KaId + ' fertig.');
+    msg:=Format('---------------Auswertung fuer KA %s in %4.3f mSek beendet.' +
+        '%d Datensaetze gefunden.',
+        [KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
+    ShowMessage(msg);
+
+    Tools.Log.Log(msg);
+    Tools.ErrLog.Log(msg);
+
 
   finally
 
@@ -183,6 +204,31 @@ begin
   end;
 
 end;
+
+procedure ErgebnisAusgabe(KaId:String);
+begin
+  //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
+  KaDataModule.ErzeugeAusgabeVollFuerDebug;
+  //Ausgabe als CSV
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Struktur.csv');
+
+  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
+  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+  //Ausgabe als CSV
+  KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Kalk.csv');
+
+  //Daten anzeigen
+  if Tools.GuiMode then
+  begin
+    KaDataModule.ErzeugeAusgabeVollFuerDebug;
+    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+    mainfrm.langBtn.Enabled:=True;
+    mainfrm.langBtn.Enabled:=True;
+  end;
+
+
+end;
+
 
 procedure test;
 var KA:TWKundenauftrag;
@@ -197,7 +243,7 @@ begin
     KaDataModule.ErgebnisDS.AddData('PreisJeLME',123.345678) ;
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx2.xml');
     KaDataModule.ErgebnisDS.TabelleDefInFile;
-    ka.Ausgabe;
+    ErgebnisAusgabe('142302');
 end;
 
 ///<summary> Einsprung fuer Konsolen-Version </summary>

@@ -15,16 +15,12 @@ type
     komm_nr: String;
     kunden_id: Integer;
     constructor Create(new_ka_id: String);
-    procedure auswerten;
     procedure liesKopfundPositionen;
     procedure holeKinder;
     procedure SammleAusgabeDaten;
-    procedure Ausgabe;
   end;
 
 implementation
-
-uses main;
 
 constructor TWKundenauftrag.Create(new_ka_id: String);
 begin
@@ -33,73 +29,17 @@ begin
   ka_id := new_ka_id;
 end;
 
-procedure TWKundenauftrag.auswerten();
-var
-  startzeit,endzeit: Int64;
-  delta:Double;
-  msg:String;
-
-begin
-  startzeit:= GetTickCount;
-  Tools.Log.Log('Starte Auswertung fuer: ' + ka_id +
-              ' um ' + DateTimeToStr(startzeit));
-  liesKopfundPositionen;
-  holeKinder;
-  SetzeEbenenUndMengen(0,1);
-  SummierePreise;
-
-  SammleAusgabeDaten;
-  Ausgabe;
-
-  endzeit:=  GetTickCount;
-  delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
-
-  msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
-      '%d Datensaetze gefunden.',[ka_id, delta,KaDataModule.ErgebnisDS.RecordCount]);
-  ShowMessage(msg);
-
-  Tools.Log.Log(msg);
-
-end;
-
-
 procedure TWKundenauftrag.SammleAusgabeDaten;
 begin
 
-  //Sammle rekursiv alle Daten ein
+  //Erst mal leeren
+  KaDataModule.ErgebnisDS.EmptyDataSet;
+
+  //Oeffnen
   KaDataModule.ErgebnisDS.Active:=True;
-  //Leeren
-//  KaDataModule.ErgebnisDS.Active:=False;
-//  KaDataModule.ErgebnisDS.CreateDataSet;
-  InGesamtTabelle(KaDataModule.ErgebnisDS, True);
 
-  if Tools.GuiMode then
-  begin
-    mainfrm.langBtn.Enabled:=True;
-    mainfrm.langBtn.Enabled:=True;
-  end;
-
-end;
-
-procedure TWKundenauftrag.Ausgabe;
-begin
-  //###############
-  mainfrm.DataSource1.DataSet:=KaDataModule.ErgebnisDS;
-  exit;
-  //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
-  KaDataModule.ErzeugeAusgabeVollFuerDebug;
-  //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir, ka_id + '_Struktur.csv');
-
-  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
-  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
-  //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir, ka_id + '_Kalk.csv');
-
-  //Daten anzeigen
-  if Tools.GuiMode then
-    KaDataModule.ErzeugeAusgabeVollFuerDebug;
-    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+  //Sammle rekursiv alle Daten ein
+  StrukturInErgebnisTabelle(KaDataModule.ErgebnisDS, True);
 
 end;
 
