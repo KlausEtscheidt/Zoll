@@ -83,6 +83,7 @@ type
     procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
     procedure ErzeugeAusgabeFuerPreisabfrage;
+    procedure CopyFieldDefs;
     procedure FiltereSpalten();
     procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
@@ -95,7 +96,7 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
-uses Tools;
+uses Tools, main;
 
 procedure TKaDataModule.DataModuleCreate(Sender: TObject);
 var I:Integer;
@@ -167,8 +168,15 @@ const
 }
 begin
   //Definiere die Spalten des Ausgabe-Datensets
+  AusgabeDS:=TWDataSet.Create(Self);
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
+  AusgabeDS.Print;
+//  AusgabeDS.Data:=ErgebnisDS.Data;
   BefuelleAusgabeTabelle;
+  AusgabeDS.Print;
+  AusgabeDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
+  AusgabeDS.Print;
+
 end;
 
 
@@ -177,14 +185,19 @@ end;
 procedure TKaDataModule.ErzeugeAusgabeTestumfang;
 const
   Felder: TWFeldNamen =
-            ['EbeneNice','PosTyp', 'id_stu','FA_Nr','id_pos','pos_nr',
-           't_tg_nr', 'Bezeichnung','MengeTotal',
-           'bestell_id','kurzname','PreisJeLME',
-           'PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
+            ['EbeneNice',
+            'MengeTotal',
+//            'PosTyp', 'id_stu','FA_Nr','id_pos','pos_nr',
+//           't_tg_nr', 'Bezeichnung',
+//           'bestell_id','kurzname','PreisJeLME',
+//           'PreisEU','PreisNonEU','SummeEU','SummeNonEU',
+           'vk_netto'];
 begin
+  AusgabeDS:=TWDataSet.Create(Self);
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   BefuelleAusgabeTabelle;
+  AusgabeDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
 end;
 
 //Definiert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
@@ -194,8 +207,10 @@ const
            'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
+  AusgabeDS:=TWDataSet.Create(Self);
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   BefuelleAusgabeTabelle;
+  AusgabeDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
 end;
 
 
@@ -227,7 +242,20 @@ begin
   //Definiere DataSet
   //ErgebnisFelderDict enthält alle Informationen über die Feldbeschaffenheit
   //FeldNamen die Liste aller Felder, die in angelegt werden (in dieser Reihenfolge)
+  ErgebnisDS:=TWDAtaSet.Create(Self);
   ErgebnisDS.DefiniereTabelle(ErgebnisFelderDict, FeldNamen);
+end;
+
+procedure TKaDataModule.CopyFieldDefs;
+var
+i:Integer;
+myFieldDef:TFieldDef;
+
+begin
+    for I := 0 to ErgebnisDS.FieldDefs.Count do
+    begin
+    end;
+
 end;
 
 procedure TKaDataModule.FiltereSpalten();

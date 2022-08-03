@@ -19,7 +19,6 @@ type
     Ende_Btn: TButton;
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
-    AusgabeDS: TWDataSet;
     langBtn: TButton;
     kurzBtn: TButton;
     TestBtn: TButton;

@@ -22,7 +22,7 @@ object KaDataModule: TKaDataModule
   object BatchMove: TFDBatchMove
     Reader = BatchMoveDSReader
     Writer = BatchMoveTextWriter
-    Options = [poClearDest, poIdentityInsert, poCreateDest, poUseTransactions]
+    Options = [poUseTransactions]
     Mappings = <>
     LogFileAction = laCreate
     LogFileName = 
@@ -37,31 +37,9 @@ object KaDataModule: TKaDataModule
     Top = 304
   end
   object ErgebnisDS: TWDataSet
-    PersistDataPacket.Data = {
-      790000009619E0BD0100000018000000030001000000030000006F000A507265
-      69734A654C4D4508000400100000000A4D656E6765546F74616C080004001000
-      0000075A754B41506F73040001001000000001000A4348414E47455F4C4F4704
-      008200030000000100000000000000040000000414973C9E961FD65E40}
-    Active = True
     Aggregates = <>
-    FieldDefs = <
-      item
-        Name = 'PreisJeLME'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'MengeTotal'
-        Attributes = [faUnNamed]
-        DataType = ftFloat
-      end
-      item
-        Name = 'ZuKAPos'
-        Attributes = [faUnNamed]
-        DataType = ftInteger
-      end>
+    FieldDefs = <>
     IndexDefs = <>
-    FetchOnDemand = False
     Params = <>
     StoreDefs = True
     Left = 352

@@ -60,29 +60,12 @@ object mainFrm: TmainFrm
     Margins.Right = 20
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
-    ReadOnly = True
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'PreisJeLME'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'MengeTotal'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'ZuKAPos'
-        Visible = True
-      end>
   end
   object langBtn: TButton
     Left = 306
@@ -127,11 +110,5 @@ object mainFrm: TmainFrm
     DataSet = KaDataModule.ErgebnisDS
     Left = 184
     Top = 216
-  end
-  object AusgabeDS: TWDataSet
-    Aggregates = <>
-    Params = <>
-    Left = 280
-    Top = 248
   end
 end

@@ -190,7 +190,7 @@ begin
     msg:=Format('---------------Auswertung fuer KA %s in %4.3f mSek beendet.' +
         '%d Datensaetze gefunden.',
         [KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
-    ShowMessage(msg);
+//    ShowMessage(msg);
 
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
@@ -208,11 +208,14 @@ procedure ErgebnisAusgabe(KaId:String);
 begin
   //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
+  KaDataModule.AusgabeDS.Print;
+
   //Ausgabe als CSV
   KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Struktur.csv');
 
   //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+
   //Ausgabe als CSV
   KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Kalk.csv');
 

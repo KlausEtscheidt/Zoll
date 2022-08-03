@@ -110,8 +110,10 @@ begin
      aType:=aFieldDef.DataType;
      aField:=aDS.FieldByName(aFieldDef.Name);
      //#######hier noch Bedingung ändern, wo wird der schöne Name gespeichert ?
-     if aField.DisplayLabel<>aField.FieldName then
-       capt:= aField.DisplayLabel
+//     if aField.DisplayLabel<>aField.FieldName then
+     if aField.DisplayName<>aField.FieldName then
+       //capt:= aField.DisplayLabel
+       capt:= aField.DisplayName
      else
         capt:='';  //Default
 

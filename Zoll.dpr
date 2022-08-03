@@ -22,7 +22,6 @@ uses
   mainNonGui in 'mainNonGui.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
   Tests in 'Tests.pas',
-  AusgabenFactory in 'AusgabenFactory.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
   StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',

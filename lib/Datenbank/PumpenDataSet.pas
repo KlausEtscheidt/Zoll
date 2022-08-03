@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Classes, StrUtils,  System.Generics.Collections,
    Data.DB, Datasnap.DBClient,
-  Logger;
+  Tools,Logger;
 
 type
   TWFeldTypRecord = record
@@ -29,8 +29,10 @@ type
     procedure AddData(Key:String;Val:Variant);overload;
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                                Felder: TWFeldNamen);
+    procedure DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
     function ToCSV:String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
+    procedure print;
 
   published
   end;
@@ -94,7 +96,6 @@ procedure TWDataSet.DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                          Felder: TWFeldNamen);
 var
   I:Integer;
-  FieldNo:Integer;
   myFieldDef:TFieldDef;
   myField:TField ;
   myFloatField:TFloatField ;
@@ -103,11 +104,15 @@ var
 
   begin
 
-    Active:=True;
+    if Fields.Count>0 then
+    begin
+      Active:=True;
 
-    FieldDefs.Clear;
-    Fields.Clear;
-    Active:=False;
+      FieldDefs.Clear;
+      Fields.Clear;
+      Active:=False;
+
+    end;
 
     //Erst Feld-Def anlegen
     for I := 0 to length(Felder)-1 do
@@ -138,7 +143,7 @@ var
 
         if myRec.C<>'' then
         begin
-          myFieldDef.DisplayName:=myRec.C;
+//          myField.fieldd .DisplayName:=myRec.C;
           myField.DisplayLabel:=myRec.C;
         end;
 
@@ -152,22 +157,87 @@ var
 
 end;
 
+procedure TWDataSet.DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
+var
+  I:Integer;
+  myFieldDef:TFieldDef;
+  myField:TField ;
+  myFloatField:TFloatField ;
+  Name:String;
+  myRec:TWFeldTypRecord;
+
+  begin
+
+    //Dann weitere Eigenschaften fuer Felder setzen
+    for I := 0 to Fields.Count-1 do
+    begin
+        myField:=Fields.Fields[I];
+        myRec:=FeldTypen[myField.FieldName];
+
+        if myRec.C<>'' then
+        begin
+//          myField.fieldd .DisplayName:=myRec.C;
+          myField.DisplayLabel:=myRec.C;
+        end;
+
+
+        if myField.DataType=ftFloat then
+        begin
+          myFloatField:=TFloatField(myField) ;
+          myFloatField.DisplayFormat:='0.##';
+        end;
+    end;
+
+end;
+
+
 procedure TWDataSet.FiltereSpalten(Felder: TWFeldNamen);
 var
   I:Integer;
   myField:TField;
-
 begin
 
     for I := 0 to Fields.Count-1 do
     begin
 
-        myField:=Fields.Fields[I];
+          myField:=Fields.Fields[I];
         if AnsiIndexText(myField.FieldName,Felder) < 0   then
           myField.Visible:=False;
 
     end;
 
 end;
+
+procedure TWDataSet.print;
+var
+  I:Integer;
+  myField:TField;
+  myFloatField:TFloatField ;
+  TxtFile:TLogFile;
+  txt:String;
+begin
+
+  TxtFile:=TLogFile.Create();
+  TxtFile.OpenNew(Tools.LogDir,'TableINfos.txt');
+
+    for I := 0 to Fields.Count-1 do
+    begin
+      with Fields.Fields[I] do
+      begin
+        if DataType=ftFloat then
+        begin
+          myFloatField:=TFloatField(Fields.Fields[I]);
+          txt:=Format('Name: %s Label %S Format %s',[FieldName,DisplayLabel,myFloatField.DisplayFormat] )
+        end else
+        txt:=Format('Name: %s Label %S',[FieldName,DisplayLabel]);
+        TxtFile.Log(txt);
+      end;
+
+    end;
+
+  TxtFile.Close;
+
+end;
+
 
 end.
