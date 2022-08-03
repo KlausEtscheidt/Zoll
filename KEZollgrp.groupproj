@@ -12,7 +12,7 @@
         <Projects Include="lib\Datenbank\PumpenDatenspeicher.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="DefiniereDataSet.dproj">
+        <Projects Include="DevTools\DefiniereDataSet.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -51,13 +51,13 @@
         <MSBuild Projects="lib\Datenbank\PumpenDatenspeicher.dproj" Targets="Make"/>
     </Target>
     <Target Name="DefiniereDataSet">
-        <MSBuild Projects="DefiniereDataSet.dproj"/>
+        <MSBuild Projects="DevTools\DefiniereDataSet.dproj"/>
     </Target>
     <Target Name="DefiniereDataSet:Clean">
-        <MSBuild Projects="DefiniereDataSet.dproj" Targets="Clean"/>
+        <MSBuild Projects="DevTools\DefiniereDataSet.dproj" Targets="Clean"/>
     </Target>
     <Target Name="DefiniereDataSet:Make">
-        <MSBuild Projects="DefiniereDataSet.dproj" Targets="Make"/>
+        <MSBuild Projects="DevTools\DefiniereDataSet.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet"/>

@@ -24,20 +24,20 @@ type
   protected
     { Protected-Deklarationen }
   public
-    procedure SetEditMode(Datensatz:TBookmark);
+//    procedure SetEditMode(Datensatz:TBookmark);
     procedure AddData(Felder:TFields);overload;
     procedure AddData(Key:String;Felder:TFields);overload;
     procedure AddData(Key:String;Val:Variant);overload;
-    procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
-    procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
+//    procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
+//    procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
 
-    procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
+//    procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
     procedure TabelleDefInFile();
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                                Felder: TWFeldNamen);overload;
     procedure DefiniereTabelle(Feldliste: array of TWFeldTypRecord);overload;
-    procedure DefiniereTabelle(DS2Copy:TWDataSet;
-                 Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);overload;
+//    procedure DefiniereTabelle(DS2Copy:TWDataSet;
+//                 Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);overload;
     function ToCSV:String;
     function FieldtypeAsString(aType:TFieldType):String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
@@ -80,27 +80,27 @@ begin
     FieldByName(Key).Value:=Val;
 end;
 
-procedure TWDataSet.SetEditMode(Datensatz:TBookmark);
-begin
-    Self.GotoBookmark(Datensatz);
-    Edit;
-end;
+//procedure TWDataSet.SetEditMode(Datensatz:TBookmark);
+//begin
+//    Self.GotoBookmark(Datensatz);
+//    Edit;
+//end;
 
-procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Felder:TFields);
-begin
-    Self.GotoBookmark(Datensatz);
-    Edit;
-    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
-    Post;
-end;
-
-procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Val:Variant);
-begin
-    Self.GotoBookmark(Datensatz);
-    Edit;
-    FieldByName(Key).Value:=Val;
-    Post;
-end;
+//procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Felder:TFields);
+//begin
+//    Self.GotoBookmark(Datensatz);
+//    Edit;
+//    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
+//    Post;
+//end;
+//
+//procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Val:Variant);
+//begin
+//    Self.GotoBookmark(Datensatz);
+//    Edit;
+//    FieldByName(Key).Value:=Val;
+//    Post;
+//end;
 
 
 function TWDataSet.ToCSV: string;
@@ -117,6 +117,7 @@ begin
     end;
 end;
 
+{
 procedure TWDataSet.DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
 var
   OrigFieldDef:TFieldDef;
@@ -148,8 +149,8 @@ begin
   CreateDataSet;
 
 end;
-
-
+}
+{
 procedure TWDataSet.DefiniereTabelle(DS2Copy:TWDataSet;
                     Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);
 var
@@ -185,7 +186,7 @@ begin
   if Create then CreateDataSet;
 
 end;
-
+}
 function TWDataSet.FieldtypeAsString(aType:TFieldType):String;
 begin
   case aType of
