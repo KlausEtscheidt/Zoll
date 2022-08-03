@@ -155,20 +155,20 @@ begin
     msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
-
+    mainfrm.ActivityIndicator1.Animate:=True;
     //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
 
     //Daten einsammeln; bis hier nur Kundenauftrag mit Positionen
     KA.SammleAusgabeDaten;
 
-    //Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
-//    PreisFrm.PreisDS.CreateDataSet;
-//    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
-//    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
-//
-//    if not (PreisFrm.ShowModal=mrOK) then
-//      exit;
+    // Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
+    PreisFrm.PreisDS.CreateDataSet;
+    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
+
+    if not (PreisFrm.ShowModal=mrOK) then
+      exit;
 
 //    KaDataModule.ErgebnisDS.EmptyDataSet;
 //    KaDataModule.ErgebnisDS.SaveToFile();
@@ -181,6 +181,7 @@ begin
 
     //
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx.xml');
+    mainfrm.ActivityIndicator1.Animate:=False;
 
     ErgebnisAusgabe(KaId);
 

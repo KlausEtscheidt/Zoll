@@ -106,6 +106,11 @@ object mainFrm: TmainFrm
     TabOrder = 7
     OnClick = PreisBtnClick
   end
+  object ActivityIndicator1: TActivityIndicator
+    Left = 656
+    Top = 18
+    Cursor = crHourGlass
+  end
   object DataSource1: TDataSource
     DataSet = KaDataModule.ErgebnisDS
     Left = 184

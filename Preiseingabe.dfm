@@ -13,6 +13,7 @@ object PreisFrm: TPreisFrm
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -32,48 +33,57 @@ object PreisFrm: TPreisFrm
     Left = 8
     Top = 45
     Width = 842
-    Height = 384
+    Height = 108
     DataSource = DataSource1
-    Options = [dgEditing, dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    OnCellClick = DBGrid1CellClick
+    OnMouseMove = DBGrid1MouseMove
     Columns = <
       item
         Expanded = False
         FieldName = 'id_pos'
+        ReadOnly = True
         Title.Caption = 'Pos-Nr'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'menge'
+        ReadOnly = True
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'stu_t_tg_nr'
+        ReadOnly = True
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'Bezeichnung'
+        ReadOnly = True
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'vk_brutto'
+        ReadOnly = True
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'vk_netto'
         Visible = True
       end
       item
+        Color = clBtnFace
         Expanded = False
         FieldName = 'ZuKAPos'
         Title.Caption = 'geh'#246'rt zu'

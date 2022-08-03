@@ -9,7 +9,7 @@ uses
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
   FireDAC.Comp.UI, Datasnap.DBClient, Tools, DatenModul, PumpenDataSet,
-  Preiseingabe;
+  Preiseingabe, Vcl.WinXCtrls;
 
 type
   TmainFrm = class(TForm)
@@ -23,6 +23,7 @@ type
     kurzBtn: TButton;
     TestBtn: TButton;
     PreisBtn: TButton;
+    ActivityIndicator1: TActivityIndicator;
 
     procedure Run_BtnClick(Sender: TObject);
     procedure Ende_BtnClick(Sender: TObject);

@@ -119,7 +119,12 @@ var
     begin
 
         Name := Felder[I];
-        myRec:=FeldTypen[Name];
+        try
+          myRec:=FeldTypen[Name];
+        except
+          raise Exception.Create('TWDataSet.DefiniereTabelle Feld '+
+                         Name + ' nicht in FeldTypen gefunden:');
+        end;
 
         myFieldDef:=FieldDefs.AddFieldDef;
         myFieldDef.Name := Name;

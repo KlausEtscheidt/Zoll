@@ -21,12 +21,12 @@ uses
         (N: 'faktbme_pme'; T:ftFloat; C:''),
         (N: 'netto_poswert'; T:ftCurrency; C:''),
         (N: 'pos_nr'; T:ftInteger; C:''),
-        (N: 'stu_t_tg_nr'; T:ftString; C:''),
+        (N: 'stu_t_tg_nr'; T:ftString; C:'Teile-Nr.'),
         (N: 'stu_oa'; T:ftInteger; C:''),
         (N: 'stu_unipps_typ'; T:ftString; C:''),
         (N: 'id_pos'; T:ftInteger; C:''),
         (N: 'besch_art'; T:ftInteger; C:''),
-        (N: 'menge'; T:ftFloat; C:''),
+        (N: 'menge'; T:ftFloat; C:'Menge'),
         (N: 'FA_Nr'; T:ftString; C:''),
         (N: 'verurs_art'; T:ftInteger; C:''),
         (N: 'ueb_s_nr'; T:ftInteger; C:''),
@@ -37,8 +37,8 @@ uses
         (N: 'PreisNonEU'; T:ftCurrency; C:''),
         (N: 'SummeEU'; T:ftCurrency; C:''),
         (N: 'SummeNonEU'; T:ftCurrency; C:''),
-        (N: 'vk_netto'; T:ftCurrency; C:''),
-        (N: 'vk_brutto'; T:ftCurrency; C:''),
+        (N: 'vk_netto'; T:ftCurrency; C:'VK rabattiert'),
+        (N: 'vk_brutto'; T:ftCurrency; C:'VK Brutto'),
         (N: 'Ebene'; T:ftInteger; C:''),
         (N: 't_tg_nr'; T:ftString; C:''),
         (N: 'oa'; T:ftInteger; C:''),
@@ -83,8 +83,6 @@ type
     procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
     procedure ErzeugeAusgabeFuerPreisabfrage;
-    procedure CopyFieldDefs;
-    procedure FiltereSpalten();
     procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
 
@@ -168,14 +166,11 @@ const
 }
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS:=TWDataSet.Create(Self);
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
-  AusgabeDS.Print;
-//  AusgabeDS.Data:=ErgebnisDS.Data;
   BefuelleAusgabeTabelle;
-  AusgabeDS.Print;
+  //Eigenschaften erneut definieren, BatchMove überschreibt diese
   AusgabeDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
-  AusgabeDS.Print;
+//  AusgabeDS.Print;
 
 end;
 
@@ -185,15 +180,13 @@ end;
 procedure TKaDataModule.ErzeugeAusgabeTestumfang;
 const
   Felder: TWFeldNamen =
-            ['EbeneNice',
-            'MengeTotal',
+            ['EbeneNice', 'MengeTotal','bestell_datum',
 //            'PosTyp', 'id_stu','FA_Nr','id_pos','pos_nr',
 //           't_tg_nr', 'Bezeichnung',
 //           'bestell_id','kurzname','PreisJeLME',
 //           'PreisEU','PreisNonEU','SummeEU','SummeNonEU',
            'vk_netto'];
 begin
-  AusgabeDS:=TWDataSet.Create(Self);
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   BefuelleAusgabeTabelle;
@@ -207,12 +200,10 @@ const
            'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS:=TWDataSet.Create(Self);
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
   BefuelleAusgabeTabelle;
   AusgabeDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
 end;
-
 
 //Definiert und belegt die Ausgabe-Tabelle für die offizielle Doku der Analyse
 procedure TKaDataModule.ErzeugeAusgabeFuerPreisabfrage;
@@ -221,8 +212,9 @@ const
                             'vk_brutto', 'vk_netto', 'ZuKAPos'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
-//  PreisFrm.PreisDS.DefiniereSubTabelle(ErgebnisDS, Felder);
   BefuelleAusgabeTabelle(PreisFrm.PreisDS);
+  PreisFrm.PreisDS.DefiniereFeldEigenschaften(ErgebnisFelderDict);
+
 end;
 
 ///<summary>Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
@@ -244,27 +236,6 @@ begin
   //FeldNamen die Liste aller Felder, die in angelegt werden (in dieser Reihenfolge)
   ErgebnisDS:=TWDAtaSet.Create(Self);
   ErgebnisDS.DefiniereTabelle(ErgebnisFelderDict, FeldNamen);
-end;
-
-procedure TKaDataModule.CopyFieldDefs;
-var
-i:Integer;
-myFieldDef:TFieldDef;
-
-begin
-    for I := 0 to ErgebnisDS.FieldDefs.Count do
-    begin
-    end;
-
-end;
-
-procedure TKaDataModule.FiltereSpalten();
-const
-  Felder: TWFeldNamen = ['id_pos','Menge', 'stu_t_tg_nr', 'Bezeichnung',
-                            'vk_brutto', 'vk_netto', 'ZuKAPos'];
-begin
-  ErgebnisDS.FiltereSpalten(Felder);
-
 end;
 
 end.
