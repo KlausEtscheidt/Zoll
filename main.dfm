@@ -67,6 +67,22 @@ object mainFrm: TmainFrm
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'PreisJeLME'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'MengeTotal'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'ZuKAPos'
+        Visible = True
+      end>
   end
   object langBtn: TButton
     Left = 306

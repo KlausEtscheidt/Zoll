@@ -181,7 +181,6 @@ begin
 
     //
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx.xml');
-    KaDataModule.ErgebnisDS.TabelleDefInFile;
 
     ErgebnisAusgabe(KaId);
 
@@ -242,7 +241,6 @@ begin
     KaDataModule.ErgebnisDS.Append;
     KaDataModule.ErgebnisDS.AddData('PreisJeLME',123.345678) ;
     KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx2.xml');
-    KaDataModule.ErgebnisDS.TabelleDefInFile;
     ErgebnisAusgabe('142302');
 end;
 

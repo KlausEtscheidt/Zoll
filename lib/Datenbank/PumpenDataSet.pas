@@ -5,14 +5,14 @@ interface
 uses
   System.SysUtils, System.Classes, StrUtils,  System.Generics.Collections,
    Data.DB, Datasnap.DBClient,
-  Tools, Logger;
+  Logger;
 
 type
   TWFeldTypRecord = record
-    N:String;
-    T:TFieldType;
-    P:Integer;
-    C:String;
+    N:String;  //Feldname
+    T:TFieldType; //Feldtyp
+//    P:Integer;
+    C:String;  //schöner Name Caption für HEader usw
   end;
 
   TWFeldTypenDict = TDictionary<String,TWFeldTypRecord>;
@@ -24,22 +24,12 @@ type
   protected
     { Protected-Deklarationen }
   public
-//    procedure SetEditMode(Datensatz:TBookmark);
     procedure AddData(Felder:TFields);overload;
     procedure AddData(Key:String;Felder:TFields);overload;
     procedure AddData(Key:String;Val:Variant);overload;
-//    procedure EditData(Datensatz:TBookmark;Key:String;Val:Variant);overload;
-//    procedure EditData(Datensatz:TBookmark;Key:String;Felder:TFields);overload;
-
-//    procedure DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
-    procedure TabelleDefInFile();
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
-                                               Felder: TWFeldNamen);overload;
-    procedure DefiniereTabelle(Feldliste: array of TWFeldTypRecord);overload;
-//    procedure DefiniereTabelle(DS2Copy:TWDataSet;
-//                 Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);overload;
+                                               Felder: TWFeldNamen);
     function ToCSV:String;
-    function FieldtypeAsString(aType:TFieldType):String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
 
   published
@@ -80,29 +70,6 @@ begin
     FieldByName(Key).Value:=Val;
 end;
 
-//procedure TWDataSet.SetEditMode(Datensatz:TBookmark);
-//begin
-//    Self.GotoBookmark(Datensatz);
-//    Edit;
-//end;
-
-//procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Felder:TFields);
-//begin
-//    Self.GotoBookmark(Datensatz);
-//    Edit;
-//    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
-//    Post;
-//end;
-//
-//procedure TWDataSet.EditData(Datensatz:TBookmark;Key:String;Val:Variant);
-//begin
-//    Self.GotoBookmark(Datensatz);
-//    Edit;
-//    FieldByName(Key).Value:=Val;
-//    Post;
-//end;
-
-
 function TWDataSet.ToCSV: string;
 const
   Trenner=';';
@@ -117,95 +84,12 @@ begin
     end;
 end;
 
-{
-procedure TWDataSet.DefiniereSubTabelle(DS2Copy:TWDataSet;Filter:TWFeldNamen);
-var
-  OrigFieldDef:TFieldDef;
-  I:Integer;
-  OrigName:String;
-//  WasActive:Boolean;
-
-begin
-
-//  WasActive:=Active;
-  Active:=False;
-
-  FieldDefs.Clear;
-  for I:=0 to length(Filter)-1 do
-  begin
-
-    OrigFieldDef:=DS2Copy.FieldDefs.Find(Filter[i]);
-    with FieldDefs.AddFieldDef do
-    begin
-      DataType := OrigFieldDef.DataType;
-      if DataType= ftFloat then
-        Precision:=2;
-      Size := OrigFieldDef.Size;
-      Name := OrigFieldDef.Name;
-    end;
-
-  end;
-
-  CreateDataSet;
-
-end;
-}
-{
-procedure TWDataSet.DefiniereTabelle(DS2Copy:TWDataSet;
-                    Clear:Boolean;Create:Boolean;Filter:TWFeldNamen=nil);
-var
-  OrigFieldDef:TFieldDef;
-  I:Integer;
-
-begin
-
-  Active:=False;
-  if Clear then FieldDefs.Clear;
-
-  if not DS2Copy.Active then
-    DS2Copy.CreateDataSet;
-
-  for I:=0 to DS2Copy.FieldDefs.Count-1 do
-  begin
-    OrigFieldDef := DS2Copy.FieldDefs.Items[I];
-
-    with FieldDefs.AddFieldDef do
-    begin
-      DataType := OrigFieldDef.DataType;
-      if DataType= ftFloat then
-      begin
-        Precision:=3;
-//        Size:=10;
-      end;
-
-      Size := OrigFieldDef.Size;
-      Name := OrigFieldDef.Name;
-    end;
-  end;
-
-  if Create then CreateDataSet;
-
-end;
-}
-function TWDataSet.FieldtypeAsString(aType:TFieldType):String;
-begin
-  case aType of
-    ftString     :Result:='ftString';
-    ftSmallint   :Result:='ftSmallint';
-    ftInteger    :Result:='ftInteger';
-    ftWord       :Result:='ftWord';
-    ftBoolean    :Result:='ftBoolean';
-    ftFloat      :Result:='ftFloat';
-    ftCurrency   :Result:='ftCurrency';
-    ftDate       :Result:='ftDate';
-    ftTime       :Result:='ftTime';
-    ftDateTime   :Result:='ftDateTime';
-  else
-    raise Exception.Create('Unbekannter Datentyp');
-  end; // case
-
-end;
-
+///<summary>Definiert ein Dataset</summary>
+///<param name="FeldTypen"> Dict mit Eigenschaften aller Felder.
+///Als key dient ein Name aus "Felder".</param>
+///<param name="Felder"> Array mit den Namen aller Felder, die angelegt werden sollen.
+///Das Array definiert auch die Reihenfolge. Die Namen müssen in FeldTypen vorhanden sein.
+/// </param>
 procedure TWDataSet.DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                          Felder: TWFeldNamen);
 var
@@ -235,6 +119,11 @@ var
         myFieldDef:=FieldDefs.AddFieldDef;
         myFieldDef.Name := Name;
         myFieldDef.DataType := myRec.T;
+        if myRec.C<>'' then
+        begin
+          myFieldDef.DisplayName:=myRec.C;
+        end;
+
 
     end;
 
@@ -245,6 +134,15 @@ var
     for I := 0 to Fields.Count-1 do
     begin
         myField:=Fields.Fields[I];
+        myRec:=FeldTypen[myField.FieldName];
+
+        if myRec.C<>'' then
+        begin
+          myFieldDef.DisplayName:=myRec.C;
+          myField.DisplayLabel:=myRec.C;
+        end;
+
+
         if myField.DataType=ftFloat then
         begin
           myFloatField:=TFloatField(myField) ;
@@ -252,85 +150,6 @@ var
         end;
     end;
 
-end;
-
-procedure TWDataSet.DefiniereTabelle(Feldliste: array of TWFeldTypRecord);
-var
-  I:Integer;
-  FieldNo:Integer;
-  myFieldDef:TFieldDef;
-  myField:TField ;
-  myFloatField:TFloatField ;
-begin
-
-    Active:=True;
-
-    FieldDefs.Clear;
-    Fields.Clear;
-    Active:=False;
-
-    //Erst Felder anlegen
-    for I := 0 to length(Feldliste)-1 do
-    begin
-
-        myFieldDef:=FieldDefs.AddFieldDef;
-
-        myFieldDef.Name := Feldliste[I].N;
-
-        myFieldDef.DataType := Feldliste[I].T;
-        if myFieldDef.DataType= ftFloat then
-        begin
-          myFieldDef.Precision:=Feldliste[I].P;
-        end;
-
-    end;
-
-    CreateDataSet;
-
-    //Dann Precision setzen
-    for I := 0 to length(Feldliste)-1 do
-    begin
-
-        if Feldliste[I].T = ftFloat then
-        begin
-          myField:=Fields.FieldByName(Feldliste[I].N);
-          myFloatField:=TFloatField(myField) ;
-          myFloatField.DisplayFormat:='0.##';
-        end;
-
-    end;
-
-end;
-
-//Speichert Felddefinitionen als array of TWFeldTypRecord
-//Dieses kann in den Sourcecode kopiert werden
-procedure TWDataSet.TabelleDefInFile();
-var
-  TxtFile:TLogFile;
-  aFieldDef:TFieldDef;
-  aType:TFieldType;
-  I,J: Integer;
-  Precision:String;
-  txt :String;
-begin
-
-
-  TxtFile:=TLogFile.Create();
-  TxtFile.OpenNew(Tools.LogDir,'TableDef.txt');
-  for I := 0 to FieldDefs.count-1 do
-  begin
-     aFieldDef:=FieldDefs.Items[I];
-     aType:=aFieldDef.DataType;
-     if aFieldDef.Precision<>0 then
-       Precision:= IntToStr(aFieldDef.Precision)
-     else
-        Precision:='5';  //Default
-
-     //Format (N:'Testfeld1'; T:ftString; P:3; C:''),
-     txt:= '(N: ''' + aFieldDef.Name + '''; T:' + FieldtypeAsString(aType) + '; P:' + Precision +'; C:''''),';
-     TxtFile.Log(txt);
-  end;
-  TxtFile.Close;
 end;
 
 procedure TWDataSet.FiltereSpalten(Felder: TWFeldNamen);
