@@ -255,6 +255,7 @@ begin
   //Die Spalten für die Preisabfrage sind im Formular festgelegt
   //Ansonsten ueber naechste Zeile
 //  PreisFrm.PreisDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
+    PreisFrm.PreisDS.Active:=False;
     PreisFrm.PreisDS.CreateDataSet;
 
   //Daten aus Gesamtergebnis uebernehmen und Feldeigenschaften festlegen

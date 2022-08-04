@@ -3,7 +3,7 @@
 interface
 
 uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
-      Tests, Kundenauftrag,  Tools, ADOQuery ,  ADOConnector,
+      Tests, Kundenauftrag,KundenauftragsPos,  Tools, ADOQuery ,  ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS,DatenModul,Preiseingabe  ;
 
 type
@@ -12,7 +12,8 @@ type
 procedure RunItGui;
 procedure RunItKonsole;
 procedure KaAuswerten(KaId:string);
-procedure KaNurAuswerten(ka_id:string);
+procedure KaNurAuswerten(KaId:string);
+function Preisabfrage(KA:TWKundenauftrag): Boolean;
 procedure ErgebnisAusgabe(KaId:string);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
@@ -102,17 +103,17 @@ end;
 
 //Nutzt aus TWKundenauftrag nur .liesKopfundPositionen und .holeKinder
 //Alle Exceptions gekapselt fuer Batchlauf ohne Abbruch
-procedure KaNurAuswerten(ka_id:string);
+procedure KaNurAuswerten(KaId:string);
 var ka:TWKundenauftrag;
 begin
 
     try
-      writeln(ka_id);
-      Tools.Log.Log('------- Kundenauftrag: '+ka_id);
-      Tools.ErrLog.Log('------- Kundenauftrag: '+ka_id);
+      writeln(KaId);
+      Tools.Log.Log('------- Kundenauftrag: '+KaId);
+      Tools.ErrLog.Log('------- Kundenauftrag: '+KaId);
 
       //Ka anlegen
-      ka:=TWKundenauftrag.Create(ka_id);
+      ka:=TWKundenauftrag.Create(KaId);
 
       //Daten lesen und nach SQLite kopieren
       ka.liesKopfundPositionen;
@@ -159,14 +160,7 @@ begin
     //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
 
-    //Daten einsammeln; bis hier nur Kundenauftrag mit Positionen
-    KA.SammleAusgabeDaten;
-
-    // Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
-    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
-    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
-
-    if not (PreisFrm.ShowModal=mrOK) then
+    if not (Preisabfrage(KA)) then
       exit;
 
 //    KaDataModule.ErgebnisDS.EmptyDataSet;
@@ -201,6 +195,69 @@ begin
       ka.Free;
 
   end;
+
+end;
+
+// Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
+function Preisabfrage(KA:TWKundenauftrag):Boolean;
+var
+  VkRabattiert: Double;
+  IdPos,ZuPos:Integer;
+  KaPos,VaterKaPos:TWKundenauftragsPos;
+begin
+
+    //Daten einsammeln; bis hier nur Kundenauftrag mit Positionen
+    KA.SammleAusgabeDaten;
+
+    //User fragen
+    KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+    PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
+
+    if not (PreisFrm.ShowModal=mrOK) then
+    begin
+      Result:=False;
+      exit;
+    end;
+
+    //Preise ins Objekt schreiben
+    PreisFrm.PreisDS.First;
+    while not PreisFrm.PreisDS.Eof do
+    begin
+      VkRabattiert:=PreisFrm.PreisDS.FieldByName('vk_netto').AsFloat;
+      IdPos:=PreisFrm.PreisDS.FieldByName('id_pos').AsInteger;
+      //Hole KAPos aus Stueli des KA
+      KaPos:=TWKundenauftragsPos(KA.Stueli[IdPos]);
+      KaPos.VerkaufsPreisRabattiert:=VkRabattiert;
+      Tools.Log.Log('VK: '+FloatToStr(VkRabattiert));
+      Tools.Log.Flush;
+      PreisFrm.PreisDS.next;
+    end;
+
+    //Positionen die zu anderen Positionen zaehlen sollen (z.B. Motoren) umhaengen
+    PreisFrm.PreisDS.First;
+    while not PreisFrm.PreisDS.Eof do
+    begin
+      ZuPos:=PreisFrm.PreisDS.FieldByName('ZuKAPos').AsInteger;
+      if ZuPos<>0 then
+      begin
+        IdPos:=PreisFrm.PreisDS.FieldByName('id_pos').AsInteger;
+        //Hole Vater-KAPos aus Stueli des KA
+        VaterKaPos:=TWKundenauftragsPos(KA.Stueli[ZuPos]);
+        //Hole Unter-KAPos aus Stueli des KA
+        KaPos:=TWKundenauftragsPos(KA.Stueli[IdPos]);
+        //Fuege Unter-Pos zu VAter-Stueli
+        { TODO :
+  Prüfe ob IdPos in der neuen STU eindeutig ist  Besser ID ab 1000
+  in Stulie prüfen ob dise frei und evtl höhere liefern
+  Wir sind hier erst auf der Ebene KA-Pos. Neu Pos kommen hinzu }
+        VaterKaPos.Stueli.Add(IdPos,KaPos);
+        //Entferne Unter-Pos aus KA-Stueli
+        KA.Stueli.Remove(IdPos);
+      end;
+      PreisFrm.PreisDS.next;
+    end;
+
+
 
 end;
 

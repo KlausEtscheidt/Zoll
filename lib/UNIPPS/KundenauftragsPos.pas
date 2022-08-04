@@ -14,8 +14,6 @@ type
       KaPosIdStu: String;   //nur f Debug, redundant in Posdaten
       KaPosIdPos: Integer;
       KaPosPosNr: String;  //hier nur zum Debuggen, redundant in Posdaten
-      vk_brutto: Double;
-      vk_netto: Double;
       constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
     end;
