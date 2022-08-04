@@ -163,7 +163,6 @@ begin
     KA.SammleAusgabeDaten;
 
     // Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
-    PreisFrm.PreisDS.CreateDataSet;
     KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
     PreisFrm.DataSource1.DataSet:=PreisFrm.PreisDS;
 
@@ -180,7 +179,7 @@ begin
     KA.SammleAusgabeDaten;
 
     //
-    KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx.xml');
+    KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergebnis.xml');
     mainfrm.ActivityIndicator1.Animate:=False;
 
     ErgebnisAusgabe(KaId);
@@ -209,12 +208,12 @@ procedure ErgebnisAusgabe(KaId:String);
 begin
   //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
-  KaDataModule.AusgabeDS.Print;
+  //KaDataModule.AusgabeDS.Print; zum Test der Eigenschaften
 
   //Ausgabe als CSV
   KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Struktur.csv');
 
-  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
+  //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
 
   //Ausgabe als CSV
@@ -223,10 +222,12 @@ begin
   //Daten anzeigen
   if Tools.GuiMode then
   begin
-    KaDataModule.ErzeugeAusgabeVollFuerDebug;
+  KaDataModule.ErzeugeAusgabeVollFuerDebug;
+    //Belege DataSource1 mit dem Default AusgabeDS
     mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
     mainfrm.langBtn.Enabled:=True;
-    mainfrm.langBtn.Enabled:=True;
+    mainfrm.kurzBtn.Enabled:=True;
+    mainfrm.TestBtn.Enabled:=True;
   end;
 
 

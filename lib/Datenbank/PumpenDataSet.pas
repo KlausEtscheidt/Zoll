@@ -30,7 +30,7 @@ type
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                                Felder: TWFeldNamen);
     procedure DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
-    procedure DefiniereReadOnlyFalse(Felder: TWFeldNamen);
+    procedure DefiniereReadOnly(Felder: TWFeldNamen=[]);
     function ToCSV:String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
     procedure print;
@@ -91,12 +91,20 @@ end;
 ///</summary>
 ///<param name="Felder"> Array mit den Namen der Felder,
 ///  die "schreibbar" werden sollen. </param>
-
-procedure TWDataSet.DefiniereReadOnlyFalse(Felder: TWFeldNamen);
+procedure TWDataSet.DefiniereReadOnly(Felder: TWFeldNamen=[]);
 var
   I:Integer;
   myField:TField ;
 begin
+
+    //Erste alle of Read only
+    for I := 0 to Fields.Count-1 do
+    begin
+        myField:=Fields.Fields[I];
+        myField.ReadOnly:=True;
+    end;
+
+    //Dann Ausnahmen zurück setzen
     for I := 0 to length(Felder)-1 do
     begin
 
@@ -167,27 +175,10 @@ var
     CreateDataSet;
 
     //Dann weitere Eigenschaften fuer Felder setzen
-    for I := 0 to Fields.Count-1 do
-    begin
-        myField:=Fields.Fields[I];
-        myRec:=FeldTypen[myField.FieldName];
-
-        if myRec.C<>'' then
-        begin
-//          myField.fieldd .DisplayName:=myRec.C;
-          myField.DisplayLabel:=myRec.C;
-        end;
-
-
-        if myField.DataType=ftFloat then
-        begin
-          myFloatField:=TFloatField(myField) ;
-          myFloatField.DisplayFormat:='0.##';
-        end;
-    end;
-
+    Self.DefiniereFeldEigenschaften(FeldTypen);
 end;
 
+//Eigenschaften fuer Felder setzen
 procedure TWDataSet.DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
 var
   I:Integer;
@@ -199,16 +190,13 @@ var
 
   begin
 
-    //Dann weitere Eigenschaften fuer Felder setzen
     for I := 0 to Fields.Count-1 do
     begin
         myField:=Fields.Fields[I];
         myRec:=FeldTypen[myField.FieldName];
-        myField.ReadOnly:=True;
 
         if myRec.C<>'' then
         begin
-//          myField.fieldd .DisplayName:=myRec.C;
           myField.DisplayLabel:=myRec.C;
         end;
 
