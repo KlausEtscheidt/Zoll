@@ -252,11 +252,13 @@ begin
 
   try
     //Erzeuge Objekt fuer einen Serien FA
-    FAKopf:=TWFAKopf.Create(Self,'FA_Serie', Qry);
+    // Da es nur den einen FA für die STU gibt, id_pos=1
+    FAKopf:=TWFAKopf.Create(Self,'FA_Serie', 1, Qry);
     Tools.Log.Log(FAKopf.ToStr);
 
     // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
-    Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
+    Stueli.Add(1, FAKopf);
+//    Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
 
     // Kinder suchen
     FAKopf.holeKinderAusASTUELIPOS;

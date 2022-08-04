@@ -30,6 +30,7 @@ interface
         constructor Create(einVater:TWStueliPos; aIdStu:String;
                                aIdPos: Integer;eineMenge:Double);
         function SortedKeys(): TWSortedKeyArray;
+        procedure MaxPos(var Versuch:Integer);
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
 
     end;
@@ -104,5 +105,18 @@ begin
   Result:=keyArray;
 end;
 
+procedure TWStueliPos.MaxPos(var Versuch:Integer);
+var
+  max:Integer;
+  keyArray: System.TArray<Integer>;
+begin
+  keyArray:=Self.SortedKeys;
+  if length(keyArray)>0 then
+  begin
+    max := keyArray[length(keyArray)-1];
+    if Versuch<=max then
+      Versuch:=max+1;
+  end;
+end;
 
 end.

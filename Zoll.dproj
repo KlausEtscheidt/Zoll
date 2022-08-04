@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Office SQLite</Config>
+        <Config Condition="'$(Config)'==''">Home</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -200,7 +200,6 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="lib\Datenbank\PumpenDataSet.pas"/>
-        <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
         <DCCReference Include="Preiseingabe.pas">
             <Form>PreisFrm</Form>
             <FormType>dfm</FormType>

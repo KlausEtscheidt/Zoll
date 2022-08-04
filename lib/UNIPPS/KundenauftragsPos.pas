@@ -69,11 +69,12 @@ begin
   lfn:=1;
   //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
   //Zu Doku und Testzwecken werden die FA-K�pfe als Dummy-St�cklisten-Eintr�ge
-  //in die St�ckliste mit aufgenommen
+  //in die Stückliste mit aufgenommen
   while not Qry.Eof do
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
-    FAKopf:=TWFAKopf.Create(Self, 'FA_Komm', Qry);
+    //die id_pos aus der Qry ist die des KA macht daher keinen Sinn
+    FAKopf:=TWFAKopf.Create(Self, 'FA_Komm', lfn, Qry);
     Tools.Log.Log('-------FA Komm -----');
     Tools.Log.Log(FAKopf.ToStr);
 

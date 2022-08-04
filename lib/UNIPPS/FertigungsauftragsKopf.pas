@@ -15,7 +15,8 @@ type
       FA_Nr: String;     //f_auftragkopf.ident_nr
       FaIdStu: String;   //f_auftragkopf.auftr_nr  //nur f Debug
       FaIdPos: Integer;  //f_auftragkopf.auftr_pos
-      constructor Create(einVater: TWUniStueliPos; einTyp: String; AQry: TWUNIPPSQry);
+      constructor Create(einVater: TWUniStueliPos; einTyp: String;
+                                        IdPosFA:Integer; AQry: TWUNIPPSQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
@@ -23,7 +24,7 @@ type
 implementation
 
 constructor TWFAKopf.Create(einVater: TWUniStueliPos; einTyp: String;
-                                                          AQry: TWUNIPPSQry);
+                                          IdPosFA:Integer; AQry: TWUNIPPSQry);
 var
   Menge:Double;
 begin
@@ -41,7 +42,9 @@ begin
   FA_Nr:=Qry.FieldByName('FA_Nr').AsString;
 
   FaIdStu:=Trim(Qry.FieldByName('id_stu').AsString);
-  FaIdPos:=Qry.FieldByName('pos_nr').Value;
+  { TODO : PosNr ist hier die KA-Posnr }
+//  FaIdPos:=Qry.FieldByName('pos_nr').Value;
+  FaIdPos:=IdPosFA;
   Menge:=1; //bei FA immer 1
   inherited Create(einVater, einTyp, FaIdStu, FaIdPos, Menge);
 

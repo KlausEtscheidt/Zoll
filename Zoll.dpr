@@ -24,7 +24,6 @@ uses
   Tests in 'Tests.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
-  StueliEigenschaften in 'lib\Stueli\StueliEigenschaften.pas',
   Preiseingabe in 'Preiseingabe.pas' {PreisFrm};
 
 {$R *.res}

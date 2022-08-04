@@ -9,11 +9,19 @@ uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
 type
     EStuBaumMainExc = class(Exception);
 
+type
+    TWZuordnung=record
+      VaterPos:Integer;
+      KindPos:Integer;
+    end;
+    TWZuordnungen=array of TWZuordnung;
+
 procedure RunItGui;
 procedure RunItKonsole;
 procedure KaAuswerten(KaId:string);
 procedure KaNurAuswerten(KaId:string);
-function Preisabfrage(KA:TWKundenauftrag): Boolean;
+function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
+procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 procedure ErgebnisAusgabe(KaId:string);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
@@ -139,6 +147,7 @@ var
   startzeit,endzeit: Int64;
   delta:Double;
   msg:String;
+  Zuordnungen:TWZuordnungen;
 
 begin
 
@@ -160,15 +169,19 @@ begin
     //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
 
-    if not (Preisabfrage(KA)) then
+    if not (Preisabfrage(KA,Zuordnungen)) then
       exit;
 
 //    KaDataModule.ErgebnisDS.EmptyDataSet;
 //    KaDataModule.ErgebnisDS.SaveToFile();
 
     KA.holeKinder;
+
+    ZuordnungAendern(KA,Zuordnungen);
+
     KA.SetzeEbenenUndMengen(0,1);
     KA.SummierePreise;
+
 
     KA.SammleAusgabeDaten;
 
@@ -189,21 +202,20 @@ begin
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
 
-
   finally
-
       ka.Free;
-
   end;
 
 end;
 
 // Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
-function Preisabfrage(KA:TWKundenauftrag):Boolean;
+function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
 var
   VkRabattiert: Double;
-  IdPos,ZuPos:Integer;
+  I,IdPos,ZuPos:Integer;
   KaPos,VaterKaPos:TWKundenauftragsPos;
+  Zuordnung:TWZuordnung;
+
 begin
 
     //Daten einsammeln; bis hier nur Kundenauftrag mit Positionen
@@ -219,7 +231,7 @@ begin
       exit;
     end;
 
-    //Preise ins Objekt schreiben
+    //Preise ins Objekt schreiben und Zuordnungsliste erstellen
     PreisFrm.PreisDS.First;
     while not PreisFrm.PreisDS.Eof do
     begin
@@ -227,37 +239,50 @@ begin
       IdPos:=PreisFrm.PreisDS.FieldByName('id_pos').AsInteger;
       //Hole KAPos aus Stueli des KA
       KaPos:=TWKundenauftragsPos(KA.Stueli[IdPos]);
+      //VK eintragen
       KaPos.VerkaufsPreisRabattiert:=VkRabattiert;
-      Tools.Log.Log('VK: '+FloatToStr(VkRabattiert));
-      Tools.Log.Flush;
-      PreisFrm.PreisDS.next;
-    end;
 
-    //Positionen die zu anderen Positionen zaehlen sollen (z.B. Motoren) umhaengen
-    PreisFrm.PreisDS.First;
-    while not PreisFrm.PreisDS.Eof do
-    begin
       ZuPos:=PreisFrm.PreisDS.FieldByName('ZuKAPos').AsInteger;
       if ZuPos<>0 then
       begin
-        IdPos:=PreisFrm.PreisDS.FieldByName('id_pos').AsInteger;
-        //Hole Vater-KAPos aus Stueli des KA
-        VaterKaPos:=TWKundenauftragsPos(KA.Stueli[ZuPos]);
-        //Hole Unter-KAPos aus Stueli des KA
-        KaPos:=TWKundenauftragsPos(KA.Stueli[IdPos]);
-        //Fuege Unter-Pos zu VAter-Stueli
-        { TODO :
-  Prüfe ob IdPos in der neuen STU eindeutig ist  Besser ID ab 1000
-  in Stulie prüfen ob dise frei und evtl höhere liefern
-  Wir sind hier erst auf der Ebene KA-Pos. Neu Pos kommen hinzu }
-        VaterKaPos.Stueli.Add(IdPos,KaPos);
-        //Entferne Unter-Pos aus KA-Stueli
-        KA.Stueli.Remove(IdPos);
+        I:=length(Zuordnungen);
+        setlength(Zuordnungen,I+1);
+        Zuordnung.VaterPos:=ZuPos;
+        Zuordnung.KindPos:=IdPos;
+        Zuordnungen[I]:=Zuordnung;
       end;
+
       PreisFrm.PreisDS.next;
     end;
 
+end;
 
+procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
+var
+  I,IdPos:Integer;
+  KindKaPos,VaterKaPos:TWKundenauftragsPos;
+  Zuordnung:TWZuordnung;
+
+begin
+
+    //Positionen die zu anderen Positionen zaehlen sollen (z.B. Motoren) umhaengen
+    for I := 0 to length(Zuordnungen)-1 do
+    begin
+      Zuordnung:=Zuordnungen[I];
+        //Hole Vater-KAPos aus Stueli des KA
+        VaterKaPos:=TWKundenauftragsPos(KA.Stueli[Zuordnung.VaterPos]);
+        //Hole Unter-KAPos aus Stueli des KA
+        KindKaPos:=TWKundenauftragsPos(KA.Stueli[Zuordnung.KindPos]);
+        //Test ob Position noch frei
+        IdPos:=1000;
+        VaterKaPos.MaxPos(IdPos);
+        //Kind-Pos mit geprüfter/korrigierter IdPos in neue Vater-Stueli
+        VaterKaPos.Stueli.Add(IdPos,KindKaPos);
+        //IdPos auf neuen Wert setzen
+        KindKaPos.IdPos:=IdPos;
+        //Entferne Unter-Pos aus ursprünglicher KA-Stueli
+        KA.Stueli.Remove(Zuordnung.KindPos);
+    end;
 
 end;
 
