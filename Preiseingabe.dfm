@@ -4,16 +4,16 @@ object PreisFrm: TPreisFrm
   BorderStyle = bsDialog
   Caption = 'Preiseingabe'
   ClientHeight = 472
-  ClientWidth = 868
+  ClientWidth = 690
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  GlassFrame.Enabled = True
   OldCreateOrder = False
   Position = poMainFormCenter
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -29,105 +29,58 @@ object PreisFrm: TPreisFrm
     Font.Style = []
     ParentFont = False
   end
+  object Panel1: TPanel
+    Left = 8
+    Top = 424
+    Width = 673
+    Height = 40
+    BevelOuter = bvNone
+    TabOrder = 0
+    DesignSize = (
+      673
+      40)
+    object Button2: TButton
+      AlignWithMargins = True
+      Left = 359
+      Top = 6
+      Width = 75
+      Height = 25
+      Anchors = [akTop]
+      Cancel = True
+      Caption = 'Abbrechen'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 239
+      Top = 6
+      Width = 75
+      Height = 25
+      Anchors = [akTop]
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 1
+    end
+  end
   object DBGrid1: TDBGrid
     Left = 8
-    Top = 45
-    Width = 842
-    Height = 108
+    Top = 56
+    Width = 673
+    Height = 345
     DataSource = DataSource1
-    Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-    TabOrder = 0
+    Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
-    OnCellClick = DBGrid1CellClick
-    OnMouseMove = DBGrid1MouseMove
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'id_pos'
-        ReadOnly = True
-        Title.Caption = 'Pos-Nr'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'menge'
-        ReadOnly = True
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'stu_t_tg_nr'
-        ReadOnly = True
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Bezeichnung'
-        ReadOnly = True
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'vk_brutto'
-        ReadOnly = True
-        Visible = True
-      end
-      item
-        Color = clBtnFace
-        Expanded = False
-        FieldName = 'vk_netto'
-        Visible = True
-      end
-      item
-        Color = clBtnFace
-        Expanded = False
-        FieldName = 'ZuKAPos'
-        Title.Caption = 'geh'#246'rt zu'
-        Visible = True
-      end>
-  end
-  object Panel1: TPanel
-    Left = 0
-    Top = 435
-    Width = 868
-    Height = 37
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 1
-    DesignSize = (
-      868
-      37)
-    object Button1: TButton
-      Left = 700
-      Top = 6
-      Width = 75
-      Height = 25
-      Anchors = [akTop, akRight]
-      Caption = 'OK'
-      Default = True
-      ModalResult = 1
-      TabOrder = 0
-    end
-    object Button2: TButton
-      Left = 787
-      Top = 6
-      Width = 75
-      Height = 25
-      Anchors = [akTop, akRight]
-      Cancel = True
-      Caption = 'Abbrechen'
-      ModalResult = 2
-      TabOrder = 1
-    end
   end
   object DataSource1: TDataSource
     DataSet = PreisDS
-    Left = 736
-    Top = 288
+    Left = 496
+    Top = 384
   end
   object PreisDS: TWDataSet
     Aggregates = <>

@@ -30,6 +30,7 @@ type
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                                Felder: TWFeldNamen);
     procedure DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
+    procedure DefiniereReadOnlyFalse(Felder: TWFeldNamen);
     function ToCSV:String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
     procedure print;
@@ -86,6 +87,31 @@ begin
     end;
 end;
 
+///<summary>Setzt die ReadOnly-Eigenschaft der übergebenen Felder auf False
+///</summary>
+///<param name="Felder"> Array mit den Namen der Felder,
+///  die "schreibbar" werden sollen. </param>
+
+procedure TWDataSet.DefiniereReadOnlyFalse(Felder: TWFeldNamen);
+var
+  I:Integer;
+  myField:TField ;
+begin
+    for I := 0 to length(Felder)-1 do
+    begin
+
+        try
+          myField:=Fields.FieldByName(Felder[I]);
+        except
+          raise Exception.Create('TWDataSet.DefiniereReadOnlyFalse Name '+
+                         Felder[I] + ' ist nicht in Feldern des Datasets.');
+        end;
+        myField.ReadOnly:=False;
+    end;
+
+
+end;
+
 ///<summary>Definiert ein Dataset</summary>
 ///<param name="FeldTypen"> Dict mit Eigenschaften aller Felder.
 ///Als key dient ein Name aus "Felder".</param>
@@ -123,7 +149,7 @@ var
           myRec:=FeldTypen[Name];
         except
           raise Exception.Create('TWDataSet.DefiniereTabelle Feld '+
-                         Name + ' nicht in FeldTypen gefunden:');
+                         Name + ' nicht in FeldTypen gefunden.');
         end;
 
         myFieldDef:=FieldDefs.AddFieldDef;
@@ -178,6 +204,7 @@ var
     begin
         myField:=Fields.Fields[I];
         myRec:=FeldTypen[myField.FieldName];
+        myField.ReadOnly:=True;
 
         if myRec.C<>'' then
         begin
