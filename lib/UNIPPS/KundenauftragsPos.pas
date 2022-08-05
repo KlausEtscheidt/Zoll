@@ -81,7 +81,8 @@ begin
     // in Stueck-Liste �bernehmen
     // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
     { TODO 1 : Fa id inStueli pruefen evtl FAKopf.FaIdPos}
-    Stueli.Add(lfn, FAKopf);
+//    Stueli.Add(lfn, FAKopf);
+    StueliAdd(FAKopf);
     lfn:=lfn+1;
 
     // Kinder suchen

@@ -89,7 +89,8 @@ begin
 
     //neue Pos in St�ckliste aufnehmen
 //    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
-    Stueli.Add(KAPos.KaPosIdPos, KAPos);
+//    Stueli.Add(KAPos.KaPosIdPos, KAPos);
+    StueliAdd(KAPos);
     KAQry.next;
   end;
   KAQry.Free;
@@ -128,7 +129,7 @@ begin
 //    TArray.Sort<Integer>(keyArray);
 
   //Loop �ber alle Pos des Kundenauftrages
-  for StueliPosKey in SortedKeys do
+  for StueliPosKey in StueliKeys do
   begin
 //      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
     KaPos:= Stueli[StueliPosKey] As TWKundenauftragsPos;

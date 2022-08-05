@@ -15,6 +15,9 @@
         <Projects Include="DevTools\DefiniereDataSet.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="lib\Stueli\NeueStueliTest.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="DefiniereDataSet:Make">
         <MSBuild Projects="DevTools\DefiniereDataSet.dproj" Targets="Make"/>
     </Target>
+    <Target Name="NeueStueliTest">
+        <MSBuild Projects="lib\Stueli\NeueStueliTest.dproj"/>
+    </Target>
+    <Target Name="NeueStueliTest:Clean">
+        <MSBuild Projects="lib\Stueli\NeueStueliTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NeueStueliTest:Make">
+        <MSBuild Projects="lib\Stueli\NeueStueliTest.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet"/>
+        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet;NeueStueliTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean;DefiniereDataSet:Clean"/>
+        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make;DefiniereDataSet:Make"/>
+        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make;DefiniereDataSet:Make;NeueStueliTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

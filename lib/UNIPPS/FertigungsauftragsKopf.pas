@@ -89,7 +89,8 @@ begin
       begin
         Tools.Log.Log(FAPos.ToStr);
         // in Stueck-Liste übernehmen
-        Stueli.Add(FAPos.FaPosIdPos, FAPos);
+//        Stueli.Add(FAPos.FaPosIdPos, FAPos);
+        StueliAdd(FAPos);
 
         //Rekursiv weiter in ASTUELIPOS suchen wenn Knoten Kinder hat (Feld ds=1)
         If FAPos.KinderInASTUELIPOSerwartet Then

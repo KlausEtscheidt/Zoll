@@ -78,7 +78,8 @@ begin
     begin
 
       // in Stueck-Liste übernehmen
-      Stueli.Add(FAPos.FaPosIdPos, FAPos);
+//      Stueli.Add(FAPos.FaPosIdPos, FAPos);
+      StueliAdd(FAPos);
 
       //------------------ Suche Kinder
       If FAPos.KinderInASTUELIPOSerwartet Then

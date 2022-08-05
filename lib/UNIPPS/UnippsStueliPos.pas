@@ -7,7 +7,7 @@ interface
        Teil, Stueckliste, PumpenDataSet,Tools;
 
   type
-    EWStueliPos=class(Exception);
+    EWUnippsStueliPos=class(Exception);
 
   type
 //    TWTeil= Teil.TWTeil;
@@ -21,6 +21,7 @@ interface
         PosTyp : String;
         //Daten direkt aus UNIPPS
         TeileNr:String;
+        IdPos: Integer;    //UNIPPS-Wert idPos
         PosNr:String;
         OA:Integer;
         UnippsTyp:String;
@@ -78,13 +79,14 @@ constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
                               aIdStu:String;aIdPos: Integer;eMenge:Double);
 begin
 
-  inherited Create(einVater, aIdStu, aIdPos,eMenge);
+  inherited Create(einVater, aIdStu, eMenge);
 
   //Art des Eintrags
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
   { TODO : Check Art der Pos }
 
   PosTyp:=APosTyp;
+  IdPos:= aIdPos;
 
 end;
 
@@ -139,7 +141,7 @@ begin
     if PosTyp='Teil' then
       Menge:=Qry.Fields.FieldByName('menge').AsFloat
     else
-      raise EWStueliPos.Create('Unbekannter Postyp '+PosTyp );
+      raise EWUnippsStueliPos.Create('Unbekannter Postyp '+PosTyp );
 
 end;
 
@@ -190,7 +192,7 @@ begin
 
   if Teil.istKaufteil then
   begin
-      raise EWStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
+      raise EWUnippsStueliPos.Create('Huch Kaufteile sollten hier nicht hinkommen >'
     + Teil.TeileNr + '< gefunden. (holeKindervonEndKnoten)');
     Tools.Log.Log('Kaufteil gefunden' + Self.ToStr)
   end
@@ -222,7 +224,7 @@ begin
           raiseNixGefunden
   end
   else
-    raise EWStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeileNr + '<');
+    raise EWUnippsStueliPos.Create('Unbekannte Beschaffungsart für Teil>' + Teil.TeileNr + '<');
 
 end;
 
@@ -257,7 +259,8 @@ begin
     Tools.Log.Log(FAKopf.ToStr);
 
     // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
-    Stueli.Add(1, FAKopf);
+//    Stueli.Add(1, FAKopf);
+    StueliAdd(FAKopf);
 //    Stueli.Add(StrToInt (FAKopf.FA_Nr), FAKopf);
 
     // Kinder suchen
@@ -302,7 +305,8 @@ begin
           Tools.Log.Log(TeilInStu.ToStr);
 
           //in Stueck-Liste �bernehmen
-          Stueli.Add(TeilInStu.TeilIdPos, TeilInStu);
+//          Stueli.Add(TeilInStu.TeilIdPos, TeilInStu);
+          StueliAdd(TeilInStu);
 
           //merken als Teil noch ohne Kinder fuer weitere Suchl�ufe
           if not TeilInStu.Teil.istKaufteil then
@@ -349,7 +353,7 @@ begin
               Exit;
 
   //Preise der Unterpositionen summieren
-  for StueliPosKey in SortedKeys  do
+  for StueliPosKey in StueliKeys  do
   begin
 //    StueliPos:= Stueli[StueliPosKey].AsType<TWUniStueliPos>;
     StueliPos:= Stueli[StueliPosKey] As TWUniStueliPos;
@@ -463,13 +467,13 @@ begin
   end;
 
   //Zurueck, wenn Pos keine Kinder hat
-  if Stueli.Count=0 then
+  if StueliPosCount=0 then
     exit;
 
   //Wenn Kinder da, gehen wir tiefer; vorher Stuli sortieren
 
   //In sortierter Reihenfolge
-  for StueliPosKey in SortedKeys  do
+  for StueliPosKey in StueliKeys  do
   begin
       TWUniStueliPos(Stueli[StueliPosKey]).StrukturInErgebnisTabelle(ZielDS, False);
   end;
@@ -486,7 +490,7 @@ procedure TWUniStueliPos.raiseNixGefunden();
 begin
                                 { TODO : kein Abbruch im Batchmodus }
   exit;
-    raise EWStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
+    raise EWUnippsStueliPos.Create('Oh je. Keine Kinder zum Nicht-Kaufteil>'
   + Teil.TeileNr + '< gefunden.')
 end;
 

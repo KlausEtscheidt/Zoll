@@ -277,11 +277,12 @@ begin
         IdPos:=1000;
         VaterKaPos.MaxPos(IdPos);
         //Kind-Pos mit geprüfter/korrigierter IdPos in neue Vater-Stueli
-        VaterKaPos.Stueli.Add(IdPos,KindKaPos);
+//        VaterKaPos.Stueli.Add(IdPos,KindKaPos);
+        VaterKaPos.StueliAdd(KindKaPos);
         //IdPos auf neuen Wert setzen
         KindKaPos.IdPos:=IdPos;
         //Entferne Unter-Pos aus ursprünglicher KA-Stueli
-        KA.Stueli.Remove(Zuordnung.KindPos);
+//        KA.Stueli.Remove(Zuordnung.KindPos);
     end;
 
 end;
