@@ -1,4 +1,4 @@
-unit Stueckliste;
+ï»¿unit Stueckliste;
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
@@ -17,37 +17,38 @@ interface
 
     TWStueliPos = class
       private
-        FStueli: TDictionary<Integer, TWStueliPos>;    //Hält die Kinder-Positionen
+        FStueli: TDictionary<Integer, TWStueliPos>;    //Hï¿½lt die Kinder-Positionen
         function SortedKeys(): TWSortedKeyArray;
         function GetStueli(Key: Integer): TWStueliPos;
         function GetStueliPosCount:Integer;
-
-      protected
+        function GetIdStuVater:String;
       public
         Vater: TWStueliPos;  //Vaterknoten
-        IdStu: String;     //Id der übergeordneten Stueli
-        StueliKey:Integer; //Eindeutige ID für das Stueli-Dictionary
+//        IdStuVater: String;     //Id der Ã¼bergeordneten Stueli
+        IdStu: String;     //Id der eigenen Stueli
+
+        StueliKey:Integer; //Eindeutige ID fï¿½r das Stueli-Dictionary
                             //wird vom System aut. vergeben
         Ebene: Integer;
         EbeneNice: String;
-        Menge: Double;     //Menge von Self in IdStu (beliebige Einheiten)
-        MengeTotal: Double; //Gesamt-Menge (mit übergeordneten Mengen mult.)
+        Menge: Double;     //Menge von Self in IdStuVater (beliebige Einheiten)
+        MengeTotal: Double; //Gesamt-Menge (mit ï¿½bergeordneten Mengen mult.)
 
 
         hatTeil:Boolean;
-        constructor Create(einVater:TWStueliPos; aIdStu:String;
-                               eineMenge:Double);
-//        procedure MaxPos(var Versuch:Integer);
+        constructor Create(einVater:TWStueliPos;
+                               aIdStu:String;eineMenge:Double);
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
         procedure StueliAdd(APos: TWStueliPos);
-        procedure StueliMove(APos: TWStueliPos);
-        procedure StueliMoveChildren(APos: TWStueliPos);
+        procedure StueliTakePosFrom(APos: TWStueliPos);
+        procedure StueliTakeChildrenFrom(APos: TWStueliPos);
         procedure ReMove();
+        function PosToStr():String;
+        function BaumAlsText(txt:String): String;
         property Stueli[Key: Integer]: TWStueliPos read GetStueli;
         property StueliKeys: TWSortedKeyArray read SortedKeys;
         property StueliPosCount: Integer read GetStueliPosCount;
-        function PosToStr():String;
-        function BaumAlsText(txt:String): String;
+        property IdStuVater:String read GetIdStuVater;
 
     end;
 
@@ -56,8 +57,8 @@ interface
 implementation
 
 
-constructor TWStueliPos.Create(einVater:TWStueliPos; aIdStu:String;
-                                    eineMenge:Double);
+constructor TWStueliPos.Create(einVater:TWStueliPos;
+                               aIdStu:String;eineMenge:Double);
 begin
   IdStu:= aIdStu;
   Vater:= einVater;
@@ -69,6 +70,14 @@ begin
   //noch kein Teil zugeordnet (Teil wird auch nicht fuer alle PosTyp gesucht)
   hatTeil:=False;
 
+end;
+
+function TWStueliPos.GetIdStuVater:String;
+begin
+  if Vater<>nil then
+    Result:= Vater.IdStu
+  else
+    Result:='';
 end;
 
 //Holt mittels Key eine Pos aus Stueli
@@ -85,7 +94,7 @@ end;
 
 //Verschiebt die Kinder von APos zur Stueli von Self und
 //entfernt die Pos und die Kinder aus der alten Stueli
-procedure TWStueliPos.StueliMoveChildren(APos: TWStueliPos);
+procedure TWStueliPos.StueliTakeChildrenFrom(APos: TWStueliPos);
 var
   KindPos: TWStueliPos;
   Key:Integer;
@@ -93,43 +102,39 @@ var
 begin
     for Key in APos.StueliKeys do
     begin
-     //KindPos Pos aus alter Stu löschen
+     //KindPos Pos aus alter Stu lÃ¶schen
      KindPos:=APos.Stueli[Key];
-     KindPos.ReMove;
-     //KindPos Pos in eigene Stu übernehmen
-     Self.StueliAdd(KindPos);
+     SElf.StueliTakePosFrom(KindPos)
+//     KindPos.ReMove;
+     //KindPos Pos in eigene Stu Ã¼bernehmen
+//     Self.StueliAdd(KindPos);
     end;
-    // APos aus alter Stu löschen
-    APos.ReMove;
-    // Apos loeschen
-    APos.Free;
 end;
 
 
 //Verschiebt APos zur Stueli von Self und entfernt die Pos aus der alten Stueli
-procedure TWStueliPos.StueliMove(APos: TWStueliPos);
+procedure TWStueliPos.StueliTakePosFrom(APos: TWStueliPos);
 begin
-   //Neue Pos aus alter Stu löschen
+   //Neue Pos aus alter Stu lï¿½schen
    APos.ReMove;
-   //Neue Pos in eigene Stu übernehmen
+   //Neue Pos in eigene Stu ï¿½bernehmen
    Self.StueliAdd(APos);
    //Korrigiere Vaterknoten
    APos.Vater:=Self;
-   //Korrigiere IdStu
 
 end;
 
-//Position entfernt sich selbst aus Ihrer Vater-Stückliste
+//Position entfernt sich selbst aus Ihrer Vater-Stï¿½ckliste
 procedure TWStueliPos.ReMove();
 begin
-   //Position aus alter Stu löschen
+   //Position aus alter Stu lï¿½schen
    Self.Vater.FStueli.Remove(Self.StueliKey);
    //Position freigeben: StueliKey auf 0
    Self.StueliKey:=0;
 end;
 
 
-//Die Stueckliste wird in der Reihenfolge des Aufrufes dieser Funktion befüllt
+//Die Stueckliste wird in der Reihenfolge des Aufrufes dieser Funktion befï¿½llt
 procedure TWStueliPos.StueliAdd(APos: TWStueliPos);
 var
   Key:Integer;
@@ -150,7 +155,7 @@ begin
     //Erster Eintrag
     Key:=1
   else
-    //Neuer Key 1 höher als bisher letzter Key
+    //Neuer Key 1 hï¿½her als bisher letzter Key
     Key := keyArray[length(keyArray)-1] + 1 ;
 
   //Neue Pos in Stueckliste
@@ -166,8 +171,8 @@ end;
 //Liefert wichtige Felder in einem String verkettet
 function TWStueliPos.PosToStr():String;
 begin
-  Result:=Format('<Ebene %s Stu %s Pos %d Menge %5.2f>',
-               [EbeneNice, IdStu, StueliKey, Menge ]) + #13 ;
+  Result:=Format('<Ebene %s zu Stu %s bin Stu %s Pos %d Menge %5.2f>',
+               [EbeneNice, IdStuVater, IdStu, StueliKey, Menge ]) + #13 ;
 end;
 
 //--------------------------------------------------------------------------
@@ -194,7 +199,7 @@ begin
   end;
 end;
 
-// Hinzufügen der Ebenen und Gesamtmengen
+// Hinzufï¿½gen der Ebenen und Gesamtmengen
 //--------------------------------------------------------------------------
 procedure TWStueliPos.SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
 
@@ -206,7 +211,7 @@ begin
 
   Ebene:=Level;
   EbeneNice := StringOfChar('.', Ebene-1) + IntToStr(Ebene);
-  MengeTotal:=Menge*UebMenge;  //Eigene Menge mal übergeordnete
+  MengeTotal:=Menge*UebMenge;  //Eigene Menge mal ï¿½bergeordnete
 
   //Zurueck, wenn Pos keine Kinder hat
   if FStueli.Count=0 then

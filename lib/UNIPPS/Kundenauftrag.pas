@@ -11,10 +11,10 @@ type
   TWKundenauftrag = class(TWUniStueliPos)
   private
   public
-    ka_id: String;
+    KaId: String;
     komm_nr: String;
     kunden_id: Integer;
-    constructor Create(new_ka_id: String);
+    constructor Create(NewKaId: String);
     procedure liesKopfundPositionen;
     procedure holeKinder;
     procedure SammleAusgabeDaten;
@@ -22,11 +22,11 @@ type
 
 implementation
 
-constructor TWKundenauftrag.Create(new_ka_id: String);
+constructor TWKundenauftrag.Create(NewKaId: String);
 begin
-  //Top-Knoten hat keine IdStu,IdPos=1;Menge=1.
-  inherited Create(nil, 'KA','',1,1);
-  ka_id := new_ka_id;
+  //Top-Knoten hat keine IdStuVater,IdPos=1;Menge=1.
+  inherited Create(nil, 'KA',NewKaId,1);
+  KaId := NewKaId;
 end;
 
 procedure TWKundenauftrag.SammleAusgabeDaten;
@@ -55,10 +55,10 @@ begin
 
   // Abfrage zum Lesen des Kundenauftrags und seiner Positionen
   KAQry := Tools.getQuery;
-  gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+  gefunden := KAQry.SucheKundenAuftragspositionen(KaId);
 
   if not gefunden then
-    raise Exception.Create('Keine Positionen zu KA '+ka_id + ' gefunden.');
+    raise Exception.Create('Keine Positionen zu KA '+KaId + ' gefunden.');
 
   // Daten aus dem Auftragskopf
   komm_nr := trim(KAQry.FieldByName('klassifiz').AsString);
@@ -111,7 +111,7 @@ var StueliPosKey: Integer;
 //var keyArray: System.TArray<Integer>;
 var KaPos: TWKundenauftragsPos;
 var alteEndKnotenListe: TWEndKnotenListe;
-var EndKnoten: TWValue;
+var EndKnoten: TWUniStueliPos;
 var txt:String;
 
 begin
@@ -160,7 +160,7 @@ begin
     //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
     for EndKnoten in alteEndKnotenListe do
     begin
-      StueliPos:= EndKnoten.AsType<TWUniStueliPos>;
+      StueliPos:= EndKnoten As TWUniStueliPos;
       Tools.Log.Log('------Suche fuer Endknoten ----------');
       txt:=StueliPos.ToStr;
       Tools.Log.Log(txt);

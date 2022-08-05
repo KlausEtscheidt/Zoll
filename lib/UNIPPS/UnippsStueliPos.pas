@@ -44,7 +44,9 @@ interface
         Teil : TWTeil;
 
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
-                      aIdStu:String;aIdPos: Integer;eMenge:Double);
+                      aIdStuVater:String;aIdPos: Integer;eMenge:Double);overload;
+        constructor Create(einVater: TWUniStueliPos; APosTyp:String;
+           aIdStu:String;eMenge:Double);overload;
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
         procedure SucheTeilzurStueliPos();
         procedure holeKindervonEndKnoten();
@@ -76,7 +78,22 @@ uses Kundenauftrag,KundenauftragsPos,FertigungsauftragsKopf,
 // Create
 //---------------------------------------------------------------------
 constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
-                              aIdStu:String;aIdPos: Integer;eMenge:Double);
+                              aIdStuVater:String;aIdPos: Integer;eMenge:Double);
+begin
+
+  inherited Create(einVater, aIdStuVater, eMenge);
+
+  //Art des Eintrags
+  //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
+  { TODO : Check Art der Pos }
+
+  PosTyp:=APosTyp;
+  IdPos:= aIdPos;
+
+end;
+
+constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
+                aIdStu:String;eMenge:Double);
 begin
 
   inherited Create(einVater, aIdStu, eMenge);
@@ -86,7 +103,6 @@ begin
   { TODO : Check Art der Pos }
 
   PosTyp:=APosTyp;
-  IdPos:= aIdPos;
 
 end;
 
@@ -105,8 +121,7 @@ begin
 
     //Allgemeingueltige Felder
     //-----------------------------------------------
-    IdStu:=Qry.Fields.FieldByName('id_stu').AsString;
-    PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
+//    IdStuVater:=Qry.Fields.FieldByName('id_stu').AsString;
     TeileNr:=Qry.Fields.FieldByName('stu_t_tg_nr').AsString;
     OA:=Qry.Fields.FieldByName('stu_oa').AsInteger;
     UnippsTyp:=Qry.Fields.FieldByName('stu_unipps_typ').AsString;
@@ -115,6 +130,7 @@ begin
     //-----------------------------------------------
     if PosTyp='KA_Pos' then
     begin
+      PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
       IdPos:=Qry.Fields.FieldByName('id_pos').AsInteger;
       BeschaffungsArt:=Qry.Fields.FieldByName('besch_art').AsInteger;
       Menge:=Qry.Fields.FieldByName('menge').AsFloat;
@@ -130,6 +146,7 @@ begin
     else
     if PosTyp='FA_Pos' then
     begin
+      PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
       IdPos:=Qry.Fields.FieldByName('id_pos').AsInteger;
       UebergeordneteStueNr:=Qry.Fields.FieldByName('ueb_s_nr').AsInteger;
       Ds:=Qry.Fields.FieldByName('ds').AsInteger;
@@ -139,7 +156,10 @@ begin
     end
     else
     if PosTyp='Teil' then
-      Menge:=Qry.Fields.FieldByName('menge').AsFloat
+      begin
+        PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
+        Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+      end
     else
       raise EWUnippsStueliPos.Create('Unbekannter Postyp '+PosTyp );
 
@@ -255,7 +275,7 @@ begin
   try
     //Erzeuge Objekt fuer einen Serien FA
     // Da es nur den einen FA für die STU gibt, id_pos=1
-    FAKopf:=TWFAKopf.Create(Self,'FA_Serie', 1, Qry);
+    FAKopf:=TWFAKopf.Create(Self,'FA_Serie', Qry);
     Tools.Log.Log(FAKopf.ToStr);
 
     // Da es nur den einen FA f�r die STU gibt, mit Index 1 in Stueck-Liste �bernehmen
@@ -408,7 +428,7 @@ procedure TWUniStueliPos.DatenInAusgabe(ZielDS:TWDataSet);
 begin
   //ZielDS.Append;
 
-  ZielDS.AddData('id_stu',IdStu);  //In Basisklasse
+  ZielDS.AddData('id_stu',IdStuVater);  //In Basisklasse
   ZielDS.AddData('pos_nr',PosNr);
   ZielDS.AddData('stu_t_tg_nr',TeileNr);
   ZielDS.AddData('stu_oa',OA);
@@ -446,7 +466,7 @@ end;
 //Liefert alle Eigenschaften in Werte in einem String verkettet
 function TWUniStueliPos.ToStr():String;
 begin
-  Result:=Format('%s Stu %s Pos %d',[PosTyp, IdStu, IdPos ]);
+  Result:=Format('%s Stu %s Pos %d',[PosTyp, IdStuVater, IdPos ]);
 end;
 
 

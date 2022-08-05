@@ -17,7 +17,7 @@ type
       istToplevel:Boolean;
       KinderInASTUELIPOSerwartet:Boolean;
 
-      FaPosIdStu: String;
+      FaPosIdStuVater: String;
       FaPosIdPos: Integer;
       FaPosPosNr: String;  //nur zum Debuggen
       constructor Create(einVater: TWUniStueliPos; AQry: TWUNIPPSQry);
@@ -34,11 +34,11 @@ begin
    astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos
   astuelipos.pos_nr, astuelipos.t_tg_nr}
 
-  FaPosIdStu:=Qry.FieldByName('id_stu').AsString;     //nur f Debug
+  FaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;     //nur f Debug
   FaPosIdPos:=Qry.FieldByName('id_pos').Value;
   FaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
   Menge:=Qry.FieldByName('menge').Value;
-  inherited Create(einVater, 'FA_Pos', FaPosIdStu, FaPosIdPos, Menge);
+  inherited Create(einVater, 'FA_Pos', FaPosIdStuVater, FaPosIdPos, Menge);
 
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);

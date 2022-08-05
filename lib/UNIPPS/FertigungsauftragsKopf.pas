@@ -13,10 +13,10 @@ type
       { protected declarations }
     public
       FA_Nr: String;     //f_auftragkopf.ident_nr
-      FaIdStu: String;   //f_auftragkopf.auftr_nr  //nur f Debug
-      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
+//      FaIdStuVater: String;   //f_auftragkopf.auftr_nr  //nur f Debug
+//      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
       constructor Create(einVater: TWUniStueliPos; einTyp: String;
-                                        IdPosFA:Integer; AQry: TWUNIPPSQry);
+                                        AQry: TWUNIPPSQry);
       procedure holeKinderAusASTUELIPOS;
 
     end;
@@ -24,7 +24,7 @@ type
 implementation
 
 constructor TWFAKopf.Create(einVater: TWUniStueliPos; einTyp: String;
-                                          IdPosFA:Integer; AQry: TWUNIPPSQry);
+                                          AQry: TWUNIPPSQry);
 var
   Menge:Double;
 begin
@@ -41,12 +41,13 @@ begin
 
   FA_Nr:=Qry.FieldByName('FA_Nr').AsString;
 
-  FaIdStu:=Trim(Qry.FieldByName('id_stu').AsString);
+//  FaIdStuVater:=Trim(Qry.FieldByName('id_stu').AsString);
   { TODO : PosNr ist hier die KA-Posnr }
 //  FaIdPos:=Qry.FieldByName('pos_nr').Value;
-  FaIdPos:=IdPosFA;
+//  FaIdPos:=IdPosFA;
   Menge:=1; //bei FA immer 1
-  inherited Create(einVater, einTyp, FaIdStu, FaIdPos, Menge);
+  //FA_Nr als eigene ID_Stu
+  inherited Create(einVater, einTyp, FA_Nr, Menge);
 
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
@@ -68,7 +69,7 @@ begin
 
   if not gefunden then
   begin
-    msg:=Format('Keine Positionen zum FA >%s< >%s<gefunden.',[FA_Nr,FaIdStu]);
+    msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
     Tools.ErrLog.Flush;

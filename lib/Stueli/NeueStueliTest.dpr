@@ -11,7 +11,7 @@ uses
 
 var
   TopPos,SubPos,XPos:TWStueliPos;
-  VaterPos,KindPos:TWStueliPos;
+  VaterPos,KindPos,EnkelPos,UrEnkelPos:TWStueliPos;
   txt:String;
   Key:Integer;
   Log:TLogFile;
@@ -28,11 +28,11 @@ begin
     Log.OpenNew(BaseDir,'StrukTest.txt');
 
     TopPos:=TWStueliPos.Create(nil,'keineStu',1);
-    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu',25);
+    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu_1',25);
     TopPos.StueliAdd(SubPos);
-    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu',15);
+    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu_2',15);
     TopPos.StueliAdd(SubPos);
-    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu',5);
+    SubPos:=TWStueliPos.Create(TopPos,'IDmeineStu_3',5);
     TopPos.StueliAdd(SubPos);
     XPos:=TopPos.Stueli[1];
     for Key in TopPos.StueliKeys do
@@ -49,7 +49,7 @@ begin
     // unter den 1. Eintrag (Key=1) der Liste von TopPos
     VaterPos:=TopPos.Stueli[1];
     KindPos:=TopPos.Stueli[3];
-    VaterPos.StueliMove(KindPos);
+    VaterPos.StueliTakePosFrom(KindPos);
 
     TopPos.SetzeEbenenUndMengen(1,1);
     txt:='verschoben' + #10;
@@ -57,10 +57,37 @@ begin
     Log.Log(txt);
 
     //Und das Ganze zurück
-    TopPos.StueliMove(KindPos);
+    TopPos.StueliTakePosFrom(KindPos);
 
     TopPos.SetzeEbenenUndMengen(1,1);
     txt:='zurück verschoben' + #10;
+    txt:= TopPos.BaumAlsText(txt);
+    Log.Log(txt);
+
+    //Enkel dazu
+    XPos:=TopPos.Stueli[2];
+    EnkelPos:=TWStueliPos.Create(XPos,'Enkel',10);
+    XPos.StueliAdd(EnkelPos);
+
+    UrEnkelPos:=TWStueliPos.Create(EnkelPos,'Ur Enkel 1',100);
+    EnkelPos.StueliAdd(UrEnkelPos);
+    UrEnkelPos:=TWStueliPos.Create(EnkelPos,'Ur Enkel 2',200);
+    EnkelPos.StueliAdd(UrEnkelPos);
+    UrEnkelPos:=TWStueliPos.Create(EnkelPos,'Ur Enkel 3',300);
+    EnkelPos.StueliAdd(UrEnkelPos);
+
+    TopPos.SetzeEbenenUndMengen(1,1);
+    txt:='Jetzt mit Enkeln' + #10;
+    txt:= TopPos.BaumAlsText(txt);
+    Log.Log(txt);
+
+    //Ur-Enkel verschieben
+    VaterPos:=TopPos.Stueli[2];
+    VaterPos.StueliTakeChildrenFrom(EnkelPos);
+    EnkelPos.ReMove;
+
+    TopPos.SetzeEbenenUndMengen(1,1);
+    txt:='Jetzt mit verschobenen Ur-Enkeln' + #10;
     txt:= TopPos.BaumAlsText(txt);
     Log.Log(txt);
 

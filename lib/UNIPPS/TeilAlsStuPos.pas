@@ -14,7 +14,7 @@ type
 Datenherkunft uns SQL Zusammenhänge prüfen und dokumentieren
 insbes t_tg_nr }
       TeilInStuTeilenummer: String; //= t_tg_nr
-      TeilIdStu: String; //Achtung hier Teilenummer  //nur f Debug
+      TeilIdStuVater: String; //Achtung hier Teilenummer  //nur f Debug
       TeilIdPos: Integer; //teil_stuelipos.pos_nr
       constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry);
     end;
@@ -29,10 +29,10 @@ begin
   liefert  teil_stuelipos.ident_nr1 As id_stu, teil_stuelipos.pos_nr,
    teil_stuelipos.t_tg_nr }
 
-  TeilIdStu:=Qry.FieldByName('id_stu').AsString;
+  TeilIdStuVater:=Qry.FieldByName('id_stu').AsString;
   TeilIdPos:=Qry.FieldByName('pos_nr').AsInteger;
   Menge:=Qry.FieldByName('menge').AsFloat;
-  inherited Create(einVater, 'Teil', TeilIdStu, TeilIdPos, Menge);
+  inherited Create(einVater, 'Teil', TeilIdStuVater, TeilIdPos, Menge);
 
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);

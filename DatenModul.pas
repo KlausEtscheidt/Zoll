@@ -13,14 +13,14 @@ uses
     AlleErgebnisFelder: array [0..48] of TWFeldTypRecord =
      (
         (N: 'EbeneNice'; T:ftString; C:'Ebene'),
-        (N: 'id_stu'; T:ftString; C:''),
+        (N: 'id_stu'; T:ftString; C:'zu Stu'),
         (N: 'PreisJeLME'; T:ftCurrency; C:''),
         (N: 'MengeTotal'; T:ftFloat; C:''),
         (N: 'faktlme_sme'; T:ftFloat; C:''),
         (N: 'faktlme_bme'; T:ftFloat; C:''),
         (N: 'faktbme_pme'; T:ftFloat; C:''),
         (N: 'netto_poswert'; T:ftCurrency; C:''),
-        (N: 'pos_nr'; T:ftInteger; C:'Pos-Nr'),
+        (N: 'pos_nr'; T:ftString; C:'Pos-Nr'),
         (N: 'stu_t_tg_nr'; T:ftString; C:'Teile-Nr'),
         (N: 'stu_oa'; T:ftInteger; C:''),
         (N: 'stu_unipps_typ'; T:ftString; C:''),

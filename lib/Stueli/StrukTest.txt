@@ -1,6 +1,10 @@
 ﻿Orig
-<Ebene 1 Stu keineStu Pos 0 Menge  1,00><Ebene .2 Stu IDmeineStu Pos 1 Menge 25,00><Ebene .2 Stu IDmeineStu Pos 2 Menge 15,00><Ebene .2 Stu IDmeineStu Pos 3 Menge  5,00>
+<Ebene 1 zu Stu  bin Stu keineStu Pos 0 Menge  1,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_1 Pos 1 Menge 25,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_2 Pos 2 Menge 15,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_3 Pos 3 Menge  5,00>
 verschoben
-<Ebene 1 Stu keineStu Pos 0 Menge  1,00><Ebene .2 Stu IDmeineStu Pos 1 Menge 25,00><Ebene ..3 Stu IDmeineStu Pos 1 Menge  5,00><Ebene .2 Stu IDmeineStu Pos 2 Menge 15,00>
+<Ebene 1 zu Stu  bin Stu keineStu Pos 0 Menge  1,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_1 Pos 1 Menge 25,00><Ebene ..3 zu Stu IDmeineStu_1 bin Stu IDmeineStu_3 Pos 1 Menge  5,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_2 Pos 2 Menge 15,00>
 zurück verschoben
-<Ebene 1 Stu keineStu Pos 0 Menge  1,00><Ebene .2 Stu IDmeineStu Pos 1 Menge 25,00><Ebene .2 Stu IDmeineStu Pos 2 Menge 15,00><Ebene .2 Stu IDmeineStu Pos 3 Menge  5,00>
+<Ebene 1 zu Stu  bin Stu keineStu Pos 0 Menge  1,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_1 Pos 1 Menge 25,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_2 Pos 2 Menge 15,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_3 Pos 3 Menge  5,00>
+Jetzt mit Enkeln
+<Ebene 1 zu Stu  bin Stu keineStu Pos 0 Menge  1,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_1 Pos 1 Menge 25,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_2 Pos 2 Menge 15,00><Ebene ..3 zu Stu IDmeineStu_2 bin Stu Enkel Pos 1 Menge 10,00><Ebene ...4 zu Stu Enkel bin Stu Ur Enkel 1 Pos 1 Menge 100,00><Ebene ...4 zu Stu Enkel bin Stu Ur Enkel 2 Pos 2 Menge 200,00><Ebene ...4 zu Stu Enkel bin Stu Ur Enkel 3 Pos 3 Menge 300,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_3 Pos 3 Menge  5,00>
+Jetzt mit verschobenen Ur-Enkeln
+<Ebene 1 zu Stu  bin Stu keineStu Pos 0 Menge  1,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_1 Pos 1 Menge 25,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_2 Pos 2 Menge 15,00><Ebene ..3 zu Stu IDmeineStu_2 bin Stu Ur Enkel 1 Pos 2 Menge 100,00><Ebene ..3 zu Stu IDmeineStu_2 bin Stu Ur Enkel 2 Pos 3 Menge 200,00><Ebene ..3 zu Stu IDmeineStu_2 bin Stu Ur Enkel 3 Pos 4 Menge 300,00><Ebene .2 zu Stu keineStu bin Stu IDmeineStu_3 Pos 3 Menge  5,00>

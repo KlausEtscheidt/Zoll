@@ -11,7 +11,7 @@ type
       Rabatt:Double;
     public
       //Einige Felder mit eindeutigen Namen zur Unterscheidung von Basisklasse
-      KaPosIdStu: String;   //nur f Debug, redundant in Posdaten
+      KaPosIdStuVater: String;   //nur f Debug, redundant in Posdaten
       KaPosIdPos: Integer;
       KaPosPosNr: String;  //hier nur zum Debuggen, redundant in Posdaten
       constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
@@ -23,16 +23,18 @@ implementation
 constructor TWKundenauftragsPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
 var
   Menge:Double;
+  IdStu:String;
 begin
   //UNIPPS-Mapping  auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
   // auftragpos.pos as pos_nr,
   { TODO : einiges doppelt hier ? }
-  KaPosIdStu:=Qry.FieldByName('id_stu').AsString;
+  KaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;
   KaPosIdPos:=Qry.FieldByName('id_pos').Value;
   KaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
+  IdStu:=KaPosIdStuVater+'_'+ KaPosPosNr;
 //  Menge:=Qry.FieldByName('menge').Value;
 //  Menge:=0;
-  inherited Create(einVater, 'KA_Pos', KaPosIdStu, KaPosIdPos, Menge);
+  inherited Create(einVater, 'KA_Pos', IdStu, Menge);
 
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);
@@ -57,7 +59,7 @@ var lfn: Integer;
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := Tools.getQuery;
-  gefunden := Qry.SucheFAzuKAPos(KaPosIdStu, KaPosIdPos );
+  gefunden := Qry.SucheFAzuKAPos(KaPosIdStuVater, KaPosIdPos );
 
   if not gefunden then
   begin
@@ -66,7 +68,7 @@ begin
     Exit;
   end;
 
-  lfn:=1;
+//  lfn:=1;
   //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
   //Zu Doku und Testzwecken werden die FA-K�pfe als Dummy-St�cklisten-Eintr�ge
   //in die Stückliste mit aufgenommen
@@ -74,7 +76,7 @@ begin
   begin
     //Erzeuge Objekt fuer einen auftragsbezogenen FA
     //die id_pos aus der Qry ist die des KA macht daher keinen Sinn
-    FAKopf:=TWFAKopf.Create(Self, 'FA_Komm', lfn, Qry);
+    FAKopf:=TWFAKopf.Create(Self, 'FA_Komm', Qry);
     Tools.Log.Log('-------FA Komm -----');
     Tools.Log.Log(FAKopf.ToStr);
 
@@ -83,7 +85,7 @@ begin
     { TODO 1 : Fa id inStueli pruefen evtl FAKopf.FaIdPos}
 //    Stueli.Add(lfn, FAKopf);
     StueliAdd(FAKopf);
-    lfn:=lfn+1;
+//    lfn:=lfn+1;
 
     // Kinder suchen
     FAKopf.holeKinderAusASTUELIPOS;

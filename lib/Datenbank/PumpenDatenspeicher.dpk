@@ -30,9 +30,12 @@ package PumpenDatenspeicher;
 requires
   rtl,
   dbrtl,
-  dsnap;
+  dsnap,
+  adortl;
 
 contains
-  PumpenDataSet in 'PumpenDataSet.pas';
+  PumpenDataSet in 'PumpenDataSet.pas',
+  Logger in '..\Tools\Logger.pas',
+  Tools in '..\Tools\Tools.pas';
 
 end.

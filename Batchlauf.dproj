@@ -121,9 +121,7 @@
         <DCCReference Include="lib\UNIPPS\KundenauftragsPos.pas"/>
         <DCCReference Include="lib\UNIPPS\Teil.pas"/>
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
-        <DCCReference Include="lib\Stueli\Datenspeicher.pas"/>
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
-        <DCCReference Include="lib\Stueli\StueliEigenschaften.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
         <DCCReference Include="lib\Tools\Tools.pas"/>
         <DCCReference Include="lib\Tools\Exceptions.pas"/>

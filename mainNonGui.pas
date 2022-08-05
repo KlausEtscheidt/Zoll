@@ -273,16 +273,7 @@ begin
         VaterKaPos:=TWKundenauftragsPos(KA.Stueli[Zuordnung.VaterPos]);
         //Hole Unter-KAPos aus Stueli des KA
         KindKaPos:=TWKundenauftragsPos(KA.Stueli[Zuordnung.KindPos]);
-        //Test ob Position noch frei
-        IdPos:=1000;
-        VaterKaPos.MaxPos(IdPos);
-        //Kind-Pos mit geprüfter/korrigierter IdPos in neue Vater-Stueli
-//        VaterKaPos.Stueli.Add(IdPos,KindKaPos);
-        VaterKaPos.StueliAdd(KindKaPos);
-        //IdPos auf neuen Wert setzen
-        KindKaPos.IdPos:=IdPos;
-        //Entferne Unter-Pos aus ursprünglicher KA-Stueli
-//        KA.Stueli.Remove(Zuordnung.KindPos);
+        VaterKaPos.StueliTakePosFrom(KindKaPos);
     end;
 
 end;
