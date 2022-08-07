@@ -135,7 +135,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\lib\Tools\Drucken.pas"/>
+        <DCCReference Include="..\lib\Tools\DruckBlatt.pas"/>
         <DCCReference Include="..\lib\Datenbank\PumpenDataSet.pas"/>
         <DCCReference Include="..\DatenModul.pas">
             <Form>KaDataModule</Form>
@@ -148,6 +148,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\lib\Tools\Settings.pas"/>
+        <DCCReference Include="..\lib\Tools\Drucken.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

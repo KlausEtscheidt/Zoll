@@ -205,7 +205,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="lib\Tools\Tools.pas"/>
-        <DCCReference Include="lib\Tools\Drucken.pas"/>
+        <DCCReference Include="lib\Tools\DruckBlatt.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

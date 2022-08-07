@@ -2,20 +2,16 @@ unit Drucken;
 
 interface
 
-  uses SysUtils, System.Classes, Vcl.Graphics, Data.DB, Printers, DatenModul;
+  uses SysUtils, System.Classes, Vcl.Graphics, Data.DB, Printers,
+       DatenModul,DruckBlatt;
 
   const
-    FontSizeTableRow = 8;
-    DefaultFeldHoehe= 300;
-    LeftMargin=150;
-    CellMargin=20;   //Abstand Text in zum Rahmen drumrum
-    Y0Header=50;
-    Y0Content=250;
-    DefaultFooterHoehe=500;
+    DefaultFeldHoehe=300;
+    CellMargin=20;   //Abstand Text zum Rahmen drumrum
 
   type TWAlign = array of String;
 
-  type TWDataSetPrinter = class(TComponent)
+  type TWDataSetPrinter = class(TWBlatt)
     private
       P:TPrinter;
       Daten:TDataSet;
@@ -25,21 +21,21 @@ interface
       FAlign:TWAlign;
       FFooterHoehe:Integer;
       Y0Footer:Integer;
-      procedure DruckeTabellenFeld(Spalte,Y:Integer;
+      procedure DruckeTabellenFeld(Spalte:Integer;
                        Wert:String;Kopfzeile:Boolean=False);
       procedure DruckeTabellenKopf();
-      procedure DruckeTabellenReihe(Y:Integer; Felder:TFields);
+      procedure DruckeTabellenReihe(Felder:TFields);
       procedure DruckeTabelle();
-      procedure DruckeSeitenkopf();
+//      procedure DruckeDokumentkopf;
+//      procedure DruckeKopfzeile;
+//      procedure DruckeFusszeile;
       procedure HoleBreiten();
       function FeldToStr(Feld:TField):String;
     public
       constructor Create(AOwner:TComponent);
       procedure Drucken(ADataSet:TDataSet);
-      property Drucker:TPrinter read P write P;
       property DataSet:TDataSet read Daten write Daten;
       property FeldHoehe:Integer read FFeldHoehe write FFeldHoehe;
-      property FooterHoehe:Integer read FFooterHoehe write FFooterHoehe;
       property Ausrichtungen:TWAlign read FAlign write FAlign;
 
     end;
@@ -52,14 +48,15 @@ constructor TWDataSetPrinter.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
   FeldHoehe:=DefaultFeldHoehe;
-  FooterHoehe:=DefaultFooterHoehe;
-  //Default-Printer setzen
-  Printer.PrinterIndex:=1;
-  Drucker:=Printer;
+  //Als Abkürzung
+  P:=Drucker;
 
-  Y0Footer:=P.PageHeight-FooterHoehe;
+  //Y0Footer:=P.PageHeight-FooterHoehe;
+
 
 end;
+
+/////////////////////////////////////////////////////////////////////////
 
 function TWDataSetPrinter.FeldToStr(Feld:TField):String;
 var
@@ -81,14 +78,6 @@ begin
 
 end;
 
-procedure TWDataSetPrinter.DruckeSeitenkopf;
-begin
-  P.Canvas.Font.Size := 16;
-  P.Canvas.TextOut(LeftMargin, Y0Header, 'Hallo, Welt!');
-  P.Canvas.Brush.Style := bsClear;
-  P.Canvas.Rectangle(5,5,P.PageWidth-10,P.PageHeight-10);
-end;
-
 procedure TWDataSetPrinter.HoleBreiten();
 var
   Feld:TField;
@@ -98,7 +87,7 @@ begin
 
   setlength(FeldBreiten,Daten.Fields.Count);
   FeldHoehe:=0;
-  P.Canvas.Font.Size := FontSizeTableRow;
+  P.Canvas.Font.Size := Inhalt.FontSize;
 
   //Bestimme Breiten der Header
   for I:=0 to Daten.Fields.Count-1 do
@@ -133,8 +122,8 @@ begin
   FeldHoehe:=FeldHoehe+2*CellMargin;
 end;
 
-
-procedure TWDataSetPrinter.DruckeTabellenFeld(Spalte,Y:Integer;
+//####################################################################
+procedure TWDataSetPrinter.DruckeTabellenFeld(Spalte:Integer;
                        Wert:String;Kopfzeile:Boolean=False);
 var
   Ausrichtung:String;
@@ -147,9 +136,9 @@ var
   FloatWertStr:String;
 
 begin
-    Y0:=Y-CellMargin;
+    Y0:=Inhalt.CurrY;
     Y1:=Y0+FeldHoehe;
-    X0:=FeldX0[Spalte]+LeftMargin;
+    X0:=FeldX0[Spalte]+Self.Left ;
     X1:=X0+FeldBreiten[Spalte]+2*CellMargin;
 
     //Rahmen der Zelle
@@ -193,38 +182,41 @@ begin
       raise Exception.Create('Unbekannte Ausrichtung ' + Ausrichtung
                               +' in TWDataSetPrinter.DruckeTabellenFeld');
     end;
-    P.Canvas.TextOut(XText, Y, Wert);
+    P.Canvas.TextOut(XText, Inhalt.CurrY + CellMargin, Wert);
 end;
 
+//######################################################################
 procedure TWDataSetPrinter.DruckeTabellenKopf();
 var
   Feld:TField;
   I:Integer;
 begin
-  P.Canvas.Font.Size := FontSizeTableRow;
+  P.Canvas.Font.Size := Inhalt.FontSize;
 
   for I:=0 to Daten.Fields.Count-1 do
   begin
     Feld:=Daten.Fields.Fields[I];
-    DruckeTabellenFeld(I, Y0Content, Feld.DisplayName, True);
+    DruckeTabellenFeld(I, Feld.DisplayName, True);
   end;
 
 end;
 
-procedure TWDataSetPrinter.DruckeTabellenReihe(Y:Integer; Felder:TFields);
+//#######################################################################
+procedure TWDataSetPrinter.DruckeTabellenReihe(Felder:TFields);
 var
   Feld:TField;
   FloatFeld:TFloatField;
   I:Integer;
   Wert:String;
+
 begin
-  P.Canvas.Font.Size := FontSizeTableRow;
+  P.Canvas.Font.Size := Inhalt.FontSize;
 
   for I:=0 to Felder.Count-1 do
   begin
     Feld:=Felder.Fields[I];
     Wert:=FeldToStr(Feld);
-    DruckeTabellenFeld(I, Y, Wert);
+    DruckeTabellenFeld(I, Wert);
   end;
 end;
 
@@ -233,18 +225,25 @@ var
   Y:Integer;
 begin
   HoleBreiten;
+
   DruckeTabellenKopf;
-  Y:=Y0Content+FeldHoehe; //Ueberschriften beruecksictigen
+  Inhalt.CurrYAdd(FeldHoehe); //Ueberschriften beruecksictigen
+
   Daten.First;
   while not Daten.Eof do
   begin
-    DruckeTabellenReihe(Y,Daten.Fields);
-    Y:=Y+FFeldHoehe;
-    if Y>Y0Footer then
+    DruckeTabellenReihe(Daten.Fields);
+    Inhalt.CurrYAdd(FeldHoehe);
+    var bot:integer;
+    bot:=Inhalt.Bottom;
+    if Inhalt.CurrY+FeldHoehe>Inhalt.Bottom then
     begin
+      Fusszeile.Drucken;
       P.NewPage;
+      Kopfzeile.Drucken;
+      Inhalt.CurrY:=Inhalt.Top;
       DruckeTabellenKopf;
-      Y:=Y0Content+FeldHoehe; //Ueberschriften beruecksictigen
+      Inhalt.CurrYAdd(FeldHoehe); //Ueberschriften beruecksictigen
     end;
     Daten.Next;
   end;
@@ -253,11 +252,15 @@ end;
 procedure TWDataSetPrinter.Drucken(ADataSet:TDataSet);
 begin
   Daten:= ADataSet;
-  P.Title := 'Druckauftrag 1';
-  P.BeginDoc;
-  DruckeSeitenkopf;
+  Drucker.Title := 'Druckauftrag 1';
+  Drucker.BeginDoc;
+  Kopfzeile.Drucken;
+  Dokumentenkopf.Drucken; //einmalig je Druckvorgang
+  Inhalt.CurrY:=Inhalt.Top+200;
   DruckeTabelle;
-  P.EndDoc;
+//  printer.canvas.Canvas.StretchDraw(rect1,bmp);
+  Fusszeile.Drucken;
+  Drucker.EndDoc;
 end;
 
 procedure test1;
@@ -279,31 +282,4 @@ begin
 
 end;
 
-{
-procedure TForm1.BtnDruckenClick(Sender: TObject);
-var
-    rect,rect1: TRect;
-    bmp:TBitMap;
-begin
-   bmp:=TBitMap.Create;
-   bmp.Width := DBGrid1.clientwidth;
-   bmp.Height := DBGrid1.Clientheight;
-   try
-   rect:=bounds(0,0,DBGrid1.clientwidth,DBgrid1.Clientheight);
-   // >> wobei hier noch verhältnisanpassungen fehlen
-   rect1:=bounds(10,10,Printer.PageHeight,Printer.PageWidth);
-   bmp.canvas.CopyRect(rect,DBGrid1.Canvas,rect);
-      if printdialog1.Execute then
-      begin
-
-      printer.begindoc;
-      printer.canvas.Canvas.StretchDraw(rect1,bmp);
-      printer.enddoc;
-
-      end;
-   finally
-     bmp.Free;
-   end;
-end;
-}
 end.

@@ -6,12 +6,13 @@ program DruckTest;
 
 uses
   System.SysUtils,
-  Drucken in '..\lib\Tools\Drucken.pas',
+  DruckBlatt in '..\lib\Tools\DruckBlatt.pas',
   PumpenDataSet in '..\lib\Datenbank\PumpenDataSet.pas',
   DatenModul in '..\DatenModul.pas' {KaDataModule: TDataModule},
   Logger in '..\lib\Tools\Logger.pas',
   Preiseingabe in '..\Preiseingabe.pas' {PreisFrm},
-  Settings in '..\lib\Tools\Settings.pas';
+  Settings in '..\lib\Tools\Settings.pas',
+  Drucken in '..\lib\Tools\Drucken.pas';
 
 begin
   try
