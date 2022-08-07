@@ -36,6 +36,6 @@ requires
 contains
   PumpenDataSet in 'PumpenDataSet.pas',
   Logger in '..\Tools\Logger.pas',
-  Tools in '..\Tools\Tools.pas';
+  Settings in '..\Tools\Settings.pas';
 
 end.

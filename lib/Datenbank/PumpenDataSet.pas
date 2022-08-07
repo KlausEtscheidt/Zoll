@@ -5,14 +5,18 @@ interface
 uses
   System.SysUtils, System.Classes, StrUtils,  System.Generics.Collections,
    Data.DB, Datasnap.DBClient,
-  Tools,Logger;
+//  Tools,
+  Logger
+  ;
 
 type
+  TWFeldAusrichtung = (l,c,r);
   TWFeldTypRecord = record
     N:String;  //Feldname
     T:TFieldType; //Feldtyp
-//    P:Integer;
     C:String;  //schöner Name Caption für HEader usw
+    W:Integer; //Breite
+    J:TWFeldAusrichtung; //Ausrichtung
   end;
 
   TWFeldTypenDict = TDictionary<String,TWFeldTypRecord>;
@@ -33,7 +37,7 @@ type
     procedure DefiniereReadOnly(Felder: TWFeldNamen=[]);
     function ToCSV:String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
-    procedure print;
+    procedure print(TxtFile:TStreamWriter);
 
   published
   end;
@@ -137,15 +141,13 @@ var
   myRec:TWFeldTypRecord;
 
   begin
-
-    if Fields.Count>0 then
+    { TODO : Sicherstellen das immer erst alles gelöscht wird }
+    if (FieldDefs.Count>0) or (Fields.Count>0) then
     begin
-      Active:=True;
-
+//      Active:=True;
       FieldDefs.Clear;
       Fields.Clear;
       Active:=False;
-
     end;
 
     //Erst Feld-Def anlegen
@@ -163,6 +165,12 @@ var
         myFieldDef:=FieldDefs.AddFieldDef;
         myFieldDef.Name := Name;
         myFieldDef.DataType := myRec.T;
+        if myFieldDef.DataType = ftString then
+        begin
+          if myRec.W=0 then myRec.W:=10;
+          myFieldDef.Size:=myRec.W;
+        end;
+
         if myRec.C<>'' then
         begin
           myFieldDef.DisplayName:=myRec.C;
@@ -200,6 +208,14 @@ var
           myField.DisplayLabel:=myRec.C;
         end;
 
+        case myRec.J of
+          l: myField.Alignment :=taLeftJustify;
+          c: myField.Alignment :=taCenter;
+          r: myField.Alignment :=taRightJustify;
+        else
+          raise Exception.Create('Unbekannte Ausrichtung');
+        end; // case
+
 
         if myField.DataType=ftFloat then
         begin
@@ -228,17 +244,16 @@ begin
 
 end;
 
-procedure TWDataSet.print;
+procedure TWDataSet.print(TxtFile:TStreamWriter);
 var
   I:Integer;
   myField:TField;
   myFloatField:TFloatField ;
-  TxtFile:TLogFile;
   txt:String;
 begin
 
-  TxtFile:=TLogFile.Create();
-  TxtFile.OpenNew(Tools.LogDir,'TableINfos.txt');
+//  TxtFile:=TLogFile.Create();
+//  TxtFile.OpenNew(Tools.LogDir,'TableINfos.txt');
 
     for I := 0 to Fields.Count-1 do
     begin
@@ -250,12 +265,12 @@ begin
           txt:=Format('Name: %s Label %S Format %s',[FieldName,DisplayLabel,myFloatField.DisplayFormat] )
         end else
         txt:=Format('Name: %s Label %S',[FieldName,DisplayLabel]);
-        TxtFile.Log(txt);
+        TxtFile.WriteLine(txt);
       end;
 
     end;
 
-  TxtFile.Close;
+//  TxtFile.Close;
 
 end;
 

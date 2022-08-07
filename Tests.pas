@@ -2,7 +2,8 @@ unit Tests;
 
 interface
 
-uses Tools, UnippsStueliPos;
+uses
+Tools,Settings, UnippsStueliPos;
 
 procedure Bestellung();
 
@@ -13,8 +14,8 @@ var StuPos: TWUniStueliPos;
 begin
 
 Tools.Init;
-Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\TestLog.txt');
-Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\TestErrLog.txt');
+Tools.Log.OpenNew(Settings.ApplicationBaseDir,'data\output\TestLog.txt');
+Tools.ErrLog.OpenNew(Settings.ApplicationBaseDir,'data\output\TestErrLog.txt');
 
 //DUmmy Stueli
 StuPos:=TWUniStueliPos.Create(nil,'Test','1',1,1);

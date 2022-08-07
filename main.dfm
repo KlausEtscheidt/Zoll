@@ -11,8 +11,8 @@ object mainFrm: TmainFrm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnActivate = RunIt
   OnDestroy = FormDestroy
+  OnShow = RunIt
   DesignSize = (
     1062
     560)
@@ -97,14 +97,14 @@ object mainFrm: TmainFrm
     TabOrder = 6
     OnClick = TestBtnClick
   end
-  object PreisBtn: TButton
+  object Drucken: TButton
     Left = 560
     Top = 25
     Width = 75
     Height = 25
-    Caption = 'Preise'
+    Caption = 'Drucken'
     TabOrder = 7
-    OnClick = PreisBtnClick
+    OnClick = DruckenClick
   end
   object ActivityIndicator1: TActivityIndicator
     Left = 656
@@ -112,7 +112,7 @@ object mainFrm: TmainFrm
     Cursor = crHourGlass
   end
   object DataSource1: TDataSource
-    DataSet = KaDataModule.ErgebnisDS
+    DataSet = KaDataModule.AusgabeDS
     Left = 184
     Top = 216
   end

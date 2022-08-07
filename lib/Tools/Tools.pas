@@ -2,27 +2,18 @@ unit Tools;
 
 interface
 
-uses System.IOUtils,System.SysUtils,Logger,
+uses
+//System.IOUtils,System.SysUtils,
+Settings, Logger,
 ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
 //Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
 {$IFDEF HOME}
-const LogDir: String =
-    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-    'zoll\data\output';
-const SQLiteDBFileName: String =
-    'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                 'Zoll\data\db\zoll.sqlite';
 type
   TWUNIPPSQry = TWBaumQrySQLite;
 
 {$ELSE}
-const LogDir: String =
-    'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                   'Zoll\data\output';
-const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
-                 'Studio\Projekte\Zoll\data\db\zoll.sqlite';
 
   {$IFDEF SQLITE}
   //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
@@ -43,9 +34,7 @@ var
   ErrLog: TLogFile;
   CSVKurz: TLogFile;
   CSVLang: TLogFile;
-  ApplicationBaseDir: String;
   DbConnector:TWADOConnector;
-  GuiMode:Boolean;
 
 implementation
 
@@ -55,8 +44,6 @@ begin
   ErrLog:=TLogFile.Create();
   CSVKurz:=TLogFile.Create();
   CSVLang:=TLogFile.Create();
-  ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
-  ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
   DbConnector:=TWADOConnector.Create(nil);
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(SQLiteDBFileName);

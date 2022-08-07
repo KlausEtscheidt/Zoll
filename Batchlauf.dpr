@@ -23,9 +23,10 @@ uses
   TeilAlsStuPos in 'lib\UNIPPS\TeilAlsStuPos.pas',
   Stueckliste in 'lib\Stueli\Stueckliste.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
-  Tools in 'lib\Tools\Tools.pas',
+  Settings in 'lib\Tools\Settings.pas',
   Exceptions in 'lib\Tools\Exceptions.pas',
-  DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule};
+  DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
+  Tools in 'lib\Tools\Tools.pas';
 
 begin
 var answer:string;
@@ -38,7 +39,7 @@ var answer:string;
 
     //Globals setzen und initialiseren
     Tools.Init;
-    Tools.GuiMode:=False;
+    Settings.GuiMode:=False;
 
 
     mainNonGui.RunItKonsole;

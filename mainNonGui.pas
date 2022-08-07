@@ -3,8 +3,10 @@
 interface
 
 uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
-      Tests, Kundenauftrag,KundenauftragsPos,  Tools, ADOQuery ,  ADOConnector,
-      BaumQrySQLite, BaumQryUNIPPS,DatenModul,Preiseingabe  ;
+      Tools, Settings, Tests,
+      Kundenauftrag,KundenauftragsPos, ADOQuery , ADOConnector,
+      BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe,
+      Drucken  ;
 
 type
     EStuBaumMainExc = class(Exception);
@@ -25,7 +27,6 @@ procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 procedure ErgebnisAusgabe(KaId:string);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
-procedure test;
 
 implementation
 
@@ -47,7 +48,7 @@ begin
 
   //SQLite-DB oeffnen  Pfad aus globaler Tools.SQLiteFile
   dbSQLiteConn:=TWADOConnector.Create(nil);
-  dbSQLiteConn.ConnectToSQLite(Tools.SQLiteDBFileName);
+  dbSQLiteConn.ConnectToSQLite(Settings.SQLiteDBFileName);
 
   //Query fuer UNIPPS anlegen und Verbindung setzen
 //  QryUNIPPS:=Tools.GetQuery;
@@ -140,7 +141,6 @@ end;
 
 ///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
 ///<summary>
-//Nutzt  TWKundenauftrag.auswerten fuer vollen Ablauf
 procedure KaAuswerten(KaId:string);
 var
   KA:TWKundenauftrag;
@@ -152,6 +152,17 @@ var
 begin
 
   try
+
+  Tools.Init;
+  Settings.GuiMode:=True;
+
+  //Logger oeffnen
+  Tools.Log.OpenNew(Settings.ApplicationBaseDir,'data\output\Log.txt');
+  Tools.ErrLog.OpenNew(Settings.ApplicationBaseDir,'data\output\ErrLog.txt');
+
+  mainfrm.langBtn.Enabled:=False;
+  mainfrm.TestBtn.Enabled:=False;
+  mainfrm.kurzBtn.Enabled:=False;
 
     //Einmalig die Felder der Gesamt-Tabelle anlegen
     //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
@@ -186,7 +197,7 @@ begin
     KA.SammleAusgabeDaten;
 
     //
-    KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergebnis.xml');
+    KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
     mainfrm.ActivityIndicator1.Animate:=False;
 
     ErgebnisAusgabe(KaId);
@@ -194,16 +205,20 @@ begin
     endzeit:=  GetTickCount;
     delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
 
-    msg:=Format('---------------Auswertung fuer KA %s in %4.3f mSek beendet.' +
-        '%d Datensaetze gefunden.',
+    msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
+        #10 + '%d Datensaetze gefunden.',
         [KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
-//    ShowMessage(msg);
-
-    Tools.Log.Log(msg);
-    Tools.ErrLog.Log(msg);
+    ShowMessage(msg);
 
   finally
-      ka.Free;
+    mainfrm.langBtn.Enabled:=True;
+    mainfrm.kurzBtn.Enabled:=True;
+    mainfrm.TestBtn.Enabled:=True;
+
+    Tools.Log.Close;
+    Tools.ErrLog.Close;
+    ka.Free;
+
   end;
 
 end;
@@ -280,47 +295,31 @@ end;
 
 procedure ErgebnisAusgabe(KaId:String);
 begin
+
+
   //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
   //KaDataModule.AusgabeDS.Print; zum Test der Eigenschaften
 
   //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Struktur.csv');
+  KaDataModule.AusgabeAlsCSV(Settings.LogDir, KaId + '_Struktur.csv');
 
   //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+//  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
 
   //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Tools.LogDir, KaId + '_Kalk.csv');
+  KaDataModule.AusgabeAlsCSV(Settings.LogDir, KaId + '_Kalk.csv');
 
   //Daten anzeigen
-  if Tools.GuiMode then
+  if Settings.GuiMode then
   begin
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
     //Belege DataSource1 mit dem Default AusgabeDS
     mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
-    mainfrm.langBtn.Enabled:=True;
-    mainfrm.kurzBtn.Enabled:=True;
-    mainfrm.TestBtn.Enabled:=True;
   end;
 
 
-end;
-
-
-procedure test;
-var KA:TWKundenauftrag;
-begin
-    //Ka anlegen
-    ka:=TWKundenauftrag.Create('142302');
-    KaDataModule.ErgebnisDS.FileName:='';
-    KaDataModule.DefiniereGesamtErgebnisDataSet;
-    KaDataModule.ErgebnisDS.Active:=True;
-    KaDataModule.ErgebnisDS.EmptyDataSet;
-    KaDataModule.ErgebnisDS.Append;
-    KaDataModule.ErgebnisDS.AddData('PreisJeLME',123.345678) ;
-    KaDataModule.ErgebnisDS.SaveToFile(Tools.LogDir+'\Ergxx2.xml');
-    ErgebnisAusgabe('142302');
 end;
 
 ///<summary> Einsprung fuer Konsolen-Version </summary>
@@ -331,17 +330,17 @@ procedure RunItKonsole;
 begin
 
   //Logger oeffnen
-  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchLog.txt');
-  Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\BatchErrLog.txt');
+  Tools.Log.OpenNew(Settings.ApplicationBaseDir,'data\output\BatchLog.txt');
+  Tools.ErrLog.OpenNew(Settings.ApplicationBaseDir,'data\output\BatchErrLog.txt');
 
   InitCopyUNI2SQLite;
   //Einige Einzelaufträge
 //  KaNurAuswerten('142591'); //Error  Keine Positionen zum FA >616451< gefunden.
 //  KaNurAuswerten('144729');
-//  KaNurAuswerten('142567'); //2Pumpen
+  KaNurAuswerten('142567'); //2Pumpen
 //  KaNurAuswerten('142302'); //Ersatz
 //  KaNurAuswerten('144734');   //Fehler
-  KaNurAuswerten('142120');   //Fehler
+//  KaNurAuswerten('142120');   //Fehler
 
 
 //  Check100;
@@ -358,9 +357,9 @@ procedure RunItGui;
 begin
 
 //test;
-  mainNonGui.KaAuswerten('142302'); //Ersatz
+//  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  mainNonGui.KaAuswerten('144729');
-//  mainNonGui.KaAuswerten('142567'); //2Pumpen
+  mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

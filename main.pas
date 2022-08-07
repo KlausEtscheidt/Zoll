@@ -7,9 +7,10 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
-  mainNonGui, FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
-  FireDAC.Comp.UI, Datasnap.DBClient, Tools, DatenModul, PumpenDataSet,
-  Preiseingabe, Vcl.WinXCtrls;
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
+  FireDAC.Comp.UI, Datasnap.DBClient,
+  Vcl.WinXCtrls, Drucken,
+  Settings, Tools, DatenModul,Preiseingabe,  PumpenDataSet, mainNonGui ;
 
 type
   TmainFrm = class(TForm)
@@ -22,7 +23,7 @@ type
     langBtn: TButton;
     kurzBtn: TButton;
     TestBtn: TButton;
-    PreisBtn: TButton;
+    Drucken: TButton;
     ActivityIndicator1: TActivityIndicator;
 
     procedure Run_BtnClick(Sender: TObject);
@@ -32,7 +33,7 @@ type
     procedure langBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TestBtnClick(Sender: TObject);
-    procedure PreisBtnClick(Sender: TObject);
+    procedure DruckenClick(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -93,26 +94,20 @@ begin
 
 end;
 
-procedure TmainFrm.PreisBtnClick(Sender: TObject);
-begin
-  KaDataModule.ErzeugeAusgabeFuerPreisabfrage;
-  PreisFrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
-  PreisFrm.ShowModal;
+procedure TmainFrm.DruckenClick(Sender: TObject);
+var
+  Drucker:TWDataSetPrinter;
 
+begin
+  Drucker:=TWDataSetPrinter.Create(Self);
+  Drucker.Ausrichtungen:=['l','c','l','d#.00','l','r','r','r','r','r'];
+  Drucker.Drucken(KaDataModule.AusgabeDS);
 end;
 
 //Nur zum Testen, wird automatisch von OnActivate gestartet
 //und erspart CLick auf Button;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-  Tools.Init;
-  Tools.GuiMode:=True;
-  //Logger oeffnen
-  Tools.Log.OpenNew(Tools.ApplicationBaseDir,'data\output\Log.txt');
-  Tools.ErrLog.OpenNew(Tools.ApplicationBaseDir,'data\output\ErrLog.txt');
-  mainfrm.langBtn.Enabled:=True;
-  mainfrm.TestBtn.Enabled:=True;
-  mainfrm.kurzBtn.Enabled:=True;
   mainNonGui.RunItGui;
 end;
 

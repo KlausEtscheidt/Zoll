@@ -12,7 +12,7 @@ uses
   Stueckliste in 'lib\Stueli\Stueckliste.pas',
   TeilAlsStuPos in 'lib\UNIPPS\TeilAlsStuPos.pas',
   Logger in 'lib\Tools\Logger.pas',
-  Tools in 'lib\Tools\Tools.pas' {Wkz: TDataModule},
+  Settings in 'lib\Tools\Settings.pas' {Wkz: TDataModule},
   Bestellung in 'lib\UNIPPS\Bestellung.pas',
   Teil in 'lib\UNIPPS\Teil.pas',
   ADOConnector in 'lib\Datenbank\ADOConnector.pas',
@@ -24,7 +24,9 @@ uses
   Tests in 'Tests.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
-  Preiseingabe in 'Preiseingabe.pas' {PreisFrm};
+  Preiseingabe in 'Preiseingabe.pas' {PreisFrm},
+  Tools in 'lib\Tools\Tools.pas',
+  Drucken in 'lib\Tools\Drucken.pas';
 
 {$R *.res}
 

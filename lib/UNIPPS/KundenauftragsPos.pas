@@ -53,8 +53,6 @@ procedure TWKundenauftragsPos.holeKinderAusASTUELIPOS;
 var gefunden: Boolean;
 var Qry: TWUNIPPSQry;
 var FAKopf:TWFAKopf;
-//var FAStueliKey:String; //Stueli Key f�r FA's
-var lfn: Integer;
 
 begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
@@ -68,7 +66,6 @@ begin
     Exit;
   end;
 
-//  lfn:=1;
   //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
   //Zu Doku und Testzwecken werden die FA-K�pfe als Dummy-St�cklisten-Eintr�ge
   //in die Stückliste mit aufgenommen
@@ -81,11 +78,7 @@ begin
     Tools.Log.Log(FAKopf.ToStr);
 
     // in Stueck-Liste �bernehmen
-    // Da FA keine sinnvolle Reihenfolge haben, werden sie fortlaufend numeriert
-    { TODO 1 : Fa id inStueli pruefen evtl FAKopf.FaIdPos}
-//    Stueli.Add(lfn, FAKopf);
     StueliAdd(FAKopf);
-//    lfn:=lfn+1;
 
     // Kinder suchen
     FAKopf.holeKinderAusASTUELIPOS;

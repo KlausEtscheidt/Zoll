@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Office SQLite</Config>
+        <Config Condition="'$(Config)'==''">Home</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -181,7 +181,7 @@
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
         <DCCReference Include="lib\Tools\Logger.pas"/>
-        <DCCReference Include="lib\Tools\Tools.pas">
+        <DCCReference Include="lib\Tools\Settings.pas">
             <Form>Wkz</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
@@ -204,6 +204,8 @@
             <Form>PreisFrm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="lib\Tools\Tools.pas"/>
+        <DCCReference Include="lib\Tools\Drucken.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

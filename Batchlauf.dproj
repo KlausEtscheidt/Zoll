@@ -123,13 +123,14 @@
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
-        <DCCReference Include="lib\Tools\Tools.pas"/>
+        <DCCReference Include="lib\Tools\Settings.pas"/>
         <DCCReference Include="lib\Tools\Exceptions.pas"/>
         <DCCReference Include="DatenModul.pas">
             <Form>KaDataModule</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="lib\Tools\Tools.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
