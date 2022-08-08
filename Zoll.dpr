@@ -8,7 +8,6 @@ uses
   FertigungsauftragsKopf in 'lib\UNIPPS\FertigungsauftragsKopf.pas',
   KundenauftragsPos in 'lib\UNIPPS\KundenauftragsPos.pas',
   FertigungsauftragsPos in 'lib\UNIPPS\FertigungsauftragsPos.pas',
-  Exceptions in 'lib\Tools\Exceptions.pas',
   Stueckliste in 'lib\Stueli\Stueckliste.pas',
   TeilAlsStuPos in 'lib\UNIPPS\TeilAlsStuPos.pas',
   Logger in 'lib\Tools\Logger.pas',

@@ -3,7 +3,9 @@
 interface
 
 uses  System.SysUtils, FertigungsauftragsPos, UnippsStueliPos,
-                Exceptions,Tools, Logger;
+                Tools, Logger;
+
+type EWFAKopf = class(Exception);
 
 type
   TWFAKopf = class(TWUniStueliPos)
@@ -73,7 +75,7 @@ begin
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
     Tools.ErrLog.Flush;
-    raise EStuBaumFaKopfErr.Create(msg);
+    raise EWFAKopf.Create(msg);
   end;
 
 
@@ -112,7 +114,7 @@ begin
         'Danach sollte der Zeiger des Recordsets fa_rs auf dem n�chsten toplevel-Knoten stehen.
        Logger.user_info "Unerwartete Datenstruktur in 'ASTUELIPOS'. Toplevelknoten mit Feld ueb_s_nr=0 erwartet.", level:=2
        }
-       raise EStuBaumFaKopfErr.Create('Unerwartete Datenstruktur in ASTUELIPOS für FA: ' + FA_Nr  );
+       raise EWFAKopf.Create('Unerwartete Datenstruktur in ASTUELIPOS für FA: ' + FA_Nr  );
 
       //Hier erneut Endebedingung prüfen, da Recordzeiger verändert wurde
       If Not Qry.EOF Then

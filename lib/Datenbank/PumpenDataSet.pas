@@ -4,10 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, StrUtils,  System.Generics.Collections,
-   Data.DB, Datasnap.DBClient,
-//  Tools,
-  Logger
-  ;
+   Data.DB, Datasnap.DBClient, Logger ;
 
 type
   TWFeldAusrichtung = (l,c,r);
@@ -101,7 +98,7 @@ var
   myField:TField ;
 begin
 
-    //Erste alle of Read only
+    //Erste alle auf Read only
     for I := 0 to Fields.Count-1 do
     begin
         myField:=Fields.Fields[I];

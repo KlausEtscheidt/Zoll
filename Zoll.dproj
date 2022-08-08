@@ -177,7 +177,6 @@
         <DCCReference Include="lib\UNIPPS\FertigungsauftragsKopf.pas"/>
         <DCCReference Include="lib\UNIPPS\KundenauftragsPos.pas"/>
         <DCCReference Include="lib\UNIPPS\FertigungsauftragsPos.pas"/>
-        <DCCReference Include="lib\Tools\Exceptions.pas"/>
         <DCCReference Include="lib\Stueli\Stueckliste.pas"/>
         <DCCReference Include="lib\UNIPPS\TeilAlsStuPos.pas"/>
         <DCCReference Include="lib\Tools\Logger.pas"/>

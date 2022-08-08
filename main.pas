@@ -9,7 +9,7 @@ uses
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
   FireDAC.Comp.UI, Datasnap.DBClient,
-  Vcl.WinXCtrls, DruckeTabelle,
+  Vcl.WinXCtrls, Kundenauftrag,
   Settings, Tools, DatenModul,Preiseingabe,  PumpenDataSet, mainNonGui ;
 
 type
@@ -43,17 +43,18 @@ type
 
 var
   mainFrm: TmainFrm;
+  Kundenauftrag: TWKundenauftrag;
 
 implementation
 
 {$R *.dfm}
 
 procedure TmainFrm.Run_BtnClick(Sender: TObject);
-var ka_id:string;
+var KaId:string;
 begin
-  ka_id := KA_id_ctrl.Text;
+  KaId := KA_id_ctrl.Text;
   //
-  mainNonGui.KaAuswerten(ka_id);
+  Kundenauftrag:=mainNonGui.KaAuswerten(KaId);
   //Application.MessageBox(PChar(ka_id), 'Look', MB_OK);
 end;
 
@@ -95,21 +96,8 @@ begin
 end;
 
 procedure TmainFrm.DruckenClick(Sender: TObject);
-var
-  Ausgabe:TWDataSetPrinter;
-  Index:Integer;
 begin
-
-  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF');
-  Ausgabe.Ausrichtungen:=['l','c','l','d#.00','l','r','r','r','r','r'];
-
-  try
-  Ausgabe.Drucken(KaDataModule.AusgabeDS);
-  finally
-    if Ausgabe.Drucker.Printing then
-      Ausgabe.Drucker.EndDoc;
-  end;
-
+  mainNonGui.ErgebnisDrucken(Kundenauftrag);
 end;
 
 //Nur zum Testen, wird automatisch von OnActivate gestartet

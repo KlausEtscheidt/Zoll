@@ -4,6 +4,8 @@ interface
 
   uses SysUtils, System.Classes,System.Types,  Vcl.Graphics, Printers;
 
+  type TWAusrichtungsArten = (l,c,r,d);
+
   type TWBlatt = class(TComponent)
     const
       //Freiräume, nicht zum Drucken
@@ -33,6 +35,7 @@ interface
             property Canvas:TCanvas read FCanvas;
         end;
 
+        //--------- Kopfzeile
         TWKopfzeile = class(TWDokumententeil)
           const
             DefFontSize: Integer=8;
@@ -40,39 +43,45 @@ interface
           private
             FHoehe: Integer;
           public
+            constructor Create(AParent:TWBlatt);
             procedure Drucken;
             function Top:Integer;
             function Bottom:Integer;
             property Hoehe:Integer read FHoehe write FHoehe;
         end;
 
+        //--------- Dokumentenkopf
         TWDokumentenkopf = class(TWDokumententeil)
           const
             DefFontSize: Integer=14;
             DefFreiraumOben: Integer=150;
-            DefFreiraumUnten: Integer=50;
           private
             FFreiraumOben: Integer;
-            FFreiraumUnten: Integer;
           public
             var text:String;
+            constructor Create(AParent:TWBlatt);
             function Top:Integer;
             function Bottom:Integer;
             procedure Drucken;
             property FreiraumOben:Integer read FFreiraumOben write FFreiraumOben;
-            property FreiraumUnten:Integer read FFreiraumUnten write FFreiraumUnten;
         end;
 
+        //--------- Inhalt
         TWInhalt = class(TWDokumententeil)
           const
             DefFontSize: Integer=8;
+            DefFreiraumOben: Integer=50;
           private
+            FFreiraumOben: Integer;
           public
+            constructor Create(AParent:TWBlatt);
             function Top:Integer;
             function Bottom:Integer;
             procedure Drucken;
+            property FreiraumOben:Integer read FFreiraumOben write FFreiraumOben;
         end;
 
+        //--------- Fusszeile
         TWFusszeile = class(TWDokumententeil)
           const
             DefFontSize: Integer=10;
@@ -80,6 +89,7 @@ interface
           private
             FHoehe: Integer;
           public
+            constructor Create(AParent:TWBlatt);
             function Top:Integer;
             function Bottom:Integer;
             procedure Drucken;
@@ -126,17 +136,9 @@ begin
 
   //Bestandteile des Blattes anlegen
   Kopfzeile:=TWKopfzeile.Create(Self);
-  Kopfzeile.FontSize:=Kopfzeile.DefFontSize;
-
   Dokumentenkopf:=TWDokumentenkopf.Create(Self);
-  Dokumentenkopf.FontSize:=Dokumentenkopf.DefFontSize;
-  Dokumentenkopf.FFreiraumOben:=Dokumentenkopf.DefFreiraumOben;
-  Dokumentenkopf.FFreiraumUnten:=Dokumentenkopf.DefFreiraumUnten;
-
   Inhalt:=TWInhalt.Create(Self);
-  Inhalt.FontSize:=Inhalt.DefFontSize;
   Fusszeile:=TWFusszeile.Create(Self);
-  Fusszeile.FontSize:=Fusszeile.DefFontSize;
 
   //Setze Blattraender,Blattinneres und die Y0 und Hoehen von Kopf,Fuss,Inhalt
   Raender:=TRect(DefBlattRaender);
@@ -183,6 +185,12 @@ end;
 //##########################################################################
 // Kopfzeile
 //##########################################################################
+constructor TWBlatt.TWKopfzeile.Create(AParent:TWBlatt);
+begin
+  inherited Create(AParent);
+  FontSize:=DefFontSize;
+end;
+
 function TWBlatt.TWKopfzeile.Top:Integer;
 begin
   Result:= Blatt.Innen.Top;
@@ -212,6 +220,13 @@ end;
 //##########################################################################
 // Dokumentenkopf
 //##########################################################################
+constructor TWBlatt.TWDokumentenkopf.Create(AParent:TWBlatt);
+begin
+  inherited Create(AParent);
+  FontSize:=DefFontSize;
+  FFreiraumOben:=DefFreiraumOben;
+end;
+
 function TWBlatt.TWDokumentenkopf.Top:Integer;
 begin
   Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe+1;
@@ -219,7 +234,7 @@ end;
 
 function TWBlatt.TWDokumentenkopf.Bottom:Integer;
 begin
-  Result:= Self.CurrY+Self.FFreiraumUnten+1;
+  Result:= Self.CurrY+1;
 end;
 
 //Max einmal je Druckauftrag
@@ -235,7 +250,7 @@ begin
   txt:='Präferenzkalkulation';
   Canvas.TextOut(Blatt.Left, Top+FreiraumOben, txt);
   CurrY:=Top+FreiraumOben + Canvas.TextHeight(txt);
-  Canvas.Brush.Style := bsClear;
+//  Canvas.Brush.Style := bsClear;
 //  Canvas.Rectangle(Blatt.Left+1510, Top+1,Blatt.Left+1540, Top+80);
 //  Canvas.Rectangle(Blatt.Innen);
 end;
@@ -243,6 +258,13 @@ end;
 //##########################################################################
 // Inhalt
 //##########################################################################
+constructor TWBlatt.TWInhalt.Create(AParent:TWBlatt);
+begin
+  inherited Create(AParent);
+  FontSize:=DefFontSize;
+  FFreiraumOben:=DefFreiraumOben;
+end;
+
 function TWBlatt.TWInhalt.Top:Integer;
 begin
   Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe+1;
@@ -261,6 +283,12 @@ end;
 //##########################################################################
 // Fusszeile
 //##########################################################################
+constructor TWBlatt.TWFusszeile.Create(AParent:TWBlatt);
+begin
+  inherited Create(AParent);
+  FontSize:=DefFontSize;
+end;
+
 function TWBlatt.TWFusszeile.Top:Integer;
 begin
   Result:= Blatt.Innen.Bottom- Self.Hoehe;

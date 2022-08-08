@@ -20,11 +20,12 @@ type
 
 procedure RunItGui;
 procedure RunItKonsole;
-procedure KaAuswerten(KaId:string);
+function KaAuswerten(KaId:string):TWKundenauftrag;
 procedure KaNurAuswerten(KaId:string);
 function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 procedure ErgebnisAusgabe(KaId:string);
+procedure ErgebnisDrucken(KA:TWKundenauftrag);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
 
@@ -141,12 +142,13 @@ end;
 
 ///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
 ///<summary>
-procedure KaAuswerten(KaId:string);
+function KaAuswerten(KaId:string):TWKundenauftrag;
 var
   KA:TWKundenauftrag;
   startzeit,endzeit: Int64;
   delta:Double;
   msg:String;
+  //Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
   Zuordnungen:TWZuordnungen;
 
 begin
@@ -192,7 +194,6 @@ begin
 
     KA.SetzeEbenenUndMengen(0,1);
     KA.SummierePreise;
-
 
     KA.SammleAusgabeDaten;
 
@@ -293,9 +294,32 @@ begin
 
 end;
 
-procedure ErgebnisAusgabe(KaId:String);
+procedure ErgebnisDrucken(KA:TWKundenauftrag);
+const
+    Ausrichtungen:array [0..1] of TWColumnAlignment=
+                                       ((C:1;J:d;P:3),(C:2;J:c));
+var
+  Ausgabe:TWDataSetPrinter;
+  Index:Integer;
 begin
 
+  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF');
+  Ausgabe.Tabelle.SetAusrichtungen(Ausrichtungen);
+  //Abweichungen von der Default-Ausrichtung [Spaltenr,Art]
+//  Ausgabe.Tabelle.Ausrichtungen:=[['1','c'],['l','d2']];
+
+  try
+  Ausgabe.Drucken(KaDataModule.AusgabeDS);
+  finally
+    if Ausgabe.Drucker.Printing then
+      Ausgabe.Drucker.EndDoc;
+  end;
+
+
+end;
+
+procedure ErgebnisAusgabe(KaId:String);
+begin
 
   //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
@@ -319,7 +343,6 @@ begin
     mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
   end;
 
-
 end;
 
 ///<summary> Einsprung fuer Konsolen-Version </summary>
@@ -337,7 +360,7 @@ begin
   //Einige Einzelaufträge
 //  KaNurAuswerten('142591'); //Error  Keine Positionen zum FA >616451< gefunden.
 //  KaNurAuswerten('144729');
-  KaNurAuswerten('142567'); //2Pumpen
+KaNurAuswerten('142567'); //2Pumpen
 //  KaNurAuswerten('142302'); //Ersatz
 //  KaNurAuswerten('144734');   //Fehler
 //  KaNurAuswerten('142120');   //Fehler
@@ -359,7 +382,7 @@ begin
 //test;
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  mainNonGui.KaAuswerten('144729');
-  mainNonGui.KaAuswerten('142567'); //2Pumpen
+  main.Kundenauftrag:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error
