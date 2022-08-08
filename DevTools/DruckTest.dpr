@@ -15,6 +15,9 @@ uses
   DruckeTabelle in '..\lib\Tools\DruckeTabelle.pas';
 
 procedure DruckMal;
+const
+  Ausrichtungen:array [0..1] of TWColumnAlignment=
+                                     ((C:1;J:d;P:3),(C:2;J:c));
 var
   Ausgabe:TWDataSetPrinter;
   x:String;
@@ -25,12 +28,15 @@ begin
       writeln(x);
   end;
 
-
-  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF');
+  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF',
+                                              KaDataModule.AusgabeDS);
 //  Ausgabe:=TWDataSetPrinter.Create(nil,'\\wernert-print\HP3015n-115');
+
+  Ausgabe.Tabelle.SetAusrichtungen(Ausrichtungen);
+
   try
 //  Ausgabe.Drucker:= Printer;
-  Ausgabe.Drucken(KaDataModule.AusgabeDS);
+  Ausgabe.Drucken();
   finally
     if Ausgabe.Drucker.Printing then
       Ausgabe.Drucker.EndDoc;

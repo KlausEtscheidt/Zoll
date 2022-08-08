@@ -10,14 +10,11 @@ interface
      TWAusrichtung = (l,c,r,d);
      TWColumnAlignment = record
         C:Integer;  //Spalte
-        case J: TWAusrichtung   of   //Kenner für Ausrichtung
+        case J: TWAusrichtung of   //Kenner für Ausrichtung
           d: (P:Integer) ;         //Nachkommastellen
-          l:();
-          c:();
-          r:();
       end;
 
-  TWColumnAlignments = TDictionary<Integer,TWColumnAlignment>;
+    TWColumnAlignments = array of TWColumnAlignment;
 
   type TWDataSetPrinter = class(TWBlatt)
     private
@@ -40,42 +37,69 @@ interface
             procedure DruckeTabellenReihe(Felder:TFields);
             procedure Drucke;
             procedure HoleBreiten();
+            procedure HoleAusrichtungen();
             function FeldToStr(Feld:TField):String;
           public
             procedure SetAusrichtungen(ColAligns:array of TWColumnAlignment);
-            property DataSet:TDataSet read Daten write Daten;
+            property DataSet:TDataSet read Daten;
             property FeldHoehe:Integer read FFeldHoehe write FFeldHoehe;
+            property Ausrichtungen:TWColumnAlignments read FAlign;
 
         end;
 
       var Tabelle:TWTabelle;
-      constructor Create(AOwner:TComponent;PrinterName:String);
-      procedure Drucken(ADataSet:TDataSet);
+      constructor Create(AOwner:TComponent;PrinterName:String;DS:TDataSet);
+      procedure Drucken();
 
     end;
 
 implementation
 
-constructor TWDataSetPrinter.Create(AOwner:TComponent;PrinterName:String);
+constructor TWDataSetPrinter.Create(AOwner:TComponent;PrinterName:String;
+                                                              DS:TDataSet);
 begin
   inherited Create(AOwner,PrinterName);
   //Der Inhalts-Bereich des Blattes wird durch die Tabelle dargestellt
   Tabelle:=TWTabelle.Create(Self);
   Tabelle.FeldHoehe:=Tabelle.DefaultFeldHoehe;
+  Tabelle.Daten:=DS;
+  Tabelle.HoleAusrichtungen;
 
 end;
 
 /////////////////////////////////////////////////////////////////////////
+procedure TWDataSetPrinter.TWTabelle.HoleAusrichtungen();
+var
+  I:Integer;
+  rec:TWColumnAlignment;
+
+begin
+  setlength(FAlign,Daten.FieldCount);
+
+  for I := 0 to Daten.FieldCount-1 do
+  begin
+    rec.C:=-1;rec.P:=2; //Column uninteressant;default 2 Nachkommastellen
+    case Daten.Fields.Fields[I].Alignment of
+      taLeftJustify: rec.J:=l;
+      taCenter: rec.J:=c;
+      taRightJustify: rec.J:=r;
+    end;
+
+  FAlign[I]:=rec;
+
+  end;
+
+end;
+
 
 procedure TWDataSetPrinter.TWTabelle.SetAusrichtungen(
                                    ColAligns:array of TWColumnAlignment);
 var
   I:Integer;
 begin
-  //array in Dict umspeichern, fuer besseren Zugriff
-  Self.FAlign:=TWColumnAlignments.Create;
+  //Sonderfälle aus ColAligns in Gesamt-Array aller Spalten eintragen
   for I:=0 to length(ColAligns)-1 do
-    Self.FAlign.Add(ColAligns[I].C,ColAligns[I]);
+    Self.FAlign[ColAligns[I].C]:=ColAligns[I];
 end;
 
 function TWDataSetPrinter.TWTabelle.FeldToStr(Feld:TField):String;
@@ -146,7 +170,7 @@ end;
 procedure TWDataSetPrinter.TWTabelle.DruckeTabellenFeld(Spalte:Integer;
                        Wert:String;Kopfzeile:Boolean=False);
 var
-  Ausrichtung:String;
+  Ausrichtung:TWAusrichtung;
   X0,Y0,X1,Y1:Integer;
   XText:Integer;
   TextBreite:Integer;
@@ -166,29 +190,26 @@ begin
 
     //X0 fuer Text in Abhängigkeit der Ausrichtung berechnen
     TextBreite:=Self.Canvas.TextWidth(Wert);
-{
-    if Kopfzeile then
-      Ausrichtung:='c'
-    else if (Spalte>length(Ausrichtungen)-1) then
-      Ausrichtung:='l'
-    else
-      Ausrichtung:=Ausrichtungen[Spalte];
 
- }
-    if Ausrichtung='l' then
+    if Kopfzeile then
+      Ausrichtung:=c
+    else
+      Ausrichtung:=Ausrichtungen[Spalte].J;
+
+    if Ausrichtung=l then
       XText:=X0+CellMargin
 
-    else if Ausrichtung='c' then
+    else if Ausrichtung=c then
     begin
       bleibtFrei:=Double(FeldBreiten[Spalte]-TextBreite)/2;
       XText:=X0+CellMargin+Trunc(bleibtFrei);
     end
 
-    else if Ausrichtung='r' then
+    else if Ausrichtung=r then
       XText:=X1-CellMargin-TextBreite  //X1 ist rechter Zellrand
 
     //Ausgabe nach Komma ausgerichtet bei unterschiedlichen Nachkommastellen
-    else if Ausrichtung.SubString(0,1)='d' then
+    else if Ausrichtung=d then
     begin
       FloatWert:=StrToFloat(Wert);
 //      FormatStr:=Ausrichtungen[Spalte].SubString(1);
@@ -199,7 +220,7 @@ begin
     else
     begin
       Self.Blatt.Drucker.EndDoc;
-      raise Exception.Create('Unbekannte Ausrichtung ' + Ausrichtung
+      raise Exception.Create('Unbekannte Ausrichtung '
                               +' in TWDataSetPrinter.DruckeTabellenFeld');
     end;
     Self.Canvas.TextOut(XText, Self.CurrY + CellMargin, Wert);
@@ -245,6 +266,7 @@ var
   Y:Integer;
 begin
   HoleBreiten;
+//  HoleAusrichtungen;
 
   DruckeTabellenKopf;
   Self.CurrYAdd(FeldHoehe); //Ueberschriften beruecksictigen
@@ -269,9 +291,8 @@ begin
   end;
 end;
 
-procedure TWDataSetPrinter.Drucken(ADataSet:TDataSet);
+procedure TWDataSetPrinter.Drucken();
 begin
-  Tabelle.Daten:= ADataSet;
   Drucker.Title := 'Druckauftrag 1';
   Drucker.BeginDoc;
   Kopfzeile.Drucken;

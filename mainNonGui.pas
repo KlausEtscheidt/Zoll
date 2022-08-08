@@ -296,20 +296,20 @@ end;
 
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
 const
+  //Abweichungen von der Default-Ausrichtung [Spaltenr,Art]
     Ausrichtungen:array [0..1] of TWColumnAlignment=
-                                       ((C:1;J:d;P:3),(C:2;J:c));
+                                       ((C:1;J:r),(C:3;J:d;P:2));
 var
   Ausgabe:TWDataSetPrinter;
   Index:Integer;
 begin
 
-  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF');
+  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF',
+                                            KaDataModule.AusgabeDS);
   Ausgabe.Tabelle.SetAusrichtungen(Ausrichtungen);
-  //Abweichungen von der Default-Ausrichtung [Spaltenr,Art]
-//  Ausgabe.Tabelle.Ausrichtungen:=[['1','c'],['l','d2']];
 
   try
-  Ausgabe.Drucken(KaDataModule.AusgabeDS);
+  Ausgabe.Drucken();
   finally
     if Ausgabe.Drucker.Printing then
       Ausgabe.Drucker.EndDoc;
