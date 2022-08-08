@@ -9,7 +9,7 @@ uses
   Vcl.Grids, Vcl.DBGrids, Data.DB, Vcl.ComCtrls, Vcl.AppEvnts,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
   FireDAC.Comp.UI, Datasnap.DBClient,
-  Vcl.WinXCtrls, Drucken,
+  Vcl.WinXCtrls, DruckeTabelle,
   Settings, Tools, DatenModul,Preiseingabe,  PumpenDataSet, mainNonGui ;
 
 type
@@ -96,12 +96,20 @@ end;
 
 procedure TmainFrm.DruckenClick(Sender: TObject);
 var
-  Drucker:TWDataSetPrinter;
-
+  Ausgabe:TWDataSetPrinter;
+  Index:Integer;
 begin
-  Drucker:=TWDataSetPrinter.Create(Self);
-  Drucker.Ausrichtungen:=['l','c','l','d#.00','l','r','r','r','r','r'];
-  Drucker.Drucken(KaDataModule.AusgabeDS);
+
+  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF');
+  Ausgabe.Ausrichtungen:=['l','c','l','d#.00','l','r','r','r','r','r'];
+
+  try
+  Ausgabe.Drucken(KaDataModule.AusgabeDS);
+  finally
+    if Ausgabe.Drucker.Printing then
+      Ausgabe.Drucker.EndDoc;
+  end;
+
 end;
 
 //Nur zum Testen, wird automatisch von OnActivate gestartet

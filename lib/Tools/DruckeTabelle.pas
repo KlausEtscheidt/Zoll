@@ -1,4 +1,4 @@
-unit Drucken;
+unit DruckeTabelle;
 
 interface
 
@@ -32,7 +32,7 @@ interface
       procedure HoleBreiten();
       function FeldToStr(Feld:TField):String;
     public
-      constructor Create(AOwner:TComponent);
+      constructor Create(AOwner:TComponent;PrinterName:String);
       procedure Drucken(ADataSet:TDataSet);
       property DataSet:TDataSet read Daten write Daten;
       property FeldHoehe:Integer read FFeldHoehe write FFeldHoehe;
@@ -40,13 +40,11 @@ interface
 
     end;
 
-  procedure test1;
-
 implementation
 
-constructor TWDataSetPrinter.Create(AOwner:TComponent);
+constructor TWDataSetPrinter.Create(AOwner:TComponent;PrinterName:String);
 begin
-  inherited Create(AOwner);
+  inherited Create(AOwner,PrinterName);
   FeldHoehe:=DefaultFeldHoehe;
   //Als Abkürzung
   P:=Drucker;
@@ -256,30 +254,12 @@ begin
   Drucker.BeginDoc;
   Kopfzeile.Drucken;
   Dokumentenkopf.Drucken; //einmalig je Druckvorgang
-  Inhalt.CurrY:=Inhalt.Top+200;
+  Inhalt.CurrY:=Dokumentenkopf.Bottom;
   DruckeTabelle;
 //  printer.canvas.Canvas.StretchDraw(rect1,bmp);
   Fusszeile.Drucken;
   Drucker.EndDoc;
 end;
 
-procedure test1;
-var
-  Ausgabe:TWDataSetPrinter;
-  x:String;
-
-begin
-  for x in Printer.Printers do
-  begin
-      writeln(x);
-  end;
-  //Der erste Drucker aus Printer.Printers wird gewaehlt
-  Printer.PrinterIndex:=1;
-
-  Ausgabe:=TWDataSetPrinter.Create(nil);
-  Ausgabe.Drucker:= Printer;
-  Ausgabe.Drucken(KaDataModule.AusgabeDS);
-
-end;
 
 end.

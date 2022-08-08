@@ -26,7 +26,8 @@ uses
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
   Preiseingabe in 'Preiseingabe.pas' {PreisFrm},
   Tools in 'lib\Tools\Tools.pas',
-  DruckBlatt in 'lib\Tools\DruckBlatt.pas';
+  DruckBlatt in 'lib\Tools\DruckBlatt.pas',
+  DruckeTabelle in 'lib\Tools\DruckeTabelle.pas';
 
 {$R *.res}
 

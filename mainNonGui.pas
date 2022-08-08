@@ -6,7 +6,7 @@ uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
       Tools, Settings, Tests,
       Kundenauftrag,KundenauftragsPos, ADOQuery , ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe,
-      Drucken  ;
+      DruckeTabelle  ;
 
 type
     EStuBaumMainExc = class(Exception);

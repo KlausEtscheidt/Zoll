@@ -176,9 +176,6 @@ object KaDataModule: TKaDataModule
       00000000000000007EC6850321DF6340}
     Active = True
     Aggregates = <>
-    FileName = 
-      'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\z' +
-      'oll\data\output\AusgabeKurz.xml'
     Params = <>
     Left = 432
     Top = 64

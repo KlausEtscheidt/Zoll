@@ -35,8 +35,8 @@ interface
 
         TWKopfzeile = class(TWDokumententeil)
           const
-            DefFontSize: Integer=10;
-            DefHoehe: Integer=200;
+            DefFontSize: Integer=8;
+            DefHoehe: Integer=100;
           private
             FHoehe: Integer;
           public
@@ -48,13 +48,19 @@ interface
 
         TWDokumentenkopf = class(TWDokumententeil)
           const
-            DefFontSize: Integer=16;
+            DefFontSize: Integer=14;
+            DefFreiraumOben: Integer=150;
+            DefFreiraumUnten: Integer=50;
           private
+            FFreiraumOben: Integer;
+            FFreiraumUnten: Integer;
           public
             var text:String;
             function Top:Integer;
             function Bottom:Integer;
             procedure Drucken;
+            property FreiraumOben:Integer read FFreiraumOben write FFreiraumOben;
+            property FreiraumUnten:Integer read FFreiraumUnten write FFreiraumUnten;
         end;
 
         TWInhalt = class(TWDokumententeil)
@@ -86,7 +92,7 @@ interface
         Inhalt:TWInhalt;
         Fusszeile:TWFusszeile;
 
-      constructor Create(AOwner:TComponent);
+      constructor Create(AOwner:TComponent;PrinterName:String);
       procedure Drucken(DruckJobName:String);
       property Drucker:TPrinter read P write P;
       property Raender: TRect  read FRaender write SetRaender;
@@ -98,20 +104,35 @@ interface
 
 implementation
 
-constructor TWBlatt.Create(AOwner:TComponent);
+constructor TWBlatt.Create(AOwner:TComponent;PrinterName:String);
+var
+  PIndex:Integer;
 begin
   inherited Create(AOwner);
 
-  //Default-Printer setzen
-  Printer.PrinterIndex:=1;
-  //  Printer.PrinterIndex:=3;
+  PIndex:=Printer.Printers.IndexOf(PrinterName);
+  if PIndex=-1 then
+    raise Exception.Create('Drucker mit Namen '+
+            PrinterName + 'konnte nicht gefunden werden.');
+
+  try
+    Printer.PrinterIndex:=PIndex;
+  Except
+    raise Exception.Create('Drucker mit Namen '+
+            PrinterName + 'konnte nicht geöffnet werden.');
+  end;
+
   Drucker:=Printer;
 
   //Bestandteile des Blattes anlegen
   Kopfzeile:=TWKopfzeile.Create(Self);
   Kopfzeile.FontSize:=Kopfzeile.DefFontSize;
+
   Dokumentenkopf:=TWDokumentenkopf.Create(Self);
   Dokumentenkopf.FontSize:=Dokumentenkopf.DefFontSize;
+  Dokumentenkopf.FFreiraumOben:=Dokumentenkopf.DefFreiraumOben;
+  Dokumentenkopf.FFreiraumUnten:=Dokumentenkopf.DefFreiraumUnten;
+
   Inhalt:=TWInhalt.Create(Self);
   Inhalt.FontSize:=Inhalt.DefFontSize;
   Fusszeile:=TWFusszeile.Create(Self);
@@ -173,13 +194,18 @@ begin
 end;
 
 procedure TWBlatt.TWKopfzeile.Drucken;
+var
+  myTop,myBot:Integer;
 begin
+  myTop:=Top;
+  myBot:=Bottom;
   Canvas.Font.Size := FontSize;
-  Canvas.TextOut(Blatt.Left, Top+5, 'Kopfzeile');
-  Canvas.MoveTo(Blatt.Left, Top);
-  Canvas.LineTo(Blatt.Right, Top);
-  Canvas.MoveTo(Blatt.Left, Bottom);
-  Canvas.LineTo(Blatt.Right, Bottom);
+  Canvas.TextOut(Blatt.Left, Top, 'Kopfzeile');
+//  Canvas.MoveTo(Blatt.Left, Top);
+//  Canvas.LineTo(Blatt.Right, Top);
+//  Canvas.Pen.Width:=5;
+  Canvas.MoveTo(Blatt.Left, Bottom-Canvas.Pen.Width);
+  Canvas.LineTo(Blatt.Right, Bottom-Canvas.Pen.Width);
 
 end;
 
@@ -188,21 +214,30 @@ end;
 //##########################################################################
 function TWBlatt.TWDokumentenkopf.Top:Integer;
 begin
-  Result:= Blatt.Inhalt.Top;
+  Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe+1;
 end;
 
 function TWBlatt.TWDokumentenkopf.Bottom:Integer;
 begin
-  Result:= Blatt.Inhalt.Bottom;
+  Result:= Self.CurrY+Self.FFreiraumUnten+1;
 end;
 
 //Max einmal je Druckauftrag
 procedure TWBlatt.TWDokumentenkopf.Drucken;
+var
+  myTop,myBot:Integer;
+  txt:String;
 begin
+  myTop:=Top;
+  myBot:=Bottom;
+
   Canvas.Font.Size := FontSize;
-  Canvas.TextOut(Blatt.Left, Top, 'Hallo, Welt!');
+  txt:='Präferenzkalkulation';
+  Canvas.TextOut(Blatt.Left, Top+FreiraumOben, txt);
+  CurrY:=Top+FreiraumOben + Canvas.TextHeight(txt);
   Canvas.Brush.Style := bsClear;
-  Canvas.Rectangle(Blatt.Innen);
+//  Canvas.Rectangle(Blatt.Left+1510, Top+1,Blatt.Left+1540, Top+80);
+//  Canvas.Rectangle(Blatt.Innen);
 end;
 
 //##########################################################################
@@ -210,12 +245,12 @@ end;
 //##########################################################################
 function TWBlatt.TWInhalt.Top:Integer;
 begin
-  Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe;
+  Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe+1;
 end;
 
 function TWBlatt.TWInhalt.Bottom:Integer;
 begin
-  Result:= Blatt.Innen.Bottom- Blatt.Fusszeile.Hoehe;
+  Result:= Blatt.Innen.Bottom- Blatt.Fusszeile.Hoehe-1;
 end;
 
 procedure TWBlatt.TWInhalt.Drucken;
