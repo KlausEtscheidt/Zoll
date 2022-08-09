@@ -283,6 +283,8 @@ begin
       PreisFrm.PreisDS.next;
     end;
 
+    Result:=True;
+
 end;
 
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
