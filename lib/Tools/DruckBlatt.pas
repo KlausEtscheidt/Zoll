@@ -2,18 +2,21 @@ unit DruckBlatt;
 
 interface
 
-  uses SysUtils, System.Classes,System.Types,  Vcl.Graphics, Printers;
+  uses StrUtils, SysUtils, System.Classes,System.Types,  Vcl.Graphics, Printers;
 
   type TWAusrichtungsArten = (l,c,r,d);
-
+  //getEnumName(TypeInfo(TZustand),ord(automat.GetZustand));
   type TWBlatt = class(TComponent)
     const
       //Freiräume, nicht zum Drucken
       DefBlattRaender: TRect=(Left:100; Top:200; Right:100; Bottom:200);
+      DefDecimalSep:String=',';
+
     private
       P:TPrinter;
       FRaender: TRect;
       FInnen: TRect;
+      FDecimalSep:String;
       function GetLeft:Integer;
       function GetRight:Integer;
       procedure SetRaender(Raender: TRect);
@@ -102,6 +105,8 @@ interface
         Inhalt:TWInhalt;
         Fusszeile:TWFusszeile;
 
+      function PosHorizAusgerichtet(Text:String;FeldBreite:Integer;
+            Ausrichtung: TWAusrichtungsArten;NNachKomma:Integer):Integer;
       constructor Create(AOwner:TComponent;PrinterName:String);
       procedure Drucken(DruckJobName:String);
       property Drucker:TPrinter read P write P;
@@ -109,10 +114,56 @@ interface
       property Innen: TRect  read FInnen;
       property Left: Integer  read GetLeft;
       property Right: Integer  read GetRight;
+      property DecimalSeparator:String read FDecimalSep write FDecimalSep;
 
     end;
 
 implementation
+
+function TWBlatt.PosHorizAusgerichtet(Text:String;FeldBreite:Integer;
+            Ausrichtung: TWAusrichtungsArten;NNachKomma:Integer):Integer;
+var
+  bleibtFrei:Double;
+  TextBreite:Integer;
+  PosKomma:Integer;
+  PlatzNachKomma:Integer;
+  Nullen:String;
+begin
+    if Ausrichtung=l then
+      Exit (0);
+
+    //X0 fuer Text in Abhängigkeit der Ausrichtung berechnen
+    TextBreite:=Self.Drucker.Canvas.TextWidth(Text);
+
+    if Ausrichtung=c then
+    begin
+      bleibtFrei:=Double(FeldBreite-TextBreite)/2;
+      Exit (Trunc(bleibtFrei));
+    end;
+
+    if Ausrichtung=r then
+      Exit (FeldBreite-TextBreite);  //X1 ist rechter Zellrand
+
+    //Ausgabe nach Komma ausgerichtet bei unterschiedlichen Nachkommastellen
+    if Ausrichtung=d then
+    begin
+      //Wie viel Platz brauchen die Nachkommastellen
+      Nullen:=Self.DecimalSeparator + DupeString('0',NNachKomma);
+      PlatzNachKomma:=Self.Drucker.Canvas.TextWidth(Nullen);
+      //Wie viel Platz braucht der Wert vor dem Komma
+      PosKomma:=Pos(Self.DecimalSeparator,Text);
+      if PosKomma>0 then
+        Delete(Text, PosKomma,500);
+      TextBreite:=Self.Drucker.Canvas.TextWidth(Text);
+      //Wo starten wir also
+      Exit (FeldBreite-TextBreite-PlatzNachKomma);
+    end;
+
+    Self.Drucker.EndDoc;
+    raise Exception.Create('Unbekannte Ausrichtung '
+                            +' in TWBlatt.DruckeTabellenFeld');
+
+end;
 
 constructor TWBlatt.Create(AOwner:TComponent;PrinterName:String);
 var
@@ -142,6 +193,10 @@ begin
 
   //Setze Blattraender,Blattinneres und die Y0 und Hoehen von Kopf,Fuss,Inhalt
   Raender:=TRect(DefBlattRaender);
+
+  //Weiter Default-Werte in Felder übenehmen
+  FDecimalSep:=DefDecimalSep;
+
 
 end;
 

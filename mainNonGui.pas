@@ -31,7 +31,7 @@ procedure InitCopyUNI2SQLite;
 
 implementation
 
-uses main;
+uses main,DruckBlatt;
 
 /// <summary> Initialisiert den Kopiermodus von UNIPPS nach SQLite
 /// </summary>

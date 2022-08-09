@@ -7,10 +7,10 @@ interface
        DatenModul,DruckBlatt;
 
   type
-     TWAusrichtung = (l,c,r,d);
+//     TWAusrichtung = TWAusrichtungsArten;  #
      TWColumnAlignment = record
         C:Integer;  //Spalte
-        case J: TWAusrichtung of   //Kenner für Ausrichtung
+        case J: TWAusrichtungsArten of   //Kenner für Ausrichtung
           d: (P:Integer) ;         //Nachkommastellen
       end;
 
@@ -170,11 +170,10 @@ end;
 procedure TWDataSetPrinter.TWTabelle.DruckeTabellenFeld(Spalte:Integer;
                        Wert:String;Kopfzeile:Boolean=False);
 var
-  Ausrichtung:TWAusrichtung;
+  Ausrichtung:TWAusrichtungsArten;
   X0,Y0,X1,Y1:Integer;
   XText:Integer;
   TextBreite:Integer;
-  bleibtFrei:Double;
   FormatStr:String;
   FloatWert:Double;
   FloatWertStr:String;
@@ -185,45 +184,18 @@ begin
     X0:=FeldX0[Spalte]+Self.Blatt.Left ;
     X1:=X0+FeldBreiten[Spalte]+2*CellMargin;
 
-    //Rahmen der Zelle
+    //Rahmen der Zelle drucken
     Self.Canvas.Rectangle(X0,Y0,X1,Y1);
-
-    //X0 fuer Text in Abhängigkeit der Ausrichtung berechnen
-    TextBreite:=Self.Canvas.TextWidth(Wert);
 
     if Kopfzeile then
       Ausrichtung:=c
     else
       Ausrichtung:=Ausrichtungen[Spalte].J;
 
-    if Ausrichtung=l then
-      XText:=X0+CellMargin
+    XText:=Blatt.PosHorizAusgerichtet(Wert,FeldBreiten[Spalte],
+                Ausrichtung,3);
 
-    else if Ausrichtung=c then
-    begin
-      bleibtFrei:=Double(FeldBreiten[Spalte]-TextBreite)/2;
-      XText:=X0+CellMargin+Trunc(bleibtFrei);
-    end
-
-    else if Ausrichtung=r then
-      XText:=X1-CellMargin-TextBreite  //X1 ist rechter Zellrand
-
-    //Ausgabe nach Komma ausgerichtet bei unterschiedlichen Nachkommastellen
-    else if Ausrichtung=d then
-    begin
-      FloatWert:=StrToFloat(Wert);
-//      FormatStr:=Ausrichtungen[Spalte].SubString(1);
-      FloatWertStr:=FormatFloat(FormatStr,FloatWert);
-      TextBreite:=Self.Canvas.TextWidth(FloatWertStr);
-      XText:=X1-CellMargin-TextBreite;  //X1 ist rechter Zellrand
-    end
-    else
-    begin
-      Self.Blatt.Drucker.EndDoc;
-      raise Exception.Create('Unbekannte Ausrichtung '
-                              +' in TWDataSetPrinter.DruckeTabellenFeld');
-    end;
-    Self.Canvas.TextOut(XText, Self.CurrY + CellMargin, Wert);
+    Self.Canvas.TextOut(X0+CellMargin+XText, Self.CurrY + CellMargin, Wert);
 end;
 
 //######################################################################
