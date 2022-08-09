@@ -104,7 +104,7 @@ end;
 //und erspart CLick auf Button;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-  mainNonGui.RunItGui;
+  Kundenauftrag:=mainNonGui.RunItGui;
 end;
 
 

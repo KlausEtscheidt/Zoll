@@ -16,12 +16,9 @@ uses
   DruckBlatt in '..\lib\Tools\DruckBlatt.pas';
 
 procedure DruckMal;
-const
-  Ausrichtungen:array [0..1] of TWColumnAlignment=
-                                     ((C:3;J:d;P:3),(C:2;J:c));
 var
   Ausgabe:TWDataSetPrinter;
-  x:String;
+  txt,x:String;
 
 begin
   for x in Printer.Printers do
@@ -33,7 +30,16 @@ begin
                                               KaDataModule.AusgabeDS);
 //  Ausgabe:=TWDataSetPrinter.Create(nil,'\\wernert-print\HP3015n-115');
 
-  Ausgabe.Tabelle.SetAusrichtungen(Ausrichtungen);
+  Ausgabe.Tabelle.Ausrichtung[2]:=c;
+  Ausgabe.Tabelle.Ausrichtung[3]:=d;
+  Ausgabe.Tabelle.NachkommaStellen[3]:=2;
+
+  txt:='lalalal';
+  Ausgabe.Kopfzeile.TextLinks:=txt;
+  Ausgabe.Dokumentenkopf.TextMitte:=txt;
+  DateTimeToString(txt, 'dd.mm.yy hh:mm', System.SysUtils.Now);
+  Ausgabe.Kopfzeile.TextRechts:=txt;
+  Ausgabe.Fusszeile.TextLinks:='Klaus Etscheidt';
 
   try
 //  Ausgabe.Drucker:= Printer;

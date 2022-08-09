@@ -18,7 +18,7 @@ type
     end;
     TWZuordnungen=array of TWZuordnung;
 
-procedure RunItGui;
+function RunItGui:TWKundenauftrag;
 procedure RunItKonsole;
 function KaAuswerten(KaId:string):TWKundenauftrag;
 procedure KaNurAuswerten(KaId:string);
@@ -32,6 +32,18 @@ procedure InitCopyUNI2SQLite;
 implementation
 
 uses main,DruckBlatt;
+
+function GetUsername: String;
+var
+  Buffer: array[0..256] of Char; // UNLEN (= 256) +1 (definiert in Lmcons.h)
+  Size: DWord;
+begin
+  Size := length(Buffer); // length stat SizeOf, da Anzahl in TChar und nicht BufferSize in Byte
+   if not Windows.GetUserName(Buffer, Size) then
+    RaiseLastOSError;
+  SetString(Result, Buffer, Size - 1);
+
+end;
 
 /// <summary> Initialisiert den Kopiermodus von UNIPPS nach SQLite
 /// </summary>
@@ -218,7 +230,7 @@ begin
 
     Tools.Log.Close;
     Tools.ErrLog.Close;
-    ka.Free;
+    Result:=KA;
 
   end;
 
@@ -295,18 +307,25 @@ begin
 end;
 
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
-const
-  //Abweichungen von der Default-Ausrichtung [Spaltenr,Art]
-    Ausrichtungen:array [0..1] of TWColumnAlignment=
-                                       ((C:1;J:r),(C:3;J:d;P:2));
 var
   Ausgabe:TWDataSetPrinter;
   Index:Integer;
+  txt:String;
 begin
 
   Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF',
                                             KaDataModule.AusgabeDS);
-  Ausgabe.Tabelle.SetAusrichtungen(Ausrichtungen);
+  Ausgabe.Tabelle.Ausrichtung[3]:=d;
+  Ausgabe.Tabelle.NachkommaStellen[3]:=2;
+
+  Ausgabe.Kopfzeile.TextLinks:='Präferenzkalkulation';
+  Ausgabe.Dokumentenkopf.TextLinks:='Präferenzkalkulation';
+  Ausgabe.Kopfzeile.TextMitte:=  'Auftragsnr: ' + KA.KaId;
+  Ausgabe.Dokumentenkopf.TextMitte:=  'Auftragsnr: ' + KA.KaId;
+  DateTimeToString(txt, 'dd.mm.yy hh:mm', System.SysUtils.Now);
+  Ausgabe.Kopfzeile.TextRechts:=txt;
+  Ausgabe.Fusszeile.TextLinks:=GetUsername;
+
 
   try
   Ausgabe.Drucken();
@@ -376,13 +395,13 @@ end;
 
 ///<summary> Einsprung fuer GUI Version fuer automatischen Testlauf
 ///</summary>
-procedure RunItGui;
+function RunItGui:TWKundenauftrag;
 begin
 
 //test;
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  mainNonGui.KaAuswerten('144729');
-  main.Kundenauftrag:= mainNonGui.KaAuswerten('142567'); //2Pumpen
+  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

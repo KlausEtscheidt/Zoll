@@ -12,7 +12,6 @@ interface
     EWStueli=class(Exception);
 
  type
-//    TWValue = TValue; //alias
     TWSortedKeyArray = TArray<Integer>;
 
     TWStueliPos = class

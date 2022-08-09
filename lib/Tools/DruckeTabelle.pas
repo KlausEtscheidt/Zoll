@@ -6,16 +6,6 @@ interface
         Vcl.Graphics, Data.DB, Printers,
        DatenModul,DruckBlatt;
 
-  type
-//     TWAusrichtung = TWAusrichtungsArten;  #
-     TWColumnAlignment = record
-        C:Integer;  //Spalte
-        case J: TWAusrichtungsArten of   //Kenner für Ausrichtung
-          d: (P:Integer) ;         //Nachkommastellen
-      end;
-
-    TWColumnAlignments = array of TWColumnAlignment;
-
   type TWDataSetPrinter = class(TWBlatt)
     private
     public
@@ -27,23 +17,31 @@ interface
             DefaultFeldHoehe=300;
           private
             Daten:TDataSet;
+            FFeldHoehe:Integer;
             FeldBreiten:array of Integer; //Netto-Breiten der Spalten
             FeldX0:array of Integer;     //Start-Pos für Zell-Rahmen
-            FFeldHoehe:Integer;
-            FAlign:TWColumnAlignments;
+            FAlign:array of TWAusrichtungsArten;
+            FNNachkomma:array of Integer;
             procedure DruckeTabellenFeld(Spalte:Integer;
                              Wert:String;Kopfzeile:Boolean=False);
             procedure DruckeTabellenKopf();
             procedure DruckeTabellenReihe(Felder:TFields);
             procedure Drucke;
             procedure HoleBreiten();
-            procedure HoleAusrichtungen();
+            procedure HoleAusrichtungenAusFeldDef();
             function FeldToStr(Feld:TField):String;
+            procedure SetAlign(Spalte:Integer; Art:TWAusrichtungsArten);
+            function GetAlign(Spalte:Integer):TWAusrichtungsArten;
+            procedure SetNNachkomma(Spalte,N:Integer);
+            function GetNNachkomma(Spalte:Integer):Integer;
+
           public
-            procedure SetAusrichtungen(ColAligns:array of TWColumnAlignment);
             property DataSet:TDataSet read Daten;
             property FeldHoehe:Integer read FFeldHoehe write FFeldHoehe;
-            property Ausrichtungen:TWColumnAlignments read FAlign;
+            property Ausrichtung[Spalte:Integer]:TWAusrichtungsArten
+              read GetAlign write SetAlign;
+            property NachkommaStellen[Spalte:Integer]:Integer
+              read GetNNachkomma write SetNNachkomma;
 
         end;
 
@@ -63,43 +61,56 @@ begin
   Tabelle:=TWTabelle.Create(Self);
   Tabelle.FeldHoehe:=Tabelle.DefaultFeldHoehe;
   Tabelle.Daten:=DS;
-  Tabelle.HoleAusrichtungen;
+  Tabelle.HoleAusrichtungenAusFeldDef;
 
 end;
 
 /////////////////////////////////////////////////////////////////////////
-procedure TWDataSetPrinter.TWTabelle.HoleAusrichtungen();
+procedure TWDataSetPrinter.TWTabelle.SetAlign(Spalte:Integer;
+                                                 Art:TWAusrichtungsArten);
+begin
+  FAlign[Spalte]:=Art;
+end;
+
+function TWDataSetPrinter.TWTabelle.GetNNachkomma(Spalte:Integer):Integer;
+begin
+  Result:=FNNachkomma[Spalte];
+end;
+
+procedure TWDataSetPrinter.TWTabelle.SetNNachkomma(Spalte,N:Integer);
+begin
+  FNNachkomma[Spalte]:=N;
+end;
+
+function TWDataSetPrinter.TWTabelle.GetAlign(Spalte:Integer):TWAusrichtungsArten;
+begin
+  Result:=FAlign[Spalte];
+end;
+
+///<summary>Besetzt die Spaltenausrichtungen aus den Feldinformationen
+///</summary>
+///<remarks>Die Ausrichtung kann bei Bedarf für einzelne Spalten geändert werden.
+///Dies macht z.B. für Ausrichtung am Komma Sinn, welche bei TField unbekannt ist.
+///Nur hierzu wird dann auch die Anzahl der Nachkommastellen benötigt.
+///</remarks>
+procedure TWDataSetPrinter.TWTabelle.HoleAusrichtungenAusFeldDef();
 var
-  I:Integer;
-  rec:TWColumnAlignment;
+  Spalte:Integer;
 
 begin
   setlength(FAlign,Daten.FieldCount);
+  setlength(FNNachkomma,Daten.FieldCount);
 
-  for I := 0 to Daten.FieldCount-1 do
+  for Spalte := 0 to Daten.FieldCount-1 do
   begin
-    rec.C:=-1;rec.P:=2; //Column uninteressant;default 2 Nachkommastellen
-    case Daten.Fields.Fields[I].Alignment of
-      taLeftJustify: rec.J:=l;
-      taCenter: rec.J:=c;
-      taRightJustify: rec.J:=r;
+    case Daten.Fields.Fields[Spalte].Alignment of
+      taLeftJustify:  FAlign[Spalte]:=l;
+      taCenter:   FAlign[Spalte]:=c;
+      taRightJustify: FAlign[Spalte]:=r;
     end;
-
-  FAlign[I]:=rec;
-
+    FNNachkomma[Spalte]:=2; //Default immer 2
   end;
 
-end;
-
-
-procedure TWDataSetPrinter.TWTabelle.SetAusrichtungen(
-                                   ColAligns:array of TWColumnAlignment);
-var
-  I:Integer;
-begin
-  //Sonderfälle aus ColAligns in Gesamt-Array aller Spalten eintragen
-  for I:=0 to length(ColAligns)-1 do
-    Self.FAlign[ColAligns[I].C]:=ColAligns[I];
 end;
 
 function TWDataSetPrinter.TWTabelle.FeldToStr(Feld:TField):String;
@@ -170,13 +181,10 @@ end;
 procedure TWDataSetPrinter.TWTabelle.DruckeTabellenFeld(Spalte:Integer;
                        Wert:String;Kopfzeile:Boolean=False);
 var
-  Ausrichtung:TWAusrichtungsArten;
+  Adjust:TWAusrichtungsArten;
   X0,Y0,X1,Y1:Integer;
-  XText:Integer;
-  TextBreite:Integer;
-  FormatStr:String;
-  FloatWert:Double;
-  FloatWertStr:String;
+  X0Text:Integer;
+  AnzNachkomma:Integer;
 
 begin
     Y0:=Self.CurrY;
@@ -187,15 +195,16 @@ begin
     //Rahmen der Zelle drucken
     Self.Canvas.Rectangle(X0,Y0,X1,Y1);
 
-    if Kopfzeile then
-      Ausrichtung:=c
+    if Kopfzeile then   //Spaltenüberschriften immer zentriert
+      Adjust:=c
     else
-      Ausrichtung:=Ausrichtungen[Spalte].J;
+      Adjust:=Ausrichtung[Spalte];
 
-    XText:=Blatt.PosHorizAusgerichtet(Wert,FeldBreiten[Spalte],
-                Ausrichtung,3);
+    AnzNachkomma:=NachkommaStellen[Spalte];
+    X0Text:=Blatt.PosHorizAusgerichtet(Wert,FeldBreiten[Spalte],
+                Adjust,AnzNachkomma);
 
-    Self.Canvas.TextOut(X0+CellMargin+XText, Self.CurrY + CellMargin, Wert);
+    Self.Canvas.TextOut(X0+CellMargin+X0Text, Self.CurrY + CellMargin, Wert);
 end;
 
 //######################################################################
@@ -252,6 +261,7 @@ begin
     bot:=Self.Bottom;
     if Self.CurrY+FeldHoehe>Self.Bottom then
     begin
+      Blatt.Fusszeile.TextRechts:=IntToStr(Blatt.Drucker.PageNumber);
       Blatt.Fusszeile.Drucken;
       Blatt.Drucker.NewPage;
       Blatt.Kopfzeile.Drucken;
@@ -273,6 +283,7 @@ begin
   Tabelle.CurrY:=Dokumentenkopf.Bottom+Tabelle.FreiraumOben;
   Tabelle.Drucke;
 //  printer.canvas.Canvas.StretchDraw(rect1,bmp);
+  Fusszeile.TextRechts:=IntToStr(Drucker.PageNumber);
   Fusszeile.Drucken;
   Drucker.EndDoc;
 end;

@@ -29,13 +29,22 @@ interface
             FFontSize: Integer;
             FCanvas:TCanvas;
             FBlatt:TWBlatt;
+            FTextLinks:String;
+            FTextRechts:String;
+            FTextMitte:String;
           public
             var CurrY:Integer;
             constructor Create(AParent:TWBlatt);
             procedure CurrYAdd(DeltaY:Integer);
+            procedure DruckeLinkenText(YPos:Integer);
+            procedure DruckeRechtenText(YPos:Integer);
+            procedure DruckeMittelText(YPos:Integer);
             property FontSize:Integer read FFontSize write FFontSize;
             property Blatt:TWBlatt read FBlatt;
             property Canvas:TCanvas read FCanvas;
+            property TextLinks:String read FTextLinks write FTextLinks;
+            property TextRechts:String read FTextRechts write FTextRechts;
+            property TextMitte:String read FTextMitte write FTextMitte;
         end;
 
         //--------- Kopfzeile
@@ -89,7 +98,9 @@ interface
           const
             DefFontSize: Integer=10;
             DefHoehe: Integer=100;
+            DefFreiraumOben: Integer=5;
           private
+            FFreiraumOben: Integer;
             FHoehe: Integer;
           public
             constructor Create(AParent:TWBlatt);
@@ -97,6 +108,7 @@ interface
             function Bottom:Integer;
             procedure Drucken;
             property Hoehe:Integer read FHoehe write FHoehe;
+            property FreiraumOben:Integer read FFreiraumOben write FFreiraumOben;
         end;
 
       var
@@ -237,6 +249,27 @@ begin
   CurrY:=CurrY+DeltaY;
 end;
 
+procedure TWBlatt.TWDokumentenTeil.DruckeLinkenText(YPos:Integer);
+begin
+  Canvas.TextOut(Blatt.Left, YPos, TextLinks);
+end;
+
+procedure TWBlatt.TWDokumentenTeil.DruckeRechtenText(YPos:Integer);
+var XPos:Integer;
+begin
+  //Berechne Pos fuer rechten Blattrand
+  XPos:=Blatt.PosHorizAusgerichtet(TextRechts,Blatt.Right-Blatt.Left,r,0);
+  Canvas.TextOut(Blatt.Left+XPos, YPos, TextRechts);
+end;
+
+procedure TWBlatt.TWDokumentenTeil.DruckeMittelText(YPos:Integer);
+var XPos:Integer;
+begin
+  //Berechne Pos fuer Zentriert auf Blattmitte
+  XPos:=Blatt.PosHorizAusgerichtet(TextMitte,Blatt.Right-Blatt.Left,c,0);
+  Canvas.TextOut(Blatt.Left+XPos, YPos, TextMitte);
+end;
+
 //##########################################################################
 // Kopfzeile
 //##########################################################################
@@ -263,10 +296,9 @@ begin
   myTop:=Top;
   myBot:=Bottom;
   Canvas.Font.Size := FontSize;
-  Canvas.TextOut(Blatt.Left, Top, 'Kopfzeile');
-//  Canvas.MoveTo(Blatt.Left, Top);
-//  Canvas.LineTo(Blatt.Right, Top);
-//  Canvas.Pen.Width:=5;
+  Self.DruckeLinkenText(Top);
+  Self.DruckeRechtenText(Top);
+  Self.DruckeMittelText(Top);
   Canvas.MoveTo(Blatt.Left, Bottom-Canvas.Pen.Width);
   Canvas.LineTo(Blatt.Right, Bottom-Canvas.Pen.Width);
 
@@ -295,16 +327,18 @@ end;
 //Max einmal je Druckauftrag
 procedure TWBlatt.TWDokumentenkopf.Drucken;
 var
-  myTop,myBot:Integer;
-  txt:String;
+  YPos:Integer;
 begin
-  myTop:=Top;
-  myBot:=Bottom;
-
   Canvas.Font.Size := FontSize;
-  txt:='Präferenzkalkulation';
-  Canvas.TextOut(Blatt.Left, Top+FreiraumOben, txt);
-  CurrY:=Top+FreiraumOben + Canvas.TextHeight(txt);
+  //Etwas Platz nach oben lassen
+  YPos:=Top+FreiraumOben;
+  //Drucke drei Texte, falls belegt
+  Self.DruckeLinkenText(YPos);
+  Self.DruckeRechtenText(YPos);
+  Self.DruckeMittelText(YPos);
+  //Neue Y-Pos ais allen Texthöhen berechnen
+  CurrY:=YPos+ Canvas.TextHeight(TextLinks+TextMitte+TextRechts);
+
 //  Canvas.Brush.Style := bsClear;
 //  Canvas.Rectangle(Blatt.Left+1510, Top+1,Blatt.Left+1540, Top+80);
 //  Canvas.Rectangle(Blatt.Innen);
@@ -342,6 +376,7 @@ constructor TWBlatt.TWFusszeile.Create(AParent:TWBlatt);
 begin
   inherited Create(AParent);
   FontSize:=DefFontSize;
+  FFreiraumOben:=DefFreiraumOben;
 end;
 
 function TWBlatt.TWFusszeile.Top:Integer;
@@ -356,13 +391,21 @@ end;
 
 
 procedure TWBlatt.TWFusszeile.Drucken;
+var YPos:Integer;
 begin
   Canvas.Font.Size := FontSize;
-  Canvas.TextOut(Blatt.Left, Top+5, 'Fusszeile');
+  //Etwas Platz nach oben lassen
+  YPos:=Top+FreiraumOben;
+
+  //Drucke drei Texte, falls belegt
+  Self.DruckeLinkenText(YPos);
+  Self.DruckeRechtenText(YPos);
+  Self.DruckeMittelText(YPos);
+
   Canvas.MoveTo(Blatt.Left, Top);
   Canvas.LineTo(Blatt.Right, Top);
-  Canvas.MoveTo(Blatt.Left, Bottom);
-  Canvas.LineTo(Blatt.Right, Bottom);
+//  Canvas.MoveTo(Blatt.Left, Bottom);
+//  Canvas.LineTo(Blatt.Right, Bottom);
 
 end;
 
