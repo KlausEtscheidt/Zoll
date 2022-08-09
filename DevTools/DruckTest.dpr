@@ -5,19 +5,20 @@ program DruckTest;
 {$R *.res}
 
 uses
-  System.SysUtils,Printers,
-  DruckBlatt in '..\lib\Tools\DruckBlatt.pas',
+  System.SysUtils,
+  Printers,
   PumpenDataSet in '..\lib\Datenbank\PumpenDataSet.pas',
   DatenModul in '..\DatenModul.pas' {KaDataModule: TDataModule},
   Logger in '..\lib\Tools\Logger.pas',
   Preiseingabe in '..\Preiseingabe.pas' {PreisFrm},
   Settings in '..\lib\Tools\Settings.pas',
-  DruckeTabelle in '..\lib\Tools\DruckeTabelle.pas';
+  DruckeTabelle in '..\lib\Tools\DruckeTabelle.pas',
+  DruckBlatt in '..\lib\Tools\DruckBlatt.pas';
 
 procedure DruckMal;
 const
   Ausrichtungen:array [0..1] of TWColumnAlignment=
-                                     ((C:1;J:d;P:3),(C:2;J:c));
+                                     ((C:3;J:d;P:3),(C:2;J:c));
 var
   Ausgabe:TWDataSetPrinter;
   x:String;
