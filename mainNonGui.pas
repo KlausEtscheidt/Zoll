@@ -6,7 +6,8 @@ uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
       Tools, Settings, Tests,
       Kundenauftrag,KundenauftragsPos, ADOQuery , ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe,
-      DruckeTabelle  ;
+//      DruckeTabelle,
+      AusgabeKalkulation  ;
 
 type
     EStuBaumMainExc = class(Exception);
@@ -314,12 +315,12 @@ end;
 
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
 var
-  Ausgabe:TWDataSetPrinter;
+  Ausgabe:TWKalkAusgabe;
   Index:Integer;
   txt:String;
 begin
 
-  Ausgabe:=TWDataSetPrinter.Create(nil,'Microsoft Print to PDF',
+  Ausgabe:=TWKalkAusgabe.Create(nil,'Microsoft Print to PDF',
                                             KaDataModule.AusgabeDS);
   Ausgabe.Tabelle.Ausrichtung[3]:=d;
   Ausgabe.Tabelle.NachkommaStellen[3]:=2;
@@ -334,7 +335,7 @@ begin
 
 
   try
-  Ausgabe.Drucken();
+  Ausgabe.Drucken('Auftragsnr: ' + KA.KaId);
   finally
     if Ausgabe.Drucker.Printing then
       Ausgabe.Drucker.EndDoc;
@@ -355,7 +356,7 @@ begin
 
   //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
-//  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
+  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
 
   //Ausgabe als CSV
   KaDataModule.AusgabeAlsCSV(Settings.LogDir, KaId + '_Kalk.csv');
@@ -407,8 +408,8 @@ begin
 //test;
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
 //  Result:= mainNonGui.KaAuswerten('144729');
-  Result:= mainNonGui.KaAuswerten('144927');
-//  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  Result:= mainNonGui.KaAuswerten('144927');
+  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

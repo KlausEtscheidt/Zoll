@@ -6,6 +6,7 @@ interface
 
   type TWAusrichtungsArten = (l,c,r,d);
   //getEnumName(TypeInfo(TZustand),ord(automat.GetZustand));
+
   type TWBlatt = class(TComponent)
     const
       //Freiräume, nicht zum Drucken
@@ -26,9 +27,9 @@ interface
       type
         TWDokumententeil = class
           private
+            FBlatt:TWBlatt; //Vaterobjekt (Owner)
+            FCanvas:TCanvas; //Zeichenfläche des Vaterobjekts
             FFontSize: Integer;
-            FCanvas:TCanvas;
-            FBlatt:TWBlatt;
             FTextLinks:String;
             FTextRechts:String;
             FTextMitte:String;
@@ -83,14 +84,23 @@ interface
           const
             DefFontSize: Integer=8;
             DefFreiraumOben: Integer=50;
+            DefFreiraumUnten: Integer=50;
+            DefZeilenHoehe: Integer=50;
           private
             FFreiraumOben: Integer;
+            FFreiraumUnten: Integer;
+            FZeilenHoehe: Integer;
           public
             constructor Create(AParent:TWBlatt);
             function Top:Integer;
+            function TopMitFreiraum:Integer;
+            function TopNachDokukopf:Integer;
             function Bottom:Integer;
-            procedure Drucken;
+            procedure Drucken; virtual; abstract;
+            procedure CurrYZeileVor;
             property FreiraumOben:Integer read FFreiraumOben write FFreiraumOben;
+            property FreiraumUnten:Integer read FFreiraumUnten write FFreiraumUnten;
+            property ZeilenHoehe:Integer read FZeilenHoehe write FZeilenHoehe;
         end;
 
         //--------- Fusszeile
@@ -121,7 +131,12 @@ interface
             Ausrichtung: TWAusrichtungsArten;NNachKomma:Integer):Integer;
       constructor Create(AOwner:TComponent;PrinterName:String);
       procedure Drucken(DruckJobName:String);
-      procedure DruckeInhalt();
+//      function NeueSeite(EinInhalt:TWInhalt): Boolean;
+      function NeueSeite(): Boolean;
+      procedure DruckeKopfzeile();virtual;
+      procedure DruckeInhalt();virtual;
+      procedure DruckeDokumentenkopf();virtual;
+      procedure DruckeFusszeile();virtual;
       property Drucker:TPrinter read P write P;
       property Raender: TRect  read FRaender write SetRaender;
       property Innen: TRect  read FInnen;
@@ -337,7 +352,7 @@ begin
   Self.DruckeLinkenText(YPos);
   Self.DruckeRechtenText(YPos);
   Self.DruckeMittelText(YPos);
-  //Neue Y-Pos ais allen Texthöhen berechnen
+  //Neue Y-Pos aus allen Texthöhen berechnen
   CurrY:=YPos+ Canvas.TextHeight(TextLinks+TextMitte+TextRechts);
 end;
 
@@ -349,6 +364,8 @@ begin
   inherited Create(AParent);
   FontSize:=DefFontSize;
   FFreiraumOben:=DefFreiraumOben;
+  FFreiraumUnten:=DefFreiraumUnten;
+  FZeilenHoehe:=DefZeilenHoehe;
 end;
 
 function TWBlatt.TWInhalt.Top:Integer;
@@ -356,15 +373,29 @@ begin
   Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe+1;
 end;
 
+function TWBlatt.TWInhalt.TopMitFreiraum:Integer;
+begin
+  Result:= Blatt.Innen.Top + Blatt.Kopfzeile.Hoehe + Self.FreiraumOben;
+end;
+
+function TWBlatt.TWInhalt.TopNachDokukopf:Integer;
+begin
+  Result:=  Blatt.Dokumentenkopf.Bottom+Self.FreiraumOben;
+end;
+
 function TWBlatt.TWInhalt.Bottom:Integer;
 begin
   Result:= Blatt.Innen.Bottom- Blatt.Fusszeile.Hoehe-1;
 end;
 
-procedure TWBlatt.TWInhalt.Drucken;
+procedure TWBlatt.TWInhalt.CurrYZeileVor;
 begin
-
+  Self.CurrY:=Self.CurrY+Self.ZeilenHoehe;
 end;
+//procedure TWBlatt.TWInhalt.Drucken;
+//begin
+//
+//end;
 
 //##########################################################################
 // Fusszeile
@@ -404,19 +435,50 @@ begin
 end;
 
 //##########################################################################
+procedure TWBlatt.DruckeKopfzeile();
+begin
+  Kopfzeile.Drucken;
+end;
+
+procedure TWBlatt.DruckeDokumentenkopf();
+begin
+  Dokumentenkopf.Drucken;
+end;
+
 procedure TWBlatt.DruckeInhalt();
 begin
   Inhalt.Drucken;
+end;
+
+procedure TWBlatt.DruckeFusszeile();
+begin
+  Fusszeile.Drucken;
+end;
+
+//function TWBlatt.NeueSeite(EinInhalt:TWInhalt):Boolean;
+function TWBlatt.NeueSeite():Boolean;
+begin
+//    if EinInhalt.CurrY<EinInhalt.Bottom-EinInhalt.FreiraumUnten then
+    if Inhalt.CurrY<Inhalt.Bottom-Inhalt.FreiraumUnten then
+      Exit(False);
+    Fusszeile.TextRechts:=IntToStr(Drucker.PageNumber);
+
+    DruckeFusszeile;
+    Drucker.NewPage;
+    DruckeKopfzeile;
+//    EinInhalt.CurrY:=EinInhalt.Top+EinInhalt.FreiraumOben;
+    Inhalt.CurrY:=Inhalt.TopMitFreiraum;
+    Exit(True);
 end;
 
 procedure TWBlatt.Drucken(DruckJobName:String);
 begin
   P.Title := DruckJobName;
   P.BeginDoc;
-  Kopfzeile.Drucken;
-  Dokumentenkopf.Drucken; //einmalig je Druckvorgang
+  DruckeKopfzeile;
+  DruckeDokumentenkopf; //einmalig je Druckvorgang
   DruckeInhalt;
-  Fusszeile.Drucken;
+  DruckeFusszeile;
   P.EndDoc;
 end;
 

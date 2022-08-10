@@ -22,10 +22,11 @@ interface
             FeldX0:array of Integer;     //Start-Pos für Zell-Rahmen
             FAlign:array of TWAusrichtungsArten;
             FNNachkomma:array of Integer;
+            FNullDrucken:Boolean;
             procedure DruckeTabellenFeld(Spalte:Integer;
                              Wert:String;Kopfzeile:Boolean=False);
             procedure DruckeTabellenKopf();
-            procedure DruckeTabellenReihe(Felder:TFields);
+            procedure DruckeTabellenReihe(Felder:TFields);virtual;
             procedure HoleBreiten();
             procedure HoleAusrichtungenAusFeldDef();
             function FeldToStr(Feld:TField):String;
@@ -41,12 +42,14 @@ interface
               read GetAlign write SetAlign;
             property NachkommaStellen[Spalte:Integer]:Integer
               read GetNNachkomma write SetNNachkomma;
+            property NullDrucken:Boolean read FNullDrucken write FNullDrucken;
+
         end;
       //--------------------Ende Inner Class
 
       var Tabelle:TWTabelle;
       constructor Create(AOwner:TComponent;PrinterName:String;DS:TDataSet);
-      procedure DruckeInhalt;
+      procedure DruckeInhalt; reintroduce;  override;
 //      procedure Drucken();
 
     end;
@@ -62,6 +65,9 @@ begin
   Tabelle.FeldHoehe:=Tabelle.DefaultFeldHoehe;
   Tabelle.Daten:=DS;
   Tabelle.HoleAusrichtungenAusFeldDef;
+  //Tabelle in Basisklasse als Inhalt registrieren,
+  //damit Pos-Berechnungen die sich auf Inhalt beziehen weiter funktionieren
+  Inhalt:=Tabelle;
 
 end;
 
@@ -120,13 +126,19 @@ begin
     if (Feld.DataType=ftFloat) then
       begin
         FloatFeld:=TFloatField(Feld);
-        Result:=FormatFloat(FloatFeld.DisplayFormat,FloatFeld.AsFloat);
+        if NullDrucken or ((FloatFeld.AsFloat)<>0) then
+          Result:=FormatFloat(FloatFeld.DisplayFormat,FloatFeld.AsFloat)
+        else
+          Result:='';
       end
     else
     if (Feld.DataType=ftCurrency) then
       begin
         FloatFeld:=TFloatField(Feld);
-        Result:=FormatFloat('0.00 €',FloatFeld.AsFloat);
+        if NullDrucken or ((FloatFeld.AsFloat)<>0) then
+          Result:=FormatFloat('0.00 €',FloatFeld.AsFloat)
+        else
+          Result:='';
       end
     else
       Result:=Feld.AsString;
@@ -227,7 +239,6 @@ end;
 procedure TWDataSetPrinter.TWTabelle.DruckeTabellenReihe(Felder:TFields);
 var
   Feld:TField;
-  FloatFeld:TFloatField;
   I:Integer;
   Wert:String;
 
@@ -244,28 +255,29 @@ end;
 
 
 procedure TWDataSetPrinter.TWTabelle.Drucken;
-var
-  Y:Integer;
 begin
   HoleBreiten;
+  Self.ZeilenHoehe:=FeldHoehe;
+  Self.FreiraumUnten:=FeldHoehe+100;
+
+  //  //Starte unter Dokumentenkopf (inkl Freiraum)
+  Self.CurrY:=Self.TopNachDokukopf;
 
   DruckeTabellenKopf;
-  Self.CurrYAdd(FeldHoehe); //Ueberschriften beruecksictigen
+  Self.CurrYZeileVor;
 
   Daten.First;
   while not Daten.Eof do
   begin
     DruckeTabellenReihe(Daten.Fields);
-    Self.CurrYAdd(FeldHoehe);
-    if Self.CurrY+FeldHoehe>Self.Bottom then
+    Self.CurrYZeileVor;
+
+    //Prüfe ob Seite voll und erzeuge Umbruch wenn nötig,
+    //CurrY wird dann auf TopMitFreiraum gesetzt
+    if Blatt.NeueSeite() then
     begin
-      Blatt.Fusszeile.TextRechts:=IntToStr(Blatt.Drucker.PageNumber);
-      Blatt.Fusszeile.Drucken;
-      Blatt.Drucker.NewPage;
-      Blatt.Kopfzeile.Drucken;
-      Self.CurrY:=Self.Top+Self.FreiraumOben;
       DruckeTabellenKopf;
-      Self.CurrYAdd(FeldHoehe); //Ueberschriften beruecksictigen
+      Self.CurrYZeileVor;
     end;
     Daten.Next;
   end;

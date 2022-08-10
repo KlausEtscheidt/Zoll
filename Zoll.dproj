@@ -204,8 +204,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="lib\Tools\Tools.pas"/>
-        <DCCReference Include="lib\Tools\DruckBlatt.pas"/>
-        <DCCReference Include="lib\Tools\DruckeTabelle.pas"/>
+        <DCCReference Include="lib\Drucken\DruckBlatt.pas"/>
+        <DCCReference Include="lib\Drucken\DruckeTabelle.pas"/>
+        <DCCReference Include="AusgabeKalkulation.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

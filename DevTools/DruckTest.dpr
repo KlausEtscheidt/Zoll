@@ -12,8 +12,8 @@ uses
   Logger in '..\lib\Tools\Logger.pas',
   Preiseingabe in '..\Preiseingabe.pas' {PreisFrm},
   Settings in '..\lib\Tools\Settings.pas',
-  DruckeTabelle in '..\lib\Tools\DruckeTabelle.pas',
-  DruckBlatt in '..\lib\Tools\DruckBlatt.pas';
+  DruckBlatt in '..\lib\Drucken\DruckBlatt.pas',
+  DruckeTabelle in '..\lib\Drucken\DruckeTabelle.pas';
 
 procedure DruckMal;
 var
@@ -43,7 +43,7 @@ begin
 
   try
 //  Ausgabe.Drucker:= Printer;
-  Ausgabe.Drucken();
+  Ausgabe.Drucken('jobtitel');
   finally
     if Ausgabe.Drucker.Printing then
       Ausgabe.Drucker.EndDoc;
