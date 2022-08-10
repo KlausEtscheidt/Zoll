@@ -406,10 +406,10 @@ function RunItGui:TWKundenauftrag;
 begin
 
 //test;
-//  mainNonGui.KaAuswerten('142302'); //Ersatz
+  Result:= mainNonGui.KaAuswerten('142302'); //Ersatz
 //  Result:= mainNonGui.KaAuswerten('144729');
 //  Result:= mainNonGui.KaAuswerten('144927');
-  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

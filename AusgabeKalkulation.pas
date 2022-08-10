@@ -2,7 +2,7 @@ unit AusgabeKalkulation;
 
 interface
 
-  uses Data.DB,System.Classes,DruckeTabelle;
+  uses Data.DB,System.Classes,VCL.Graphics, DruckeTabelle;
 
   type TWKalkAusgabe = class(TWDataSetPrinter)
 
@@ -50,18 +50,29 @@ var
   I,IMax:Integer;
   Wert:String;
   testtxt:String;
-
+  OldBrushColor,OldFontColor:TColor;
 begin
 
   Self.Canvas.Font.Size := Self.FontSize;
   Feld:=Felder.Fields[0];
-  testtxt:=Feld.AsString;
 
+  OldBrushColor:=Canvas.Brush.Color;
+  OldFontColor:=Canvas.Font.Color;
 
   if Feld.AsString<>'1' then
     IMax:=6
   else
+  begin
     IMax:=Felder.Count-1;
+    Canvas.Brush.Color:=clLtGray;
+    Feld:=Felder.Fields[10];
+    if Feld.AsFloat>=4 then
+    begin
+      Canvas.Font.Color:=clRed;
+      Canvas.Brush.Style:=bsFDiagonal;
+    end;
+  end;
+
 
   for I:=0 to Felder.Count-1 do
   begin
@@ -73,6 +84,10 @@ begin
     end;
     DruckeTabellenFeld(I, Wert);
   end;
+
+  Canvas.Brush.Color:= OldBrushColor;
+  Canvas.Font.Color:= OldFontColor;
+  Canvas.Brush.Style:=bsSolid;
 
 end;
 

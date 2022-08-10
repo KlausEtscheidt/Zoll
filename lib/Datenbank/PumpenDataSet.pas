@@ -217,7 +217,7 @@ var
         if myField.DataType=ftFloat then
         begin
           myFloatField:=TFloatField(myField) ;
-          myFloatField.DisplayFormat:='0.##';
+          myFloatField.DisplayFormat:='0.00';
         end;
     end;
 

@@ -457,8 +457,10 @@ begin
   ZielDS.AddData('MengeTotal',MengeTotal);
   ZielDS.AddData('Ebene',Ebene);
   ZielDS.AddData('EbeneNice',EbeneNice);
-
-  ZielDS.AddData('AnteilNonEU',0);
+  if VerkaufsPreisRabattiert<>0 then
+    ZielDS.AddData('AnteilNonEU',100*SummeNonEU/VerkaufsPreisRabattiert)
+  else
+    ZielDS.AddData('AnteilNonEU',0);
   ZielDS.AddData('ZuKAPos',0);
   //ZielDS.Post;
 end;

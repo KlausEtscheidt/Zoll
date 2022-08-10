@@ -57,9 +57,9 @@ uses
       (N: 'bme'; T:ftInteger; C:''; W:10; J:l),
       (N: 'we_menge'; T:ftFloat; C:''; W:10; J:l),
       (N: 'lieferant'; T:ftInteger; C:''; W:10; J:l),
-      (N: 'kurzname'; T:ftString; C:''; W:10; J:l),
+      (N: 'kurzname'; T:ftString; C:'Lieferant'; W:10; J:l),
       (N: 'best_menge'; T:ftFloat; C:''; W:10; J:l),
-      (N: 'AnteilNonEU'; T:ftFloat; C:''; W:10; J:l),
+      (N: 'AnteilNonEU'; T:ftFloat; C:'% Non EU'; W:10; J:c),
       (N: 'ZuKAPos'; T:ftInteger; C:'gehört zu'; W:10; J:l)
      );
 
@@ -233,7 +233,8 @@ procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
 //---------------------------------------------------------------------------
 const
   Felder: TWFeldNamen = ['EbeneNice','t_tg_nr', 'Bezeichnung','MengeTotal',
-           'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU','vk_netto'];
+           'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU',
+           'vk_netto','AnteilNonEU'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
