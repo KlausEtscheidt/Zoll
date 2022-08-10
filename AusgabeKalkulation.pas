@@ -7,16 +7,17 @@ interface
   type TWKalkAusgabe = class(TWDataSetPrinter)
 
     public
+      //Tabellenbereich ableiten (TWTabelle erbt von TWBlatt.TWInhalt)
       type TWKalkTabelle = class(TWTabelle)
          public
+            // DruckeTabellenReihe überschreiben
             procedure DruckeTabellenReihe(Felder:TFields);override;
       end;
-
+      //Instanz von TWKalkTabelle zu TWKalkAusgabe dazu
       var KalkTabelle:TWKalkTabelle;
       constructor Create(AOwner:TComponent;PrinterName:String;
                                                         DS:TDataSet);
       procedure DruckeInhalt; reintroduce;  override;
-
 
   end;
 
@@ -32,7 +33,7 @@ begin
   KalkTabelle.Daten:=DS;
   KalkTabelle.HoleAusrichtungenAusFeldDef;
 
-  //Tabelle in Basisklasse als Inhalt registrieren,
+  //Tabelle in Basisklassen als Inhalt registrieren,
   //damit Pos-Berechnungen die sich auf Inhalt beziehen weiter funktionieren
   Inhalt:=KalkTabelle;
   Tabelle:=KalkTabelle;
