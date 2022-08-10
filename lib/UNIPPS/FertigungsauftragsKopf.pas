@@ -19,6 +19,7 @@ type
 //      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
       constructor Create(einVater: TWUniStueliPos; einTyp: String;
                                         AQry: TWUNIPPSQry);
+      function ToStr():String;
       procedure holeKinderAusASTUELIPOS;
 
     end;
@@ -55,6 +56,13 @@ begin
   PosDatenSpeichern(Qry);
 
 end;
+
+//Liefert zum Debuggen wichtige Eigenschaften in einem String verkettet
+function TWFAKopf.ToStr():String;
+begin
+  Result:=Format('%s zu Stu %s FA %s zu Teil %s',[PosTyp, IdStuVater, FA_Nr, TeileNr ]);
+end;
+
 
 procedure TWFAKopf.holeKinderAusASTUELIPOS;
 

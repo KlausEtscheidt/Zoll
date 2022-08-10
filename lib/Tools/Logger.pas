@@ -3,7 +3,7 @@ unit Logger;
 interface
 
 uses
-  System.SysUtils, System.Classes;
+  SysUtils, StrUtils, Classes;
 
 type
 
@@ -22,6 +22,7 @@ type
 //        constructor Create(); override;
         destructor Destroy(); override;
         procedure Log(msg: String);
+        procedure Trennzeile(txt: String;Anzahl:Integer);
     end;
 
 
@@ -61,6 +62,12 @@ begin
     Close;
   end;
 end;
+
+procedure TLogFile.Trennzeile(txt: String;Anzahl:Integer);
+begin
+  Log(DupeString(txt, Anzahl));
+end;
+
 
 destructor TLogFile.Destroy();
 begin

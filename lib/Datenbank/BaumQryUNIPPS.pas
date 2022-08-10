@@ -93,7 +93,8 @@ begin
       + 'trim(f_auftragkopf.typ) as stu_unipps_typ, f_auftragkopf.ident_nr as FA_Nr '
       + 'FROM f_auftragkopf '
       + 'Where f_auftragkopf.auftr_nr= ? and f_auftragkopf.auftr_pos= ? '
-      + 'and f_auftragkopf.oa<9 and status>4 ORDER BY FA_Nr';
+      + 'and f_auftragkopf.oa<9 and status>3 ORDER BY FA_Nr';
+//    Result:= RunSelectQuery(sql);
     Result:= RunSelectQueryWithParam(sql,[KaId,IntToStr(id_pos)]);
 
   UNI2SQLite('f_auftragkopf');

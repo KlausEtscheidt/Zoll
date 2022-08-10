@@ -34,7 +34,7 @@ begin
    astuelipos.ident_nr1 AS id_stu, astuelipos.ident_nr2 as id_pos
   astuelipos.pos_nr, astuelipos.t_tg_nr}
 
-  FaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;     //nur f Debug
+  FaPosIdStuVater:=Trim(Qry.FieldByName('id_stu').AsString);
   FaPosIdPos:=Qry.FieldByName('id_pos').Value;
   FaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
   Menge:=Qry.FieldByName('menge').Value;

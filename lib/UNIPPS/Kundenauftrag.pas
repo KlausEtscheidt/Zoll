@@ -133,6 +133,9 @@ begin
   begin
 //      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
     KaPos:= Stueli[StueliPosKey] As TWKundenauftragsPos;
+    Tools.Log.Log('.....................................................');
+    Tools.Log.Log('Suche Kinder zu '+KaPos.ToStr);
+    Tools.Log.Log('.....................................................');
 
     //Fuer Kaufteile muss nicht weiter gesucht werden
     if not KaPos.Teil.istKaufteil then

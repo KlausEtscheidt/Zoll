@@ -463,12 +463,11 @@ begin
   //ZielDS.Post;
 end;
 
-//Liefert alle Eigenschaften in Werte in einem String verkettet
+//Liefert zum Debuggen wichtige Eigenschaften in einem String verkettet
 function TWUniStueliPos.ToStr():String;
 begin
-  Result:=Format('%s Stu %s Pos %d',[PosTyp, IdStuVater, IdPos ]);
+  Result:=Format('%s zu Stu %s Pos %d Teil %s',[PosTyp, IdStuVater, IdPos, TeileNr ]);
 end;
-
 
 procedure TWUniStueliPos.StrukturInErgebnisTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);
 var

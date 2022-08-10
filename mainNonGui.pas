@@ -194,8 +194,12 @@ begin
     //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
 
-    if not (Preisabfrage(KA,Zuordnungen)) then
-      exit;
+    Tools.Log.Trennzeile('-',80);
+    Tools.Log.Log('Hole Kinder zu KA-Pos');
+    Tools.Log.Trennzeile('-',80);
+    //Hole VK zu Neupumpen
+//    if not (Preisabfrage(KA,Zuordnungen)) then
+//      exit;
 
 //    KaDataModule.ErgebnisDS.EmptyDataSet;
 //    KaDataModule.ErgebnisDS.SaveToFile();
@@ -402,8 +406,9 @@ begin
 
 //test;
 //  mainNonGui.KaAuswerten('142302'); //Ersatz
-//  mainNonGui.KaAuswerten('144729');
-  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  Result:= mainNonGui.KaAuswerten('144729');
+  Result:= mainNonGui.KaAuswerten('144927');
+//  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

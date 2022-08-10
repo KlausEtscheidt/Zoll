@@ -30,7 +30,7 @@ begin
   { TODO : einiges doppelt hier ? }
   KaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;
   KaPosIdPos:=Qry.FieldByName('id_pos').Value;
-  KaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
+  KaPosPosNr:=Trim(Qry.FieldByName('pos_nr').AsString);
   IdStu:=KaPosIdStuVater+'_'+ KaPosPosNr;
 //  Menge:=Qry.FieldByName('menge').Value;
 //  Menge:=0;
@@ -58,6 +58,7 @@ begin
   //Gibt es auftragsbezogene FAs zur Pos im Kundenauftrag
   Qry := Tools.getQuery;
   gefunden := Qry.SucheFAzuKAPos(KaPosIdStuVater, KaPosIdPos );
+  Tools.Log.Log('Fand '+ IntToStr(Qry.n_records)+ ' FAs');
 
   if not gefunden then
   begin
