@@ -2,11 +2,10 @@
 
 interface
 
-uses  System.SysUtils, System.TimeSpan, Vcl.Controls, Vcl.Dialogs, Windows,
-      Tools, Settings, Tests,
+uses  System.SysUtils, System.Dateutils, Vcl.Controls, Vcl.Dialogs, Windows,
+      classes, Tools, Settings, Tests,
       Kundenauftrag,KundenauftragsPos, ADOQuery , ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe,
-//      DruckeTabelle,
       AusgabeKalkulation  ;
 
 type
@@ -19,6 +18,13 @@ type
     end;
     TWZuordnungen=array of TWZuordnung;
 
+type
+    TWPraeFixThread=class(TThread)
+      public
+          procedure Execute; override;
+          procedure OnTerminate(Sender: TObject);
+    end;
+
 function RunItGui:TWKundenauftrag;
 procedure RunItKonsole;
 function KaAuswerten(KaId:string):TWKundenauftrag;
@@ -28,10 +34,30 @@ procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
+procedure PräferenzKalkulationStep1(KaId:String);
+procedure PräferenzKalkulationFinish;
+
+//Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
+var
+   Zuordnungen:TWZuordnungen;
+   PraeFixKalkThread:TWPraeFixThread;
 
 implementation
 
 uses main,DruckBlatt;
+
+procedure TWPraeFixThread.Execute;
+begin
+  main.Kundenauftrag.holeKinder;
+  Synchronize(mainNonGui.PräferenzKalkulationFinish);
+end;
+
+
+procedure TWPraeFixThread.OnTerminate(Sender: TObject);
+begin
+  ShowMessage('Fertig');
+end;
+
 
 function GetUsername: String;
 var
@@ -151,20 +177,13 @@ begin
 
 
 end;
-
-///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
-///<summary>
-function KaAuswerten(KaId:string):TWKundenauftrag;
+procedure PräferenzKalkulationStep1(KaId:String);
 var
   KA:TWKundenauftrag;
-  startzeit,endzeit: Int64;
-  delta:Double;
   msg:String;
-  //Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
-  Zuordnungen:TWZuordnungen;
+  startzeit: TDateTime;
 
 begin
-
   Tools.Init;
   Settings.GuiMode:=True;
 
@@ -173,8 +192,9 @@ begin
   Tools.ErrLog.OpenNew(Settings.ApplicationBaseDir,'data\output\ErrLog.txt');
 
   mainfrm.langBtn.Enabled:=False;
-  mainfrm.TestBtn.Enabled:=False;
   mainfrm.kurzBtn.Enabled:=False;
+  mainfrm.Drucken.Enabled:=False;
+  startzeit:= System.SysUtils.Now;
 
   //Einmalig die Felder der Gesamt-Tabelle anlegen
   //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
@@ -182,29 +202,45 @@ begin
   KaDataModule.DefiniereGesamtErgebnisDataSet;
 
   //Kundenauftrag anlegen
-  ka:=TWKundenauftrag.Create(KaId);
+  KA:=TWKundenauftrag.Create(KaId);
 
-  startzeit:= GetTickCount;
   msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
   Tools.Log.Log(msg);
   Tools.ErrLog.Log(msg);
   mainfrm.ActivityIndicator1.Animate:=True;
 
+  //Lies Kundenauftrag mit seinen Positionen
+  KA.liesKopfundPositionen;
+
+  //Hole VK zu Neupumpen
+    if not (Preisabfrage(KA,Zuordnungen)) then
+      exit;
+
+  main.Kundenauftrag:=KA;
+
+end;
+
+
+procedure PräferenzKalkulationFinish;
+var
+  KA:TWKundenauftrag;
+  startzeit,endzeit: TDateTime;
+  delta:Double;
+  msg:String;
+begin
+
+  KA:=main.Kundenauftrag;
+  startzeit:= System.SysUtils.Now;
+
   try
-    //Lies Kundenauftrag mit seinen Positionen
-    KA.liesKopfundPositionen;
 
     Tools.Log.Trennzeile('-',80);
     Tools.Log.Log('Hole Kinder zu KA-Pos');
     Tools.Log.Trennzeile('-',80);
-    //Hole VK zu Neupumpen
-//    if not (Preisabfrage(KA,Zuordnungen)) then
-//      exit;
 
 //    KaDataModule.ErgebnisDS.EmptyDataSet;
 //    KaDataModule.ErgebnisDS.SaveToFile();
 
-    KA.holeKinder;
 
     //Evtl Motoren o.ä. umhängen
     ZuordnungAendern(KA,Zuordnungen);
@@ -232,34 +268,48 @@ begin
     //Ausgabe als CSV !!Ueberschreibt z.T. Felddefinitionen
     KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Kalk.csv');
 
-    //Daten anzeigen
-    if Settings.GuiMode then
-    begin
-      //Belege DataSource1 mit dem Default AusgabeDS
-      mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
-    end;
-
     //KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
     mainfrm.ActivityIndicator1.Animate:=False;
 
-    endzeit:=  GetTickCount;
-    delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
+    endzeit:=  System.SysUtils.Now;
+    delta:=MilliSecondsBetween(startzeit,endzeit);
 
     msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
         #10 + '%d Datensaetze gefunden.',
-        [KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
+        [KA.KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
     ShowMessage(msg);
 
   finally
     mainfrm.langBtn.Enabled:=True;
     mainfrm.kurzBtn.Enabled:=True;
-    mainfrm.TestBtn.Enabled:=True;
+    mainfrm.Drucken.Enabled:=True;
     mainfrm.ActivityIndicator1.Animate:=False;
     Tools.Log.Close;
     Tools.ErrLog.Close;
-    Result:=KA;
-
   end;
+
+  //Daten anzeigen
+  if Settings.GuiMode then
+  begin
+    //Belege DataSource1 mit dem Default AusgabeDS
+    KaDataModule.AusgabeDS.First;
+    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+  end;
+
+end;
+
+
+///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
+///<summary>
+function KaAuswerten(KaId:string):TWKundenauftrag;
+begin
+
+  PräferenzKalkulationStep1(KaId);
+  PraeFixKalkThread:=TWPraeFixThread.Create(True);
+  PraeFixKalkThread.Start;
+//  PraeFixKalkThread.WaitFor;
+
+  Result:=main.Kundenauftrag;
 
 end;
 
@@ -403,8 +453,8 @@ begin
 //test;
 //  Result:= mainNonGui.KaAuswerten('142302'); //Ersatz
 //  Result:= mainNonGui.KaAuswerten('144729');
-  Result:= mainNonGui.KaAuswerten('144927');
-//  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
+//  Result:= mainNonGui.KaAuswerten('144927');
+  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error
 //  mainNonGui.KaAuswerten('142591'); //Error

@@ -22,7 +22,6 @@ type
     DataSource1: TDataSource;
     langBtn: TButton;
     kurzBtn: TButton;
-    TestBtn: TButton;
     Drucken: TButton;
     ActivityIndicator1: TActivityIndicator;
 
@@ -32,7 +31,6 @@ type
     procedure kurzBtnClick(Sender: TObject);
     procedure langBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure TestBtnClick(Sender: TObject);
     procedure DruckenClick(Sender: TObject);
 
   private
@@ -55,9 +53,7 @@ begin
   KaId := KA_id_ctrl.Text;
   //
   Kundenauftrag:=mainNonGui.KaAuswerten(KaId);
-  //Application.MessageBox(PChar(ka_id), 'Look', MB_OK);
 end;
-
 
 procedure TmainFrm.Ende_BtnClick(Sender: TObject);
 begin
@@ -70,15 +66,6 @@ begin
   Tools.Log.Close;
   Tools.ErrLog.Close;
 end;
-
-procedure TmainFrm.TestBtnClick(Sender: TObject);
-begin
-  //Fülle Tabelle mit Teilumfang zur Ausgabe von Testinfos
-  KaDataModule.ErzeugeAusgabeTestumfang;
-  DataSource1.DataSet:=KaDataModule.AusgabeDS;
-
-end;
-
 
 procedure TmainFrm.kurzBtnClick(Sender: TObject);
 begin
@@ -106,6 +93,7 @@ end;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
   Kundenauftrag:=mainNonGui.RunItGui;
+
 end;
 
 

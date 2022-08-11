@@ -43,7 +43,7 @@ object mainFrm: TmainFrm
     Text = '142567'
   end
   object Ende_Btn: TButton
-    Left = 225
+    Left = 468
     Top = 25
     Width = 75
     Height = 25
@@ -68,7 +68,7 @@ object mainFrm: TmainFrm
     TitleFont.Style = []
   end
   object langBtn: TButton
-    Left = 306
+    Left = 225
     Top = 25
     Width = 75
     Height = 25
@@ -78,7 +78,7 @@ object mainFrm: TmainFrm
     OnClick = langBtnClick
   end
   object kurzBtn: TButton
-    Left = 387
+    Left = 306
     Top = 25
     Width = 75
     Height = 25
@@ -87,23 +87,13 @@ object mainFrm: TmainFrm
     TabOrder = 5
     OnClick = kurzBtnClick
   end
-  object TestBtn: TButton
-    Left = 468
-    Top = 25
-    Width = 75
-    Height = 25
-    Caption = 'Test'
-    Enabled = False
-    TabOrder = 6
-    OnClick = TestBtnClick
-  end
   object Drucken: TButton
-    Left = 560
+    Left = 387
     Top = 25
     Width = 75
     Height = 25
     Caption = 'Drucken'
-    TabOrder = 7
+    TabOrder = 6
     OnClick = DruckenClick
   end
   object ActivityIndicator1: TActivityIndicator
@@ -112,7 +102,6 @@ object mainFrm: TmainFrm
     Cursor = crHourGlass
   end
   object DataSource1: TDataSource
-    DataSet = KaDataModule.AusgabeDS
     Left = 184
     Top = 216
   end
