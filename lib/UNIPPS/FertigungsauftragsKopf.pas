@@ -44,12 +44,8 @@ begin
 
   FA_Nr:=Qry.FieldByName('FA_Nr').AsString;
 
-//  FaIdStuVater:=Trim(Qry.FieldByName('id_stu').AsString);
-  { TODO : PosNr ist hier die KA-Posnr }
-//  FaIdPos:=Qry.FieldByName('pos_nr').Value;
-//  FaIdPos:=IdPosFA;
   Menge:=1; //bei FA immer 1
-  //FA_Nr als eigene ID_Stu
+  //FA_Nr als eigene ID_StuPos
   inherited Create(einVater, einTyp, FA_Nr, Menge);
 
   //Speichere typunabhängige Daten über geerbte Funktion
@@ -60,7 +56,7 @@ end;
 //Liefert zum Debuggen wichtige Eigenschaften in einem String verkettet
 function TWFAKopf.ToStr():String;
 begin
-  Result:=Format('%s zu Stu %s FA %s zu Teil %s',[PosTyp, IdStuVater, FA_Nr, TeileNr ]);
+  Result:=Format('%s zu Stu %s FA %s zu Teil %s',[PosTyp, IdStueliPosVater, FA_Nr, TeileNr ]);
 end;
 
 

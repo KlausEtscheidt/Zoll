@@ -18,7 +18,7 @@ Tools.Log.OpenNew(Settings.ApplicationBaseDir,'data\output\TestLog.txt');
 Tools.ErrLog.OpenNew(Settings.ApplicationBaseDir,'data\output\TestErrLog.txt');
 
 //DUmmy Stueli
-StuPos:=TWUniStueliPos.Create(nil,'Test','1',1,1);
+StuPos:=TWUniStueliPos.Create(nil, 'Teil','Test',1);
 
 //StuPos.Ausgabe.AddData('t_tg_nr','ESTØ45D');
 StuPos.TeileNr:='233D23538PERF03';

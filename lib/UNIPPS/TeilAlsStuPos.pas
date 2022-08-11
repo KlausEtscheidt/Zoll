@@ -2,7 +2,7 @@
 
 interface
 
-uses  UnippsStueliPos, Tools;
+uses  SysUtils,UnippsStueliPos, Tools;
 
 type
   TWTeilAlsStuPos = class(TWUniStueliPos)
@@ -23,6 +23,8 @@ insbes t_tg_nr }
 implementation
 
 constructor TWTeilAlsStuPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry);
+var
+  IdStuPos:String;
 begin
   {UNIPPS Mapping
   Suche mit SucheStuelizuTeil: Kriterium teil_stuelipos.ident_nr1=t_tg_nr
@@ -32,7 +34,10 @@ begin
   TeilIdStuVater:=Qry.FieldByName('id_stu').AsString;
   TeilIdPos:=Qry.FieldByName('pos_nr').AsInteger;
   Menge:=Qry.FieldByName('menge').AsFloat;
-  inherited Create(einVater, 'Teil', TeilIdStuVater, TeilIdPos, Menge);
+
+  //Eigene ID aus t_tg_nr und UNIPPS pos_nr
+  IdStuPos:=TeilIdStuVater+'_'+ IntToStr(TeilIdPos);
+  inherited Create(einVater, 'Teil',IdStuPos, Menge);
 
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);

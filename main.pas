@@ -97,6 +97,7 @@ end;
 
 procedure TmainFrm.DruckenClick(Sender: TObject);
 begin
+  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
   mainNonGui.ErgebnisDrucken(Kundenauftrag);
 end;
 

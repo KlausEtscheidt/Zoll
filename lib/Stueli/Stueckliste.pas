@@ -2,11 +2,7 @@
 
 interface
   uses System.RTTI, System.SysUtils, System.Generics.Collections,
-       System.TypInfo,
-       Data.DB,
-//       Tools,
-//       PumpenDataSet, Datenmodul,
-       Logger;
+       System.TypInfo, Data.DB;
 
  type
     EWStueli=class(Exception);
@@ -16,38 +12,49 @@ interface
 
     TWStueliPos = class
       private
-        FStueli: TDictionary<Integer, TWStueliPos>;    //H�lt die Kinder-Positionen
+        //Eigene Id (Programmintern unabhängig von UNIPPS)
+        FIdStueliPos: String;
+        //Haelt die Kinder-Positionen
+        FStueli: TDictionary<Integer, TWStueliPos>;
+        //Eindeutiger Key fuer Stueli-Dictionary (wird vom System aut. vergeben)
+        //Es wird eine fortlaufend Nr vergeben, in der Reihenfolge,
+        // in der die Pos zur Stuli hinzugefügt werden.
+        FStueliKey:Integer;
+        //Liefert alle StueliKeys aufsteigend sortiert
+        //Dies entspricht der Reihenfolge in der die Stueli aufgebaut wurde
         function SortedKeys(): TWSortedKeyArray;
-        function GetStueli(Key: Integer): TWStueliPos;
+        function GetStueliPos(Key: Integer): TWStueliPos;
         function GetStueliPosCount:Integer;
-        function GetIdStuVater:String;
+        function GetIdStueliPosVater:String;
       public
         Vater: TWStueliPos;  //Vaterknoten
-//        IdStuVater: String;     //Id der übergeordneten Stueli
-        IdStu: String;     //Id der eigenen Stueli
-
-        StueliKey:Integer; //Eindeutige ID f�r das Stueli-Dictionary
-                            //wird vom System aut. vergeben
         Ebene: Integer;
         EbeneNice: String;
-        Menge: Double;     //Menge von Self in IdStuVater (beliebige Einheiten)
-        MengeTotal: Double; //Gesamt-Menge (mit �bergeordneten Mengen mult.)
-
-
+        Menge: Double;     //Menge von Self in Vater-Stueli (beliebige Einheiten)
+        MengeTotal: Double; //Gesamt-Menge (mit Übergeordneten Mengen mult.)
         hatTeil:Boolean;
+
         constructor Create(einVater:TWStueliPos;
-                               aIdStu:String;eineMenge:Double);
+                               StueliPosId:String;eineMenge:Double);
+        //Berechnet die Stueli-Ebene und die summierte Menge aller Pos
         procedure SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
         procedure StueliAdd(APos: TWStueliPos);
+        ///<summary>Überträgt Position APos nach Self </summary>
         procedure StueliTakePosFrom(APos: TWStueliPos);
+        ///<summary>Überträgt die Kind Position APos nach Self,
+        /// Apos wird gelöscht </summary>
         procedure StueliTakeChildrenFrom(APos: TWStueliPos);
         procedure ReMove();
+        ///<summary>Liefert wichtige Felder in einem String verkettet </summary>
         function PosToStr():String;
+        ///<summary>Verkettet wichtige Felder aller Pos zu einem String</summary>
         function BaumAlsText(txt:String): String;
-        property Stueli[Key: Integer]: TWStueliPos read GetStueli;
+        property Stueli[Key: Integer]: TWStueliPos read GetStueliPos;
         property StueliKeys: TWSortedKeyArray read SortedKeys;
         property StueliPosCount: Integer read GetStueliPosCount;
-        property IdStuVater:String read GetIdStuVater;
+        property IdStueliPosVater:String read GetIdStueliPosVater;
+        property IdStueliPos:String read FIdStueliPos; //Eigene Id
+        property StueliKey:Integer read FStueliKey; //Key zum Stueli-Dict
 
     end;
 
@@ -57,9 +64,9 @@ implementation
 
 
 constructor TWStueliPos.Create(einVater:TWStueliPos;
-                               aIdStu:String;eineMenge:Double);
+                               StueliPosId:String;eineMenge:Double);
 begin
-  IdStu:= aIdStu;
+  FIdStueliPos:= StueliPosId;
   Vater:= einVater;
   Menge:=eineMenge;
 
@@ -71,16 +78,16 @@ begin
 
 end;
 
-function TWStueliPos.GetIdStuVater:String;
+function TWStueliPos.GetIdStueliPosVater:String;
 begin
   if Vater<>nil then
-    Result:= Vater.IdStu
+    Result:= Vater.IdStueliPos
   else
     Result:='';
 end;
 
 //Holt mittels Key eine Pos aus Stueli
-function TWStueliPos.GetStueli(Key: Integer): TWStueliPos;
+function TWStueliPos.GetStueliPos(Key: Integer): TWStueliPos;
 begin
   Result:=FStueli[Key];
 end;
@@ -91,8 +98,7 @@ begin
   Result:=FStueli.Count;
 end;
 
-//Verschiebt die Kinder von APos zur Stueli von Self und
-//entfernt die Pos und die Kinder aus der alten Stueli
+//Verschiebt die Kinder von APos zur Stueli von Self
 procedure TWStueliPos.StueliTakeChildrenFrom(APos: TWStueliPos);
 var
   KindPos: TWStueliPos;
@@ -129,7 +135,7 @@ begin
    //Position aus alter Stu l�schen
    Self.Vater.FStueli.Remove(Self.StueliKey);
    //Position freigeben: StueliKey auf 0
-   Self.StueliKey:=0;
+   Self.FStueliKey:=0;
 end;
 
 
@@ -160,7 +166,7 @@ begin
   //Neue Pos in Stueckliste
   FStueli.Add(Key,APos);
   //Key merken
-  APos.StueliKey:=Key;
+  APos.FStueliKey:=Key;
 
 end;
 
@@ -171,11 +177,12 @@ end;
 function TWStueliPos.PosToStr():String;
 begin
   Result:=Format('<Ebene %s zu Stu %s bin Stu %s Pos %d Menge %5.2f>',
-               [EbeneNice, IdStuVater, IdStu, StueliKey, Menge ]) + #13 ;
+               [EbeneNice, IdStueliPosVater, IdStueliPos, StueliKey, Menge ]) + #13 ;
 end;
 
 //--------------------------------------------------------------------------
-//Liefert wichtige Felder aller Positionen in einem String verkettet
+/// <summary> Liefert wichtige Felder aller Positionen in einem String verkettet
+/// </summary>//
 function TWStueliPos.BaumAlsText(txt:String):String;
 
 var
@@ -198,8 +205,13 @@ begin
   end;
 end;
 
-// Hinzuf�gen der Ebenen und Gesamtmengen
+// Hinzufügen der Ebenen und Gesamtmengen
 //--------------------------------------------------------------------------
+///<summary>Berechnet die Stueli-Ebene und die summierte Menge aller Pos</summary>
+/// <remarks>
+/// Berechnet Stueli-Ebene als Int und mit ... davor.
+/// Berechet die mit den Mengen der Väter multiplizierte MengeTotal aller Pos
+/// </remarks>
 procedure TWStueliPos.SetzeEbenenUndMengen(Level:Integer;UebMenge:Double);
 
 var

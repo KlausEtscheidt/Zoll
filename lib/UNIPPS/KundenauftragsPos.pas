@@ -23,18 +23,18 @@ implementation
 constructor TWKundenauftragsPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
 var
   Menge:Double;
-  IdStu:String;
+  IdStuPos:String;
 begin
-  //UNIPPS-Mapping  auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
+  //UNIPPS-Mapping SucheKundenAuftragspositionen
+  // auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
   // auftragpos.pos as pos_nr,
   { TODO : einiges doppelt hier ? }
   KaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;
   KaPosIdPos:=Qry.FieldByName('id_pos').Value;
   KaPosPosNr:=Trim(Qry.FieldByName('pos_nr').AsString);
-  IdStu:=KaPosIdStuVater+'_'+ KaPosPosNr;
-//  Menge:=Qry.FieldByName('menge').Value;
-//  Menge:=0;
-  inherited Create(einVater, 'KA_Pos', IdStu, Menge);
+  IdStuPos:=KaPosIdStuVater+'_'+ KaPosPosNr;  //Eigene ID
+  Menge:=Qry.FieldByName('menge').Value;
+  inherited Create(einVater, 'KA_Pos', IdStuPos, Menge);
 
   //Speichere typunabh�ngige Daten �ber geerbte Funktion
   PosDatenSpeichern(Qry);

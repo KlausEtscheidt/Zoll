@@ -25,7 +25,6 @@ function KaAuswerten(KaId:string):TWKundenauftrag;
 procedure KaNurAuswerten(KaId:string);
 function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
-procedure ErgebnisAusgabe(KaId:string);
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
 procedure Check100;
 procedure InitCopyUNI2SQLite;
@@ -130,14 +129,14 @@ procedure KaNurAuswerten(KaId:string);
 var ka:TWKundenauftrag;
 begin
 
+    writeln(KaId);
+    Tools.Log.Log('------- Kundenauftrag: '+KaId);
+    Tools.ErrLog.Log('------- Kundenauftrag: '+KaId);
+
+    //Ka anlegen
+    ka:=TWKundenauftrag.Create(KaId);
+
     try
-      writeln(KaId);
-      Tools.Log.Log('------- Kundenauftrag: '+KaId);
-      Tools.ErrLog.Log('------- Kundenauftrag: '+KaId);
-
-      //Ka anlegen
-      ka:=TWKundenauftrag.Create(KaId);
-
       //Daten lesen und nach SQLite kopieren
       ka.liesKopfundPositionen;
       ka.holeKinder;
@@ -166,8 +165,6 @@ var
 
 begin
 
-  try
-
   Tools.Init;
   Settings.GuiMode:=True;
 
@@ -179,19 +176,21 @@ begin
   mainfrm.TestBtn.Enabled:=False;
   mainfrm.kurzBtn.Enabled:=False;
 
-    //Einmalig die Felder der Gesamt-Tabelle anlegen
-    //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
-    //DAS OnCreate Ereignis ist anscheinend zu früh
-    KaDataModule.DefiniereGesamtErgebnisDataSet;
+  //Einmalig die Felder der Gesamt-Tabelle anlegen
+  //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
+  //DAS OnCreate Ereignis ist anscheinend zu früh
+  KaDataModule.DefiniereGesamtErgebnisDataSet;
 
-    //Kundenauftrag anlegen
-    ka:=TWKundenauftrag.Create(KaId);
+  //Kundenauftrag anlegen
+  ka:=TWKundenauftrag.Create(KaId);
 
-    startzeit:= GetTickCount;
-    msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
-    Tools.Log.Log(msg);
-    Tools.ErrLog.Log(msg);
-    mainfrm.ActivityIndicator1.Animate:=True;
+  startzeit:= GetTickCount;
+  msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
+  Tools.Log.Log(msg);
+  Tools.ErrLog.Log(msg);
+  mainfrm.ActivityIndicator1.Animate:=True;
+
+  try
     //Lies Kundenauftrag mit seinen Positionen
     KA.liesKopfundPositionen;
 
@@ -207,18 +206,41 @@ begin
 
     KA.holeKinder;
 
+    //Evtl Motoren o.ä. umhängen
     ZuordnungAendern(KA,Zuordnungen);
 
     KA.SetzeEbenenUndMengen(0,1);
     KA.SummierePreise;
 
+    //--------- Ausgabe voller Umfang zum Debuggen
     KA.SammleAusgabeDaten;
+    //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
+    KaDataModule.ErzeugeAusgabeVollFuerDebug;
+    //Ausgabe als CSV
+    KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Struktur.csv');
 
-    //
-    KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
+    //--------- Ausgabe kurzer Umfang für Doku
+    //Entferne FA aus Struktur
+    KA.EntferneFertigungsaufträge;
+    //Ebenen neu numerieren
+    KA.SetzeEbenenUndMengen(0,1);
+    //Daten neu sammeln
+    KA.SammleAusgabeDaten;
+    //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
+    KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+    //  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
+    //Ausgabe als CSV !!Ueberschreibt z.T. Felddefinitionen
+    KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Kalk.csv');
+
+    //Daten anzeigen
+    if Settings.GuiMode then
+    begin
+      //Belege DataSource1 mit dem Default AusgabeDS
+      mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+    end;
+
+    //KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
     mainfrm.ActivityIndicator1.Animate:=False;
-
-    ErgebnisAusgabe(KaId);
 
     endzeit:=  GetTickCount;
     delta:=TTimeSpan.FromTicks(endzeit-startzeit).TotalMilliSeconds;
@@ -232,7 +254,7 @@ begin
     mainfrm.langBtn.Enabled:=True;
     mainfrm.kurzBtn.Enabled:=True;
     mainfrm.TestBtn.Enabled:=True;
-
+    mainfrm.ActivityIndicator1.Animate:=False;
     Tools.Log.Close;
     Tools.ErrLog.Close;
     Result:=KA;
@@ -246,7 +268,7 @@ function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean
 var
   VkRabattiert: Double;
   I,IdPos,ZuPos:Integer;
-  KaPos,VaterKaPos:TWKundenauftragsPos;
+  KaPos:TWKundenauftragsPos;
   Zuordnung:TWZuordnung;
 
 begin
@@ -294,7 +316,7 @@ end;
 
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 var
-  I,IdPos:Integer;
+  I:Integer;
   KindKaPos,VaterKaPos:TWKundenauftragsPos;
   Zuordnung:TWZuordnung;
 
@@ -316,7 +338,6 @@ end;
 procedure ErgebnisDrucken(KA:TWKundenauftrag);
 var
   Ausgabe:TWKalkAusgabe;
-  Index:Integer;
   txt:String;
 begin
 
@@ -344,32 +365,6 @@ begin
 
 end;
 
-procedure ErgebnisAusgabe(KaId:String);
-begin
-
-  //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
-  KaDataModule.ErzeugeAusgabeVollFuerDebug;
-  //KaDataModule.AusgabeDS.Print; zum Test der Eigenschaften
-
-  //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Settings.LogDir, KaId + '_Struktur.csv');
-
-  //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
-  KaDataModule.ErzeugeAusgabeKurzFuerDoku;
-  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
-
-  //Ausgabe als CSV
-  KaDataModule.AusgabeAlsCSV(Settings.LogDir, KaId + '_Kalk.csv');
-
-  //Daten anzeigen
-  if Settings.GuiMode then
-  begin
-  KaDataModule.ErzeugeAusgabeVollFuerDebug;
-    //Belege DataSource1 mit dem Default AusgabeDS
-    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
-  end;
-
-end;
 
 ///<summary> Einsprung fuer Konsolen-Version </summary>
 ///<remarks> Was hier steht, wird automatisch ausgeführt.
@@ -406,9 +401,9 @@ function RunItGui:TWKundenauftrag;
 begin
 
 //test;
-  Result:= mainNonGui.KaAuswerten('142302'); //Ersatz
+//  Result:= mainNonGui.KaAuswerten('142302'); //Ersatz
 //  Result:= mainNonGui.KaAuswerten('144729');
-//  Result:= mainNonGui.KaAuswerten('144927');
+  Result:= mainNonGui.KaAuswerten('144927');
 //  Result:= mainNonGui.KaAuswerten('142567'); //2Pumpen
 //  Tests.Bestellung;
 //  mainNonGui.KaAuswerten('144734'); //Error

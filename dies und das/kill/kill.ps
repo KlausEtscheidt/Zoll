@@ -1,0 +1,10 @@
+$mypath=Split-Path $script:MyInvocation.MyCommand.Path
+. $mypath/../lib/UNIPPS_Lib_Functions.ps1
+. $mypath/ersatz_excel.ps1
+. $mypath/ersatz_UNIPPS_reader.ps1
+. $mypath/../lib/wernert_mail_addresses.ps1
+
+
+$ErrorActionPreference = "Stop"
+
+$basedir=$mypath

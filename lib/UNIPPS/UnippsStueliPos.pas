@@ -10,7 +10,6 @@ interface
     EWUnippsStueliPos=class(Exception);
 
   type
-//    TWTeil= Teil.TWTeil;
 
     TWUniStueliPos = class(TWStueliPos)
       private
@@ -37,16 +36,12 @@ interface
         PreisEU, PreisNonEU : Double;
         VerkaufsPreisRabattiert : Double;
         VerkaufsPreisUnRabattiert : Double;
-//        Ebene:Integer;
-//        EbeneNice:String;
 
         //Teile-Objekt zu dieser Stueli-Pos
         Teil : TWTeil;
 
         constructor Create(einVater: TWUniStueliPos; APosTyp:String;
-                      aIdStuVater:String;aIdPos: Integer;eMenge:Double);overload;
-        constructor Create(einVater: TWUniStueliPos; APosTyp:String;
-           aIdStu:String;eMenge:Double);overload;
+           IdStuPos:String;eMenge:Double);
         procedure PosDatenSpeichern(Qry: TWUNIPPSQry);
         procedure SucheTeilzurStueliPos();
         procedure holeKindervonEndKnoten();
@@ -58,7 +53,7 @@ interface
         procedure DatenInAusgabe(ZielDS:TWDataSet);
         procedure StrukturInErgebnisTabelle(ZielDS:TWDataSet;
                                                         FirstRun:Boolean=True);
-
+        procedure EntferneFertigungsaufträge;
       end;
 
   type
@@ -78,31 +73,53 @@ uses Kundenauftrag,KundenauftragsPos,FertigungsauftragsKopf,
 // Create
 //---------------------------------------------------------------------
 constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
-                              aIdStuVater:String;aIdPos: Integer;eMenge:Double);
+                IdStuPos:String;eMenge:Double);
 begin
 
-  inherited Create(einVater, aIdStuVater, eMenge);
+  inherited Create(einVater, IdStuPos, eMenge);
 
   //Art des Eintrags
   //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
   { TODO : Check Art der Pos }
 
   PosTyp:=APosTyp;
-  IdPos:= aIdPos;
 
 end;
 
-constructor TWUniStueliPos.Create(einVater: TWUniStueliPos; APosTyp:String;
-                aIdStu:String;eMenge:Double);
+/// <summary>Entfernt Fertigungsaufträge aus der Struktur </summary>
+procedure TWUniStueliPos.EntferneFertigungsaufträge;
+var
+  StueliPosKey:Integer;
+  StueliPos: TWUniStueliPos;
 begin
 
-  inherited Create(einVater, aIdStu, eMenge);
+  for StueliPosKey in StueliKeys  do
+  begin
+    StueliPos:= Stueli[StueliPosKey] As TWUniStueliPos;
 
-  //Art des Eintrags
-  //muss aus KA, KA_Pos, FA_Komm, FA_Serie, FA_Pos, Teil sein;
-  { TODO : Check Art der Pos }
+    //Erst Rekursion (wir entfernen von unten)
+    StueliPos.EntferneFertigungsaufträge;
 
-  PosTyp:=APosTyp;
+
+    // Fa-Eintraege sollen ignoriert, also nicht in die Doku übernommen werden
+    // Es werden jedoch die Kinder eine Ebene höher eingehängt
+    if (StueliPos.PosTyp='FA_Komm') or (StueliPos.PosTyp='FA_Serie') then
+    begin
+      StueliPos:=TWFAKopf(StueliPos);
+      // Auftragsbezogene Fa's mit verursacher_art <> 1 sind untergeordnete FA z.B zu einer Pumpenmontage
+      // Deren Teile sind schon im Haupt-FA enthalten und sollen nicht in der Doku erscheinen
+      // Knoten und alle Kinder werden ignoriert
+      if not ((StueliPos.PosTyp='FA_Komm')  and (StueliPos.VerursacherArt<>1)) then
+        //Kinder eine Ebene höher
+        Self.StueliTakeChildrenFrom(StueliPos);
+
+      StueliPos.ReMove
+
+    end;
+
+  end;
+
+
 
 end;
 
@@ -133,7 +150,7 @@ begin
       PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
       IdPos:=Qry.Fields.FieldByName('id_pos').AsInteger;
       BeschaffungsArt:=Qry.Fields.FieldByName('besch_art').AsInteger;
-      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+//      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
 
     end
     else
@@ -141,7 +158,7 @@ begin
     begin
       FANr:=Qry.Fields.FieldByName('FA_Nr').AsInteger;
       VerursacherArt:=Qry.Fields.FieldByName('verurs_art').AsInteger;
-      Menge:=1.;
+//      Menge:=1.;
     end
     else
     if PosTyp='FA_Pos' then
@@ -151,14 +168,14 @@ begin
       UebergeordneteStueNr:=Qry.Fields.FieldByName('ueb_s_nr').AsInteger;
       Ds:=Qry.Fields.FieldByName('ds').AsInteger;
       SetBlock:=Qry.Fields.FieldByName('set_block').AsInteger;
-      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+//      Menge:=Qry.Fields.FieldByName('menge').AsFloat;
 
     end
     else
     if PosTyp='Teil' then
       begin
         PosNr:=Qry.Fields.FieldByName('pos_nr').AsString;
-        Menge:=Qry.Fields.FieldByName('menge').AsFloat;
+//        Menge:=Qry.Fields.FieldByName('menge').AsFloat;
       end
     else
       raise EWUnippsStueliPos.Create('Unbekannter Postyp '+PosTyp );
@@ -428,7 +445,7 @@ procedure TWUniStueliPos.DatenInAusgabe(ZielDS:TWDataSet);
 begin
   //ZielDS.Append;
 
-  ZielDS.AddData('id_stu',IdStuVater);  //In Basisklasse
+  ZielDS.AddData('id_stu',IdStueliPosVater);  //In Basisklasse
   ZielDS.AddData('pos_nr',PosNr);
   ZielDS.AddData('stu_t_tg_nr',TeileNr);
   ZielDS.AddData('stu_oa',OA);
@@ -468,7 +485,7 @@ end;
 //Liefert zum Debuggen wichtige Eigenschaften in einem String verkettet
 function TWUniStueliPos.ToStr():String;
 begin
-  Result:=Format('%s zu Stu %s Pos %d Teil %s',[PosTyp, IdStuVater, IdPos, TeileNr ]);
+  Result:=Format('%s zu Stu %s Pos %d Teil %s',[PosTyp, IdStueliPosVater, IdPos, TeileNr ]);
 end;
 
 procedure TWUniStueliPos.StrukturInErgebnisTabelle(ZielDS:TWDataSet; FirstRun:Boolean=True);

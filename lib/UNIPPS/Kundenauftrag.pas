@@ -24,7 +24,7 @@ implementation
 
 constructor TWKundenauftrag.Create(NewKaId: String);
 begin
-  //Top-Knoten hat keine IdStuVater,IdPos=1;Menge=1.
+  //Top-Knoten hat keine IdStuVater,IdStueliPos=NewKaId;Menge=1.
   inherited Create(nil, 'KA',NewKaId,1);
   KaId := NewKaId;
 end;

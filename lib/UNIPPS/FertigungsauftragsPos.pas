@@ -27,6 +27,8 @@ type
 implementation
 
 constructor TWFAPos.Create(einVater: TWUniStueliPos; AQry: TWUNIPPSQry);
+var
+  IdStuPos:String;
 begin
   Qry:=AQry;
   {UNIPPS-Mapping
@@ -35,10 +37,12 @@ begin
   astuelipos.pos_nr, astuelipos.t_tg_nr}
 
   FaPosIdStuVater:=Trim(Qry.FieldByName('id_stu').AsString);
-  FaPosIdPos:=Qry.FieldByName('id_pos').Value;
+  FaPosIdPos:=Qry.FieldByName('id_pos').AsInteger;
   FaPosPosNr:=Qry.FieldByName('pos_nr').AsString;
   Menge:=Qry.FieldByName('menge').Value;
-  inherited Create(einVater, 'FA_Pos', FaPosIdStuVater, FaPosIdPos, Menge);
+   //Eigene ID aus FA-Nr und UNIPPS id_pos
+  IdStuPos:=FaPosIdStuVater+'_'+ IntToStr(FaPosIdPos);
+  inherited Create(einVater, 'FA_Pos', IdStuPos, Menge);
 
   //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);

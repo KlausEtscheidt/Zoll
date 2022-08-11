@@ -24,9 +24,11 @@ uses
   Stueckliste in 'lib\Stueli\Stueckliste.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
   Settings in 'lib\Tools\Settings.pas',
-  Exceptions in 'lib\Tools\Exceptions.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
-  Tools in 'lib\Tools\Tools.pas';
+  Tools in 'lib\Tools\Tools.pas',
+  AusgabeKalkulation in 'AusgabeKalkulation.pas',
+  DruckBlatt in 'lib\Drucken\DruckBlatt.pas',
+  DruckeTabelle in 'lib\Drucken\DruckeTabelle.pas';
 
 begin
 var answer:string;
