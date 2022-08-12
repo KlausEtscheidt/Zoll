@@ -3,10 +3,8 @@ unit Tools;
 interface
 
 uses
-//System.IOUtils,System.SysUtils,
 Settings, Logger,
 ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
-//Vcl.Forms,  System.IOUtils, System.Classes, Logger
 
 
 {$IFDEF HOME}

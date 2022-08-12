@@ -36,6 +36,8 @@ interface
         PreisEU, PreisNonEU : Double;
         VerkaufsPreisRabattiert : Double;
         VerkaufsPreisUnRabattiert : Double;
+        AnteilNonEU : Double;
+        PräfBerechtigt:String; //Ergebnis als ja/nein
 
         //Teile-Objekt zu dieser Stueli-Pos
         Teil : TWTeil;
@@ -365,7 +367,6 @@ end;
 //--------------------------------------------------------------------------
 // Struktur Loops
 //--------------------------------------------------------------------------
-
 {Summiere Preise fuer ein Teil
  aus der Summe der Kosten aller Teile in seiner Stueckliste
  und einem evtl zusaetzlich vorhandenen eigenen Preis
@@ -474,10 +475,8 @@ begin
   ZielDS.AddData('MengeTotal',MengeTotal);
   ZielDS.AddData('Ebene',Ebene);
   ZielDS.AddData('EbeneNice',EbeneNice);
-  if VerkaufsPreisRabattiert<>0 then
-    ZielDS.AddData('AnteilNonEU',100*SummeNonEU/VerkaufsPreisRabattiert)
-  else
-    ZielDS.AddData('AnteilNonEU',0);
+  ZielDS.AddData('AnteilNonEU',AnteilNonEU);
+  ZielDS.AddData('PräfResult',PräfBerechtigt);
   ZielDS.AddData('ZuKAPos',0);
   //ZielDS.Post;
 end;

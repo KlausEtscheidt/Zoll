@@ -4,8 +4,11 @@ interface
 
 uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
         System.Generics.Collections, System.TimeSpan, Windows,
-        KundenauftragsPos, Stueckliste, Bestellung,
+        KundenauftragsPos, Stueckliste, Bestellung,Settings,
         PumpenDataSet, UnippsStueliPos, Tools, Datenmodul;
+
+type
+  EWKundenauftrag = class(Exception);
 
 type
   TWKundenauftrag = class(TWUniStueliPos)
@@ -18,6 +21,7 @@ type
     procedure liesKopfundPositionen;
     procedure holeKinder;
     procedure SammleAusgabeDaten;
+    procedure ErmittlePräferenzBerechtigung;
   end;
 
 implementation
@@ -175,6 +179,48 @@ begin
   EndKnotenListe.Free;
   alteEndKnotenListe.Free;
 
+end;
+
+procedure TWKundenauftrag.ErmittlePräferenzBerechtigung;
+var
+  StueliPos: TWUniStueliPos;
+  StueliPosKey: Integer;
+  KaPos: TWKundenauftragsPos;
+
+begin
+  //Loop Über alle Pos des Kundenauftrages
+  for StueliPosKey in StueliKeys do
+  begin
+    KaPos:= Stueli[StueliPosKey] As TWKundenauftragsPos;
+
+    with KaPos do
+    begin
+
+      PräfBerechtigt:='Nein';
+
+      //Erst Exceptions checken
+      if VerkaufsPreisRabattiert=0 then
+        raise  EWKundenauftrag.Create('Kein Verkaufspreis bekannt für ' + ToStr);
+      if MengeTotal=0 then
+        raise  EWKundenauftrag.Create('MengeTotal ist 0 für ' +ToStr);
+
+      //Anteil ausser EU am VK berechnen (VerkaufsPreisRabattiert ist Stückpreis)
+      AnteilNonEU:= 100*SummeNonEU/VerkaufsPreisRabattiert/MengeTotal;
+
+      PräfBerechtigt:='ja';
+
+      //Wenn Kaufteil
+      if Teil.istKaufteil or Teil.IstFremdfertigung then
+        //und Kosten ausserhalb EU
+        if SummeNonEU>0 then
+          PräfBerechtigt:='nein'
+      else
+        if AnteilNonEU>MaxAnteilNonEU then
+          PräfBerechtigt:='nein';
+
+      end;
+
+  end;
 end;
 
 

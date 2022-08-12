@@ -25,6 +25,8 @@ const SQLiteDBFileName: String = 'C:\Users\Etscheidt\Documents\Embarcadero\' +
 
 {$ENDIF}
 
+const MaxAnteilNonEU=40; //in %
+
 procedure init();
 
 var

@@ -6,11 +6,12 @@ uses
   System.SysUtils, System.Classes, Data.DB, Datasnap.DBClient,
   FireDAC.Comp.BatchMove.DataSet, FireDAC.Stan.Intf, FireDAC.Comp.BatchMove,
   FireDAC.Comp.BatchMove.Text,
-  Settings, Preiseingabe,PumpenDataSet;
+  Settings, PumpenDataSet;
+  //Preiseingabe,
 
   const
 //    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
-    AlleErgebnisFelder: array [0..48] of TWFeldTypRecord =
+    AlleErgebnisFelder: array [0..49] of TWFeldTypRecord =
      (
       (N: 'EbeneNice'; T:ftString; C:'Ebene'; W:15; J:l),
       (N: 'id_stu'; T:ftString; C:'zu Stu'; W:10; J:l),
@@ -60,6 +61,7 @@ uses
       (N: 'kurzname'; T:ftString; C:'Lieferant'; W:10; J:l),
       (N: 'best_menge'; T:ftFloat; C:''; W:10; J:l),
       (N: 'AnteilNonEU'; T:ftFloat; C:'% Non EU'; W:10; J:c),
+      (N: 'PräfResult'; T:ftString; C:'OK'; W:5; J:c),
       (N: 'ZuKAPos'; T:ftInteger; C:'gehört zu'; W:10; J:l)
      );
 
@@ -80,9 +82,8 @@ type
     procedure DefiniereGesamtErgebnisDataSet;
     procedure BefuelleAusgabeTabelle(ZielDS :TWDataSet );overload;
     procedure ErzeugeAusgabeKurzFuerDoku;
-    procedure ErzeugeAusgabeTestumfang;
     procedure ErzeugeAusgabeVollFuerDebug;
-    procedure ErzeugeAusgabeFuerPreisabfrage;
+    procedure ErzeugeAusgabeFuerPreisabfrage(PreisDS:TWDAtaSet);
     procedure AusgabeAlsCSV(DateiPfad,DateiName:String);
   end;
 
@@ -202,30 +203,6 @@ begin
 
 end;
 
-
-//---------------------------------------------------------------------------
-///<summary>Definiert und belegt die Ausgabe-Tabelle
-///für Testausgaben (Ubersichtlicher als Gesamtausgabe).</summary>
-procedure TKaDataModule.ErzeugeAusgabeTestumfang;
-//---------------------------------------------------------------------------
-const
-  Felder: TWFeldNamen =
-            ['EbeneNice', 'MengeTotal', 'bestell_datum',
-//            'PosTyp', 'id_stu','FA_Nr','id_pos','pos_nr',
-            't_tg_nr', 'Bezeichnung',
-//           'bestell_id','kurzname','PreisJeLME',
-//           'PreisEU','PreisNonEU','SummeEU','SummeNonEU',
-           'vk_netto'];
-begin
-  //Definiere die Spalten des Ausgabe-Datensets
-  AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
-  //Daten aus Gesamtergebnis uebernehmen und Feldeigenschaften festlegen
-  BefuelleAusgabeTabelle;
-  //Erlaube Schreiben fuer keine Felder
-  AusgabeDS.DefiniereReadOnly;
-
-end;
-
 //---------------------------------------------------------------------------
 ///<summary>Definiert und belegt die Ausgabe-Tabelle
 ///für die offizielle Dokumentation (Kurzform) der Analyse.</summary>
@@ -234,7 +211,7 @@ procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
 const
   Felder: TWFeldNamen = ['EbeneNice','t_tg_nr', 'Bezeichnung','MengeTotal',
            'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU',
-           'vk_netto','AnteilNonEU'];
+           'vk_netto','AnteilNonEU','PräfResult'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
@@ -247,7 +224,7 @@ end;
 //---------------------------------------------------------------------------
 ///<summary>Definiert und belegt die Ausgabe-Tabelle
 ///für die Abfrage von Preisen bei Neupumpen.</summary>
-procedure TKaDataModule.ErzeugeAusgabeFuerPreisabfrage;
+procedure TKaDataModule.ErzeugeAusgabeFuerPreisabfrage(PreisDS:TWDAtaSet);
 //---------------------------------------------------------------------------
 const
   Felder: TWFeldNamen = ['id_pos','Menge', 'stu_t_tg_nr', 'Bezeichnung',
@@ -256,13 +233,13 @@ begin
   //Die Spalten für die Preisabfrage sind im Formular festgelegt
   //Ansonsten ueber naechste Zeile
 //  PreisFrm.PreisDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
-    PreisFrm.PreisDS.Active:=False;
-    PreisFrm.PreisDS.CreateDataSet;
+    PreisDS.Active:=False;
+    PreisDS.CreateDataSet;
 
   //Daten aus Gesamtergebnis uebernehmen und Feldeigenschaften festlegen
-  BefuelleAusgabeTabelle(PreisFrm.PreisDS);
+  BefuelleAusgabeTabelle(PreisDS);
   //Erlaube Schreiben fuer die beiden Felder
-  PreisFrm.PreisDS.DefiniereReadOnly(['vk_netto', 'ZuKAPos'])
+  PreisDS.DefiniereReadOnly(['vk_netto', 'ZuKAPos'])
 
 end;
 

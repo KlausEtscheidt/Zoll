@@ -6,7 +6,7 @@
         <Projects Include="Zoll.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Batchlauf.dproj">
+        <Projects Include="Batchlauf\Batchlauf.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="lib\Datenbank\PumpenDatenspeicher.dproj">
@@ -39,13 +39,13 @@
         <MSBuild Projects="Zoll.dproj" Targets="Make"/>
     </Target>
     <Target Name="Batchlauf">
-        <MSBuild Projects="Batchlauf.dproj"/>
+        <MSBuild Projects="Batchlauf\Batchlauf.dproj"/>
     </Target>
     <Target Name="Batchlauf:Clean">
-        <MSBuild Projects="Batchlauf.dproj" Targets="Clean"/>
+        <MSBuild Projects="Batchlauf\Batchlauf.dproj" Targets="Clean"/>
     </Target>
     <Target Name="Batchlauf:Make">
-        <MSBuild Projects="Batchlauf.dproj" Targets="Make"/>
+        <MSBuild Projects="Batchlauf\Batchlauf.dproj" Targets="Make"/>
     </Target>
     <Target Name="PumpenDatenspeicher">
         <MSBuild Projects="lib\Datenbank\PumpenDatenspeicher.dproj"/>

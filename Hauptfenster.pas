@@ -1,4 +1,4 @@
-unit main;
+unit Hauptfenster;
 
 interface
 
@@ -10,7 +10,8 @@ uses
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf,
   FireDAC.Comp.UI, Datasnap.DBClient,
   Vcl.WinXCtrls, Kundenauftrag,
-  Settings, Tools, DatenModul,Preiseingabe,  PumpenDataSet, mainNonGui ;
+  Settings, Tools, DatenModul,Preiseingabe,  PumpenDataSet,
+  DruckeKalkulation, Auswerten ;
 
 type
   TmainFrm = class(TForm)
@@ -52,7 +53,7 @@ var KaId:string;
 begin
   KaId := KA_id_ctrl.Text;
   //
-  Kundenauftrag:=mainNonGui.KaAuswerten(KaId);
+  Auswerten.KaAuswerten(KaId);
 end;
 
 procedure TmainFrm.Ende_BtnClick(Sender: TObject);
@@ -85,14 +86,15 @@ end;
 procedure TmainFrm.DruckenClick(Sender: TObject);
 begin
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
-  mainNonGui.ErgebnisDrucken(Kundenauftrag);
+  DruckeKalkulation.PraeferenzKalkulationDrucken
+               (KaDataModule.AusgabeDS,Kundenauftrag.KaId);
 end;
 
 //Nur zum Testen, wird automatisch von OnActivate gestartet
 //und erspart CLick auf Button;
 procedure TmainFrm.RunIt(Sender: TObject);
 begin
-  Kundenauftrag:=mainNonGui.RunItGui;
+  Auswerten.RunItGui;
 
 end;
 

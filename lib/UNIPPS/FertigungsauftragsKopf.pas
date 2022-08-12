@@ -19,6 +19,7 @@ type
 //      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
       constructor Create(einVater: TWUniStueliPos; einTyp: String;
                                         AQry: TWUNIPPSQry);
+      function IstReparatur:Boolean;
       function ToStr():String;
       procedure holeKinderAusASTUELIPOS;
 
@@ -53,6 +54,14 @@ begin
 
 end;
 
+function TWFAKopf.IstReparatur:Boolean;
+var
+  Start:Integer;
+begin
+    Start:=pos('Rep',self.TeileNr);
+    Result:=Start=1;
+end;
+
 //Liefert zum Debuggen wichtige Eigenschaften in einem String verkettet
 function TWFAKopf.ToStr():String;
 begin
@@ -75,11 +84,20 @@ begin
 
   if not gefunden then
   begin
-    msg:=Format('Keine Positionen zum FA >%s< gefunden.',[FA_Nr]);
+    if Self.IstReparatur then
+       msg:=Format('%s ist Rep-FA zu Teil %s.',[FA_Nr,Self.TeileNr])
+    else
+      msg:=Format('Keine Positionen zum FA >%s< gefunden. Teil: %s',
+                                                  [FA_Nr,Self.TeileNr]);
     Tools.Log.Log(msg);
     Tools.ErrLog.Log(msg);
     Tools.ErrLog.Flush;
-    raise EWFAKopf.Create(msg);
+
+    if Self.IstReparatur then
+      exit
+    else
+      raise EWFAKopf.Create(msg);
+
   end;
 
 

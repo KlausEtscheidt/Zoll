@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Home</Config>
+        <Config Condition="'$(Config)'==''">Office SQLite</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -169,7 +169,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="main.pas">
+        <DCCReference Include="Hauptfenster.pas">
             <Form>mainFrm</Form>
         </DCCReference>
         <DCCReference Include="lib\UNIPPS\Kundenauftrag.pas"/>
@@ -191,9 +191,8 @@
         <DCCReference Include="lib\Datenbank\ADOQuery.pas"/>
         <DCCReference Include="lib\Datenbank\BaumQrySQLite.pas"/>
         <DCCReference Include="lib\Datenbank\BaumQryUNIPPS.pas"/>
-        <DCCReference Include="mainNonGui.pas"/>
+        <DCCReference Include="Auswerten.pas"/>
         <DCCReference Include="lib\UNIPPS\UnippsStueliPos.pas"/>
-        <DCCReference Include="Tests.pas"/>
         <DCCReference Include="DatenModul.pas">
             <Form>KaDataModule</Form>
             <DesignClass>TDataModule</DesignClass>
@@ -206,7 +205,7 @@
         <DCCReference Include="lib\Tools\Tools.pas"/>
         <DCCReference Include="lib\Drucken\DruckBlatt.pas"/>
         <DCCReference Include="lib\Drucken\DruckeTabelle.pas"/>
-        <DCCReference Include="AusgabeKalkulation.pas"/>
+        <DCCReference Include="lib\Drucken\DruckeKalkulation.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

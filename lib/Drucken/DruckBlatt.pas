@@ -306,11 +306,7 @@ begin
 end;
 
 procedure TWBlatt.TWKopfzeile.Drucken;
-var
-  myTop,myBot:Integer;
 begin
-  myTop:=Top;
-  myBot:=Bottom;
   Canvas.Font.Size := FontSize;
   Self.DruckeLinkenText(Top);
   Self.DruckeRechtenText(Top);

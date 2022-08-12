@@ -1,8 +1,9 @@
-unit AusgabeKalkulation;
+unit DruckeKalkulation;
 
 interface
 
-  uses Data.DB,System.Classes,VCL.Graphics, DruckeTabelle;
+  uses Data.DB,System.Classes,Windows,System.SysUtils,VCL.Graphics,
+        DruckBlatt, DruckeTabelle;
 
   type TWKalkAusgabe = class(TWDataSetPrinter)
 
@@ -21,6 +22,7 @@ interface
 
   end;
 
+  procedure PraeferenzKalkulationDrucken(DS: TDataSet;KaId:String);
 
 implementation
 
@@ -91,5 +93,50 @@ begin
   Canvas.Brush.Style:=bsSolid;
 
 end;
+
+function GetUsername: String;
+var
+  Buffer: array[0..256] of Char; // UNLEN (= 256) +1 (definiert in Lmcons.h)
+  Size: DWord;
+begin
+  Size := length(Buffer); // length stat SizeOf, da Anzahl in TChar und nicht BufferSize in Byte
+   if not Windows.GetUserName(Buffer, Size) then
+    RaiseLastOSError;
+  SetString(Result, Buffer, Size - 1);
+
+end;
+
+
+/// <summary>Einsprung zum Drucken nach Setzen gewünschter Eigenschaften</summary>
+procedure PraeferenzKalkulationDrucken(DS: TDataSet;KaId:String);
+var
+  Ausgabe:TWKalkAusgabe;
+  txt:String;
+begin
+
+  Ausgabe:=TWKalkAusgabe.Create(nil,'Microsoft Print to PDF',
+                                            DS);
+  Ausgabe.Tabelle.Ausrichtung[3]:=d;
+  Ausgabe.Tabelle.NachkommaStellen[3]:=2;
+
+  Ausgabe.Kopfzeile.TextLinks:='Präferenzkalkulation';
+  Ausgabe.Dokumentenkopf.TextLinks:='Präferenzkalkulation';
+  Ausgabe.Kopfzeile.TextMitte:=  'Auftragsnr: ' + KaId;
+  Ausgabe.Dokumentenkopf.TextMitte:=  'Auftragsnr: ' + KaId;
+  DateTimeToString(txt, 'dd.mm.yy hh:mm', System.SysUtils.Now);
+  Ausgabe.Kopfzeile.TextRechts:=txt;
+  Ausgabe.Fusszeile.TextLinks:=GetUsername;
+
+
+  try
+  Ausgabe.Drucken('Auftragsnr: ' + KaId);
+  finally
+    if Ausgabe.Drucker.Printing then
+      Ausgabe.Drucker.EndDoc;
+  end;
+
+
+end;
+
 
 end.

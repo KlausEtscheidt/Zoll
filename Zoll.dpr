@@ -2,7 +2,7 @@ program Zoll;
 
 uses
   Vcl.Forms,
-  main in 'main.pas' {mainFrm},
+  Hauptfenster in 'Hauptfenster.pas' {mainFrm},
   Kundenauftrag in 'lib\UNIPPS\Kundenauftrag.pas',
   Zoll_TLB in 'Zoll_TLB.pas',
   FertigungsauftragsKopf in 'lib\UNIPPS\FertigungsauftragsKopf.pas',
@@ -18,16 +18,15 @@ uses
   ADOQuery in 'lib\Datenbank\ADOQuery.pas',
   BaumQrySQLite in 'lib\Datenbank\BaumQrySQLite.pas',
   BaumQryUNIPPS in 'lib\Datenbank\BaumQryUNIPPS.pas',
-  mainNonGui in 'mainNonGui.pas',
+  Auswerten in 'Auswerten.pas',
   UnippsStueliPos in 'lib\UNIPPS\UnippsStueliPos.pas',
-  Tests in 'Tests.pas',
   DatenModul in 'DatenModul.pas' {KaDataModule: TDataModule},
   PumpenDataSet in 'lib\Datenbank\PumpenDataSet.pas',
   Preiseingabe in 'Preiseingabe.pas' {PreisFrm},
   Tools in 'lib\Tools\Tools.pas',
   DruckBlatt in 'lib\Drucken\DruckBlatt.pas',
   DruckeTabelle in 'lib\Drucken\DruckeTabelle.pas',
-  AusgabeKalkulation in 'AusgabeKalkulation.pas';
+  DruckeKalkulation in 'lib\Drucken\DruckeKalkulation.pas';
 
 {$R *.res}
 
