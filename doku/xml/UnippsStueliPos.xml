@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="UnippsStueliPos" platform="Win32">
+  <class name="EWUnippsStueliPos" file="UnippsStueliPos.pas" line="10">
+    <ancestor name="Exception" namespace="System.SysUtils">
+      <methodref name="Create@" visibility="class private" procflags="class constructor noself">
+      </methodref>
+      <methodref name="Destroy@" visibility="class private" procflags="class destructor noself">
+      </methodref>
+      <methodref name="SetInnerException" visibility="protected">
+      </methodref>
+      <methodref name="SetStackInfo" visibility="protected">
+      </methodref>
+      <methodref name="GetStackTrace" visibility="protected">
+      </methodref>
+      <methodref name="RaisingException" visibility="protected" procflags="virtual">
+      </methodref>
+      <methodref name="Create" visibility="public" procflags="constructor">
+      </methodref>
+      <methodref name="CreateFmt" visibility="public" procflags="constructor">
+      </methodref>
+      <methodref name="CreateRes" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateRes" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateHelp" visibility="public" procflags="constructor">
+      </methodref>
+      <methodref name="CreateFmtHelp" visibility="public" procflags="constructor">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="Destroy" visibility="public" procflags="destructor override">
+      </methodref>
+      <methodref name="GetBaseException" visibility="public" procflags="virtual">
+      </methodref>
+      <methodref name="ToString" visibility="public" procflags="override">
+      </methodref>
+      <propertyref name="BaseException" visibility="public">
+      </propertyref>
+      <propertyref name="HelpContext" visibility="public">
+      </propertyref>
+      <propertyref name="InnerException" visibility="public">
+      </propertyref>
+      <propertyref name="Message" visibility="public">
+      </propertyref>
+      <propertyref name="StackTrace" visibility="public">
+      </propertyref>
+      <propertyref name="StackInfo" visibility="public">
+      </propertyref>
+      <methodref name="RaiseOuterException" visibility="public" procflags="static">
+      </methodref>
+      <methodref name="ThrowOuterException" visibility="public" procflags="static">
+      </methodref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public" procflags="constructor">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="DisposeOf" visibility="public" procflags="inline">
+        </methodref>
+        <methodref name="InitInstance" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public" procflags="inline">
+        </methodref>
+        <methodref name="ClassName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassParent" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public" procflags="class overload">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public" procflags="class overload">
+        </methodref>
+        <methodref name="MethodName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="QualifiedClassName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public" procflags="overload">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public" procflags="overload">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="UnitName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="UnitScope" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="Equals" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="GetHashCode" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="ToString" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="Dispatch" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="NewInstance" visibility="public" procflags="class virtual">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="Destroy" visibility="public" procflags="destructor virtual">
+        </methodref>
+        <methodref name="GetDisposed" visibility="protected" procflags="inline">
+        </methodref>
+        <methodref name="CheckDisposed" visibility="protected" procflags="inline">
+        </methodref>
+        <propertyref name="Disposed" visibility="protected">
+        </propertyref>
+      </ancestor>
+    </ancestor>
+  </class>
+  <class name="TWUniStueliPos" file="UnippsStueliPos.pas" line="14">
+    <ancestor name="TWStueliPos" namespace="Stueckliste">
+      <methodref name="SortedKeys" visibility="private" />
+      <methodref name="GetStueliPos" visibility="private" />
+      <methodref name="GetStueliPosCount" visibility="private" />
+      <methodref name="GetIdStueliPosVater" visibility="private" />
+      <methodref name="Create" visibility="public" procflags="constructor" />
+      <methodref name="SetzeEbenenUndMengen" visibility="public">
+      </methodref>
+      <methodref name="StueliAdd" visibility="public" />
+      <methodref name="StueliTakePosFrom" visibility="public">
+      </methodref>
+      <methodref name="StueliTakeChildrenFrom" visibility="public">
+      </methodref>
+      <methodref name="ReMove" visibility="public" />
+      <methodref name="PosToStr" visibility="public">
+      </methodref>
+      <methodref name="BaumAlsText" visibility="public">
+      </methodref>
+      <propertyref name="Stueli" visibility="public" />
+      <propertyref name="StueliKeys" visibility="public" />
+      <propertyref name="StueliPosCount" visibility="public" />
+      <propertyref name="IdStueliPosVater" visibility="public" />
+      <propertyref name="IdStueliPos" visibility="public" />
+      <propertyref name="StueliKey" visibility="public" />
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public" procflags="constructor">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="DisposeOf" visibility="public" procflags="inline">
+        </methodref>
+        <methodref name="InitInstance" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public" procflags="inline">
+        </methodref>
+        <methodref name="ClassName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassParent" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public" procflags="class overload">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public" procflags="class overload">
+        </methodref>
+        <methodref name="MethodName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="QualifiedClassName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public" procflags="overload">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public" procflags="overload">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public" procflags="class inline">
+        </methodref>
+        <methodref name="UnitName" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="UnitScope" visibility="public" procflags="class">
+        </methodref>
+        <methodref name="Equals" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="GetHashCode" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="ToString" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="Dispatch" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="NewInstance" visibility="public" procflags="class virtual">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public" procflags="virtual">
+        </methodref>
+        <methodref name="Destroy" visibility="public" procflags="destructor virtual">
+        </methodref>
+        <methodref name="GetDisposed" visibility="protected" procflags="inline">
+        </methodref>
+        <methodref name="CheckDisposed" visibility="protected" procflags="inline">
+        </methodref>
+        <propertyref name="Disposed" visibility="protected">
+        </propertyref>
+      </ancestor>
+    </ancestor>
+    <members>
+      <procedure name="raiseNixGefunden" visibility="private" file="UnippsStueliPos.pas" line="16">
+      </procedure>
+      <field name="PosTyp" type="string" visibility="public" size="4" offset="56" file="UnippsStueliPos.pas" line="20" />
+      <field name="TeileNr" type="string" visibility="public" size="4" offset="60" file="UnippsStueliPos.pas" line="22" />
+      <field name="IdPos" type="Integer" visibility="public" size="4" offset="64" file="UnippsStueliPos.pas" line="23" />
+      <field name="PosNr" type="string" visibility="public" size="4" offset="68" file="UnippsStueliPos.pas" line="24" />
+      <field name="OA" type="Integer" visibility="public" size="4" offset="72" file="UnippsStueliPos.pas" line="25" />
+      <field name="UnippsTyp" type="string" visibility="public" size="4" offset="76" file="UnippsStueliPos.pas" line="26" />
+      <field name="BeschaffungsArt" type="Integer" visibility="public" size="4" offset="80" file="UnippsStueliPos.pas" line="27" />
+      <field name="FANr" type="Integer" visibility="public" size="4" offset="84" file="UnippsStueliPos.pas" line="29" />
+      <field name="VerursacherArt" type="Integer" visibility="public" size="4" offset="88" file="UnippsStueliPos.pas" line="30" />
+      <field name="UebergeordneteStueNr" type="Integer" visibility="public" size="4" offset="92" file="UnippsStueliPos.pas" line="31" />
+      <field name="Ds" type="Integer" visibility="public" size="4" offset="96" file="UnippsStueliPos.pas" line="32" />
+      <field name="SetBlock" type="Integer" visibility="public" size="4" offset="100" file="UnippsStueliPos.pas" line="33" />
+      <field name="SummeEU" type="Double" visibility="public" size="8" offset="104" file="UnippsStueliPos.pas" line="35" />
+      <field name="SummeNonEU" type="Double" visibility="public" size="8" offset="112" file="UnippsStueliPos.pas" line="35" />
+      <field name="PreisEU" type="Double" visibility="public" size="8" offset="120" file="UnippsStueliPos.pas" line="36" />
+      <field name="PreisNonEU" type="Double" visibility="public" size="8" offset="128" file="UnippsStueliPos.pas" line="36" />
+      <field name="VerkaufsPreisRabattiert" type="Double" visibility="public" size="8" offset="136" file="UnippsStueliPos.pas" line="37" />
+      <field name="VerkaufsPreisUnRabattiert" type="Double" visibility="public" size="8" offset="144" file="UnippsStueliPos.pas" line="38" />
+      <field name="AnteilNonEU" type="Double" visibility="public" size="8" offset="152" file="UnippsStueliPos.pas" line="39" />
+      <field name="PräfBerechtigt" type="string" visibility="public" size="4" offset="160" file="UnippsStueliPos.pas" line="40" />
+      <field name="Teil" type="TWTeil" visibility="public" size="4" offset="164" file="UnippsStueliPos.pas" line="43" />
+      <constructor name="Create" visibility="public" file="UnippsStueliPos.pas" line="45">
+        <parameters>
+          <parameter name="einVater" type="TWUniStueliPos" />
+          <parameter name="APosTyp" type="string" />
+          <parameter name="IdStuPos" type="string" />
+          <parameter name="eMenge" type="Double" />
+        </parameters>
+      </constructor>
+      <procedure name="PosDatenSpeichern" visibility="public" file="UnippsStueliPos.pas" line="47">
+        <parameters>
+          <parameter name="Qry" type="TWBaumQryUNIPPS" />
+        </parameters>
+      </procedure>
+      <procedure name="SucheTeilzurStueliPos" visibility="public" file="UnippsStueliPos.pas" line="48">
+      </procedure>
+      <procedure name="holeKindervonEndKnoten" visibility="public" file="UnippsStueliPos.pas" line="49">
+      </procedure>
+      <function name="holeKinderAusASTUELIPOS" visibility="public" file="UnippsStueliPos.pas" line="50">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <function name="holeKinderAusTeileStu" visibility="public" file="UnippsStueliPos.pas" line="51">
+        <parameters>
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <procedure name="SummierePreise" visibility="public" file="UnippsStueliPos.pas" line="52">
+      </procedure>
+      <procedure name="BerechnePreisDerPosition" visibility="public" file="UnippsStueliPos.pas" line="53">
+      </procedure>
+      <function name="ToStr" visibility="public" file="UnippsStueliPos.pas" line="54">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="DatenInAusgabe" visibility="public" file="UnippsStueliPos.pas" line="55">
+        <parameters>
+          <parameter name="ZielDS" type="TWDataSet" />
+        </parameters>
+      </procedure>
+      <procedure name="StrukturInErgebnisTabelle" visibility="public" file="UnippsStueliPos.pas" line="56">
+        <parameters>
+          <parameter name="ZielDS" type="TWDataSet" />
+          <parameter name="FirstRun" type="Boolean">
+            <value>
+              True
+            </value>
+          </parameter>
+        </parameters>
+      </procedure>
+      <procedure name="EntferneFertigungsaufträge" visibility="public" file="UnippsStueliPos.pas" line="58">
+        <devnotes>
+           <summary>Entfernt Fertigungsaufträge aus der Struktur </summary>
+        </devnotes>
+      </procedure>
+    </members>
+  </class>
+  <class name="TWEndKnotenListe" file="UnippsStueliPos.pas" line="62">
+    <ancestor name="{System.Generics.Collections}TList&lt;UnippsStueliPos.TWUniStueliPos&gt;" namespace="UnippsStueliPos">
+      <methodref name="GetList" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="GetPList" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="GetCapacity" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="SetCapacity" visibility="private" procflags="overload inline">
+      </methodref>
+      <methodref name="SetCount" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="GetItem" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="SetItem" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="GrowCheck" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="DoDelete" visibility="private" procflags="inline">
+      </methodref>
+      <methodref name="InternalNotify" visibility="private">
+      </methodref>
+      <methodref name="UpdateNotify" visibility="private">
+      </methodref>
+      <methodref name="SetOnNotify" visibility="private">
+      </methodref>
+      <methodref name="InternalCompare" visibility="private">
+      </methodref>
+      <methodref name="UpdateComparer" visibility="private">
+      </methodref>
+      <propertyref name="FCount" visibility="private">
+      </propertyref>
+      <methodref name="ItemValue" visibility="protected">
+      </methodref>
+      <methodref name="DoGetEnumerator" visibility="protected" procflags="override">
+      </methodref>
+      <methodref name="Notify" visibility="protected" procflags="virtual">
+      </methodref>
+      <methodref name="Create" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="Create" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="Create" visibility="public" procflags="constructor overload">
+      </methodref>
+      <methodref name="Destroy" visibility="public" procflags="destructor override">
+      </methodref>
+      <methodref name="Error" visibility="public" procflags="class overload virtual">
+      </methodref>
+      <methodref name="Error" visibility="public" procflags="class overload">
+      </methodref>
+      <methodref name="Add" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="AddRange" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="AddRange" visibility="public" procflags="overload inline">
+      </methodref>
+      <methodref name="AddRange" visibility="public" procflags="overload inline">
+      </methodref>
+      <methodref name="Insert" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="InsertRange" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="InsertRange" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="InsertRange" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="InsertRange" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="Pack" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="Pack" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="Remove" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="RemoveItem" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Delete" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="DeleteRange" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="ExtractItem" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Extract" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="ExtractAt" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Exchange" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Move" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="First" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Last" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Clear" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Expand" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Contains" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="IndexOf" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="IndexOfItem" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="LastIndexOf" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Reverse" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="Sort" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="Sort" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="BinarySearch" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="BinarySearch" visibility="public" procflags="overload">
+      </methodref>
+      <methodref name="TrimExcess" visibility="public" procflags="inline">
+      </methodref>
+      <methodref name="ToArray" visibility="public" procflags="final override">
+      </methodref>
+      <propertyref name="Capacity" visibility="public">
+      </propertyref>
+      <propertyref name="Count" visibility="public">
+      </propertyref>
+      <propertyref name="Items" visibility="public">
+      </propertyref>
+      <propertyref name="List" visibility="public">
+      </propertyref>
+      <propertyref name="PList" visibility="public">
+      </propertyref>
+      <propertyref name="Comparer" visibility="public">
+      </propertyref>
+      <eventref name="OnNotify" visibility="public">
+      </eventref>
+      <methodref name="GetEnumerator" visibility="public" procflags="inline">
+      </methodref>
+      <ancestor name="{System.Generics.Collections}TEnumerable&lt;UnippsStueliPos.TWUniStueliPos&gt;" namespace="UnippsStueliPos">
+        <methodref name="ToArrayImpl" visibility="private">
+        </methodref>
+        <methodref name="DoGetEnumerator" visibility="protected" procflags="abstract virtual">
+        </methodref>
+        <methodref name="Destroy" visibility="public" procflags="destructor override">
+        </methodref>
+        <methodref name="GetEnumerator" visibility="public" procflags="inline">
+        </methodref>
+        <methodref name="ToArray" visibility="public" procflags="virtual">
+        </methodref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public" procflags="constructor">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="DisposeOf" visibility="public" procflags="inline">
+          </methodref>
+          <methodref name="InitInstance" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public" procflags="inline">
+          </methodref>
+          <methodref name="ClassName" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="ClassParent" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public" procflags="class inline">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public" procflags="class inline">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public" procflags="class overload">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public" procflags="class overload">
+          </methodref>
+          <methodref name="MethodName" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="QualifiedClassName" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public" procflags="overload">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public" procflags="overload">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public" procflags="class inline">
+          </methodref>
+          <methodref name="UnitName" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="UnitScope" visibility="public" procflags="class">
+          </methodref>
+          <methodref name="Equals" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="GetHashCode" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="ToString" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="Dispatch" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="NewInstance" visibility="public" procflags="class virtual">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public" procflags="virtual">
+          </methodref>
+          <methodref name="Destroy" visibility="public" procflags="destructor virtual">
+          </methodref>
+          <methodref name="GetDisposed" visibility="protected" procflags="inline">
+          </methodref>
+          <methodref name="CheckDisposed" visibility="protected" procflags="inline">
+          </methodref>
+          <propertyref name="Disposed" visibility="protected">
+          </propertyref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <function name="ToStr" visibility="public" file="UnippsStueliPos.pas" line="64">
+        <devnotes>
+          //////////////////////////////////////////////////////////////////////////
+          //////////////////////////////////////////////////////////////////////////
+          //////////////////////////////////////////////////////////////////////////
+        </devnotes>
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+    </members>
+  </class>
+  <variable name="EndKnotenListe" type="TWEndKnotenListe" file="UnippsStueliPos.pas" line="68" />
+</namespace>

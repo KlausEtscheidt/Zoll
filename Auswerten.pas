@@ -207,8 +207,8 @@ begin
 end;
 
 ///<summary>
-/// Startet eine Komplettanalyse
-///<summary>
+///  Startet eine Komplettanalyse
+///</summary>
 procedure KaAuswerten(KaId:string);
 begin
   //Erster Teil der Auswertung inkl Preisabfrage

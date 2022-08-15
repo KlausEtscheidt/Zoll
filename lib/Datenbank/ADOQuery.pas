@@ -45,7 +45,7 @@ interface
 
   type
     TWParamlist = array of String;
-    ///<summary>Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
+    ///<summary>Funktionen fuer Abfragen auf Basis der TADOQuery
     ///</summary>
     ///<remarks>
     /// Vor der ersten "Benutzung" einer neuen Instanz muss
@@ -63,6 +63,7 @@ interface
     public
       /// <summary>Anzahl der gefundenen Records  </summary>
       var n_records: Integer;
+      /// <summary>True, wenn Datensaetze gefunden </summary>
       var gefunden: Boolean;
 
       destructor Destroy; override;

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Settings" platform="Win32">
+  <const name="LogDir" type="string" visibility="public" file="Settings.pas" line="20" />
+  <const name="SQLiteDBFileName" type="string" visibility="public" file="Settings.pas" line="23" />
+  <const name="MaxAnteilNonEU" type="Integer" file="Settings.pas" line="28">
+    <value>
+      $28
+    </value>
+  </const>
+  <variable name="ApplicationBaseDir" type="string" file="Settings.pas" line="33" />
+  <variable name="GuiMode" type="Boolean" file="Settings.pas" line="34" />
+  <procedure name="init" visibility="public" file="Settings.pas" line="38">
+  </procedure>
+</namespace>

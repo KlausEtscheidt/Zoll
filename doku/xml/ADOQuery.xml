@@ -151,7 +151,7 @@
   </array>
   <class name="TWADOQuery" file="ADOQuery.pas" line="54">
     <devnotes>
-      <summary>xxx Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
+      <summary>Funktionen fuer Abfragen auf Basis der TADOQuery
       </summary>
       <remarks>
        Vor der ersten &quot;Benutzung&quot; einer neuen Instanz muss
@@ -1774,31 +1774,35 @@
            <summary>Anzahl der gefundenen Records  </summary>
         </devnotes>
       </field>
-      <field name="gefunden" type="Boolean" visibility="public" size="1" offset="648" file="ADOQuery.pas" line="66" />
-      <destructor name="Destroy" visibility="public" file="ADOQuery.pas" line="68">
+      <field name="gefunden" type="Boolean" visibility="public" size="1" offset="648" file="ADOQuery.pas" line="67">
+        <devnotes>
+           <summary>True, wenn Datensaetze gefunden </summary>
+        </devnotes>
+      </field>
+      <destructor name="Destroy" visibility="public" file="ADOQuery.pas" line="69">
         <parameters>
         </parameters>
       </destructor>
-      <function name="RunSelectQuery" visibility="public" file="ADOQuery.pas" line="70">
+      <function name="RunSelectQuery" visibility="public" file="ADOQuery.pas" line="71">
         <parameters>
           <parameter name="sql" type="string" />
           <retval type="Boolean" />
         </parameters>
       </function>
-      <function name="RunSelectQueryWithParam" visibility="public" file="ADOQuery.pas" line="71">
+      <function name="RunSelectQueryWithParam" visibility="public" file="ADOQuery.pas" line="72">
         <parameters>
           <parameter name="sql" type="string" />
           <parameter name="paramlist" type="TWParamlist" />
           <retval type="Boolean" />
         </parameters>
       </function>
-      <function name="RunExecSQLQuery" visibility="public" file="ADOQuery.pas" line="72">
+      <function name="RunExecSQLQuery" visibility="public" file="ADOQuery.pas" line="73">
         <parameters>
           <parameter name="sql" type="string" />
           <retval type="Boolean" />
         </parameters>
       </function>
-      <function name="InsertFields" visibility="public" file="ADOQuery.pas" line="73">
+      <function name="InsertFields" visibility="public" file="ADOQuery.pas" line="74">
         <devnotes>
           <summary>
            Insert-Statement für &quot;tablename&quot; anhand einer Feldliste ausführen
@@ -1810,40 +1814,40 @@
           <retval type="Boolean" />
         </parameters>
       </function>
-      <procedure name="PrepareQuery" visibility="public" file="ADOQuery.pas" line="74">
+      <procedure name="PrepareQuery" visibility="public" file="ADOQuery.pas" line="75">
         <parameters>
           <parameter name="SQL" type="string" />
         </parameters>
       </procedure>
-      <procedure name="ExecuteQuery" visibility="public" file="ADOQuery.pas" line="75">
+      <procedure name="ExecuteQuery" visibility="public" file="ADOQuery.pas" line="76">
         <parameters>
           <parameter name="WithResult" type="Boolean" />
         </parameters>
       </procedure>
-      <function name="GetFieldValues" visibility="public" file="ADOQuery.pas" line="77">
+      <function name="GetFieldValues" visibility="public" file="ADOQuery.pas" line="78">
         <parameters>
           <retval type="TArray&lt;System.string&gt;" />
         </parameters>
       </function>
-      <function name="GetFieldValuesAsText" visibility="public" file="ADOQuery.pas" line="78">
+      <function name="GetFieldValuesAsText" visibility="public" file="ADOQuery.pas" line="79">
         <parameters>
           <retval type="string" />
         </parameters>
       </function>
-      <function name="GetFieldNames" visibility="public" file="ADOQuery.pas" line="79">
+      <function name="GetFieldNames" visibility="public" file="ADOQuery.pas" line="80">
         <parameters>
           <retval type="TArray&lt;System.string&gt;" />
         </parameters>
       </function>
-      <function name="GetFieldNamesAsText" visibility="public" file="ADOQuery.pas" line="80">
+      <function name="GetFieldNamesAsText" visibility="public" file="ADOQuery.pas" line="81">
         <parameters>
           <retval type="string" />
         </parameters>
       </function>
-      <property name="Connector" visibility="public" write="SetConnector" type="TWADOConnector" file="ADOQuery.pas" line="82" />
-      <property name="IsConnected" visibility="public" read="GetIsConnected" type="Boolean" file="ADOQuery.pas" line="83" />
-      <property name="Datenbank" visibility="public" read="GetDatenbank" type="string" default="0" file="ADOQuery.pas" line="84" />
-      <property name="Datenbankpfad" visibility="public" read="GetDatenbankpfad" type="string" default="0" file="ADOQuery.pas" line="85" />
+      <property name="Connector" visibility="public" write="SetConnector" type="TWADOConnector" file="ADOQuery.pas" line="83" />
+      <property name="IsConnected" visibility="public" read="GetIsConnected" type="Boolean" file="ADOQuery.pas" line="84" />
+      <property name="Datenbank" visibility="public" read="GetDatenbank" type="string" default="0" file="ADOQuery.pas" line="85" />
+      <property name="Datenbankpfad" visibility="public" read="GetDatenbankpfad" type="string" default="0" file="ADOQuery.pas" line="86" />
     </members>
   </class>
 </namespace>
