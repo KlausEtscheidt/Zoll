@@ -3,7 +3,7 @@
 interface
 
 uses  System.SysUtils, System.Dateutils, Vcl.Controls, Vcl.Dialogs, Windows,
-      classes, Tools, Settings, Tests,
+      classes, Tools, Settings,
       Kundenauftrag,KundenauftragsPos, ADOQuery , ADOConnector,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe;
 
@@ -20,21 +20,23 @@ type
 type
     TWPraeFixThread=class(TThread)
       public
+          ErrMsg:String;
+          Success:Boolean;
           procedure Execute; override;
-          procedure OnTerminate(Sender: TWPraeFixThread);
     end;
 
 procedure RunItGui;
 procedure KaAuswerten(KaId:string);
 function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
-procedure PräferenzKalkulationStep1(KaId:String);
-procedure PräferenzKalkulationFinish;
+function PraeferenzKalkBeginn(KaId:String):Boolean;
+procedure PraeferenzKalkAbschluss;
 
 //Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
 var
    Zuordnungen:TWZuordnungen;
    PraeFixKalkThread:TWPraeFixThread;
+   startzeit: TDateTime;
 
 implementation
 
@@ -42,22 +44,25 @@ uses Hauptfenster,DruckBlatt;
 
 procedure TWPraeFixThread.Execute;
 begin
-  Hauptfenster.Kundenauftrag.holeKinder;
-  Synchronize(Auswerten.PräferenzKalkulationFinish);
+  Success:=True;
+  try
+    Hauptfenster.Kundenauftrag.holeKinder;
+  except
+    on E: Exception do
+    begin
+       ErrMsg:=E.Message;
+       Success:=False;
+    end;
+  end;
 end;
 
-
-procedure TWPraeFixThread.OnTerminate(Sender: TWPraeFixThread);
-begin
-  ShowMessage('Fertig');
-end;
-
-
-procedure PräferenzKalkulationStep1(KaId:String);
+/// <summary>
+/// Anfang der Berechnung einer Präferenzberechtigung  mit Preisabfrage
+///</summary>
+function PraeferenzKalkBeginn(KaId:String):Boolean;
 var
   KA:TWKundenauftrag;
   msg:String;
-  startzeit: TDateTime;
 
 begin
   Tools.Init;
@@ -70,12 +75,13 @@ begin
   mainfrm.langBtn.Enabled:=False;
   mainfrm.kurzBtn.Enabled:=False;
   mainfrm.Drucken.Enabled:=False;
-  startzeit:= System.SysUtils.Now;
 
   //Einmalig die Felder der Gesamt-Tabelle anlegen
   //Könnte irgendwo passieren, aber erst nachdem  !!!! Datenmodul völlig "created"
   //DAS OnCreate Ereignis ist anscheinend zu früh
   KaDataModule.DefiniereGesamtErgebnisDataSet;
+
+  KaDataModule.AusgabeDS.EmptyDataSet;
 
   //Kundenauftrag anlegen
   KA:=TWKundenauftrag.Create(KaId);
@@ -84,107 +90,143 @@ begin
   msg:='Starte Auswertung fuer: ' + KaId + ' um ' + DateTimeToStr(startzeit);
   Tools.Log.Log(msg);
   Tools.ErrLog.Log(msg);
-  mainfrm.ActivityIndicator1.Animate:=True;
 
   //Lies Kundenauftrag mit seinen Positionen
-  KA.liesKopfundPositionen;
+  try
+    KA.liesKopfundPositionen;
+  except
+    on E: Exception do
+    begin
+      Tools.Log.close;
+      Tools.ErrLog.close;
+      ShowMessage(E.Message+#10+'Programmabbruch.');
+      exit(False);
+    end;
+  end;
 
   //Hole VK zu Neupumpen
-    if not (Preisabfrage(KA,Zuordnungen)) then
-      exit;
+  if not (Preisabfrage(KA,Zuordnungen)) then
+  begin
+    Tools.Log.close;
+    Tools.ErrLog.close;
+    exit(False);
+  end;
 
-
+  Result:=True;
 end;
 
-
-procedure PräferenzKalkulationFinish;
+/// <summary>
+/// 2. Teil der Berechnung einer Präferenzberechtigung
+///</summary>
+procedure PraeferenzKalkAbschluss;
 var
   KA:TWKundenauftrag;
-  startzeit,endzeit: TDateTime;
+  endzeit: TDateTime;
   delta:Double;
   msg:String;
+  Success:Boolean;
+
 begin
 
   KA:=Hauptfenster.Kundenauftrag;
-  startzeit:= System.SysUtils.Now;
 
   try
 
-    Tools.Log.Trennzeile('-',80);
-    Tools.Log.Log('Hole Kinder zu KA-Pos');
-    Tools.Log.Trennzeile('-',80);
+    try
 
-//    KaDataModule.ErgebnisDS.EmptyDataSet;
-//    KaDataModule.ErgebnisDS.SaveToFile();
+      msg:=PraeFixKalkThread.ErrMsg ;
+      Success:=PraeFixKalkThread.Success;
+//      PraeFixKalkThread.Terminate;
+//      PraeFixKalkThread.Free;
+      if not Success then
+        raise Exception.Create(msg);
 
-    //Evtl Motoren o.ä. umhängen
-    ZuordnungAendern(KA,Zuordnungen);
+      //Evtl Motoren o.ä. umhängen
+      ZuordnungAendern(KA,Zuordnungen);
 
-    KA.SetzeEbenenUndMengen(0,1);
-    KA.SummierePreise;
-    KA.ErmittlePräferenzBerechtigung;
+      KA.SetzeEbenenUndMengen(0,1);
+      KA.SummierePreise;
+      KA.ErmittlePraferenzBerechtigung;
 
-    //--------- Ausgabe voller Umfang zum Debuggen
-    KA.SammleAusgabeDaten;
-    //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
-    KaDataModule.ErzeugeAusgabeVollFuerDebug;
-    //Ausgabe als CSV
-    KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Struktur.csv');
+      //--------- Ausgabe voller Umfang zum Debuggen
+      KA.SammleAusgabeDaten;
+      //Fülle Ausgabe-Tabelle mit vollem Umfang (z Debuggen)
+      KaDataModule.ErzeugeAusgabeVollFuerDebug;
+      //Ausgabe als CSV
+      KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Struktur.csv');
 
-    //--------- Ausgabe kurzer Umfang für Doku
-    //Entferne FA aus Struktur
-    KA.EntferneFertigungsaufträge;
-    //Ebenen neu numerieren
-    KA.SetzeEbenenUndMengen(0,1);
-    //Daten neu sammeln
-    KA.SammleAusgabeDaten;
-    //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
-    KaDataModule.ErzeugeAusgabeKurzFuerDoku;
-    //  KaDataModule.AusgabeDS.SaveToFile(Settings.LogDir+'\AusgabeKurz.xml');
-    //Ausgabe als CSV !!Ueberschreibt z.T. Felddefinitionen
-    KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Kalk.csv');
+      //--------- Ausgabe kurzer Umfang für Doku
+      //Entferne FA aus Struktur
+      KA.EntferneFertigungsaufträge;
+      //Ebenen neu numerieren
+      KA.SetzeEbenenUndMengen(0,1);
+      //Daten neu sammeln
+      KA.SammleAusgabeDaten;
+      //Fülle AusgabeDS mit Teilumfang zur Ausgabe der Doku der Kalkulation
+      KaDataModule.ErzeugeAusgabeKurzFuerDoku;
+      //Ausgabe als CSV !!Ueberschreibt z.T. Felddefinitionen
+      KaDataModule.AusgabeAlsCSV(Settings.LogDir, KA.KaId + '_Kalk.csv');
 
-    //KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
-    mainfrm.ActivityIndicator1.Animate:=False;
+      //KaDataModule.ErgebnisDS.SaveToFile(Settings.LogDir+'\Ergebnis.xml');
+      mainfrm.ActivityIndicator1.Animate:=False;
 
-    endzeit:=  System.SysUtils.Now;
-    //oder MilliSecondSpan ??
-    delta:=MilliSecondsBetween(startzeit,endzeit);
+      endzeit:=  System.SysUtils.Now;
+      delta:=SecondSpan(startzeit,endzeit);
 
-    msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
-        #10 + '%d Datensaetze gefunden.',
-        [KA.KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
-    ShowMessage(msg);
+      msg:=Format('Auswertung fuer KA %s in %4.3f mSek beendet.' +
+          #10 + '%d Datensaetze gefunden.',
+          [KA.KaId, delta,KaDataModule.ErgebnisDS.RecordCount]);
+      ShowMessage(msg);
+      mainfrm.Drucken.Enabled:=True;
+
+      //Daten anzeigen
+      if Settings.GuiMode then
+      begin
+        //Belege DataSource1 mit dem Default AusgabeDS
+        KaDataModule.AusgabeDS.First;
+        mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
+      end;
+
+    except
+      on E: Exception do
+      begin
+        ShowMessage(E.Message+#10+'Programmabbruch.');
+      end;
+
+    end;
 
   finally
     mainfrm.langBtn.Enabled:=True;
     mainfrm.kurzBtn.Enabled:=True;
-    mainfrm.Drucken.Enabled:=True;
     mainfrm.ActivityIndicator1.Animate:=False;
     Tools.Log.Close;
     Tools.ErrLog.Close;
   end;
 
-  //Daten anzeigen
-  if Settings.GuiMode then
-  begin
-    //Belege DataSource1 mit dem Default AusgabeDS
-    KaDataModule.AusgabeDS.First;
-    mainfrm.DataSource1.DataSet:=KaDataModule.AusgabeDS;
-  end;
 
 end;
 
-
-///<summary> Startet eine Komplettanalyse ueber TWKundenauftrag.auswerten
+///<summary>
+/// Startet eine Komplettanalyse
 ///<summary>
 procedure KaAuswerten(KaId:string);
 begin
-  PräferenzKalkulationStep1(KaId);
-  PraeFixKalkThread:=TWPraeFixThread.Create(True);
-  PraeFixKalkThread.Start;
-//  PraeFixKalkThread.WaitFor;
+  //Erster Teil der Auswertung inkl Preisabfrage
+  if not PraeferenzKalkBeginn(KaId) then
+    exit;
 
+  startzeit:= System.SysUtils.Now;
+  mainfrm.ActivityIndicator1.Animate:=True;
+  Tools.Log.Trennzeile('-',80);
+  Tools.Log.Log('Hole Kinder zu KA-Pos');
+  Tools.Log.Trennzeile('-',80);
+
+  //Rest der Auswertung in Thread
+  PraeFixKalkThread:=TWPraeFixThread.Create(True);
+  PraeFixKalkThread.OnTerminate:= mainfrm.FinishPraefKalk;
+  PraeFixKalkThread.Priority:=tpHigher;
+//  PraeFixKalkThread.FreeOnTerminate := True;
+  PraeFixKalkThread.Resume;
 end;
 
 // Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
@@ -208,8 +250,9 @@ begin
     //User-Abfrage
     if not (PreisFrm.ShowModal=mrOK) then
     begin
-      Result:=False;
-      exit;
+      ShowMessage('Keine VK-netto-Preise eingegeben.' +
+        #10 + 'Programmabbruch.');
+      exit(False);
     end;
 
     //Preise ins Objekt schreiben und Zuordnungsliste erstellen
@@ -221,7 +264,18 @@ begin
       //Hole KAPos aus Stueli des KA
       KaPos:=TWKundenauftragsPos(KA.Stueli[IdPos]);
       //VK eintragen
-      KaPos.VerkaufsPreisRabattiert:=VkRabattiert;
+      if VkRabattiert<>0 then
+        KaPos.VerkaufsPreisRabattiert:=VkRabattiert
+      else
+      begin
+        {$IFDEF DEBUG}
+        KaPos.VerkaufsPreisRabattiert:= 1;
+        {$ELSE}
+        ShowMessage('Nicht für alle Positionen VK-netto-Preise eingegeben.' +
+        #10 + 'Programmabbruch.');
+        exit(False);
+        {$ENDIF}
+      end;
 
       ZuPos:=PreisFrm.PreisDS.FieldByName('ZuKAPos').AsInteger;
       if ZuPos<>0 then
@@ -267,12 +321,11 @@ procedure RunItGui;
 begin
 
 //test;
-//  Result:= Auswerten.KaAuswerten('142302'); //Ersatz
+//  Auswerten.KaAuswerten('142302'); //Ersatz
 //  Result:= Auswerten.KaAuswerten('144729');
 //  Result:= Auswerten.KaAuswerten('144927');
-//  Result:= Auswerten.KaAuswerten('142567'); //2Pumpen
-//  Tests.Bestellung;
-    Auswerten.KaAuswerten('143740'); //Rep
+   Auswerten.KaAuswerten('142567'); //2Pumpen
+//    Auswerten.KaAuswerten('143740'); //Rep
 
 //  Auswerten.KaAuswerten('144734'); //Error
 //  Auswerten.KaAuswerten('142591'); //Error

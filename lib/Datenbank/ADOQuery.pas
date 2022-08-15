@@ -2,7 +2,7 @@
 ///</summary>
 ///<remarks>
 /// Vor der ersten "Benutzung" einer neuen Instanz muss
-/// ein TWADOConnector f�r die Klasse gesetzt werden
+/// ein TWADOConnector für die Klasse gesetzt werden
 ///</remarks>
 unit ADOQuery;
 {
@@ -61,6 +61,7 @@ interface
       function GetDatenbankpfad():String;
       function GetIsConnected():Boolean;
     public
+      /// <summary>Anzahl der gefundenen Records  </summary>
       var n_records: Integer;
       var gefunden: Boolean;
 
@@ -156,7 +157,9 @@ end;
 // komplexere Abfragen
 //-----------------------------------------------------------
 
-//Insert-Statement f�r "tablename" anhand einer Feldliste ausf�hren
+///<summary>
+/// Insert-Statement für "tablename" anhand einer Feldliste ausführen
+///</summary>
 //-----------------------------------------------------------
 function TWADOQuery.InsertFields(tablename: String; myFields:TFields):Boolean;
 var

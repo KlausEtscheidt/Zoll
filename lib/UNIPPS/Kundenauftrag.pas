@@ -21,7 +21,7 @@ type
     procedure liesKopfundPositionen;
     procedure holeKinder;
     procedure SammleAusgabeDaten;
-    procedure ErmittlePräferenzBerechtigung;
+    procedure ErmittlePraferenzBerechtigung;
   end;
 
 implementation
@@ -181,7 +181,7 @@ begin
 
 end;
 
-procedure TWKundenauftrag.ErmittlePräferenzBerechtigung;
+procedure TWKundenauftrag.ErmittlePraferenzBerechtigung;
 var
   StueliPos: TWUniStueliPos;
   StueliPosKey: Integer;

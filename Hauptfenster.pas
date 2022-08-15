@@ -33,6 +33,7 @@ type
     procedure langBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure DruckenClick(Sender: TObject);
+    procedure FinishPraefKalk(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -47,6 +48,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TmainFrm.FinishPraefKalk(Sender: TObject);
+begin
+  Auswerten.PraeferenzKalkAbschluss;
+end;
 
 procedure TmainFrm.Run_BtnClick(Sender: TObject);
 var KaId:string;

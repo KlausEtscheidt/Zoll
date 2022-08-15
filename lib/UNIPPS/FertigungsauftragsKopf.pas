@@ -15,8 +15,6 @@ type
       { protected declarations }
     public
       FA_Nr: String;     //f_auftragkopf.ident_nr
-//      FaIdStuVater: String;   //f_auftragkopf.auftr_nr  //nur f Debug
-//      FaIdPos: Integer;  //f_auftragkopf.auftr_pos
       constructor Create(einVater: TWUniStueliPos; einTyp: String;
                                         AQry: TWUNIPPSQry);
       function IstReparatur:Boolean;
