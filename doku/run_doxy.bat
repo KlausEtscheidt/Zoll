@@ -1,2 +1,2 @@
-doxygen Doxyfile
+"C:\Program Files\doxygen\bin\doxygen" Doxyfile
 pause
