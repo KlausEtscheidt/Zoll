@@ -21,6 +21,9 @@
         <Projects Include="DevTools\DruckTest.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="DevTools\XML2RST.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="DruckTest:Make">
         <MSBuild Projects="DevTools\DruckTest.dproj" Targets="Make"/>
     </Target>
+    <Target Name="XML2RST">
+        <MSBuild Projects="DevTools\XML2RST.dproj"/>
+    </Target>
+    <Target Name="XML2RST:Clean">
+        <MSBuild Projects="DevTools\XML2RST.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="XML2RST:Make">
+        <MSBuild Projects="DevTools\XML2RST.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet;NeueStueliTest;DruckTest"/>
+        <CallTarget Targets="Zoll;Batchlauf;PumpenDatenspeicher;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean"/>
+        <CallTarget Targets="Zoll:Clean;Batchlauf:Clean;PumpenDatenspeicher:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make"/>
+        <CallTarget Targets="Zoll:Make;Batchlauf:Make;PumpenDatenspeicher:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

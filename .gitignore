@@ -64,6 +64,10 @@ Win32/
 Win64/
 dies und das/csv/
 data/
+doku/build
+doku/xml
+doku/output
+
 *.~*
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
