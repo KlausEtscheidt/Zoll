@@ -136,6 +136,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_OutputXMLDocumentation>true</DCC_OutputXMLDocumentation>
+        <DCC_XmlOutput>$(BDSPROJECTSDIR)\zoll\doku\xml\</DCC_XmlOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
