@@ -16,23 +16,11 @@ uses
 
 type
 
-  TDevNotes = class
-    private
-//      class var FBreite: Integer;
-      function Format(RohText:String):String;
-    public
-      Summary:String;
-      Remarks:String;
-      constructor Create(Node:IXMLNode);
-      procedure WriteRst(LineBefore:Boolean);
-      procedure WriteRstElement(Text:String);
-//      class property Breite: Integer read FBreite write FBreite;
-  end;
-
   TParameter = class
     public
       Typ:String;
       Name:String;
+      DokString:String;
       constructor Create(Node: IXMLNode);
   end;
 
@@ -40,15 +28,33 @@ type
     private
       FParams: TList<TParameter>;
       function GetParameter(I:Integer):TParameter;
+      function GetCount():Integer;
     public
       ReturnTyp:String;
       hasReturnTyp:Boolean;
       constructor Create(TopNode: IXMLNode);
-      property Parameter[I:Integer]:TParameter read GetParameter;
       function Deklaration():String;
       function ReturnValueDesc():String;
-
+      property Parameter[I:Integer]:TParameter read GetParameter;
+      property count:Integer read GetCount;
   end;
+
+  TDevNotes = class
+    private
+      FParamListe:TParameterListe; //Parameter aus Function
+      FDevNode:IXMLNode;
+      function Format(RohText:String):String;
+    public
+      Summary:String;
+      Remarks:String;
+      hatParamDoku:Boolean;
+      constructor Create(Node:IXMLNode);
+      procedure WriteRst(LineBefore:Boolean);
+      procedure WriteRstElement(Text:String);
+      procedure handleParameterDevNotes(FuncParameter:TParameterListe);
+      procedure WriteRstParamDoku(LineBefore:Boolean);
+  end;
+
 
 var
   PublicOnly: Boolean;
@@ -110,18 +116,21 @@ end;
 //-----------------------------------------------------------------------
 constructor TDevNotes.Create(Node: IXMLNode);
 var
-  DevNode,Subnode:IXMLNode;
+  Subnode:IXMLNode;
 begin
-  DevNode:=Node.ChildNodes.FindNode('devnotes');
-  if DevNode<>nil then
+
+  hatParamDoku:=False;
+
+  FDevNode:=Node.ChildNodes.FindNode('devnotes');
+  if FDevNode<>nil then
   begin
-    SubNode:=DevNode.ChildNodes.FindNode('summary');
+    SubNode:=FDevNode.ChildNodes.FindNode('summary');
     if SubNode<>nil then
     begin
         Summary:= Format(SubNode.text);
         Writeln('Summary: ',Summary);
     end;
-    SubNode:=DevNode.ChildNodes.FindNode('remarks');
+    SubNode:=FDevNode.ChildNodes.FindNode('remarks');
     if SubNode<>nil then
     begin
         Remarks:= Format(SubNode.text);
@@ -130,6 +139,45 @@ begin
   end;
 end;
 
+//Suche die Parameter aus einer Funktion zu den Parametern aus
+//den DevNotes
+procedure TDevNotes.handleParameterDevNotes(FuncParameter:TParameterListe);
+var
+  SubNode:IXMLNode;
+  Name,DokText:String;
+  I,J:Integer;
+  Parameter:TParameter;
+begin
+
+   if FDevNode=nil then exit;
+   //Übergeordnetes Modul hat keine Parameter
+   if FuncParameter.count=0 then exit;
+
+  //Parameter aus der Function oder procedure übernehmen
+  FParamListe:=FuncParameter;
+  hatParamDoku:=True;
+
+   for I:=0 to FDevNode.ChildNodes.Count-1 do
+   begin
+     SubNode:= FDevNode.ChildNodes[i];
+     if SubNode.LocalName='param' then
+     begin
+        Name:=NameAttrib(SubNode);
+        DokText:=SubNode.Text;
+        //Suche diesen param in der Liste aus der Function/procedure
+        for J:=0 To FuncParameter.count-1 do
+        begin
+          Parameter:=FuncParameter.Parameter[J];
+          if Parameter.Name=Name then
+            Parameter.DokString:=Format(DokText);
+        end;
+     end;
+   end;
+
+
+end;
+
+// Entfernt mehrfache Leerzeichen aus einem DevNotes-String
 function TDevNotes.Format(RohText:String):String;
 var
   Lpos:Integer;
@@ -144,6 +192,7 @@ begin
    Result:=RohText;
 end;
 
+// Gibt ein DevNotes-Element aus
 procedure TDevNotes.WriteRstElement(Text:String);
 var
   Zeile:String;
@@ -157,6 +206,7 @@ begin
     Logger.Log(Einziehen(Trim(Zeile)));
 end;
 
+// Gibt wichtige DevNotes-Elemente (Summary,Remarks) aus
 procedure TDevNotes.WriteRst(LineBefore:Boolean);
 begin
   if Summary<>'' then
@@ -171,6 +221,36 @@ begin
     WriteRstElement(Remarks);
   end;
 end;
+
+// Gibt die Parameter-Doku aus
+procedure TDevNotes.WriteRstParamDoku(LineBefore:Boolean);
+var
+  Text:String;
+  Parameter:TParameter;
+  I:Integer;
+
+begin
+
+  if not hatParamDoku then exit;
+
+  Parameter:=FParamListe.Parameter[0];
+  Text:=Einziehen(':param ' + Parameter.Typ + ' ' + Parameter.Name +': ' +
+                                         Parameter.DokString);
+  for I:=1 To FParamListe.count-1 do
+  begin
+    Parameter:=FParamListe.Parameter[I];
+    Text:=Text + #10+ Einziehen(':param ' + Parameter.Typ + ' ' + Parameter.Name +': ' +
+                                           Parameter.DokString);
+  end;
+
+  if Text<>'' then
+  begin
+    if LineBefore then
+        Logger.Log('');
+    Logger.Log(Text);
+  end;
+end;
+
 
 //-----------------------------------------------------------------------
 // Handler fuer Parameter zu Code-Objekten
@@ -220,6 +300,11 @@ begin
 
 end;
 
+function TParameterListe.GetCount():Integer;
+begin
+   Result:=FParams.Count;
+end;
+
 function TParameterListe.GetParameter(I:Integer):TParameter;
 begin
   Result:=FParams[I];
@@ -232,6 +317,7 @@ begin
       Result:=':rtype: ' + ReturnTyp;
 end;
 
+//Erzeugt String mit Parametern, wie in einer Funktionsdeklaration
 function TParameterListe.Deklaration():String;
 var
   Parameter:TParameter;
@@ -274,7 +360,9 @@ begin
   Logger.Log(Einziehen(Text));
   Einzug:=Einzug+3;
   DevNotes:=TDevNotes.Create(Node);
+  DevNotes.handleParameterDevNotes(Parameter);
   DevNotes.WriteRst(True);
+  DevNotes.WriteRstParamDoku(True);
   Einzug:=Einzug-3;
 end;
 
@@ -296,7 +384,9 @@ begin
   Logger.Log(Einziehen(Text));
   Einzug:=Einzug+3;
   DevNotes:=TDevNotes.Create(Node);
+  DevNotes.handleParameterDevNotes(Parameter);
   DevNotes.WriteRst(True);
+  DevNotes.WriteRstParamDoku(True);
   if Parameter.hasReturnTyp then
     Logger.Log('');
     Logger.Log(Einziehen(Parameter.ReturnValueDesc));
@@ -465,35 +555,81 @@ begin
     end;
 end;
 
-procedure handleFile(FilePath:String);
+procedure handleFile(XMLFilePath,RstFilePath:String);
+var
+  Path,Name:String;
 begin
+
+    Logger:= TLogFile.Create;
+
+    Path:= ExtractFilePath(RstFilePath);
+    Path:=Path.Substring(0,length(Path)-1);
+    Name:= ExtractFileName(RstFilePath);
+    Logger.OpenNew(Path,Name);
+
      myXMLDoc:= TXMLDocument.Create(nil);
 //     myXMLDoc.DOMVendor := GetDOMVendor(SMSXML);
-     myXMLDoc.LoadFromFile(FilePath);
+     myXMLDoc.LoadFromFile(XMLFilePath);
      myXMLDoc.Active:=True;
-     PublicOnly:=False;
      handleUnit(myXMLDoc.DocumentElement);
+
+     Logger.Close;
+
 end;
+
+procedure main_test();
+begin
+    BaseDir:= ExtractFileDir(Settings.ApplicationBaseDir);
+    XmlDir:= BaseDir + '\doku\xml\';
+    RstDir:= BaseDir + '\doku\source\';
+
+    handleFile(xmldir + 'ADOQuery.xml',RstDir+'ADOQuery.rst');
+    handleFile(xmldir + 'Auswerten.xml',RstDir+'Auswerten.rst');
+    handleFile(xmldir + 'Logger.xml',RstDir+'Logger.rst');
+//     scan(myXMLDoc.DocumentElement);
+
+end;
+
 
 begin
   try
       CoInitialize(nil);
-      BaseDir:= ExtractFileDir(Settings.ApplicationBaseDir);
-      XmlDir:= BaseDir + '\doku\xml\';
-      RstDir:= BaseDir + '\doku\source\';
 
-      Logger:= TLogFile.Create;
+//      main_test;
 
-      Logger.OpenNew(RstDir,'ADOQuery.rst');
-      handleFile(xmldir  + 'ADOQuery.xml');
-      Logger.Close;
-      Logger.OpenNew(RstDir,'Auswerten.rst');
-      handleFile(xmldir + 'Auswerten.xml');
-      Logger.Close;
-      Logger.OpenNew(RstDir,'Logger.rst');
-      handleFile(xmldir + 'Logger.xml');
-      Logger.Close;
-//     scan(myXMLDoc.DocumentElement);
+      if ParamCount<>4 then
+        raise Exception.Create('Falsche Anzahl Parameter');
+
+      var j:Integer;
+      for j := 1 to ParamCount do
+      begin
+        writeln(ParamStr(j));
+      end;
+
+      if (ParamStr(1)='action') then
+      begin
+         PublicOnly:=True;
+         writeln('aaaaaaaaction');
+         if (ParamStr(2)='WithPrivate') then
+            PublicOnly:=False;
+         handleFile(ParamStr(3),ParamStr(4));
+      end
+      else
+      begin
+        //Nur loggen welche Files bearbeitet werden sollen
+        BaseDir:= ExtractFileDir(Settings.ApplicationBaseDir);
+        RstDir:= BaseDir + '\doku\source\';
+        Logger:= TLogFile.Create;
+        Logger.OpenAppend(RstDir,'pppppppppppppppfade.txt');
+        for j := 1 to ParamCount do
+        begin
+          writeln(ParamStr(j));
+          logger.log(ParamStr(j));
+        end;
+
+        logger.close;
+      end;
+
 
   except
     on E: Exception do

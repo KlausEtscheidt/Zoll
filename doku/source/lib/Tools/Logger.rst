@@ -6,8 +6,6 @@
 
    Komfort-Funktionen zum Oeffnen von textfiles
 
-   .. py:method:: Open (filedir string; filename string; Append Boolean);
-
    .. py:method:: OpenAppend (filedir string; filename string);
 
       Oeffnet Datei zum Anfügen
@@ -34,5 +32,3 @@
 
       :param string txt: Zeichen, die wiederholt werden
       :param Integer Anzahl: Anzahl der Wiederholungen
-
-   .. py:attribute:: fullpath

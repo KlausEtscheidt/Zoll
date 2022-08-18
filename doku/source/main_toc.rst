@@ -9,5 +9,5 @@ Verzeichnis- und Programmstruktur
    
    Hauptverzeichnis (Hauptformular und Auswertung) <mainunits>    
    UNIPPS (Klassen zur Abbildung der Struktur) <unipps>
-   Datenbank (Abfragen der UNIPPS-Daten) <Datenbank/index>
-   Drucken <Drucken/index>
+   Datenbank (Abfragen der UNIPPS-Daten) <lib/Datenbank/index>
+   Drucken <lib/Drucken/index>
