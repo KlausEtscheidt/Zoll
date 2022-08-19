@@ -8,7 +8,8 @@ uses  System.SysUtils, System.Dateutils, Vcl.Controls, Vcl.Dialogs, Windows,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe;
 
 type
-    EStuBaumMainExc = class(Exception);
+/// <summary> Ausnahme</summary>
+    EAuswerten = class(Exception);
 
 type
     TWZuordnung=record
@@ -139,7 +140,7 @@ begin
 //      PraeFixKalkThread.Terminate;
 //      PraeFixKalkThread.Free;
       if not Success then
-        raise Exception.Create(msg);
+        raise EAuswerten.Create(msg);
 
       //Evtl Motoren o.ä. umhängen
       ZuordnungAendern(KA,Zuordnungen);
@@ -206,9 +207,13 @@ begin
 
 end;
 
-///<summary>
-///  Startet eine Komplettanalyse
-///</summary>
+///<summary>Startet eine Komplettanalyse eines Kundeaufrages</summary>
+/// <remarks>
+/// Nach der Ermittlung der Positionen des Kundenauftrages
+/// werden die Verkaufspreise vom Anwender erfragt.
+/// Anschließend wird im einem eigenen Thread die kompl. Auftragstruktur ermittelt.
+/// </remarks>
+/// <param name="KaId">Id des Kundenauftrages</param>
 procedure KaAuswerten(KaId:string);
 begin
   //Erster Teil der Auswertung inkl Preisabfrage
@@ -229,7 +234,19 @@ begin
   PraeFixKalkThread.Resume;
 end;
 
-// Abfrage der Preise fuer Neupumpen, da diese nicht im UNIPPS
+
+///<summary>
+/// Abfrage der Preise und Zuordnungen mittels Formular
+///</summary>
+/// <remarks>
+/// Die bisher ermittelten Daten werden gesammelt, in das Datenset PreisDS
+/// übertragen und damit im Formular angezeigt.
+/// Der Anwender ergänzt ALLE Preise und gibt evtl an,
+/// das Positionen anderen Positionen untergeordnet werden sollen.
+/// </remarks>
+/// <param name="KA">Kundenauftrag</param>
+/// <param name="Zuordnungen">array mit Zuordnungen</param>
+/// <returns>True, wenn alle Preise eingegeben wurden.</returns>
 function Preisabfrage(KA:TWKundenauftrag;var Zuordnungen:TWZuordnungen): Boolean;
 var
   VkRabattiert: Double;
@@ -268,6 +285,7 @@ begin
         KaPos.VerkaufsPreisRabattiert:=VkRabattiert
       else
       begin
+      { TODO : !!! Unbedingt nach Entwicklung raus nehmen }
         {$IFDEF DEBUG}
         KaPos.VerkaufsPreisRabattiert:= 1;
         {$ELSE}

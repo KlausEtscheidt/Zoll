@@ -44,6 +44,7 @@ type
       FParamListe:TParameterListe; //Parameter aus Function
       FDevNode:IXMLNode;
       function Format(RohText:String):String;
+      function FormatEinzeilig(RohText:String):String;
     public
       Summary:String;
       Remarks:String;
@@ -169,7 +170,7 @@ begin
         begin
           Parameter:=FuncParameter.Parameter[J];
           if Parameter.Name=Name then
-            Parameter.DokString:=Format(DokText);
+            Parameter.DokString:=FormatEinzeilig(DokText);
         end;
      end;
    end;
@@ -191,6 +192,17 @@ begin
    end;
    Result:=RohText;
 end;
+
+// Entfernt mehrfache Leerzeichen und #$A aus einem DevNotes-String
+function TDevNotes.FormatEinzeilig(RohText:String):String;
+var
+  Lpos:Integer;
+begin
+   RohText:=Format(RohText);
+   RohText:= StringReplace(RohText,#$A,'',[rfReplaceAll]);
+   Result:=RohText;
+end;
+
 
 // Gibt ein DevNotes-Element aus
 procedure TDevNotes.WriteRstElement(Text:String);
@@ -356,7 +368,7 @@ begin
   Logger.Log('');
   Parameter:=TParameterListe.Create(Node);
   Text:='.. py:method:: ' + NameAttrib(Node)+ ' '
-                                              + Parameter.Deklaration + ';';
+                                              + Parameter.Deklaration +';' ;
   Logger.Log(Einziehen(Text));
   Einzug:=Einzug+3;
   DevNotes:=TDevNotes.Create(Node);
@@ -380,7 +392,7 @@ begin
   Logger.Log('');
   Parameter:=TParameterListe.Create(Node);
   Text:='.. py:function:: ' + NameAttrib(Node)+ ' '
-                                              + Parameter.Deklaration + ';';
+                                              + Parameter.Deklaration +';'  ;
   Logger.Log(Einziehen(Text));
   Einzug:=Einzug+3;
   DevNotes:=TDevNotes.Create(Node);
@@ -482,12 +494,20 @@ procedure handleClass(ClassNode:IXMLNode);
 var
   DevNotes:TDevNotes;
   Name:String;
+  AhneStr:String;
 begin
   Writeln(#10,'============================================');
   Name:=NameAttrib(ClassNode);
-  Writeln('Klasse: ',Name ,'(',Ahne(ClassNode),')');
+  AhneStr:=Ahne(ClassNode);
+  Writeln('Klasse: ',Name ,'(',AhneStr,')');
+
   Logger.Log('');
-  Logger.Log('.. py:class:: ' + Name);
+  if (AhneStr='Exception') or (Name.Substring(0,1)='E') then
+  begin
+    Logger.Log('.. py:exception:: '  +  Name + '(' + AhneStr + ')');
+    exit;
+  end;
+  Logger.Log('.. py:class:: ' + Name + '(' + AhneStr + ')');
   DevNotes:=TDevNotes.Create(ClassNode);
   DevNotes.WriteRst(True);
   handleClassMembers(ClassNode,'procedure');
@@ -535,6 +555,7 @@ begin
      handleClasses(TopNode);
      Writeln('============================================');
      Writeln('Suche globale Member-----------');
+     Einzug:=0;
      handleNonClassMembers(TopNode,'procedure');
      handleNonClassMembers(TopNode,'function');
      handleNonClassMembers(TopNode,'variable');
@@ -583,9 +604,10 @@ begin
     XmlDir:= BaseDir + '\doku\xml\';
     RstDir:= BaseDir + '\doku\source\';
 
-    handleFile(xmldir + 'ADOQuery.xml',RstDir+'ADOQuery.rst');
-    handleFile(xmldir + 'Auswerten.xml',RstDir+'Auswerten.rst');
-    handleFile(xmldir + 'Logger.xml',RstDir+'Logger.rst');
+//    handleFile(xmldir + 'ADOQuery.xml',RstDir+'ADOQuery.rst');
+    handleFile(xmldir + 'PumpenDataSet.xml',RstDir+'PumpenDataSet.rst');
+//    handleFile(xmldir + 'Auswerten.xml',RstDir+'Auswerten.rst');
+//    handleFile(xmldir + 'Logger.xml',RstDir+'Logger.rst');
 //     scan(myXMLDoc.DocumentElement);
 
 end;
