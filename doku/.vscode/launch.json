@@ -6,10 +6,10 @@
     "configurations": [
         
         {
-            "name": "PowerShell XSLT",
+            "name": "Update Sphinx",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder}/XSLT.ps1",
+            "script": "${workspaceFolder}/RunSphinx.ps1",
             "cwd": "${workspaceFolder}"
         },
         {

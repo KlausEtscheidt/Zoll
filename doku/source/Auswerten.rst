@@ -20,8 +20,6 @@
 
       Startet eine Komplettanalyse
 
-      :param string KaId: 
-
    .. py:method:: ZuordnungAendern (KA TWKundenauftrag; Zuordnungen TWZuordnungen);
 
    .. py:method:: RunItGui ;
@@ -31,8 +29,6 @@
    .. py:function:: PraeferenzKalkBeginn (KaId string): Boolean;
 
       Anfang der Berechnung einer Präferenzberechtigung mit Preisabfrage
-
-      :param string KaId: 
 
       :rtype: Boolean
 
