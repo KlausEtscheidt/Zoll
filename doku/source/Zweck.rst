@@ -25,6 +25,8 @@ Das Ergebnis der Analyse wird in zwei Varianten erzeugt:
 
 Die Ausgabe erfolgt als PDF und CSV.
 
+.. _Ablauf aus Benutzer-Sicht:
+
 Ablauf aus Benutzer-Sicht
 =========================
 
