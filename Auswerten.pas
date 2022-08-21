@@ -8,7 +8,7 @@ uses  System.SysUtils, System.Dateutils, Vcl.Controls, Vcl.Dialogs, Windows,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe;
 
 type
-/// <summary> Ausnahme</summary>
+/// <summary> Ausnahmen während der Ausführung des Threads</summary>
     EAuswerten = class(Exception);
 
 type
@@ -19,9 +19,12 @@ type
     TWZuordnungen=array of TWZuordnung;
 
 type
+/// <summary>Ausführung der UNIPPS-Analyse im thread</summary>
     TWPraeFixThread=class(TThread)
       public
+          ///<summary>Speichert Meldungen zu Fehlern, die während der Thread-Ausführung entstehen.</summary>
           ErrMsg:String;
+          ///<summary>True, wenn Thread-Ausführung fehlerfrei.</summary>
           Success:Boolean;
           procedure Execute; override;
     end;
@@ -33,8 +36,8 @@ procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 function PraeferenzKalkBeginn(KaId:String):Boolean;
 procedure PraeferenzKalkAbschluss;
 
-//Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
 var
+   //Zuordnungen von KA-Pos (z.B Motoren) zu übergeordneten KA-Pos
    Zuordnungen:TWZuordnungen;
    PraeFixKalkThread:TWPraeFixThread;
    startzeit: TDateTime;
@@ -43,6 +46,7 @@ implementation
 
 uses Hauptfenster,DruckBlatt;
 
+///<summary>Sucht alle Kinder-Positionen zu einem Kundenauftrag.</summary>
 procedure TWPraeFixThread.Execute;
 begin
   Success:=True;
@@ -57,9 +61,16 @@ begin
   end;
 end;
 
-/// <summary>
-/// Anfang der Berechnung einer Präferenzberechtigung  mit Preisabfrage
+///<summary>
+/// Vorbereitung der Präferenzkalkulation mit Abfrage der Preise der Kundenauftragspositionen
 ///</summary>
+///<remarks>
+/// Bereitet Ergebniss und Ausgabe-Dataset vor, legt TWKundenauftrag an,
+/// liest den Kopf und die Positionen des Kundenauftrags ein
+/// und erfragt die Preise zu den Positionen
+///</remarks>
+/// <param name="KaId">Id des Kundenauftrages</param>
+/// <returns>True, wenn die Auswertung erfolgreich war und alle Preise eingegeben wurden.</returns>
 function PraeferenzKalkBeginn(KaId:String):Boolean;
 var
   KA:TWKundenauftrag;
@@ -116,9 +127,26 @@ begin
   Result:=True;
 end;
 
-/// <summary>
-/// 2. Teil der Berechnung einer Präferenzberechtigung
+///<summary>
+/// Abschliesssen der Berechnung einer Präferenzberechtigung
 ///</summary>
+///<remarks>
+/// Diese Funktion wird von mainfrm.FinishPraefKalk gerufen,
+/// welche wiederum vom OnTerminate-Ereignis des Threads getriggert wird.
+/// Falls der Thread nicht fehlerfrei ablief, bricht die Funktion ab.
+/// |
+/// Sonst werden zuerst entsprechend der Benutzerangaben bei der Preisabfrage
+/// Positionen des Kundenauftrags (z.B. Motoren) umgehängt.
+/// Dann werden für den Gesamtbaum die Mengen der Positionen aufmultipliziert
+/// und die Ebene der Pos. im Baum bestimmt.
+/// |
+/// Es werden die Preise aufsummiert und dann die PräferenzBerechtigung berechnet.
+/// Daten für die Ausgabe im Vollumfang werden gesammelt und als CSV ausgegeben.
+/// Für die komprimierte Ausgabe werden dann die Einträge der Fertigungsauftragsköpfe
+/// (nicht die Positionen) aus der Struktur entfernt.
+/// Die Ebene werden neu numeriert, Daten zur Ausgabe erneut gesammelt.
+/// Die Daten werden als CSV ausgegeben und im Hauptfenster angezeigt.
+///</remarks>
 procedure PraeferenzKalkAbschluss;
 var
   KA:TWKundenauftrag;
@@ -137,8 +165,6 @@ begin
 
       msg:=PraeFixKalkThread.ErrMsg ;
       Success:=PraeFixKalkThread.Success;
-//      PraeFixKalkThread.Terminate;
-//      PraeFixKalkThread.Free;
       if not Success then
         raise EAuswerten.Create(msg);
 
@@ -207,11 +233,11 @@ begin
 
 end;
 
-///<summary>Startet eine Komplettanalyse eines Kundeaufrages</summary>
+///<summary>Startet eine Komplettanalyse eines Kundeaufrages.</summary>
 /// <remarks>
 /// Nach der Ermittlung der Positionen des Kundenauftrages
 /// werden die Verkaufspreise vom Anwender erfragt.
-/// Anschließend wird im einem eigenen Thread die kompl. Auftragstruktur ermittelt.
+/// Anschließend wird in separatem Thread die kompl. Auftragstruktur ermittelt.
 /// </remarks>
 /// <param name="KaId">Id des Kundenauftrages</param>
 procedure KaAuswerten(KaId:string);
@@ -234,7 +260,6 @@ begin
   PraeFixKalkThread.Resume;
 end;
 
-
 ///<summary>
 /// Abfrage der Preise und Zuordnungen mittels Formular
 ///</summary>
@@ -242,7 +267,7 @@ end;
 /// Die bisher ermittelten Daten werden gesammelt, in das Datenset PreisDS
 /// übertragen und damit im Formular angezeigt.
 /// Der Anwender ergänzt ALLE Preise und gibt evtl an,
-/// das Positionen anderen Positionen untergeordnet werden sollen.
+/// das Positionen des Kundenauftrags (z.B. Motoren) anderen Positionen untergeordnet werden sollen.
 /// </remarks>
 /// <param name="KA">Kundenauftrag</param>
 /// <param name="Zuordnungen">array mit Zuordnungen</param>
@@ -333,7 +358,7 @@ begin
 
 end;
 
-///<summary> Einsprung fuer GUI Version fuer automatischen Testlauf
+///<summary>Testlauf: Automatischer Start beim Laden des Hauptformulars.
 ///</summary>
 procedure RunItGui;
 begin

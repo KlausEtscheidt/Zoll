@@ -1,26 +1,50 @@
 ﻿DruckBlatt
 ==========
+
 .. py:module:: DruckBlatt
 
 .. py:class:: TWBlatt(TComponent)
 
+
    .. py:method:: Drucken (DruckJobName string);
 
-   .. py:method:: DruckeKopfzeile ;
+      :param string DruckJobName: 
 
-   .. py:method:: DruckeInhalt ;
+   .. py:method:: DruckeKopfzeile;
 
-   .. py:method:: DruckeDokumentenkopf ;
 
-   .. py:method:: DruckeFusszeile ;
+   .. py:method:: DruckeInhalt;
+
+
+   .. py:method:: DruckeDokumentenkopf;
+
+
+   .. py:method:: DruckeFusszeile;
+
 
    .. py:function:: PosHorizAusgerichtet (Text string; FeldBreite Integer; Ausrichtung TWAusrichtungsArten; NNachKomma Integer): Integer;
 
+      :param string Text: 
+      :param Integer FeldBreite: 
+      :param TWAusrichtungsArten Ausrichtung: 
+      :param Integer NNachKomma: 
       :rtype: Integer
 
-   .. py:function:: NeueSeite ;
+   .. py:function:: NeueSeite : Boolean;
 
       :rtype: Boolean
+
+   .. py:attribute:: DefBlattRaender
+
+   .. py:attribute:: DefDecimalSep
+
+   .. py:attribute:: P
+
+   .. py:attribute:: FRaender
+
+   .. py:attribute:: FInnen
+
+   .. py:attribute:: FDecimalSep
 
    .. py:attribute:: Kopfzeile
 

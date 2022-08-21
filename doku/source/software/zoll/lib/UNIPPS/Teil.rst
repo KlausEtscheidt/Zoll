@@ -1,22 +1,31 @@
 ﻿Teil
 ====
+
 .. py:module:: Teil
 
 .. py:exception:: EWTeil(Exception)
 
+
 .. py:class:: TWTeil(TObject)
 
-   .. py:method:: holeBenennung ;
 
-   .. py:method:: holeMaxPreisAus3Bestellungen ;
+   .. py:method:: holeBenennung;
+
+
+   .. py:method:: holeMaxPreisAus3Bestellungen;
+
 
    .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
 
+      :param TWDataSet ZielDS: 
+
    .. py:function:: StueliPosGesamtPreis (menge Double; faktlme_sme Double): Double;
 
+      :param Double menge: 
+      :param Double faktlme_sme: 
       :rtype: Double
 
-   .. py:function:: ToStr ;
+   .. py:function:: ToStr : string;
 
       :rtype: string
 

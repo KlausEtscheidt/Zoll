@@ -1,38 +1,53 @@
 ﻿UnippsStueliPos
 ===============
+
 .. py:module:: UnippsStueliPos
 
 .. py:exception:: EWUnippsStueliPos(Exception)
 
+
 .. py:class:: TWUniStueliPos(TWStueliPos)
+
 
    .. py:method:: PosDatenSpeichern (Qry TWBaumQrySQLite);
 
-   .. py:method:: SucheTeilzurStueliPos ;
+      :param TWBaumQrySQLite Qry: 
 
-   .. py:method:: holeKindervonEndKnoten ;
+   .. py:method:: SucheTeilzurStueliPos;
 
-   .. py:method:: SummierePreise ;
 
-   .. py:method:: BerechnePreisDerPosition ;
+   .. py:method:: holeKindervonEndKnoten;
+
+
+   .. py:method:: SummierePreise;
+
+
+   .. py:method:: BerechnePreisDerPosition;
+
 
    .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
 
+      :param TWDataSet ZielDS: 
+
    .. py:method:: StrukturInErgebnisTabelle (ZielDS TWDataSet; FirstRun Boolean);
 
-   .. py:method:: EntferneFertigungsaufträge ;
+      :param TWDataSet ZielDS: 
+      :param Boolean FirstRun: 
 
+   .. py:method:: EntferneFertigungsaufträge;
       Entfernt Fertigungsaufträge aus der Struktur
 
-   .. py:function:: holeKinderAusASTUELIPOS ;
+
+
+   .. py:function:: holeKinderAusASTUELIPOS : Boolean;
 
       :rtype: Boolean
 
-   .. py:function:: holeKinderAusTeileStu ;
+   .. py:function:: holeKinderAusTeileStu : Boolean;
 
       :rtype: Boolean
 
-   .. py:function:: ToStr ;
+   .. py:function:: ToStr : string;
 
       :rtype: string
 
@@ -80,6 +95,7 @@
 
 .. py:class:: TWEndKnotenListe({System.Generics.Collections}TList<UnippsStueliPos.TWUniStueliPos>)
 
-   .. py:function:: ToStr ;
+
+   .. py:function:: ToStr : string;
 
       :rtype: string

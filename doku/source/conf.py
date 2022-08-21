@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Praefix'
-copyright = '2022, KE'
-author = 'KE'
+copyright = '2022, Klaus E'
+author = 'Klaus E'
 release = '1'
 
 # -- General configuration ---------------------------------------------------
@@ -24,5 +24,6 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+#html_theme = 'alabaster'
+html_theme = 'sphinxdoc'
 html_static_path = ['_static']
