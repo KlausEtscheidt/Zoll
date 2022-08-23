@@ -11,4 +11,3 @@
 
 .. py:function:: GetQuery : TWBaumQrySQLite;
 
-   :rtype: TWBaumQrySQLite

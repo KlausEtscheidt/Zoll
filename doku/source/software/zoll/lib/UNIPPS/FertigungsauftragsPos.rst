@@ -1,10 +1,10 @@
 ﻿FertigungsauftragsPos
 =====================
+
 .. py:module:: FertigungsauftragsPos
 
 .. py:class:: TWFAPos(TWUniStueliPos)
 
-   .. py:method:: holeKinderAusASTUELIPOS (id_pos_vater Integer);
 
    .. py:attribute:: ueb_s_nr
 
@@ -21,3 +21,7 @@
    .. py:attribute:: FaPosIdPos
 
    .. py:attribute:: FaPosPosNr
+
+   .. py:method:: holeKinderAusASTUELIPOS (id_pos_vater Integer);
+
+      :param Integer id_pos_vater: 

@@ -9,17 +9,13 @@
 .. py:class:: TWFAKopf(TWUniStueliPos)
 
 
+   .. py:attribute:: FA_Nr
+
    .. py:method:: holeKinderAusASTUELIPOS;
 
 
    .. py:function:: IstReparatur : Boolean;
 
-      :rtype: Boolean
 
    .. py:function:: ToStr : string;
 
-      :rtype: string
-
-   .. py:attribute:: Qry
-
-   .. py:attribute:: FA_Nr

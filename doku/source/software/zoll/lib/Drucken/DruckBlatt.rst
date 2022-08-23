@@ -6,6 +6,14 @@
 .. py:class:: TWBlatt(TComponent)
 
 
+   .. py:attribute:: Kopfzeile
+
+   .. py:attribute:: Dokumentenkopf
+
+   .. py:attribute:: Inhalt
+
+   .. py:attribute:: Fusszeile
+
    .. py:method:: Drucken (DruckJobName string);
 
       :param string DruckJobName: 
@@ -28,28 +36,6 @@
       :param Integer FeldBreite: 
       :param TWAusrichtungsArten Ausrichtung: 
       :param Integer NNachKomma: 
-      :rtype: Integer
 
    .. py:function:: NeueSeite : Boolean;
 
-      :rtype: Boolean
-
-   .. py:attribute:: DefBlattRaender
-
-   .. py:attribute:: DefDecimalSep
-
-   .. py:attribute:: P
-
-   .. py:attribute:: FRaender
-
-   .. py:attribute:: FInnen
-
-   .. py:attribute:: FDecimalSep
-
-   .. py:attribute:: Kopfzeile
-
-   .. py:attribute:: Dokumentenkopf
-
-   .. py:attribute:: Inhalt
-
-   .. py:attribute:: Fusszeile

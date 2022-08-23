@@ -1,10 +1,10 @@
 ﻿Bestellung
 ==========
+
 .. py:module:: Bestellung
 
 .. py:class:: TWBestellung(TObject)
 
-   .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
 
    .. py:attribute:: BestellId
 
@@ -33,3 +33,7 @@
    .. py:attribute:: Lieferant
 
    .. py:attribute:: Kurzname
+
+   .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
+
+      :param TWDataSet ZielDS: 

@@ -34,5 +34,3 @@
 
       :param string txt: Zeichen, die wiederholt werden
       :param Integer Anzahl: Anzahl der Wiederholungen
-
-   .. py:attribute:: fullpath

@@ -61,6 +61,34 @@ begin
   end;
 end;
 
+
+///<summary>Startet eine Komplettanalyse eines Kundeaufrages.</summary>
+/// <remarks>
+/// Nach der Ermittlung der Positionen des Kundenauftrages
+/// werden die Verkaufspreise vom Anwender erfragt.
+/// Anschließend wird in separatem Thread die kompl. Auftragstruktur ermittelt.
+/// </remarks>
+/// <param name="KaId">Id des Kundenauftrages</param>
+procedure KaAuswerten(KaId:string);
+begin
+  //Erster Teil der Auswertung inkl Preisabfrage
+  if not PraeferenzKalkBeginn(KaId) then
+    exit;
+
+  startzeit:= System.SysUtils.Now;
+  mainfrm.ActivityIndicator1.Animate:=True;
+  Tools.Log.Trennzeile('-',80);
+  Tools.Log.Log('Hole Kinder zu KA-Pos');
+  Tools.Log.Trennzeile('-',80);
+
+  //Rest der Auswertung in Thread
+  PraeFixKalkThread:=TWPraeFixThread.Create(True);
+  PraeFixKalkThread.OnTerminate:= mainfrm.FinishPraefKalk;
+  PraeFixKalkThread.Priority:=tpHigher;
+//  PraeFixKalkThread.FreeOnTerminate := True;
+  PraeFixKalkThread.Resume;
+end;
+
 ///<summary>
 /// Vorbereitung der Präferenzkalkulation mit Abfrage der Preise der Kundenauftragspositionen
 ///</summary>
@@ -233,33 +261,6 @@ begin
 
 end;
 
-///<summary>Startet eine Komplettanalyse eines Kundeaufrages.</summary>
-/// <remarks>
-/// Nach der Ermittlung der Positionen des Kundenauftrages
-/// werden die Verkaufspreise vom Anwender erfragt.
-/// Anschließend wird in separatem Thread die kompl. Auftragstruktur ermittelt.
-/// </remarks>
-/// <param name="KaId">Id des Kundenauftrages</param>
-procedure KaAuswerten(KaId:string);
-begin
-  //Erster Teil der Auswertung inkl Preisabfrage
-  if not PraeferenzKalkBeginn(KaId) then
-    exit;
-
-  startzeit:= System.SysUtils.Now;
-  mainfrm.ActivityIndicator1.Animate:=True;
-  Tools.Log.Trennzeile('-',80);
-  Tools.Log.Log('Hole Kinder zu KA-Pos');
-  Tools.Log.Trennzeile('-',80);
-
-  //Rest der Auswertung in Thread
-  PraeFixKalkThread:=TWPraeFixThread.Create(True);
-  PraeFixKalkThread.OnTerminate:= mainfrm.FinishPraefKalk;
-  PraeFixKalkThread.Priority:=tpHigher;
-//  PraeFixKalkThread.FreeOnTerminate := True;
-  PraeFixKalkThread.Resume;
-end;
-
 ///<summary>
 /// Abfrage der Preise und Zuordnungen mittels Formular
 ///</summary>
@@ -337,6 +338,13 @@ begin
 
 end;
 
+///<summary>Umhängen von Positionen des Kundenauftrages</summary>
+/// <remarks>
+/// Auf Basis der Eingaben im Formular Preiseingabe, werden Positionen des
+/// Kundenauftrags (z.B. Motoren) anderen Positionen untergeordnet.
+/// </remarks>
+/// <param name="KA">Kundenauftrag</param>
+/// <param name="Zuordnungen">array mit Vater-Sohn-Zuordnungen</param>
 procedure ZuordnungAendern(KA:TWKundenauftrag;Zuordnungen:TWZuordnungen);
 var
   I:Integer;

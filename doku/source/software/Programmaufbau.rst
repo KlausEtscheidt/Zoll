@@ -68,11 +68,11 @@ und zum Schreiben in Textfiles.
     Es ermöglicht die Eingabe, der ID des auszuwertenden Kundenauftrages
     und das Starten der Auswertung bzw der PDF-Erzeugung.
 
-  - Dem Formular zur :doc:`Preiseingabe`
+  - Dem Formular zur :doc:`zoll/Preiseingabe`
     Wird als modaler Dialog geöffnet und zeigt Daten über ein TDBGrid an.
     Das TDBGrid bezieht seine Daten aus einem TWDataset (s. xxx), welches von TDataset erbt.
 
   
-  - Der Unit :doc:`Auswerten` 
+  - Der Unit :doc:`zoll/Auswerten` 
     Hier wird der Ablauf der Auswertung gesteuert. 
     Die Unit trenntund die projektspefischen Software-Anteile von den allgemeingültigeren Units in UNIPPS

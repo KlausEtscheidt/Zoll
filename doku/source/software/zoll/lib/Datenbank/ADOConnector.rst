@@ -1,8 +1,10 @@
 ﻿ADOConnector
 ============
+
 .. py:module:: ADOConnector
 
 .. py:class:: TWADOConnector(TComponent)
+
 
    .. py:attribute:: verbunden
 

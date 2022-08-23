@@ -68,12 +68,24 @@ constructor TProcedure.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
 var
   SubNode:IXMLNode;
   Param: TParam;
+  x:TArray<Integer>;
+  l:Integer;
 begin
   // XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
+  x:=TArray<Integer>.Create();
+  setlength(x,length(x)+1);
+  x[0]:=8;
+
+
   // In übergeordnete Liste eintragen
-  Parent.Prozeduren.Add(Self);
+//  Parent.Prozeduren.Add(Self);
+  l:=length(Parent.Prozeduren);
+  setlength(Parent.Prozeduren,length(Parent.Prozeduren)+1);
+  Parent.Prozeduren[High(Parent.Prozeduren)]:=Self;
+
   ParameterListe:=TParameters.Create(Node);
+
   //Parameterbeschreibungen aus DEvNotes in Liste übernehmen
   for Param in ParameterListe.Liste do
   begin
@@ -119,6 +131,7 @@ var
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
+
   //In übergeordnete Liste eintragen
   Parent.Funktionen.Add(Self);
 
@@ -127,8 +140,8 @@ begin
   //Parameterbeschreibungen aus DEvNotes in Liste übernehmen
   for Param in ParameterListe.Liste do
   begin
-      if ParamDescription.ContainsKey(Name) then
-        Param.DokString:=ParamDescription[Name];
+      if ParamDescription.ContainsKey(Param.Name) then
+        Param.DokString:=ParamDescription[Param.Name];
   end;
   if ParamDescription.ContainsKey('returns') then
     ParameterListe.RetValDokString:=ParamDescription['returns'];
@@ -178,6 +191,10 @@ end;
 
 procedure TField.Drucke;
 begin
+  if ShowPublicOnly then
+    if (Not IsPublic) then
+      exit;
+
   Logger.Log('');
   Logger.Log(Frei+'.. py:attribute:: ' + Name);
   Einzug:=Einzug+3;

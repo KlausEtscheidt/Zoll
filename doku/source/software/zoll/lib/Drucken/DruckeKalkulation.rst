@@ -6,10 +6,10 @@
 .. py:class:: TWKalkAusgabe(TWDataSetPrinter)
 
 
+   .. py:attribute:: KalkTabelle
+
    .. py:method:: DruckeInhalt;
 
-
-   .. py:attribute:: KalkTabelle
 
 .. py:method:: PraeferenzKalkulationDrucken (DS TDataSet; KaId string);
    Einsprung zum Drucken nach Setzen gewünschter Eigenschaften

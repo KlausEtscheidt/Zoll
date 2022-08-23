@@ -84,13 +84,13 @@ begin
     XmlDir:= BaseDir + '\doku\xml\';
     RstDir:= BaseDir + '\doku\source\software\zoll\';
 
-    TNode.ShowPublicOnly:=False;
+//    TNode.ShowPublicOnly:=False;
 
   UnitName:='Auswerten';
-//  handleFile(xmldir+UnitName+'.xml',RstDir+UnitName+'.rst');
+  handleFile(xmldir+UnitName+'.xml',RstDir+UnitName+'.rst');
 
   UnitName:='ADOQuery';
-  handleFile(xmldir+UnitName+'.xml',RstDir+'lib\Datenbank\'+UnitName+'.rst');
+//  handleFile(xmldir+UnitName+'.xml',RstDir+'lib\Datenbank\'+UnitName+'.rst');
 
 //    handleFile(xmldir + 'PumpenDataSet.xml',RstDir+'PumpenDataSet.rst');
 //    handleFile(xmldir + 'Stueckliste.xml',RstDir+'Stueckliste.rst');
@@ -103,6 +103,7 @@ end;
 begin
   try
       CoInitialize(nil);
+      TNode.ShowPublicOnly:=True;
 
       if ParamCount=0 then
       begin

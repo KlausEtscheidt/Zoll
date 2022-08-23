@@ -48,7 +48,7 @@ type
   TOwnerOfMembers = class(TDevNote)
     public
       Klassen: TList<TDevNote>;
-      Prozeduren: TList<TDevNote>;
+      Prozeduren: TArray<TDevNote>;
       Funktionen: TList<TDevNote>;
       Felder: TList<TDevNote>;
       Eigenschaften: TList<TDevNote>;
@@ -151,8 +151,8 @@ begin
   if RetValDokString<>'' then
       Logger.Log(Frei + ':return: ' + RetValDokString);
 
-  if hasRetVal then
-     Logger.Log(Frei + ':rtype: ' + ReturnTyp);
+//  if hasRetVal then
+//     Logger.Log(Frei + ':rtype: ' + ReturnTyp);
 
 end;
 
@@ -187,7 +187,7 @@ begin
   inherited Create(aNode);
   //Listen erzeugen
   Self.Klassen:=TList<TDevNote>.Create;
-  Self.Prozeduren:=TList<TDevNote>.Create;
+  Self.Prozeduren:=TArray<TDevNote>.Create();
   Self.Funktionen:=TList<TDevNote>.Create;
   Self.Felder:=TList<TDevNote>.Create;
   Self.Eigenschaften:=TList<TDevNote>.Create;
@@ -197,14 +197,20 @@ end;
 procedure TOwnerOfMembers.DruckeMember;
 var
   I:Integer;
+  Feld:TField;
   Prozedur:TProcedure;
   Funktion:TFunction;
-  Feld:TField;
   Eigenschaft:TProperties;
   aVariable:TVar;
 begin
 
-  for I:=0 to Self.Prozeduren.Count-1 do
+  for I:=0 to Self.Felder.Count-1 do
+  begin
+   Feld:= Self.Felder[I] as TField;
+   Feld.Drucke;
+  end;
+
+  for I:=0 to length(Self.Prozeduren)-1 do
   begin
    Prozedur:= Self.Prozeduren[I] as TProcedure;
    Prozedur.Drucke;
@@ -214,12 +220,6 @@ begin
   begin
    Funktion:= Self.Funktionen[I] as TFunction;
    Funktion.Drucke;
-  end;
-
-  for I:=0 to Self.Felder.Count-1 do
-  begin
-   Feld:= Self.Felder[I] as TField;
-   Feld.Drucke;
   end;
 
   for I:=0 to Self.Eigenschaften.Count-1 do

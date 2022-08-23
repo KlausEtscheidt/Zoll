@@ -6,6 +6,8 @@
 .. py:class:: TKaDataModule(TDataModule)
 
 
+   .. py:attribute:: ErgebnisFelderDict
+
    .. py:method:: DefiniereGesamtErgebnisDataSet;
       Definiere Tabelle fuer Gesamt-Ergebnis mit allen Feldern der Stücklistenpositionen, der Teile und der Bestellungen.
 
@@ -45,17 +47,3 @@
 
       :param string DateiPfad: Pfad ohne slash am Ende
       :param string DateiName: Dateiname ohne slash am Anfang
-
-   .. py:attribute:: BatchMoveTextWriter
-
-   .. py:attribute:: BatchMoveDSReader
-
-   .. py:attribute:: BatchMove
-
-   .. py:attribute:: BatchMoveDSWriter
-
-   .. py:attribute:: ErgebnisDS
-
-   .. py:attribute:: AusgabeDS
-
-   .. py:attribute:: ErgebnisFelderDict

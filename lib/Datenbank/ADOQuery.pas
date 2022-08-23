@@ -1,105 +1,87 @@
 ﻿///<summary>Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
 ///</summary>
 ///<remarks>
-/// Vor der ersten "Benutzung" einer neuen Instanz muss
-/// ein TWADOConnector für die Klasse gesetzt werden
+///| Komfort-Funktionen fuer Abfragen auf Basis der TADOQuery
+///| Vor der eigentlichen Abfrage muss ein TWADOConnector gesetzt werden.
+///| Beispiel (die Owner sind auf nil gesetzt)
+///| 1. Connector erzeugen
+///|   dbUniConn:=TWADOConnector.Create(nil);
+///| 2. Verbinden mit Datenbank (hier UNIPPS)
+///|   dbUniConn.ConnectToUNIPPS();
+///| 3. Instanz anlegen
+///|   QryUNIPPS:=TWADOQuery.Create(nil);
+///| 4. Connector setzen
+///|   QryUNIPPS.Connector:=dbUniConn;
+///| 5. Qry benutzen
+///|   QryUNIPPS.RunSelectQuery('Select * from tabellxy');
+///
 ///</remarks>
 unit ADOQuery;
-{
- Beispiel (die Owner sind auf nil gesetzt)
- 1. Connector erzeugen
-   dbUniConn:=TWADOConnector.Create(nil);
- 2. Verbinden mit Datenbank (hier UNIPPS)
-   dbUniConn.ConnectToUNIPPS();
- 3. Instanz anlegen
-   QryUNIPPS:=TWADOQuery.Create(nil);
- 4. Connector setzen
-   QryUNIPPS.Connector:=dbUniConn;
- 5. Qry benutzen
-   QryUNIPPS.RunSelectQuery('Select * from tabellxy');
 
- Weitere Instanzen k�nnen direkt nach dem Erzeugen benutzt werden
-   Qry2:=TWADOQuery.Create(nil);
-   Qry2.RunExecSQLQuery('delete from tabellxy')
-
- RunSelectQuery
-  F�hrt Abfragen aus, die Ergebnisse liefern (Select)
-  gefunden wird True, wenn Daten gefunden
-  n_records enth�lt, die Anzahl der gefundenen Datens�tze
-  Alles andere wird �ber die Ursprungs-Klasse erledigt
-
- RunExecSQLQuery
-   F�hrt Abfragen aus, die keine Ergebnisse liefern (z.B Delete)
-   gefunden wird True, wenn Abfrage erfolgreich
-   n_records enth�lt, die Anzahl der betroffenen Datens�tze
-
- InsertFields
-   F�gt eine TFields-Liste in eine Tabelle
-}
 interface
 
   uses System.SysUtils, System.Classes,
             StrUtils,Data.DB,Data.Win.ADODB, ADOConnector;
 
+  /// <summary>Fehler, wenn Datenbank nicht verbunden.</summary>
   type EWADOQuery = class(Exception);
 
   type
     TWParamlist = array of String;
-    ///<summary>Funktionen fuer Abfragen auf Basis der TADOQuery
+    ///<summary>Funktionen fuer Abfragen auf Basis der TADOQuery.
     ///</summary>
     ///<remarks>
-    /// Vor der ersten "Benutzung" einer neuen Instanz muss
-    /// ein TWADOConnector für die Klasse gesetzt werden
+    /// Vor der eigentlichen Abfrage einer neuen Instanz muss
+    /// ein TWADOConnector gesetzt werden.
     ///</remarks>
     TWADOQuery = class(TADOQuery)
     private
       FConnector:TWADOConnector;
-//      FDatenbank: String;
-//      FDatenbankpfad: String;
       procedure SetConnector(AConnector: TWADOConnector);
       function GetDatenbank():String;
       function GetDatenbankpfad():String;
-      function GetIsConnected():Boolean;
+      function GetFieldValues(): System.TArray<String>;
+      function IsConnected():Boolean;
+      procedure PrepareQuery(SQL:String);
+      procedure ExecuteQuery(WithResult:Boolean);
     public
       /// <summary>Anzahl der gefundenen Records  </summary>
       var n_records: Integer;
       /// <summary>True, wenn Datensaetze gefunden </summary>
       var gefunden: Boolean;
 
-      destructor Destroy; override;
-
       function RunSelectQuery(sql:string):Boolean;
       function RunSelectQueryWithParam(sql:string;paramlist:TWParamlist): Boolean;
       function RunExecSQLQuery(sql:string):Boolean;
       function InsertFields(tablename: String; myFields:TFields):Boolean;
-      procedure PrepareQuery(SQL:String); //Fuehrt aus
-      procedure ExecuteQuery(WithResult:Boolean); //Fuehrt aus
 
-      function GetFieldValues(): System.TArray<String>;
       function GetFieldValuesAsText(): String;
-      function GetFieldNames(): System.TArray<String>;reintroduce;
-      function GetFieldNamesAsText(): String;
+//      function GetFieldNames(): System.TArray<String>;reintroduce;
+//      function GetFieldNamesAsText(): String;
 
+      /// <summary>Objekt, welches Datenbankverbindung hält.  </summary>
       property Connector:TWADOConnector write SetConnector;
-      property IsConnected:Boolean read GetIsConnected;
+//      property IsConnected:Boolean read GetIsConnected;
+      /// <summary>Name, der verbundenen Datenbank</summary>
       property Datenbank: String read GetDatenbank;
+      /// <summary>Pfad, zur verbundenen Datenbank</summary>
       property Datenbankpfad: String read GetDatenbankpfad;
 
     end;
 
 implementation
 
-destructor TWADOQuery.Destroy;
-begin
-  inherited;
-end;
-
 //-----------------------------------------------------------
 // Basis- Abfragen
 //-----------------------------------------------------------
 
-//Query mit Ergebnis ausf�hren (setzt Felder n_records und gefunden)
-//-----------------------------------------------------------
+/// <summary>Führt Abfragen aus, die Ergebnisse liefern (Select).</summary>
+/// <remarks>
+/// gefunden wird True, wenn Daten gefunden.
+/// n_records enthält, die Anzahl der gefundenen Datensätze.
+/// </remarks>
+/// <param name="sql">SQL-String der Abfrage</param>
+/// <returns>True, wenn Datensätze gefunden.</returns>
 function TWADOQuery.RunSelectQuery(sql:string):Boolean;
 begin
   //Verbinden und SQL befuellen
@@ -111,8 +93,11 @@ begin
   Result:= gefunden;
 end;
 
-//parametrisierte Query mit Ergebnis ausf�hren (setzt Felder n_records und gefunden)
-//-----------------------------------------------------------
+/// <summary>Führt parametrisierte Abfragen aus, die Ergebnisse liefern (Select)</summary>
+/// <remarks>
+/// gefunden wird True, wenn Daten gefunden wurde.
+///  n_records enthält, die Anzahl der gefundenen Datensätze.
+/// </remarks>
 function TWADOQuery.RunSelectQueryWithParam(sql:string;paramlist:TWParamlist):Boolean;
 var NParam,I:Integer;
 begin
@@ -140,9 +125,11 @@ begin
   Result:= gefunden;
 end;
 
-
-//Query ohne Ergebnis ausf�hren
-//-----------------------------------------------------------
+///<summary>Führt Abfragen aus, die keine Ergebnisse liefern (z.B Delete).</summary>
+/// <remarks>
+/// gefunden wird True, wenn Daten gefunden.
+/// n_records enthält, die Anzahl der gefundenen Datensätze.
+/// </remarks>
 function TWADOQuery.RunExecSQLQuery(sql:string):Boolean;
 begin
   //Verbinden und SQL befuellen
@@ -159,7 +146,7 @@ end;
 //-----------------------------------------------------------
 
 ///<summary>
-/// Insert-Statement für "tablename" anhand einer Feldliste ausführen
+/// Mittels SQL-Insert werden Daten in "tablename" eingefügt.
 ///</summary>
 //-----------------------------------------------------------
 function TWADOQuery.InsertFields(tablename: String; myFields:TFields):Boolean;
@@ -203,7 +190,7 @@ begin
         Self.Parameters.ParamByName(myField.FieldName).Value := myField.Value;
     end;
 
-    //AUsfuehren
+    //Ausfuehren
     ExecuteQuery(False);
 
   except
@@ -257,11 +244,8 @@ end;
 //-----------------------------------------------------------
 // Zusatzinfo zu Query-Inhalt
 //-----------------------------------------------------------
-{ TODO :
-Klären was doppelt ist
-s. auch Stueli-Eigenschaftem }
 
-//-----------------------------------------------------------
+///<summary>Zum Debuggen: Liefert alle Ergebnis-Felder eines Datensatzes als CSV-String.</summary>
 function TWADOQuery.GetFieldValuesAsText(): String;
 var
   Werte : System.TArray<String>;
@@ -278,7 +262,7 @@ begin
   Result:=Text;
 end;
 
-//-----------------------------------------------------------
+///<summary>Liefert alle Ergebnis-Felder eines Datensatzes als String-Array.</summary>
 function TWADOQuery.GetFieldValues(): System.TArray<String>;
 var
   felder,werte:String;
@@ -297,7 +281,8 @@ begin
 
 end;
 
-//-----------------------------------------------------------
+///<summary>Liefert alle FeldNamen einer Abfrage als CSV-String.</summary>
+{
 function TWADOQuery.GetFieldNamesAsText(): String;
 var
   Werte : System.TArray<String>;
@@ -323,25 +308,26 @@ begin
      Self.Fields.GetFieldNames(Names);
      Result:=Names.ToStringArray;
 end;
+}
 
 //-----------------------------------------------------------
 //Helper
 //-----------------------------------------------------------
 
-//Pr�ft of Datenbank korrekt verbunden, raises error wenn nicht
+//Prüft of Datenbank korrekt verbunden, raises error wenn nicht
 //-----------------------------------------------------------
-function TWADOQuery.GetIsConnected():Boolean;
+function TWADOQuery.IsConnected():Boolean;
   var ok:Boolean;
 begin
   ok:=False;
   //Schritt 1 wurde FConnector erzeugt
   if not assigned(FConnector) then
-    raise Exception.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
+    raise EWADOQuery.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
   //Schritt 2 ist FConnector verbunden
   try
     ok:=FConnector.Connection.Connected;
   except
-    raise Exception.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
+    raise EWADOQuery.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );
   end;
   Result:=ok;
 end;

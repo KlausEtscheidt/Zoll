@@ -47,7 +47,6 @@
 
    .. py:function:: ToCSV : string;
 
-      :rtype: string
 
 .. py:method:: Register;
 

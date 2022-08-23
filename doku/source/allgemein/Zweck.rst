@@ -31,7 +31,7 @@ Ablauf aus Benutzer-Sicht
 =========================
 
 Nach der Eingabe der ID des Kundenauftrages im Hauptformular, ermittelt das Programm die Positionen des Auftrags
-und präsentiert diese dem Benutzer über das Formular :doc:`Preiseingabe`.
+und präsentiert diese dem Benutzer über das Formular :doc:`../software/zoll/Preiseingabe`.
 
 Dies ist für KA mit Neupumpen aus 2 Gründen nötig:
 
