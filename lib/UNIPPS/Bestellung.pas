@@ -56,20 +56,20 @@ end;
 
 procedure TWBestellung.DatenInAusgabe(ZielDS:TWDataSet);
 begin
-  ZielDS.AddData('bestell_id',BestellId);
-  ZielDS.AddData('best_t_tg_nr',BestellTeileNr);
-  ZielDS.AddData('bestell_datum',BestellDatum);
-  ZielDS.AddData('preis',Preis);
-  ZielDS.AddData('basis',Basis);
-  ZielDS.AddData('pme',Pme);
-  ZielDS.AddData('bme',Bme);
-  ZielDS.AddData('faktlme_bme',FaktLmeBme);
-  ZielDS.AddData('faktbme_pme',FaktBmePme);
-  ZielDS.AddData('netto_poswert',NettoPoswert);
-  ZielDS.AddData('best_menge',BestMenge);
-  ZielDS.AddData('we_menge',WeMenge);
-  ZielDS.AddData('lieferant',Lieferant);
-  ZielDS.AddData('kurzname',Kurzname);
+  ZielDS.AddValue('bestell_id',BestellId);
+  ZielDS.AddValue('best_t_tg_nr',BestellTeileNr);
+  ZielDS.AddValue('bestell_datum',BestellDatum);
+  ZielDS.AddValue('preis',Preis);
+  ZielDS.AddValue('basis',Basis);
+  ZielDS.AddValue('pme',Pme);
+  ZielDS.AddValue('bme',Bme);
+  ZielDS.AddValue('faktlme_bme',FaktLmeBme);
+  ZielDS.AddValue('faktbme_pme',FaktBmePme);
+  ZielDS.AddValue('netto_poswert',NettoPoswert);
+  ZielDS.AddValue('best_menge',BestMenge);
+  ZielDS.AddValue('we_menge',WeMenge);
+  ZielDS.AddValue('lieferant',Lieferant);
+  ZielDS.AddValue('kurzname',Kurzname);
 end;
 
 end.

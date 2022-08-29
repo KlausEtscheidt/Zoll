@@ -199,7 +199,7 @@ begin
   //Daten aus Gesamtergebnis uebernehmen und Feldeigenschaften festlegen
   BefuelleAusgabeTabelle;
   //Erlaube Schreiben fuer keine Felder
-  AusgabeDS.DefiniereReadOnly;
+  AusgabeDS.SetzeSchreibmodus;
 
 end;
 
@@ -218,7 +218,7 @@ begin
   //Daten aus Gesamtergebnis uebernehmen
   BefuelleAusgabeTabelle;
   //Erlaube Schreiben fuer keine Felder
-  AusgabeDS.DefiniereReadOnly;
+  AusgabeDS.SetzeSchreibmodus;
 end;
 
 //---------------------------------------------------------------------------
@@ -239,7 +239,7 @@ begin
   //Daten aus Gesamtergebnis uebernehmen und Feldeigenschaften festlegen
   BefuelleAusgabeTabelle(PreisDS);
   //Erlaube Schreiben fuer die beiden Felder
-  PreisDS.DefiniereReadOnly(['vk_netto', 'ZuKAPos'])
+  PreisDS.SetzeSchreibmodus(['vk_netto', 'ZuKAPos'])
 
 end;
 

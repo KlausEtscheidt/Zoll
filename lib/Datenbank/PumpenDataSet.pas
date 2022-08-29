@@ -1,3 +1,15 @@
+///<summary>Datenspeicher des Programms auf Basis einer Erweiterung
+///von TClientDataSet.</summary>
+///<remarks>Die Unit ermöglicht die dynamische Definition verschiedener
+/// Datasets zur Laufzeit. Diese dienen zum Speichern der vom Programm
+/// ermittelten Daten in Tabellenform.
+/// |Die Eigenschaften der Felder werden über Records vom
+///  Typ TWFeldTypRecord definiert. Die Records aller Felder werden in
+/// einem Dictionary TWFeldTypenDict abgelegt, bei dem der Feldname
+/// als key für den Zugriff dient.
+/// |Weiterhin sind Prozeduren zum komfortablen Speichern von Daten
+/// in einem DataSet enthalten.
+///</remarks>
 unit PumpenDataSet;
 
 interface
@@ -7,16 +19,26 @@ uses
    Data.DB, Datasnap.DBClient, Logger ;
 
 type
+  ///<summary>Ausrichtung l wird zu left c zu center r zu right</summary>
   TWFeldAusrichtung = (l,c,r);
+
+  ///<summary>Definition eines Dataset-Feldes</summary>
   TWFeldTypRecord = record
-    N:String;  //Feldname
-    T:TFieldType; //Feldtyp
-    C:String;  //schöner Name Caption für HEader usw
+    ///<summary>Feldname</summary>
+    N:String;
+    ///<summary>Feldtyp</summary>
+    T:TFieldType;
+    ///<summary>Name zum Anzeigen (Überschriften)</summary>
+    C:String;
+    ///<summary>Anzeige-Breite bei String-Feldern</summary>
     W:Integer; //Breite
+    ///<summary>Ausrichtung (links,zentriert,rechts)</summary>
     J:TWFeldAusrichtung; //Ausrichtung
   end;
 
   TWFeldTypenDict = TDictionary<String,TWFeldTypRecord>;
+
+  ///<summary>Array mit Feldnamen</summary>
   TWFeldNamen = array of String;
 
   TWDataSet = class(TClientDataSet)
@@ -25,13 +47,13 @@ type
   protected
     { Protected-Deklarationen }
   public
-    procedure AddData(Felder:TFields);overload;
-    procedure AddData(Key:String;Felder:TFields);overload;
-    procedure AddData(Key:String;Val:Variant);overload;
+    procedure AddFields(Felder:TFields);
+    procedure AddFieldByName(FeldName:String;Felder:TFields);
+    procedure AddValue(FeldName:String;Val:Variant);
     procedure DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                                Felder: TWFeldNamen);
     procedure DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
-    procedure DefiniereReadOnly(Felder: TWFeldNamen=[]);
+    procedure SetzeSchreibmodus(Felder: TWFeldNamen=[]);
     function ToCSV:String;
     procedure FiltereSpalten(Felder: TWFeldNamen);
     procedure print(TxtFile:TStreamWriter);
@@ -48,15 +70,13 @@ begin
   RegisterComponents('Samples', [TWDataSet]);
 end;
 
-//Feld mit Namen Key eines Records uebernehmen
-procedure TWDataSet.AddData(Key:String;Felder:TFields);
-begin
-    FieldByName(Key).Value:=Felder.FieldByName(Key).Value;
-end;
-
-
-//Alle Felder eines Records uebernehmen
-procedure TWDataSet.AddData(Felder:TFields);
+///<summary>Alle Felder aus einer TFields-Liste speichern.</summary>
+/// <remarks>
+/// Hiermit können komplette Datensätze aus Datenbank-Querys im
+/// DataSet gespeichert werden.
+/// </remarks>
+///<param name="Felder">Liste von Feldern</param>
+procedure TWDataSet.AddFields(Felder:TFields);
 var
   Feld:TField;
   Key:String;
@@ -68,12 +88,28 @@ begin
     end;
 end;
 
-//Einen Wert fuer Feld mit Namen Key uebernehmen
-procedure TWDataSet.AddData(Key:String;Val:Variant);
+///<summary>Einzelnes Feld aus einer TFields-Liste speichern.</summary>
+/// <remarks>
+/// Hiermit können einzelne Felder aus Datenbank-Query im
+/// DataSet gespeichert werden.
+/// </remarks>
+///<param name="Felder">Liste von Feldern</param>
+// <param name="FeldName">Name des zu speichernden Feldes </param>
+procedure TWDataSet.AddFieldByName(FeldName:String;Felder:TFields);
 begin
-    FieldByName(Key).Value:=Val;
+    FieldByName(FeldName).Value:=Felder.FieldByName(FeldName).Value;
 end;
 
+//<param name="FeldName">Name des Feldes, in das gespeichert wird.</param>
+
+///<summary>Einen Wert in das Dataset-Feld mit Namen Key speichern.</summary>
+///<param name="Val">Wert, der gespeichert wird.</param>
+procedure TWDataSet.AddValue(FeldName:String;Val:Variant);
+begin
+    FieldByName(FeldName).Value:=Val;
+end;
+
+///<summary> Erzeugt einen String mit allen Feldnamen (; getrennt)</summary>
 function TWDataSet.ToCSV: string;
 const
   Trenner=';';
@@ -90,9 +126,11 @@ end;
 
 ///<summary>Setzt die ReadOnly-Eigenschaft der übergebenen Felder auf False
 ///</summary>
+/// <remarks>Für alle Felder des DataSet, die nicht in der Liste übergeben
+///wurden, wird ReadOnly auf True gesetzt.</remarks>
 ///<param name="Felder"> Array mit den Namen der Felder,
 ///  die "schreibbar" werden sollen. </param>
-procedure TWDataSet.DefiniereReadOnly(Felder: TWFeldNamen=[]);
+procedure TWDataSet.SetzeSchreibmodus(Felder: TWFeldNamen=[]);
 var
   I:Integer;
   myField:TField ;
@@ -121,19 +159,30 @@ begin
 
 end;
 
-///<summary>Definiert ein Dataset</summary>
-///<param name="FeldTypen"> Dict mit Eigenschaften aller Felder.
+///<summary>Definiert dynamisch ein Dataset</summary>
+/// <remarks>
+/// Es werden Felder eines Dataset angelegt und konfiguriert.
+/// Die Namen der anzulegenden Felder werden im Array Felder übergeben.
+/// | Zuerst werden alle evtl vorhandenen Felder bzw FieldDefs gelöscht.
+/// | Dann werden anhand des Arrays neue FieldDefs erzeugt.
+/// | Für diese wird anhand der Informationen, die in FeldTypen übergeben wurden,
+/// der Datentyp, ein Anzeige-Name und bei String-Feldern
+/// eine Feldbreite definiert.
+/// | Mittels CreateDataSet werden die Felder angelegt und anschließend
+/// über DefiniereFeldEigenschaften weitere FeldEigenschaften definiert.
+/// </remarks>
+///<param name="FeldTypen"> Dictionary mit Eigenschaften aller Felder.
 ///Als key dient ein Name aus "Felder".</param>
 ///<param name="Felder"> Array mit den Namen aller Felder, die angelegt werden sollen.
-///Das Array definiert auch die Reihenfolge. Die Namen müssen in FeldTypen vorhanden sein.
+///Das Array definiert auch die Reihenfolge der Spalten. Die Namen müssen in FeldTypen vorhanden sein.
 /// </param>
 procedure TWDataSet.DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                          Felder: TWFeldNamen);
 var
   I:Integer;
   myFieldDef:TFieldDef;
-  myField:TField ;
-  myFloatField:TFloatField ;
+//  myField:TField ;
+//  myFloatField:TFloatField ;
   Name:String;
   myRec:TWFeldTypRecord;
 
@@ -183,14 +232,20 @@ var
     Self.DefiniereFeldEigenschaften(FeldTypen);
 end;
 
-//Eigenschaften fuer Felder setzen
+///<summary>Es werden Eigenschaften der Felder eines DataSet definiert.</summary>
+/// <remarks>Für alle Felder werden der Anzeigename, die Ausrichtung und für
+/// Float-Felder ein Standard-Display-Format "0.00" gesetzt.
+/// | Die Ausrichtung(TWFeldAusrichtung) kann l,c oder r
+/// für left,center oder right sein
+/// </remarks>
+///<param name="FeldTypen"> Dictionary mit Eigenschaften aller Felder.</param>
 procedure TWDataSet.DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
 var
   I:Integer;
-  myFieldDef:TFieldDef;
+//  myFieldDef:TFieldDef;
   myField:TField ;
   myFloatField:TFloatField ;
-  Name:String;
+//  Name:String;
   myRec:TWFeldTypRecord;
 
   begin
@@ -213,7 +268,6 @@ var
           raise Exception.Create('Unbekannte Ausrichtung');
         end; // case
 
-
         if myField.DataType=ftFloat then
         begin
           myFloatField:=TFloatField(myField) ;
@@ -223,7 +277,8 @@ var
 
 end;
 
-
+///<summary>Setzt alle Felder, die nicht in Felder übergeben wurden,
+/// auf unsichtbar.</summary>
 procedure TWDataSet.FiltereSpalten(Felder: TWFeldNamen);
 var
   I:Integer;
@@ -241,10 +296,15 @@ begin
 
 end;
 
+///<summary>Gibt die Feldeigenschaften in eine Datei aus.</summary>
+/// <remarks>
+/// Das Format ist geeignet, als Source-Code zur Definition einer Feldliste
+/// vom Typ array of TWFeldTypRecord (s. Unit Datenmodul) verwendet zu werden.
+/// </remarks>
 procedure TWDataSet.print(TxtFile:TStreamWriter);
 var
   I:Integer;
-  myField:TField;
+//  myField:TField;
   myFloatField:TFloatField ;
   txt:String;
 begin

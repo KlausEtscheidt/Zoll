@@ -64,7 +64,7 @@ var
 begin
     //Query erzeugen
    UNIPPSQry := TWUNIPPSQry.Create(nil);
-   //Connector in Klassenvariable
+   //Connector setzen
    UNIPPSQry.Connector:=DbConnector;
    Result:= UNIPPSQry;
 end;

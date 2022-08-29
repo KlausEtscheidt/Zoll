@@ -52,7 +52,7 @@ var
   Feld:TField;
   I,IMax:Integer;
   Wert:String;
-  testtxt:String;
+//  testtxt:String;
   OldBrushColor,OldFontColor:TColor;
 begin
 

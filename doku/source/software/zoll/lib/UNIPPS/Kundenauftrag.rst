@@ -5,24 +5,28 @@
 
 .. py:exception:: EWKundenauftrag(Exception)
 
-
 .. py:class:: TWKundenauftrag(TWUniStueliPos)
 
+      .. py:attribute:: KaId
 
-   .. py:attribute:: KaId
+         :type: string
 
-   .. py:attribute:: komm_nr
+      .. py:attribute:: komm_nr
 
-   .. py:attribute:: kunden_id
+         :type: string
 
-   .. py:method:: liesKopfundPositionen;
+      .. py:attribute:: kunden_id
 
+         :type: Integer
 
-   .. py:method:: holeKinder;
-
-
-   .. py:method:: SammleAusgabeDaten;
+      .. py:method:: liesKopfundPositionen;
 
 
-   .. py:method:: ErmittlePraferenzBerechtigung;
+      .. py:method:: holeKinder;
+
+
+      .. py:method:: SammleAusgabeDaten;
+
+
+      .. py:method:: ErmittlePraferenzBerechtigung;
 

@@ -47,14 +47,20 @@ type
 
   TOwnerOfMembers = class(TDevNote)
     public
-      Klassen: TList<TDevNote>;
-      Prozeduren: TArray<TDevNote>;
-      Funktionen: TList<TDevNote>;
-      Felder: TList<TDevNote>;
-      Eigenschaften: TList<TDevNote>;
-      Variable: TList<TDevNote>;
+      Klassen: TArray<TDevNote>;
+      ProcOrFunc: TArray<TDevNote>;
+//      Funktionen: TArray<TDevNote>;
+      Felder: TArray<TDevNote>;
+      Eigenschaften: TArray<TDevNote>;
+      Variable: TArray<TDevNote>;
+      Records: TArray<TDevNote>;
+      Enums: TArray<TDevNote>;
+      Arrays: TArray<TDevNote>;
+      Elements: TArray<TDevNote>;
+
       constructor Create(aNode: IXMLNode);
       procedure DruckeMember;
+      procedure DruckeTypen;
   end;
 
   TParam  = class(TDevNote)
@@ -75,6 +81,13 @@ type
       constructor Create(aNode: IXMLNode);
       function TextFuerDeklaration():String;
       procedure Drucke;
+  end;
+
+  //Unterelement in Enum-Typ-Beschreibung
+  TElement = class(TDevNote)
+    public
+      constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+//      procedure Drucke;
   end;
 
 
@@ -140,7 +153,7 @@ end;
 procedure TParameters.Drucke;
 var
   Param: TParam;
-  RetValDesc:String;
+//  RetValDesc:String;
 begin
 
   for Param in Liste do
@@ -161,7 +174,7 @@ function TParameters.TextFuerDeklaration():String;
 var
   Parameter:TParam;
   Text:String;
-  I:Integer;
+//  I:Integer;
 begin
   Text:='';
   if Liste.Count>0 then
@@ -186,12 +199,48 @@ constructor TOwnerOfMembers.Create(aNode: IXMLNode);
 begin
   inherited Create(aNode);
   //Listen erzeugen
-  Self.Klassen:=TList<TDevNote>.Create;
-  Self.Prozeduren:=TArray<TDevNote>.Create();
-  Self.Funktionen:=TList<TDevNote>.Create;
-  Self.Felder:=TList<TDevNote>.Create;
-  Self.Eigenschaften:=TList<TDevNote>.Create;
-  Self.Variable:=TList<TDevNote>.Create;
+  Self.Klassen:=TArray<TDevNote>.Create();
+  Self.ProcOrFunc:=TArray<TDevNote>.Create();
+  Self.Felder:=TArray<TDevNote>.Create();
+  Self.Eigenschaften:=TArray<TDevNote>.Create();
+  Self.Variable:=TArray<TDevNote>.Create();
+  Self.Records:=TArray<TDevNote>.Create();
+  Self.Enums:=TArray<TDevNote>.Create();
+  Self.Arrays:=TArray<TDevNote>.Create();
+  Self.Elements:=TArray<TDevNote>.Create();
+
+end;
+
+procedure TOwnerOfMembers.DruckeTypen;
+var
+  I:Integer;
+  aStruct: TStruct;
+  aEnum:   TEnum;
+  aArray:  TArray;
+begin
+
+  //Records
+  for I:=0 to length(Records)-1 do
+  begin
+   aStruct:= Self.Records[I] as TStruct;
+   aStruct.Drucke;
+  end;
+
+  //Enums
+  for I:=0 to length(Enums)-1 do
+  begin
+   aEnum:= Self.Enums[I] as TEnum;
+   aEnum.Drucke;
+  end;
+
+  //Arrays
+  for I:=0 to length(Arrays)-1 do
+  begin
+   aArray:= Self.Arrays[I] as TArray;
+   aArray.Drucke;
+  end;
+
+
 end;
 
 procedure TOwnerOfMembers.DruckeMember;
@@ -204,31 +253,33 @@ var
   aVariable:TVar;
 begin
 
-  for I:=0 to Self.Felder.Count-1 do
+  for I:=0 to length(Felder)-1 do
   begin
    Feld:= Self.Felder[I] as TField;
    Feld.Drucke;
   end;
 
-  for I:=0 to length(Self.Prozeduren)-1 do
+  for I:=0 to length(Self.ProcOrFunc)-1 do
   begin
-   Prozedur:= Self.Prozeduren[I] as TProcedure;
-   Prozedur.Drucke;
+    if Self.ProcOrFunc[I].Classname='TProcedure' then
+    begin
+       Prozedur:= Self.ProcOrFunc[I] as TProcedure;
+       Prozedur.Drucke;
+    end
+    else
+    begin
+       Funktion:= Self.ProcOrFunc[I] as TFunction;
+       Funktion.Drucke;
+    end;
   end;
 
-  for I:=0 to Self.Funktionen.Count-1 do
-  begin
-   Funktion:= Self.Funktionen[I] as TFunction;
-   Funktion.Drucke;
-  end;
-
-  for I:=0 to Self.Eigenschaften.Count-1 do
+  for I:=0 to length(Eigenschaften)-1 do
   begin
    Eigenschaft:= Self.Eigenschaften[I] as TProperties;
    Eigenschaft.Drucke;
   end;
 
-  for I:=0 to Self.Variable.Count-1 do
+  for I:=0 to length(Variable)-1 do
   begin
    aVariable:= Self.Variable[I] as TVar;
    aVariable.Drucke;
@@ -317,7 +368,7 @@ function TNode.IsPublic():Boolean;
 var visibAtt:String;
 begin
   visibAtt:=GetAttribute('visibility');
-  Result:=(visibAtt = 'public') or (visibAtt = '');
+  Result:=(visibAtt = 'public') or (visibAtt = 'published') or (visibAtt = '');
 end;
 
 
@@ -370,8 +421,8 @@ end;
 
 // Gibt Summary aus
 procedure TDevNote.DruckeSummary(LineBefore:Boolean);
-var
-  Text:String;
+//var
+//  Text:String;
 begin
   if Summary<>'' then
   begin
@@ -384,8 +435,8 @@ end;
 
 // Gibt Remarks aus
 procedure TDevNote.DruckeRemarks(LineBefore:Boolean);
-var
-  Text:String;
+//var
+//  Text:String;
 begin
   if Remarks<>'' then
   begin
@@ -401,17 +452,34 @@ var
   Zeile:String;
   charArray : Array[0..1] of Char;
   strArray  : System.TArray<String>;
+  I: Integer;
 begin
   charArray[0] := #13;
   charArray[1] := '|';
   strArray := Text.Split(charArray);
-  for Zeile in strArray do
+  for I:=0 to length(strArray)-1 do
   begin
-//    if Trim(Zeile)<>'' then
-       Logger.Log(Frei + Trim(Zeile));
-       Logger.Log('');
+      if I>0 then
+         Logger.Log('');
+      Zeile:=strArray[I];
+      Logger.Log(Frei + Trim(Zeile));
+//      Logger.Log(Frei + Zeile);
+
   end;
 end;
+//---------------- Ende DevNote ----------------------
 
+//############################################################
+// TElement (Unterelement in typ record
+//############################################################
+constructor TElement.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+begin
+  //XML-Knoten speichern und DevNotes lesen
+  inherited Create(aNode);
+  //In übergeordnete Liste eintragen
+  setlength(Parent.Elements ,length(Parent.Elements)+1);
+  Parent.Elements[High(Parent.Elements)]:=Self;
+end;
+//---------------- Ende Element ----------------------
 
 end.

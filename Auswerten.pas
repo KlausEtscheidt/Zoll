@@ -1,4 +1,10 @@
-﻿unit Auswerten;
+﻿///<summary>Komplettanalyse eines Kundenauftrages mit Berechnung der Präferenzberechtigung.</summary>
+///<remarks>
+///Die Unit enthält die übergeordneten Funktionen zur Analyse eines
+/// Kundenauftrages inkl. der Ermittlung der Präferenzberechtigung.
+/// Hierzu dient die Prozedur Auswerten.KaAuswerten .
+///</remarks>
+unit Auswerten ;
 
 interface
 
@@ -12,8 +18,12 @@ type
     EAuswerten = class(Exception);
 
 type
+
+    ///<summary> Zuordnung von Positionen des Kundenauftrags zu anderen Positionen</summary>
     TWZuordnung=record
+      ///<summary>Id der neuen übergeordneten Position.</summary>
       VaterPos:Integer;
+      ///<summary>Id der Position, die umgehängt wird.</summary>
       KindPos:Integer;
     end;
     TWZuordnungen=array of TWZuordnung;

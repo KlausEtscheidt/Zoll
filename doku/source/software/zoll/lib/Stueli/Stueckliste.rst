@@ -5,58 +5,86 @@
 
 .. py:exception:: EWStueli(Exception)
 
-
 .. py:class:: TWStueliPos(TObject)
 
+      .. py:attribute:: Vater
 
-   .. py:attribute:: Vater
+         :type: TWStueliPos
 
-   .. py:attribute:: Ebene
+      .. py:attribute:: Ebene
 
-   .. py:attribute:: EbeneNice
+         :type: Integer
 
-   .. py:attribute:: Menge
+      .. py:attribute:: EbeneNice
 
-   .. py:attribute:: MengeTotal
+         :type: string
 
-   .. py:attribute:: hatTeil
+      .. py:attribute:: Menge
 
-   .. py:method:: SetzeEbenenUndMengen (Level Integer; UebMenge Double);
-      Berechnet die Stueli-Ebene und die summierte Menge aller Pos
+         :type: Double
 
+      .. py:attribute:: MengeTotal
 
-      Berechnet Stueli-Ebene als Int und mit ... davor. Berechet die mit den Mengen der Väter multiplizierte MengeTotal aller Pos
+         :type: Double
 
+      .. py:attribute:: hatTeil
 
-      :param Integer Level: 
-      :param Double UebMenge: 
+         :type: Boolean
 
-   .. py:method:: StueliAdd (APos TWStueliPos);
+      .. py:method:: SetzeEbenenUndMengen (Level Integer; UebMenge Double);
+         Berechnet die Stueli-Ebene und die summierte Menge aller Pos
 
-      :param TWStueliPos APos: 
+         Berechnet Stueli-Ebene als Int und mit ... davor. Berechet die mit den Mengen der Väter multiplizierte MengeTotal aller Pos
 
-   .. py:method:: StueliTakePosFrom (APos TWStueliPos);
-      Überträgt Position APos nach Self
+         :param Integer Level: 
+         :param Double UebMenge: 
 
+      .. py:method:: StueliAdd (APos TWStueliPos);
 
-      :param TWStueliPos APos: 
+         :param TWStueliPos APos: 
 
-   .. py:method:: StueliTakeChildrenFrom (APos TWStueliPos);
-      Überträgt die Kind Position APos nach Self, Apos wird gelöscht
+      .. py:method:: StueliTakePosFrom (APos TWStueliPos);
+         Überträgt Position APos nach Self
 
+         :param TWStueliPos APos: 
 
-      :param TWStueliPos APos: 
+      .. py:method:: StueliTakeChildrenFrom (APos TWStueliPos);
+         Überträgt die Kind Position APos nach Self, Apos wird gelöscht
 
-   .. py:method:: ReMove;
+         :param TWStueliPos APos: 
 
-
-   .. py:function:: PosToStr : string;
-      Liefert wichtige Felder in einem String verkettet
-
-
-
-   .. py:function:: BaumAlsText (txt string): string;
-      Liefert wichtige Felder aller Positionen in einem String verkettet
+      .. py:method:: ReMove;
 
 
-      :param string txt: 
+      .. py:function:: PosToStr : string;
+         Liefert wichtige Felder in einem String verkettet
+
+
+      .. py:function:: BaumAlsText (txt string): string;
+         Liefert wichtige Felder aller Positionen in einem String verkettet
+
+         :param string txt: 
+
+      .. py:property:: Stueli[Key]
+
+         type: TWStueliPos
+
+      .. py:property:: StueliKeys
+
+         type: TArray<System.Integer>
+
+      .. py:property:: StueliPosCount
+
+         type: Integer
+
+      .. py:property:: IdStueliPosVater
+
+         type: string
+
+      .. py:property:: IdStueliPos
+
+         type: string
+
+      .. py:property:: StueliKey
+
+         type: Integer

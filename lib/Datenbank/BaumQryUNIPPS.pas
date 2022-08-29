@@ -1,29 +1,32 @@
-﻿//Abfragen fuer UNIPPS Datenbank über TADOQuery
-
-{Anwendungsbeispiel:
-  Abfrage zum Lesen des Kundenauftrags und seiner Positionen
-  KAQry := DBConn.getQuery;
-  gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
-
-  mit DBConn.getQuery wird die Abfrage,
-  d.h. eine Instanz dieser Klasse TWQryUNIPPS erzeugt.
-  TWQryUNIPPS.SucheKundenAuftragspositionen füllt sie
-  mit einem geeigneten SQL und führt sie aus.
-
-}
+﻿/// <summary>UNIPPS-Datenbank-Abfragen für das Programm PräFix</summary>
+/// <remarks>
+/// Abfrage-Generator für Präfix-UNIPPS-Abfragen.
+///| Anwendungsbeispiel: Abfrage zum Lesen des Kundenauftrags und seiner Positionen
+///| Abfrage erzeugen
+///| KAQry := TWBaumQryUNIPPS.Create(nil);
+///| Datenbank-Connector setzen (DbConnector hat Typ TADOConnector)
+///| KAQry.Connector:=DbConnector;
+///| SQL für Abfrage setzen und Abfrage ausführen
+///| gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
+///|  gefunden wird True, wenn die Abfrage Daten fand.
+///  Über KAQry können die Daten mit den Methoden der TADOQuery weiter verarbeitet werden.
+///| Für das Programm PräFix wurden die ersten beiden Schritte
+///  in der Methode getQuery der Unit Tools zusammengfasst:
+///| KAQry := Tools.getQuery;
+///| Die Unit verfügt außerdem über einen Modus, bei alle Ergebnisse aus
+///  UNIPPS-Abfragen in eine SQLite-Datenbank kopiert werden.
+/// </remarks>//
 unit BaumQryUNIPPS;
 
 interface
-  //ADOConnector nur fuer UNIPPS nach SQLite über SQLiteConnector
   uses System.SysUtils,System.Classes,ADOConnector, ADOQuery;
 
   type
     ///<summary>Abfragengenerator für alle nötigen UNIPPS-Abfragen.
-    ///  s. auch <see cref='TWADOQuery'/>
     ///</summary>
     TWBaumQryUNIPPS = class(TWADOQuery)
-      destructor Destroy; override;
-      function SucheKundenAuftragspositionen(ka_id:string):Boolean;
+//      destructor Destroy; override;
+      function SucheKundenAuftragspositionen(KaId:string): Boolean;
       function SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
       function SucheFAzuTeil(t_tg_nr:String): Boolean;
       function SuchePosZuFA(FA_Nr:String): Boolean;
@@ -33,12 +36,15 @@ interface
       function SucheBenennungZuTeil(t_tg_nr:String): Boolean;
       function SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
       function SucheKundenRabatt(kunden_id:string):Boolean;
-      ///<summary>Kopiert Daten 1:1 nach SQLite</summary>
       procedure UNI2SQLite(tablename: String);
     private
       class var ExportQry: TWADOQuery;
     public
+      ///<summary>Flag: Bei True werden bei jeder Abfrage Daten von UNIPPS
+      ///nach SQLite kopiert.</summary>
       class var Export2SQLite:Boolean;
+      ///<summary>Datenbank-Verbindung für SQLite.</summary>
+      ///<remarks>Muss gesetzt werden, wenn Daten kopiert werden sollen.</remarks>
       class var SQLiteConnector:TWADOConnector;
 
     end;
@@ -46,18 +52,19 @@ interface
 
 implementation
 
-destructor TWBaumQryUNIPPS.Destroy;
-begin
-  inherited;
-end;
+//destructor TWBaumQryUNIPPS.Destroy;
+//begin
+//  inherited;
+//end;
 
 //---------------------------------------------------------------------------
 // Struktur-Aufbau: Suche Stueli-Positionen
 //---------------------------------------------------------------------------
 
-// Kunden-Auftrags-Positionen
+///<summary>Suche Positionen eines Kunden-Auftrags in UNIPPS auftragpos</summary>
+///<param name="KaId">UNIPPS-Id des Kundenauftrags (auftragpos.ident_nr1)</param>
 //---------------------------------------------------------------------------
-function TWBaumQryUNIPPS.SucheKundenAuftragspositionen(ka_id:string):Boolean;
+function TWBaumQryUNIPPS.SucheKundenAuftragspositionen(KaId:string):Boolean;
 var sql: String;
 begin
   //siehe Access Abfrage "b_hole_KAPositionen"
@@ -68,12 +75,15 @@ begin
       +  'auftragpos.oa as stu_oa, trim(auftragpos.typ) as stu_unipps_typ, auftragpos.menge, auftragpos.preis '
       +  'from auftragkopf INNER JOIN auftragpos ON auftragkopf.ident_nr = auftragpos.ident_nr1 '
       +  'where auftragpos.ident_nr1 = ? order by id_pos;';
-  Result:= RunSelectQueryWithParam(sql,[ka_id]);
+  Result:= RunSelectQueryWithParam(sql,[KaId]);
   UNI2SQLite('auftragkopf');
 
 end;
 
 // Fertigungs-Aufrag (FA) zu Kunden-Auftrags-Positionen (Kommissions-FA)
+///<summary>Suche Fertigungs-Aufrag(Kommissions-FA) zu einer zu Kunden-Auftrags-Position</summary>
+///<param name="KaId">UNIPPS-Id des Kundenauftrags (f_auftragkopf.auftr_nr)</param>
+///<param name="id_pos">UNIPPS-Id der Position des Kundenauftrags (f_auftragkopf.auftr_pos)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheFAzuKAPos(KaId:String; id_pos:Integer): Boolean;
 {siehe Access Abfrage "a_FA_Kopf_zu_KAPos_mit_Teileinfo"
@@ -101,7 +111,9 @@ begin
 
 end;
 
-// Fertigungs-Aufrag (FA) zu einer Teile-Nummer (Serien-FA)
+///<summary>Suche Fertigungs-Aufrag(Serien-FA) zu einer Teile-Nummer
+/// in UNIPPS.f_auftragkopf</summary>
+///<param name="t_tg_nr">UNIPPS-Teilenummer (f_auftragkopf.t_tg_nr)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheFAzuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_FA_zu_Teil"
@@ -123,7 +135,8 @@ begin
 
 end;
 
-// Suche alle Positionen zu einem FA (ASTUELIPOS)
+///<summary>Suche alle Positionen zu einem Fertigungsauftrag in UNIPPS ASTUELIPOS</summary>
+///<param name="FA_Nr">UNIPPS-ID des Fertigungsauftrages (astuelipos.ident_nr1)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SuchePosZuFA(FA_Nr:String): Boolean;
 //siehe Access Abfrage "b_hole_Pos_zu_FA"
@@ -142,7 +155,8 @@ begin
 
 end;
 
-// Suche Stueckliste zu einem Teil (Objekt TeilAlsStuPos wird hieraus erzeugt)
+///<summary>Suche Stueckliste zu einem Teil in UNIPPS teil_stuelipos</summary>
+///<param name="t_tg_nr">UNIPPS-Teilenummer (teil_stuelipos.ident_nr1)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheStuelizuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_suche_Stueli_zu_Teil"
@@ -169,7 +183,8 @@ end;
 // Suche Zusatz-Infos
 //---------------------------------------------------------------------------
 
-// Suche Daten zu einem Teil (Objekt Teil wird hieraus erzeugt)
+///<summary>Suche Daten zu einem Teil aus UNIPPS.teil bzw teil_uw</summary>
+///<param name="t_tg_nr">UNIPPS-Teilenummer teil_uw.t_tg_nr</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheDatenzumTeil(t_tg_nr:string):Boolean;
 //siehe Access Abfrage "b_hole_Daten_zu Teil"
@@ -186,7 +201,8 @@ begin
 
 end;
 
-// Suche Benennung zu einem Teil (wird Objekt Teil zugefuegt)
+///<summary>Suche Benennung zu einem Teil aus UNIPPS teil_bez.</summary>
+///<param name="t_tg_nr">UNIPPS-Teilenummer (teil_bez.ident_nr1)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheBenennungZuTeil(t_tg_nr:String): Boolean;
 {siehe Access Abfrage "b_hole_Teile_Bezeichnung"
@@ -205,7 +221,9 @@ begin
 end;
 
 
-// Suche letzte 3 Bestellungen zu einem Teil um Preis zu bestimmen
+///<summary>Suche letzte 3 Bestellungen zu einem Teil um Preis zu bestimmen
+///(aus UNIPPS bestellpos).</summary>
+///<param name="t_tg_nr">UNIPPS-Teilenummer (bestellpos.t_tg_nr)</param>
 //(Objekt Bestellung wird hieraus erzeugt)
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheLetzte3Bestellungen(t_tg_nr:string): Boolean;
@@ -228,7 +246,8 @@ begin
 
 end;
 
-// Suche Rabatt zu einem Kunden (wird an Kundenauftrags-Pos angefuegt)
+///<summary>Suche Rabatt zu einem Kunden aus UNIPPS-kunde_zuab</summary>
+///<param name="kunden_id">UNIPPS-ID des Kunden (kunde_zuab.ident_nr1)</param>
 //---------------------------------------------------------------------------
 function TWBaumQryUNIPPS.SucheKundenRabatt(kunden_id:string):Boolean;
 var sql: String;
@@ -244,7 +263,8 @@ begin
 
 end;
 
-//Kopiert Daten 1:1 in SQLite-Datebank
+///<summary>Kopiert Daten 1:1 nach SQLite</summary>
+///<param name="tablename">Name der Sqlite-Ziel-Tabelle</param>
 procedure TWBaumQryUNIPPS.UNI2SQLite(tablename: String);
 begin
   if not Export2SQLite then

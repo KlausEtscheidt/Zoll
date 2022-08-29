@@ -5,58 +5,90 @@
 
 .. py:exception:: EWTeil(Exception)
 
-
 .. py:class:: TWTeil(TObject)
 
+      .. py:attribute:: TeileNr
 
-   .. py:attribute:: TeileNr
+         :type: string
 
-   .. py:attribute:: OA
+      .. py:attribute:: OA
 
-   .. py:attribute:: UnippsTyp
+         :type: Integer
 
-   .. py:attribute:: Bezeichnung
+      .. py:attribute:: UnippsTyp
 
-   .. py:attribute:: BeschaffungsArt
+         :type: string
 
-   .. py:attribute:: Praeferenzkennung
+      .. py:attribute:: Bezeichnung
 
-   .. py:attribute:: Sme
+         :type: string
 
-   .. py:attribute:: FaktorLmeSme
+      .. py:attribute:: BeschaffungsArt
 
-   .. py:attribute:: Lme
+         :type: Integer
 
-   .. py:attribute:: PreisGesucht
+      .. py:attribute:: Praeferenzkennung
 
-   .. py:attribute:: PreisErmittelt
+         :type: Integer
 
-   .. py:attribute:: Bestellung
+      .. py:attribute:: Sme
 
-   .. py:attribute:: IstPraeferenzberechtigt
+         :type: Integer
 
-   .. py:attribute:: IstKaufteil
+      .. py:attribute:: FaktorLmeSme
 
-   .. py:attribute:: IstEigenfertigung
+         :type: Double
 
-   .. py:attribute:: IstFremdfertigung
+      .. py:attribute:: Lme
 
-   .. py:attribute:: PreisJeLME
+         :type: Integer
 
-   .. py:method:: holeBenennung;
+      .. py:attribute:: PreisGesucht
+
+         :type: Boolean
+
+      .. py:attribute:: PreisErmittelt
+
+         :type: Boolean
+
+      .. py:attribute:: Bestellung
+
+         :type: TWBestellung
+
+      .. py:attribute:: IstPraeferenzberechtigt
+
+         :type: Boolean
+
+      .. py:attribute:: IstKaufteil
+
+         :type: Boolean
+
+      .. py:attribute:: IstEigenfertigung
+
+         :type: Boolean
+
+      .. py:attribute:: IstFremdfertigung
+
+         :type: Boolean
+
+      .. py:attribute:: PreisJeLME
+
+         :type: Double
+
+      .. py:method:: holeBenennung;
 
 
-   .. py:method:: holeMaxPreisAus3Bestellungen;
+      .. py:method:: holeMaxPreisAus3Bestellungen;
 
 
-   .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
+      .. py:function:: StueliPosGesamtPreis (menge Double; faktlme_sme Double): Double;
 
-      :param TWDataSet ZielDS: 
+         :param Double menge: 
+         :param Double faktlme_sme: 
 
-   .. py:function:: StueliPosGesamtPreis (menge Double; faktlme_sme Double): Double;
+      .. py:function:: ToStr : string;
 
-      :param Double menge: 
-      :param Double faktlme_sme: 
 
-   .. py:function:: ToStr : string;
+      .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
 
+         :param TWDataSet ZielDS: 

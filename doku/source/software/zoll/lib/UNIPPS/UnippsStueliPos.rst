@@ -5,93 +5,135 @@
 
 .. py:exception:: EWUnippsStueliPos(Exception)
 
-
 .. py:class:: TWUniStueliPos(TWStueliPos)
 
+      .. py:attribute:: PosTyp
 
-   .. py:attribute:: PosTyp
+         :type: string
 
-   .. py:attribute:: TeileNr
+      .. py:attribute:: TeileNr
 
-   .. py:attribute:: IdPos
+         :type: string
 
-   .. py:attribute:: PosNr
+      .. py:attribute:: IdPos
 
-   .. py:attribute:: OA
+         :type: Integer
 
-   .. py:attribute:: UnippsTyp
+      .. py:attribute:: PosNr
 
-   .. py:attribute:: BeschaffungsArt
+         :type: string
 
-   .. py:attribute:: FANr
+      .. py:attribute:: OA
 
-   .. py:attribute:: VerursacherArt
+         :type: Integer
 
-   .. py:attribute:: UebergeordneteStueNr
+      .. py:attribute:: UnippsTyp
 
-   .. py:attribute:: Ds
+         :type: string
 
-   .. py:attribute:: SetBlock
+      .. py:attribute:: BeschaffungsArt
 
-   .. py:attribute:: SummeEU
+         :type: Integer
 
-   .. py:attribute:: SummeNonEU
+      .. py:attribute:: FANr
 
-   .. py:attribute:: PreisEU
+         :type: Integer
 
-   .. py:attribute:: PreisNonEU
+      .. py:attribute:: VerursacherArt
 
-   .. py:attribute:: VerkaufsPreisRabattiert
+         :type: Integer
 
-   .. py:attribute:: VerkaufsPreisUnRabattiert
+      .. py:attribute:: UebergeordneteStueNr
 
-   .. py:attribute:: AnteilNonEU
+         :type: Integer
 
-   .. py:attribute:: PräfBerechtigt
+      .. py:attribute:: Ds
 
-   .. py:attribute:: Teil
+         :type: Integer
 
-   .. py:method:: PosDatenSpeichern (Qry TWBaumQrySQLite);
+      .. py:attribute:: SetBlock
 
-      :param TWBaumQrySQLite Qry: 
+         :type: Integer
 
-   .. py:method:: SucheTeilzurStueliPos;
+      .. py:attribute:: SummeEU
+
+         :type: Double
+
+      .. py:attribute:: SummeNonEU
+
+         :type: Double
+
+      .. py:attribute:: PreisEU
+
+         :type: Double
+
+      .. py:attribute:: PreisNonEU
+
+         :type: Double
+
+      .. py:attribute:: VerkaufsPreisRabattiert
+
+         :type: Double
+
+      .. py:attribute:: VerkaufsPreisUnRabattiert
+
+         :type: Double
+
+      .. py:attribute:: AnteilNonEU
+
+         :type: Double
+
+      .. py:attribute:: PräfBerechtigt
+
+         :type: string
+
+      .. py:attribute:: Teil
+
+         :type: TWTeil
+
+      .. py:method:: PosDatenSpeichern (Qry TWBaumQrySQLite);
+
+         :param TWBaumQrySQLite Qry: 
+
+      .. py:method:: SucheTeilzurStueliPos;
 
 
-   .. py:method:: holeKindervonEndKnoten;
+      .. py:method:: holeKindervonEndKnoten;
 
 
-   .. py:method:: SummierePreise;
+      .. py:function:: holeKinderAusASTUELIPOS : Boolean;
 
 
-   .. py:method:: BerechnePreisDerPosition;
+      .. py:function:: holeKinderAusTeileStu : Boolean;
 
 
-   .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
-
-      :param TWDataSet ZielDS: 
-
-   .. py:method:: StrukturInErgebnisTabelle (ZielDS TWDataSet; FirstRun Boolean);
-
-      :param TWDataSet ZielDS: 
-      :param Boolean FirstRun: 
-
-   .. py:method:: EntferneFertigungsaufträge;
-      Entfernt Fertigungsaufträge aus der Struktur
+      .. py:method:: SummierePreise;
 
 
-
-   .. py:function:: holeKinderAusASTUELIPOS : Boolean;
-
-
-   .. py:function:: holeKinderAusTeileStu : Boolean;
+      .. py:method:: BerechnePreisDerPosition;
 
 
-   .. py:function:: ToStr : string;
+      .. py:function:: ToStr : string;
+
+
+      .. py:method:: DatenInAusgabe (ZielDS TWDataSet);
+
+         :param TWDataSet ZielDS: 
+
+      .. py:method:: StrukturInErgebnisTabelle (ZielDS TWDataSet; FirstRun Boolean);
+
+         :param TWDataSet ZielDS: 
+         :param Boolean FirstRun: 
+
+      .. py:method:: EntferneFertigungsaufträge;
+         Entfernt Fertigungsaufträge aus der Struktur
 
 
 .. py:class:: TWEndKnotenListe({System.Generics.Collections}TList<UnippsStueliPos.TWUniStueliPos>)
 
+         .. py:function:: ToStr : string;
 
-   .. py:function:: ToStr : string;
 
+         .. py:property:: EndKnotenListe
+
+            :type: TWEndKnotenListe

@@ -56,8 +56,8 @@ constructor TWTeil.Create(TeileQry: TWUNIPPSQry);
   teil.typ as unipps_typ, teil.praeferenzkennung, teil.sme,
   teil.faktlme_sme, teil.lme
 }
-var
-  besch_art:String;
+//var
+//  besch_art:String;
 begin
   try
 
@@ -244,16 +244,16 @@ procedure TWTeil.DatenInAusgabe(ZielDS:TWDataSet);
 
 begin
   //ZielDS.Append;
-  ZielDS.AddData('t_tg_nr',TeileNr);
-  ZielDS.AddData('oa',OA);
-  ZielDS.AddData('unipps_typ',UnippsTyp);
-  ZielDS.AddData('Bezeichnung',Bezeichnung);
-  ZielDS.AddData('v_besch_art',BeschaffungsArt);
-  ZielDS.AddData('praeferenzkennung',Praeferenzkennung);
-  ZielDS.AddData('sme',Sme);
-  ZielDS.AddData('faktlme_sme',FaktorLmeSme);
-  ZielDS.AddData('lme',Lme);
-  ZielDS.AddData('PreisJeLme',PreisJeLme);
+  ZielDS.AddValue('t_tg_nr',TeileNr);
+  ZielDS.AddValue('oa',OA);
+  ZielDS.AddValue('unipps_typ',UnippsTyp);
+  ZielDS.AddValue('Bezeichnung',Bezeichnung);
+  ZielDS.AddValue('v_besch_art',BeschaffungsArt);
+  ZielDS.AddValue('praeferenzkennung',Praeferenzkennung);
+  ZielDS.AddValue('sme',Sme);
+  ZielDS.AddValue('faktlme_sme',FaktorLmeSme);
+  ZielDS.AddValue('lme',Lme);
+  ZielDS.AddValue('PreisJeLme',PreisJeLme);
   if PreisErmittelt Then
     Bestellung.DatenInAusgabe(ZielDS);
 

@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Update All",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/UpdateAll.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Update Sphinx",
             "type": "PowerShell",
             "request": "launch",

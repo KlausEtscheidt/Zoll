@@ -183,7 +183,7 @@ end;
 
 procedure TWKundenauftrag.ErmittlePraferenzBerechtigung;
 var
-  StueliPos: TWUniStueliPos;
+//  StueliPos: TWUniStueliPos;
   StueliPosKey: Integer;
   KaPos: TWKundenauftragsPos;
 

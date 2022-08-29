@@ -1,16 +1,14 @@
-﻿//Abfragen fuer SQLite Datenbank über TFDQuery
-{Anwendungsbeispiel:
-  Abfrage zum Lesen des Kundenauftrags und seiner Positionen
-  KAQry := DBConn.getQuery;
-  gefunden := KAQry.SucheKundenAuftragspositionen(ka_id);
-
-  mit DBConn.getQuery wird die Abfrage,
-  d.h. eine Instanz dieser Klasse TWQryUNIPPS erzeugt.
-  TWQrySQLite.SucheKundenAuftragspositionen füllt sie
-  mit einem geeigneten SQL und führt sie aus.
-
-}
-
+﻿/// <summary>SQLite-Datenbank-Abfragen für das Programm PräFix</summary>
+/// <remarks>
+/// Die Unit ist identisch zu BaumQryUNIPPS arbeitet jedoch mit einer
+/// SQLite-Datenbank in der geeignete Daten hinterlegt sein müssen.
+///| Die Unit ermöglicht eine Entwicklung ohne UNIPPS-Zugang.
+/// Sie wird durch Compiler-Flags anstatt BaumQryUNIPPS verwendet (s. Unit Tools)
+/// und ist für den Produktivbetrieb überflüssig.
+///| Die Daten werden im UNIPPS-Modus durch Kopieren gewonnen.
+///| Die SQL-Strings sind nicht identisch zu BaumQryUNIPPS, da SQLite teilweise
+/// eine andere Syntax hat, da die Daten aber auch in anderen Tabellen liegen.
+/// </remarks>
 unit BaumQrySQLite;
 
 interface

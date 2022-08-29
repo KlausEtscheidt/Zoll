@@ -6,25 +6,6 @@ uses SysUtils,System.Generics.Collections,Xml.XMLIntf,Xml.XMLDoc,Logger,DelphiXM
 
 type
 
-  TUnit = class(TOwnerOfMembers)
-    public
-      constructor Create(aNode: IXMLNode);
-      procedure handleMembers;
-      procedure Drucke;
-      procedure DruckeKlassen;
-      procedure DruckeKopf;
-  end;
-
-  TKlasse = class(TOwnerOfMembers)
-    public
-      ErbtVon:String;
-      constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
-      procedure handleMembers();
-      procedure Drucke;
-      procedure DruckeKopf;
-      function IsException(aNode: IXMLNode):Boolean ;
-  end;
-
   TProcedure = class(TDevNote)
     public
       ParameterListe: TParameters;
@@ -39,6 +20,7 @@ type
       procedure Drucke;
   end;
 
+  //Member in Unit oder Klasse oder Unterlement eines Records (Struct)
   TField = class(TDevNote)
     public
       constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
@@ -59,6 +41,27 @@ type
       procedure Drucke;
   end;
 
+  //Beschreibung eines records
+  TStruct = class(TOwnerOfMembers)
+    public
+      constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+      procedure Drucke;
+  end;
+
+  //Beschreibung eines Aufzählungstyps
+  TEnum = class(TOwnerOfMembers)
+    public
+      constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+      procedure Drucke;
+  end;
+
+  //Beschreibung eines Array.Typs
+  TArray = class(TOwnerOfMembers)
+    public
+      constructor Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+      procedure Drucke;
+  end;
+
 implementation
 
 //############################################################
@@ -66,23 +69,16 @@ implementation
 //############################################################
 constructor TProcedure.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
 var
-  SubNode:IXMLNode;
+//  SubNode:IXMLNode;
   Param: TParam;
-  x:TArray<Integer>;
-  l:Integer;
 begin
   // XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
-  x:=TArray<Integer>.Create();
-  setlength(x,length(x)+1);
-  x[0]:=8;
-
 
   // In übergeordnete Liste eintragen
 //  Parent.Prozeduren.Add(Self);
-  l:=length(Parent.Prozeduren);
-  setlength(Parent.Prozeduren,length(Parent.Prozeduren)+1);
-  Parent.Prozeduren[High(Parent.Prozeduren)]:=Self;
+  setlength(Parent.ProcOrFunc,length(Parent.ProcOrFunc)+1);
+  Parent.ProcOrFunc[High(Parent.ProcOrFunc)]:=Self;
 
   ParameterListe:=TParameters.Create(Node);
 
@@ -103,7 +99,7 @@ begin
     if (Not IsPublic) then
       exit;
 
-//  writeln('-------- Proz ' + Name + ' -----------');
+  writeln('------------ Prozedur ' + Name + ' -----------');
   Logger.Log('');
   ParamDesc:= ParameterListe.TextFuerDeklaration;
   if ParamDesc<>'' then
@@ -119,21 +115,23 @@ begin
   Einzug:=Einzug-3;
 
 end;
-
+//---------------- Ende Procedure ----------------------
 
 //############################################################
 // Function
 //############################################################
 constructor TFunction.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
 var
-  SubNode:IXMLNode;
+//  SubNode:IXMLNode;
   Param: TParam;
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
 
   //In übergeordnete Liste eintragen
-  Parent.Funktionen.Add(Self);
+//  Parent.Funktionen.Add(Self);
+  setlength(Parent.ProcOrFunc,length(Parent.ProcOrFunc)+1);
+  Parent.ProcOrFunc[High(Parent.ProcOrFunc)]:=Self;
 
   ParameterListe:=TParameters.Create(Node);
 
@@ -173,20 +171,22 @@ begin
   ParameterListe.Drucke;
   Einzug:=Einzug-3;
 
-end;
 
+end;
+//---------------- Ende Function ----------------------
 
 //############################################################
 // Feld
 //############################################################
 constructor TField.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
-var
-  SubNode:IXMLNode;
+//var
+//  SubNode:IXMLNode;
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
   //In übergeordnete Liste eintragen
-  Parent.Felder.Add(Self);
+  setlength(Parent.Felder,length(Parent.Felder)+1);
+  Parent.Felder[High(Parent.Felder)]:=Self;
 end;
 
 procedure TField.Drucke;
@@ -200,42 +200,61 @@ begin
   Einzug:=Einzug+3;
   DruckeSummary(False);
   DruckeRemarks(True);
+  Logger.Log('');
+  Logger.Log(Frei+':type: ' + Self.Typ);
   Einzug:=Einzug-3;
+  Writeln(#10,'Field: ',Name);
 
 end;
+//---------------- Ende Feld ----------------------
+
 
 //############################################################
 // Variable
 //############################################################
 constructor TVar.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
-var
-  SubNode:IXMLNode;
+//var
+//  SubNode:IXMLNode;
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
   //In übergeordnete Liste eintragen
-  Parent.Variable.Add(Self);
+  setlength(Parent.Variable,length(Parent.Variable)+1);
+  Parent.Variable[High(Parent.Variable)]:=Self;
 end;
 
 procedure TVar.Drucke;
-var
-  Text:String;
 begin
-  Writeln(#10,'Var unfertig: ',Name,' Typ ', Typ );
+  if ShowPublicOnly then
+    if (Not IsPublic) then
+      exit;
+
+  Logger.Log('');
+  Logger.Log(Frei+'.. py:property:: ' + Name);
+  Einzug:=Einzug+3;
+  DruckeSummary(False);
+  DruckeRemarks(True);
+  Logger.Log('');
+  Logger.Log(Frei+':type: ' + Self.Typ);
+  Einzug:=Einzug-3;
+
+  Writeln(#10,'Var: ',Name);
 
 end;
+//---------------- Ende Variable ----------------------
 
 //############################################################
 // Eigenschaften
 //############################################################
 constructor TProperties.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
-var
-  SubNode:IXMLNode;
+//var
+//  SubNode:IXMLNode;
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
   //In übergeordnete Liste eintragen
-  Parent.Eigenschaften.Add(Self);
+  setlength(Parent.Eigenschaften,length(Parent.Eigenschaften)+1);
+  Parent.Eigenschaften[High(Parent.Eigenschaften)]:=Self;
 
   Readabel:= aNode.HasAttribute('read');
   Writeabel:= aNode.HasAttribute('write');
@@ -243,219 +262,252 @@ begin
 end;
 
 procedure TProperties.Drucke;
-var
-  Text:String;
+//var
+//  Text:String;
 begin
   if ShowPublicOnly then
     if (Not IsPublic) then
       exit;
-  Writeln(#10,'Property unfertig: ',Name);
+
+  Logger.Log('');
+  Logger.Log(Frei+'.. py:property:: ' + Name);
+  Einzug:=Einzug+3;
+  DruckeSummary(False);
+  DruckeRemarks(True);
+  Logger.Log('');
+  Logger.Log(Frei+'type: ' + Self.Typ);
+  Einzug:=Einzug-3;
+  Writeln(#10,'Property: ',Name);
 
 
 end;
+//---------------- Ende Eigenschaften ----------------------
 
 //############################################################
-// Klasse
+// Struct
+// Entsteht z.B aus record
 //############################################################
-constructor TKlasse.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+constructor TStruct.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
 var
   SubNode:IXMLNode;
+  I:Integer;
+
 begin
   //XML-Knoten speichern und DevNotes lesen
   inherited Create(aNode);
   //In übergeordnete Liste eintragen
-  Parent.Klassen.Add(Self);
-//  writeln('============= Klasse: '+Name+' ==============');
-  SubNode:=Self.FindChildNodeByName('ancestor');
-  if Subnode<>nil then
-    ErbtVon:=TNode.GetAttribute(Subnode,'name')
-  else
-    ErbtVon:='';
-
-  handleMembers;
-
-end;
-
-procedure TKlasse.handleMembers();
-var
-  MemberNode,MembersNode:IXMLNode;
-  I:Integer;
-begin
-   MembersNode:=Self.FindChildNodeByName('members');
-
-   if MembersNode<>nil then
-     if MembersNode.HasChildNodes then
-        for I := 0 to MembersNode.ChildNodes.Count-1 do
-        begin
-          MemberNode:=MembersNode.ChildNodes[I];
-          if MemberNode.LocalName='procedure' then
-            TProcedure.Create(Self,MemberNode)
-          else if MemberNode.LocalName='function' then
-            TFunction.Create(Self,MemberNode)
-          else if MemberNode.LocalName='field' then
-            TField.Create(Self,MemberNode)
-          else if MemberNode.LocalName='variable' then
-            TVar.Create(Self,MemberNode)
-          else if MemberNode.LocalName='property' then
-            TProperties.Create(Self,MemberNode)
-          else if MemberNode.LocalName='devnotes' then
-          else if MemberNode.LocalName='class' then
-          else if MemberNode.LocalName='constructor' then
-          else if MemberNode.LocalName='destructor' then
-          else if MemberNode.LocalName='exception' then
-          else
-            begin
-              Writeln('#####################################################');
-              Writeln('TKlasse.handleMembers ' + MemberNode.LocalName + ' unbekannt');
-              Writeln('#####################################################');
-            end;
-        end;
-end;
-
-
-procedure TKlasse.Drucke;
-begin
-  DruckeKopf;
-  DruckeSummary(False);
-  DruckeRemarks(True);
-  Logger.Log('');
-  DruckeMember;
-end;
-
-procedure TKlasse.DruckeKopf;
-begin
-
-  Writeln('Klasse: ',Name ,'(',ErbtVon,')');
-
-  Logger.Log('');
-  if IsException(Self.Node) then
-  begin
-    Logger.Log('.. py:exception:: '  +  Name + '(' + ErbtVon + ')');
-    exit;
-  end;
-  Logger.Log('.. py:class:: ' + Name + '(' + ErbtVon + ')');
-
-end;
-
-function TKlasse.IsException(aNode: IXMLNode):Boolean ;
-var
-  SubNode:IXMLNode;
-  BasisKlasse:String;
-begin
-  Result:=False;
-  SubNode:= TNode.FindChildNodeByName(aNode,'ancestor');
-  if Subnode<>nil then
-    begin
-      BasisKlasse:=TNode.GetAttribute(Subnode,'name');
-      if BasisKlasse='Exception' then
-          Result:=True
-      else
-        Result:=IsException(SubNode);
-    end
-  else
-    Result:=False;
-
-end;
-
-//############################################################
-// Unit
-//############################################################
-constructor TUnit.Create(aNode: IXMLNode);
-var
-  I:Integer;
-  SubNode: IXMLNode;
-
-begin
-  //XML-Knoten speichern und DevNotes lesen
-  inherited Create(aNode);
-
-   handleMembers;
-
-   Drucke;
-
-end;
-
-procedure TUnit.handleMembers();
-var
-  MemberNode,MembersNode:IXMLNode;
-  I:Integer;
-
-begin
+  setlength(Parent.Records,length(Parent.Records)+1);
+  Parent.Records[High(Parent.Records)]:=Self;
 
    if Self.Node.HasChildNodes then
       for I := 0 to Self.Node.ChildNodes.Count-1 do
       begin
-        MemberNode:=Self.Node.ChildNodes[I];
-        if MemberNode.LocalName='class' then
-          TKlasse.Create(Self,MemberNode)
-        else if MemberNode.LocalName='procedure' then
-          TProcedure.Create(Self,MemberNode)
-        else if MemberNode.LocalName='function' then
-          TFunction.Create(Self,MemberNode)
-        else if MemberNode.LocalName='field' then
-          TField.Create(Self,MemberNode)
-        else if MemberNode.LocalName='variable' then
-          TVar.Create(Self,MemberNode)
-        else if MemberNode.LocalName='property' then
-          TProperties.Create(Self,MemberNode)
-        else if MemberNode.LocalName='devnotes' then
-        else if MemberNode.LocalName='struct' then
-        else if MemberNode.LocalName='array' then
-        else if MemberNode.LocalName='const' then
-        else if MemberNode.LocalName='enum' then
-//        else if MemberNode.LocalName='constructor' then
-//        else if MemberNode.LocalName='exception' then
+        SubNode:=Self.Node.ChildNodes[I];
+        if SubNode.LocalName='devnotes' then
+        else if SubNode.LocalName='field' then
+          TField.Create(Self, SubNode)
+        else if SubNode.LocalName='element' then
+          TElement.Create(Self, SubNode)
         else
-          begin
-            Writeln('#####################################################');
-            Writeln('TUnit.handleMembers ' + MemberNode.LocalName + ' unbekannt');
-            Writeln('#####################################################');
-          end;
+            begin
+              Writeln('#####################################################');
+              Writeln('TStruct.handleMembers ' + SubNode.LocalName + ' unbekannt');
+              Writeln('#####################################################');
+            end;
       end;
 
 end;
 
-procedure TUnit.Drucke;
-begin
-  DruckeKopf;
-  DruckeKlassen;
-  Einzug:=Einzug-3;
-  DruckeMember;
-end;
-
-procedure TUnit.DruckeKlassen;
+procedure TStruct.Drucke;
 var
+  Feld:TField;
   I:Integer;
-  Klasse:TKlasse;
+  hatDoku:Boolean;
+
 begin
-  for I:=0 to Self.Klassen.Count-1 do
+  Writeln('Typ: ',Name, ' Art: ', LocalName);
+  Writeln(Summary);
+  //Nur dokumentierte Typen ausgeben
+  hatDoku:=False;
+  if Summary<>'' then
+    hatDoku:=True;
+
+  for I:=0 to length(Felder)-1 do
   begin
-   Klasse:= Self.Klassen[I] as TKlasse;
-   Klasse.Drucke;
+    Feld:= Self.Felder[I] as TField;
+    if Feld.Summary<>'' then
+      hatDoku:=True;
   end;
 
+  if not hatDoku then exit;
+
+  Logger.Log('');
+  Logger.Log(Frei + '.. cpp:type:: ' + Name);
+  DruckeSummary(True);
+
+  Einzug:=Einzug+3;
+  Logger.Log('');
+  for I:=0 to length(Felder)-1 do
+  begin
+   Feld:= Self.Felder[I] as TField;
+   //Feld.Drucke;
+   Writeln('Feld: ', Feld.Name, ' Typ: ',Feld.Typ);
+   Writeln(Feld.Summary);
+   Logger.Log('|'+Frei + Feld.Name + ':' + Feld.Typ+ ' ' + Feld.Summary);
+
+  end;
+
+  Einzug:=Einzug-3;
+
+end;
+//---------------- Ende Struct ----------------------
+
+//############################################################
+// TEnum
+// Beschreibung eines Aufzählungstyps
+//############################################################
+constructor TEnum.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+var
+  SubNode:IXMLNode;
+  I:Integer;
+
+begin
+  //XML-Knoten speichern und DevNotes lesen
+  inherited Create(aNode);
+  //In übergeordnete Liste eintragen
+  setlength(Parent.Enums,length(Parent.Enums)+1);
+  Parent.Enums[High(Parent.Enums)]:=Self;
+
+   if Self.Node.HasChildNodes then
+      for I := 0 to Self.Node.ChildNodes.Count-1 do
+      begin
+        SubNode:=Self.Node.ChildNodes[I];
+        if SubNode.LocalName='devnotes' then
+        else if SubNode.LocalName='element' then
+          TElement.Create(Self, SubNode)
+        else
+            begin
+              Writeln('#####################################################');
+              Writeln('TEnum.handleMembers ' + SubNode.LocalName + ' unbekannt');
+              Writeln('#####################################################');
+            end;
+      end;
+
 end;
 
+///Untergeordnete Elemente können nicht kommentiert werden
+procedure TEnum.Drucke;
+var
+  Element:TElement;
+  I:Integer;
+  hatDoku:Boolean;
+  Text: String;
 
-procedure TUnit.DruckeKopf;
 begin
-   Writeln('Unit: ',Name);
-   //Titel des RST-Dokumentes mit "=" unterstrichen
-   Einzug:=0;
-   Logger.Log(Name);
-   Logger.Log(StringOfChar('=', length(Name)));
-   // Die remarks dürfen nicht unter dem Namespace stehen
-   // Deshalb ausgabe als Normaler Text vorher
-   if Remarks<>'' then
-      DruckeRemarks(True);
+  Writeln('Typ: ',Name, ' Art: ', LocalName);
+  Writeln(Summary);
+  //Nur dokumentierte Typen ausgeben
+  hatDoku:=False;
+  if Summary<>'' then
+    hatDoku:=True;
 
-   //Ausgabe des Unit-Namens als Namespace
-   Logger.Log('');
-   Logger.Log('.. py:module:: '+Name);
-   //Kurzbeschreibung des Namespace als synopsis
-   Einzug:=3;
-   if Summary<>'' then
-      Logger.Log(Frei+':synopsis: '+Summary);
+  if not hatDoku then exit;
+
+  Logger.Log('');
+  Logger.Log('.. cpp:type:: ' + Name);
+
+  Text:=  Name + ': = (' + Self.Elements[0].Name;
+
+  for I:=1 to length(Elements)-1 do
+  begin
+   Element:= Self.Elements[I] as TElement;
+   //Feld.Drucke;
+   Writeln('Element: ', Element.Name);
+   Text:= Text + ',' + Element.Name;
+  end;
+  Text:=Text+');';
+
+  Logger.Log('');
+  Logger.Log(Text);
+  DruckeSummary(True);
+
+end;
+
+//---------------- Ende Enum ----------------------
+
+//############################################################
+// TArray Beschreibung eines Array-Typs
+//############################################################
+constructor TArray.Create(Parent: TOwnerOfMembers; aNode: IXMLNode);
+var
+  SubNode:IXMLNode;
+  I:Integer;
+
+begin
+  //XML-Knoten speichern und DevNotes lesen
+  inherited Create(aNode);
+  //In übergeordnete Liste eintragen
+  setlength(Parent.Arrays,length(Parent.Arrays)+1);
+  Parent.Arrays[High(Parent.Arrays)]:=Self;
+
+   if Self.Node.HasChildNodes then
+      for I := 0 to Self.Node.ChildNodes.Count-1 do
+      begin
+        SubNode:=Self.Node.ChildNodes[I];
+        if SubNode.LocalName='devnotes' then
+        else if SubNode.LocalName='element' then
+          TElement.Create(Self, SubNode)
+        else
+            begin
+              Writeln('#####################################################');
+              Writeln('TArray.handleMembers ' + SubNode.LocalName + ' unbekannt');
+              Writeln('#####################################################');
+            end;
+      end;
+
+end;
+
+///Funktion zur Zeit sinnlos, das Delphi fuer Arrays keine Dokstring exportiert
+procedure TArray.Drucke;
+var
+  Element:TElement;
+  I:Integer;
+  hatDoku:Boolean;
+
+begin
+  Writeln('Typ: ',Name, ' Art: ', LocalName);
+  Writeln(Summary);
+  //Nur dokumentierte Typen ausgeben
+  hatDoku:=False;
+  if Summary<>'' then
+    hatDoku:=True;
+
+  for I:=0 to length(Elements)-1 do
+  begin
+    Element:= Self.Elements[I] as TElement;
+    if Element.Summary<>'' then
+      hatDoku:=True;
+  end;
+
+  if not hatDoku then exit;
+
+  Logger.Log('');
+  Logger.Log(Frei + '.. cpp:type:: ' + Name);
+  DruckeSummary(True);
+
+  Einzug:=Einzug+3;
+  Logger.Log('');
+  for I:=0 to length(Elements)-1 do
+  begin
+   Element:= Self.Elements[I] as TElement;
+   Writeln('Element: ', Element.Name, ' Typ: ',Element.Typ);
+   Writeln(Element.Summary);
+   Logger.Log('|'+Frei + Element.Name + ':' + Element.Typ+ ' ' + Element.Summary);
+
+  end;
+
+  Einzug:=Einzug-3;
+
 end;
 
 

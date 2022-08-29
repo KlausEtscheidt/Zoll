@@ -14,7 +14,6 @@
 ///|   QryUNIPPS.Connector:=dbUniConn;
 ///| 5. Qry benutzen
 ///|   QryUNIPPS.RunSelectQuery('Select * from tabellxy');
-///
 ///</remarks>
 unit ADOQuery;
 
@@ -319,7 +318,7 @@ end;
 function TWADOQuery.IsConnected():Boolean;
   var ok:Boolean;
 begin
-  ok:=False;
+//  ok:=False;
   //Schritt 1 wurde FConnector erzeugt
   if not assigned(FConnector) then
     raise EWADOQuery.Create('Vor Erstbenutzung von ADOQuery Connector setzen.' );

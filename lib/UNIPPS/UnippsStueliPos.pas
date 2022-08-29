@@ -446,38 +446,38 @@ procedure TWUniStueliPos.DatenInAusgabe(ZielDS:TWDataSet);
 begin
   //ZielDS.Append;
 
-  ZielDS.AddData('id_stu',IdStueliPosVater);  //In Basisklasse
-  ZielDS.AddData('pos_nr',PosNr);
-  ZielDS.AddData('stu_t_tg_nr',TeileNr);
-  ZielDS.AddData('stu_oa',OA);
-  ZielDS.AddData('stu_unipps_typ',UnippsTyp);
+  ZielDS.AddValue('id_stu',IdStueliPosVater);  //In Basisklasse
+  ZielDS.AddValue('pos_nr',PosNr);
+  ZielDS.AddValue('stu_t_tg_nr',TeileNr);
+  ZielDS.AddValue('stu_oa',OA);
+  ZielDS.AddValue('stu_unipps_typ',UnippsTyp);
   //'KA POs'
-  ZielDS.AddData('id_pos',IdPos); //In Basisklasse
-  ZielDS.AddData('besch_art',BeschaffungsArt);
-  ZielDS.AddData('menge',Menge);
+  ZielDS.AddValue('id_pos',IdPos); //In Basisklasse
+  ZielDS.AddValue('besch_art',BeschaffungsArt);
+  ZielDS.AddValue('menge',Menge);
   //'FA_Serie' oder 'FA_Komm'
-  ZielDS.AddData('FA_Nr',FANr);
-  ZielDS.AddData('verurs_art',VerursacherArt);
+  ZielDS.AddValue('FA_Nr',FANr);
+  ZielDS.AddValue('verurs_art',VerursacherArt);
  //FA_POs
-  ZielDS.AddData('ueb_s_nr',UebergeordneteStueNr);
-  ZielDS.AddData('ds',Ds);
-  ZielDS.AddData('set_block',SetBlock);
+  ZielDS.AddValue('ueb_s_nr',UebergeordneteStueNr);
+  ZielDS.AddValue('ds',Ds);
+  ZielDS.AddValue('set_block',SetBlock);
  //Teil in STU
 
  //ermittelt
-  ZielDS.AddData('PosTyp',PosTyp);
-  ZielDS.AddData('PreisEU',PreisEU);
-  ZielDS.AddData('PreisNonEU',PreisNonEU);
-  ZielDS.AddData('SummeEU',SummeEU);
-  ZielDS.AddData('SummeNonEU',SummeNonEU);
-  ZielDS.AddData('vk_netto',VerkaufsPreisRabattiert);
-  ZielDS.AddData('vk_brutto',VerkaufsPreisUnRabattiert);
-  ZielDS.AddData('MengeTotal',MengeTotal);
-  ZielDS.AddData('Ebene',Ebene);
-  ZielDS.AddData('EbeneNice',EbeneNice);
-  ZielDS.AddData('AnteilNonEU',AnteilNonEU);
-  ZielDS.AddData('PräfResult',PräfBerechtigt);
-  ZielDS.AddData('ZuKAPos',0);
+  ZielDS.AddValue('PosTyp',PosTyp);
+  ZielDS.AddValue('PreisEU',PreisEU);
+  ZielDS.AddValue('PreisNonEU',PreisNonEU);
+  ZielDS.AddValue('SummeEU',SummeEU);
+  ZielDS.AddValue('SummeNonEU',SummeNonEU);
+  ZielDS.AddValue('vk_netto',VerkaufsPreisRabattiert);
+  ZielDS.AddValue('vk_brutto',VerkaufsPreisUnRabattiert);
+  ZielDS.AddValue('MengeTotal',MengeTotal);
+  ZielDS.AddValue('Ebene',Ebene);
+  ZielDS.AddValue('EbeneNice',EbeneNice);
+  ZielDS.AddValue('AnteilNonEU',AnteilNonEU);
+  ZielDS.AddValue('PräfResult',PräfBerechtigt);
+  ZielDS.AddValue('ZuKAPos',0);
   //ZielDS.Post;
 end;
 
