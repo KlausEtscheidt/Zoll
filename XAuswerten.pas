@@ -14,19 +14,17 @@ uses  System.SysUtils, System.Dateutils, Vcl.Controls, Vcl.Dialogs, Windows,
       BaumQrySQLite, BaumQryUNIPPS, DatenModul, Preiseingabe;
 
 type
-    /// <summary> Ausnahmen während der Ausführung des Threads</summary>
+/// <summary> Ausnahmen während der Ausführung des Threads</summary>
     EAuswerten = class(Exception);
 
 type
 /// <summary>Ausführung der UNIPPS-Analyse im thread</summary>
     TWPraeFixThread=class(TThread)
           ///<summary>Speichert Meldungen zu Fehlern, die während der Thread-Ausführung entstehen.</summary>
-          ///leeeeeeeeeeer
-          //ggggg  
           ErrMsg:String;
           ///<summary>True, wenn Thread-Ausführung fehlerfrei.</summary>
           Success:Boolean;
+          procedure Execute; override;
     end;
-
 
 end.
