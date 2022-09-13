@@ -1,12 +1,12 @@
 ///<summary>Datenspeicher des Programms auf Basis einer Erweiterung
 ///von TClientDataSet.</summary>
-///<remarks>Die Unit ermöglicht die dynamische Definition verschiedener
+///<remarks>Die Unit ermÃ¶glicht die dynamische Definition verschiedener
 /// Datasets zur Laufzeit. Diese dienen zum Speichern der vom Programm
 /// ermittelten Daten in Tabellenform.
-/// |Die Eigenschaften der Felder werden über Records vom
+/// |Die Eigenschaften der Felder werden Ã¼ber Records vom
 ///  Typ TWFeldTypRecord definiert. Die Records aller Felder werden in
 /// einem Dictionary TWFeldTypenDict abgelegt, bei dem der Feldname
-/// als key für den Zugriff dient.
+/// als key fÃ¼r den Zugriff dient.
 /// |Weiterhin sind Prozeduren zum komfortablen Speichern von Daten
 /// in einem DataSet enthalten.
 ///</remarks>
@@ -28,7 +28,7 @@ type
     N:String;
     ///<summary>Feldtyp</summary>
     T:TFieldType;
-    ///<summary>Name zum Anzeigen (Überschriften)</summary>
+    ///<summary>Name zum Anzeigen (Ãœberschriften)</summary>
     C:String;
     ///<summary>Anzeige-Breite bei String-Feldern</summary>
     W:Integer; //Breite
@@ -72,7 +72,7 @@ end;
 
 ///<summary>Alle Felder aus einer TFields-Liste speichern.</summary>
 /// <remarks>
-/// Hiermit können komplette Datensätze aus Datenbank-Querys im
+/// Hiermit kÃ¶nnen komplette DatensÃ¤tze aus Datenbank-Querys im
 /// DataSet gespeichert werden.
 /// </remarks>
 ///<param name="Felder">Liste von Feldern</param>
@@ -90,7 +90,7 @@ end;
 
 ///<summary>Einzelnes Feld aus einer TFields-Liste speichern.</summary>
 /// <remarks>
-/// Hiermit können einzelne Felder aus Datenbank-Query im
+/// Hiermit kÃ¶nnen einzelne Felder aus Datenbank-Query im
 /// DataSet gespeichert werden.
 /// </remarks>
 ///<param name="Felder">Liste von Feldern</param>
@@ -124,9 +124,9 @@ begin
     end;
 end;
 
-///<summary>Setzt die ReadOnly-Eigenschaft der übergebenen Felder auf False
+///<summary>Setzt die ReadOnly-Eigenschaft der Ã¼bergebenen Felder auf False
 ///</summary>
-/// <remarks>Für alle Felder des DataSet, die nicht in der Liste übergeben
+/// <remarks>FÃ¼r alle Felder des DataSet, die nicht in der Liste Ã¼bergeben
 ///wurden, wird ReadOnly auf True gesetzt.</remarks>
 ///<param name="Felder"> Array mit den Namen der Felder,
 ///  die "schreibbar" werden sollen. </param>
@@ -143,7 +143,7 @@ begin
         myField.ReadOnly:=True;
     end;
 
-    //Dann Ausnahmen zurück setzen
+    //Dann Ausnahmen zurÃ¼ck setzen
     for I := 0 to length(Felder)-1 do
     begin
 
@@ -162,19 +162,19 @@ end;
 ///<summary>Definiert dynamisch ein Dataset</summary>
 /// <remarks>
 /// Es werden Felder eines Dataset angelegt und konfiguriert.
-/// Die Namen der anzulegenden Felder werden im Array Felder übergeben.
-/// | Zuerst werden alle evtl vorhandenen Felder bzw FieldDefs gelöscht.
+/// Die Namen der anzulegenden Felder werden im Array Felder Ã¼bergeben.
+/// | Zuerst werden alle evtl vorhandenen Felder bzw FieldDefs gelÃ¶scht.
 /// | Dann werden anhand des Arrays neue FieldDefs erzeugt.
-/// | Für diese wird anhand der Informationen, die in FeldTypen übergeben wurden,
+/// | FÃ¼r diese wird anhand der Informationen, die in FeldTypen Ã¼bergeben wurden,
 /// der Datentyp, ein Anzeige-Name und bei String-Feldern
 /// eine Feldbreite definiert.
-/// | Mittels CreateDataSet werden die Felder angelegt und anschließend
-/// über DefiniereFeldEigenschaften weitere FeldEigenschaften definiert.
+/// | Mittels CreateDataSet werden die Felder angelegt und anschlieÃŸend
+/// Ã¼ber DefiniereFeldEigenschaften weitere FeldEigenschaften definiert.
 /// </remarks>
 ///<param name="FeldTypen"> Dictionary mit Eigenschaften aller Felder.
 ///Als key dient ein Name aus "Felder".</param>
 ///<param name="Felder"> Array mit den Namen aller Felder, die angelegt werden sollen.
-///Das Array definiert auch die Reihenfolge der Spalten. Die Namen müssen in FeldTypen vorhanden sein.
+///Das Array definiert auch die Reihenfolge der Spalten. Die Namen mÃ¼ssen in FeldTypen vorhanden sein.
 /// </param>
 procedure TWDataSet.DefiniereTabelle(FeldTypen:TWFeldTypenDict;
                                          Felder: TWFeldNamen);
@@ -187,7 +187,7 @@ var
   myRec:TWFeldTypRecord;
 
   begin
-    { TODO : Sicherstellen das immer erst alles gelöscht wird }
+    { TODO : Sicherstellen das immer erst alles gelÃ¶scht wird }
     if (FieldDefs.Count>0) or (Fields.Count>0) then
     begin
 //      Active:=True;
@@ -233,10 +233,10 @@ var
 end;
 
 ///<summary>Es werden Eigenschaften der Felder eines DataSet definiert.</summary>
-/// <remarks>Für alle Felder werden der Anzeigename, die Ausrichtung und für
+/// <remarks>FÃ¼r alle Felder werden der Anzeigename, die Ausrichtung und fÃ¼r
 /// Float-Felder ein Standard-Display-Format "0.00" gesetzt.
 /// | Die Ausrichtung(TWFeldAusrichtung) kann l,c oder r
-/// für left,center oder right sein
+/// fÃ¼r left,center oder right sein
 /// </remarks>
 ///<param name="FeldTypen"> Dictionary mit Eigenschaften aller Felder.</param>
 procedure TWDataSet.DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict);
@@ -277,7 +277,7 @@ var
 
 end;
 
-///<summary>Setzt alle Felder, die nicht in Felder übergeben wurden,
+///<summary>Setzt alle Felder, die nicht in Felder Ã¼bergeben wurden,
 /// auf unsichtbar.</summary>
 procedure TWDataSet.FiltereSpalten(Felder: TWFeldNamen);
 var

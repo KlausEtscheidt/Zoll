@@ -1,4 +1,4 @@
-unit Logger;
+ï»¿unit Logger;
 
 interface
 
@@ -14,7 +14,7 @@ type
         fullpath:string;
         procedure Open(filedir:string;filename:string;Append:Boolean);
       public
-        ///<summary>Oeffnet Datei zum Anfügen</summary>
+        ///<summary>Oeffnet Datei zum AnfÃ¼gen</summary>
         /// <param name="filedir">Pfad ohne slash am Ende </param>
         /// <param name="filename">Dateiname ohne slash am Anfang</param>
         procedure OpenAppend(filedir:string;filename:string);
@@ -53,7 +53,7 @@ begin
   try
       inherited Create(fullpath,Append,TEncoding.UTF8);
   except
-    raise Exception.Create('Logger: Kann Datei ' + fullpath + ' nicht öffnen');
+    raise Exception.Create('Logger: Kann Datei ' + fullpath + ' nicht Ã¶ffnen');
 
   end;
 
@@ -86,6 +86,7 @@ end;
 
 
 end.
+
 
 
 

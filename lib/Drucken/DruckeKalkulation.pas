@@ -1,4 +1,4 @@
-unit DruckeKalkulation;
+ï»¿unit DruckeKalkulation;
 
 interface
 
@@ -11,7 +11,7 @@ interface
       //Tabellenbereich ableiten (TWTabelle erbt von TWBlatt.TWInhalt)
       type TWKalkTabelle = class(TWTabelle)
          public
-            // DruckeTabellenReihe überschreiben
+            // DruckeTabellenReihe Ã¼berschreiben
             procedure DruckeTabellenReihe(Felder:TFields);override;
       end;
       //Instanz von TWKalkTabelle zu TWKalkAusgabe dazu
@@ -107,7 +107,7 @@ begin
 end;
 
 
-/// <summary>Einsprung zum Drucken nach Setzen gewünschter Eigenschaften</summary>
+/// <summary>Einsprung zum Drucken nach Setzen gewÃ¼nschter Eigenschaften</summary>
 procedure PraeferenzKalkulationDrucken(DS: TDataSet;KaId:String);
 var
   Ausgabe:TWKalkAusgabe;
@@ -119,8 +119,8 @@ begin
   Ausgabe.Tabelle.Ausrichtung[3]:=d;
   Ausgabe.Tabelle.NachkommaStellen[3]:=2;
 
-  Ausgabe.Kopfzeile.TextLinks:='Präferenzkalkulation';
-  Ausgabe.Dokumentenkopf.TextLinks:='Präferenzkalkulation';
+  Ausgabe.Kopfzeile.TextLinks:='PrÃ¤ferenzkalkulation';
+  Ausgabe.Dokumentenkopf.TextLinks:='PrÃ¤ferenzkalkulation';
   Ausgabe.Kopfzeile.TextMitte:=  'Auftragsnr: ' + KaId;
   Ausgabe.Dokumentenkopf.TextMitte:=  'Auftragsnr: ' + KaId;
   DateTimeToString(txt, 'dd.mm.yy hh:mm', System.SysUtils.Now);

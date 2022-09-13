@@ -1,4 +1,4 @@
-unit DruckeTabelle;
+ï»¿unit DruckeTabelle;
 
 interface
 
@@ -10,7 +10,7 @@ interface
     private
     public
       type
-        //Überschreibe Unterklasse "Inhalts-Bereich" der Basisklasee
+        //Ãœberschreibe Unterklasse "Inhalts-Bereich" der Basisklasee
         TWTabelle = class(TWInhalt)
           const
             CellMargin=20;   //Abstand Text zum Rahmen drumrum
@@ -19,7 +19,7 @@ interface
             Daten:TDataSet;
             FFeldHoehe:Integer;
             FeldBreiten:array of Integer; //Netto-Breiten der Spalten
-            FeldX0:array of Integer;     //Start-Pos für Zell-Rahmen
+            FeldX0:array of Integer;     //Start-Pos fÃ¼r Zell-Rahmen
             FAlign:array of TWAusrichtungsArten;
             FNNachkomma:array of Integer;
             FNullDrucken:Boolean;
@@ -95,9 +95,9 @@ end;
 
 ///<summary>Besetzt die Spaltenausrichtungen aus den Feldinformationen
 ///</summary>
-///<remarks>Die Ausrichtung kann bei Bedarf für einzelne Spalten geändert werden.
-///Dies macht z.B. für Ausrichtung am Komma Sinn, welche bei TField unbekannt ist.
-///Nur hierzu wird dann auch die Anzahl der Nachkommastellen benötigt.
+///<remarks>Die Ausrichtung kann bei Bedarf fÃ¼r einzelne Spalten geÃ¤ndert werden.
+///Dies macht z.B. fÃ¼r Ausrichtung am Komma Sinn, welche bei TField unbekannt ist.
+///Nur hierzu wird dann auch die Anzahl der Nachkommastellen benÃ¶tigt.
 ///</remarks>
 procedure TWDataSetPrinter.TWTabelle.HoleAusrichtungenAusFeldDef();
 var
@@ -136,7 +136,7 @@ begin
       begin
         FloatFeld:=TFloatField(Feld);
         if NullDrucken or ((FloatFeld.AsFloat)<>0) then
-          Result:=FormatFloat('0.00 €',FloatFeld.AsFloat)
+          Result:=FormatFloat('0.00 â‚¬',FloatFeld.AsFloat)
         else
           Result:='';
       end
@@ -207,7 +207,7 @@ begin
     //Rahmen der Zelle drucken
     Self.Canvas.Rectangle(X0,Y0,X1,Y1);
 
-    if Kopfzeile then   //Spaltenüberschriften immer zentriert
+    if Kopfzeile then   //SpaltenÃ¼berschriften immer zentriert
       Adjust:=c
     else
       Adjust:=Ausrichtung[Spalte];
@@ -272,7 +272,7 @@ begin
     DruckeTabellenReihe(Daten.Fields);
     Self.CurrYZeileVor;
 
-    //Prüfe ob Seite voll und erzeuge Umbruch wenn nötig,
+    //PrÃ¼fe ob Seite voll und erzeuge Umbruch wenn nÃ¶tig,
     //CurrY wird dann auf TopMitFreiraum gesetzt
     if Blatt.NeueSeite() then
     begin

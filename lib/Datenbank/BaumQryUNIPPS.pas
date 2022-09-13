@@ -1,4 +1,4 @@
-﻿/// <summary>UNIPPS-Datenbank-Abfragen für das Programm PräFix</summary>
+/// <summary>UNIPPS-Datenbank-Abfragen für das Programm PräFix</summary>
 /// <remarks>
 /// Abfrage-Generator für Präfix-UNIPPS-Abfragen.
 ///| Anwendungsbeispiel: Abfrage zum Lesen des Kundenauftrags und seiner Positionen

@@ -69,21 +69,21 @@ end;
 
 procedure TmainFrm.FormDestroy(Sender: TObject);
 begin
-  //Logger schließen
+  //Logger schlieï¿½en
   Tools.Log.Close;
   Tools.ErrLog.Close;
 end;
 
 procedure TmainFrm.kurzBtnClick(Sender: TObject);
 begin
-  //Fülle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
+  //Fï¿½lle Tabelle mit Teilumfang zur Ausgabe der Doku der Kalkulation
   KaDataModule.ErzeugeAusgabeKurzFuerDoku;
   DataSource1.DataSet:=KaDataModule.AusgabeDS;
 end;
 
 procedure TmainFrm.langBtnClick(Sender: TObject);
 begin
-  //Fülle Tabelle mit vollem Umfang (z Debuggen)
+  //Fï¿½lle Tabelle mit vollem Umfang (z Debuggen)
   KaDataModule.ErzeugeAusgabeVollFuerDebug;
   DataSource1.DataSet:=KaDataModule.AusgabeDS;
 

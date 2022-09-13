@@ -222,7 +222,7 @@ begin
 
       //--------- Ausgabe kurzer Umfang für Doku
       //Entferne FA aus Struktur
-      KA.EntferneFertigungsaufträge;
+      KA.EntferneFertigungsauftraege;
       //Ebenen neu numerieren
       KA.SetzeEbenenUndMengen(0,1);
       //Daten neu sammeln

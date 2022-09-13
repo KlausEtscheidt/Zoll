@@ -1,19 +1,22 @@
-﻿DruckeKalkulation
+DruckeKalkulation
 =================
+
 
 .. py:module:: DruckeKalkulation
 
 .. py:class:: TWKalkAusgabe(TWDataSetPrinter)
-
-   .. py:attribute:: KalkTabelle
-
-      :type: TWKalkAusgabe.TWKalkTabelle
-
-   .. py:method:: DruckeInhalt;
-
-
-   .. py:method:: PraeferenzKalkulationDrucken (DS TDataSet; KaId string);
-      Einsprung zum Drucken nach Setzen gewünschter Eigenschaften
-
+   
+    
+   .. py:method:: Create
+      
+      :param TComponent AOwner: 
+      :param String PrinterName: 
       :param TDataSet DS: 
-      :param string KaId: 
+    
+   .. py:method:: DruckeInhalt
+      
+ 
+.. py:method:: PraeferenzKalkulationDrucken
+   
+   :param TDataSet DS: 
+   :param String KaId: 

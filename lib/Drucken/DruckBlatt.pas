@@ -1,4 +1,4 @@
-unit DruckBlatt;
+ï»¿unit DruckBlatt;
 
 interface
 
@@ -9,7 +9,7 @@ interface
 
   type TWBlatt = class(TComponent)
     const
-      //Freiräume, nicht zum Drucken
+      //FreirÃ¤ume, nicht zum Drucken
       DefBlattRaender: TRect=(Left:100; Top:200; Right:100; Bottom:200);
       DefDecimalSep:String=',';
 
@@ -28,7 +28,7 @@ interface
         TWDokumententeil = class
           private
             FBlatt:TWBlatt; //Vaterobjekt (Owner)
-            FCanvas:TCanvas; //Zeichenfläche des Vaterobjekts
+            FCanvas:TCanvas; //ZeichenflÃ¤che des Vaterobjekts
             FFontSize: Integer;
             FTextLinks:String;
             FTextRechts:String;
@@ -160,7 +160,7 @@ begin
     if Ausrichtung=l then
       Exit (0);
 
-    //X0 fuer Text in Abhängigkeit der Ausrichtung berechnen
+    //X0 fuer Text in AbhÃ¤ngigkeit der Ausrichtung berechnen
     TextBreite:=Self.Drucker.Canvas.TextWidth(Text);
 
     if Ausrichtung=c then
@@ -208,7 +208,7 @@ begin
     Printer.PrinterIndex:=PIndex;
   Except
     raise Exception.Create('Drucker mit Namen '+
-            PrinterName + 'konnte nicht geöffnet werden.');
+            PrinterName + 'konnte nicht geÃ¶ffnet werden.');
   end;
 
   Drucker:=Printer;
@@ -222,7 +222,7 @@ begin
   //Setze Blattraender,Blattinneres und die Y0 und Hoehen von Kopf,Fuss,Inhalt
   Raender:=TRect(DefBlattRaender);
 
-  //Weiter Default-Werte in Felder übenehmen
+  //Weiter Default-Werte in Felder Ã¼benehmen
   FDecimalSep:=DefDecimalSep;
 
 
@@ -348,7 +348,7 @@ begin
   Self.DruckeLinkenText(YPos);
   Self.DruckeRechtenText(YPos);
   Self.DruckeMittelText(YPos);
-  //Neue Y-Pos aus allen Texthöhen berechnen
+  //Neue Y-Pos aus allen TexthÃ¶hen berechnen
   CurrY:=YPos+ Canvas.TextHeight(TextLinks+TextMitte+TextRechts);
 end;
 

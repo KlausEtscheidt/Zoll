@@ -37,7 +37,7 @@ interface
         VerkaufsPreisRabattiert : Double;
         VerkaufsPreisUnRabattiert : Double;
         AnteilNonEU : Double;
-        PräfBerechtigt:String; //Ergebnis als ja/nein
+        PraefBerechtigt:String; //Ergebnis als ja/nein
 
         //Teile-Objekt zu dieser Stueli-Pos
         Teil : TWTeil;
@@ -55,7 +55,7 @@ interface
         procedure DatenInAusgabe(ZielDS:TWDataSet);
         procedure StrukturInErgebnisTabelle(ZielDS:TWDataSet;
                                                         FirstRun:Boolean=True);
-        procedure EntferneFertigungsaufträge;
+        procedure EntferneFertigungsauftraege;
       end;
 
   type
@@ -89,7 +89,7 @@ begin
 end;
 
 /// <summary>Entfernt Fertigungsaufträge aus der Struktur </summary>
-procedure TWUniStueliPos.EntferneFertigungsaufträge;
+procedure TWUniStueliPos.EntferneFertigungsauftraege;
 var
   StueliPosKey:Integer;
   StueliPos: TWUniStueliPos;
@@ -100,7 +100,7 @@ begin
     StueliPos:= Stueli[StueliPosKey] As TWUniStueliPos;
 
     //Erst Rekursion (wir entfernen von unten)
-    StueliPos.EntferneFertigungsaufträge;
+    StueliPos.EntferneFertigungsauftraege;
 
 
     // Fa-Eintraege sollen ignoriert, also nicht in die Doku übernommen werden
@@ -476,7 +476,7 @@ begin
   ZielDS.AddValue('Ebene',Ebene);
   ZielDS.AddValue('EbeneNice',EbeneNice);
   ZielDS.AddValue('AnteilNonEU',AnteilNonEU);
-  ZielDS.AddValue('PräfResult',PräfBerechtigt);
+  ZielDS.AddValue('PraefResult',PraefBerechtigt);
   ZielDS.AddValue('ZuKAPos',0);
   //ZielDS.Post;
 end;

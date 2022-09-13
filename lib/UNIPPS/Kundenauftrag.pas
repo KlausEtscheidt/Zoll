@@ -196,7 +196,7 @@ begin
     with KaPos do
     begin
 
-      PräfBerechtigt:='Nein';
+      PraefBerechtigt:='Nein';
 
       //Erst Exceptions checken
       if VerkaufsPreisRabattiert=0 then
@@ -207,16 +207,16 @@ begin
       //Anteil ausser EU am VK berechnen (VerkaufsPreisRabattiert ist Stückpreis)
       AnteilNonEU:= 100*SummeNonEU/VerkaufsPreisRabattiert/MengeTotal;
 
-      PräfBerechtigt:='ja';
+      PraefBerechtigt:='ja';
 
       //Wenn Kaufteil
       if Teil.istKaufteil or Teil.IstFremdfertigung then
         //und Kosten ausserhalb EU
         if SummeNonEU>0 then
-          PräfBerechtigt:='nein'
+          PraefBerechtigt:='nein'
       else
         if AnteilNonEU>MaxAnteilNonEU then
-          PräfBerechtigt:='nein';
+          PraefBerechtigt:='nein';
 
       end;
 

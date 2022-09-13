@@ -1,4 +1,4 @@
-unit DatenModul;
+ï»¿unit DatenModul;
 
 interface
 
@@ -61,8 +61,8 @@ uses
       (N: 'kurzname'; T:ftString; C:'Lieferant'; W:10; J:l),
       (N: 'best_menge'; T:ftFloat; C:''; W:10; J:l),
       (N: 'AnteilNonEU'; T:ftFloat; C:'% Non EU'; W:10; J:c),
-      (N: 'PräfResult'; T:ftString; C:'OK'; W:5; J:c),
-      (N: 'ZuKAPos'; T:ftInteger; C:'gehört zu'; W:10; J:l)
+      (N: 'PraefResult'; T:ftString; C:'OK'; W:5; J:c),
+      (N: 'ZuKAPos'; T:ftInteger; C:'gehÃ¶rt zu'; W:10; J:l)
      );
 
 type
@@ -98,22 +98,22 @@ implementation
 //uses Tools, main;
 
 //---------------------------------------------------------------------------
-///<summary>Befüllt ErgebnisFelderDict mit Info aus AlleErgebnisFelder</summary>
+///<summary>BefÃ¼llt ErgebnisFelderDict mit Info aus AlleErgebnisFelder</summary>
 ///<remarks>Mit den Daten werden beim Anlegen von DataSets die Feldeigenschaften
 /// definiert. </remarks>
 procedure TKaDataModule.DataModuleCreate(Sender: TObject);
 //---------------------------------------------------------------------------
 var I:Integer;
 begin
-  //Erzeuge Dict mit allen Informationen über alle Felder der Ergenistabelle
-  //Hieraus können Teil-Tabellen erzeugt werden.
+  //Erzeuge Dict mit allen Informationen Ã¼ber alle Felder der Ergenistabelle
+  //Hieraus kÃ¶nnen Teil-Tabellen erzeugt werden.
   ErgebnisFelderDict:= TWFeldTypenDict.Create;
   for I:=0 To length(AlleErgebnisFelder)-1 do
     //Lege kompletten Record in Dict ab, key ist der FeldName
     ErgebnisFelderDict.Add(AlleErgebnisFelder[I].N,AlleErgebnisFelder[I]);
 
   //Definiere Tabelle fuer Gesamtausgabe mit allen Feldern
-  //der Stücklistenpos, der Teile und der Bestellungen
+  //der StÃ¼cklistenpos, der Teile und der Bestellungen
   //DefiniereGesamtErgebnisTabelle;
 end;
 
@@ -133,7 +133,7 @@ begin
   //Setze Filenamen fuer BatchMoveTextWriter
   FileName:=DateiPfad+'\'+DateiName;
   BatchMoveTextWriter.FileName:=FileName;
-  //File loeschen vor befüllen, da sosnt Datenmüll in Ausgabe
+  //File loeschen vor befÃ¼llen, da sosnt DatenmÃ¼ll in Ausgabe
   if System.SysUtils.FileExists(FileName) then
       DeleteFile(FileName);
   //Transferiere Daten in CSV-Datei
@@ -142,11 +142,11 @@ begin
 end;
 
 //---------------------------------------------------------------------------
-///<summary>Überträgt Daten vom GesamtDatenset "ErgebnisDS" ins ZielDS
+///<summary>ÃœbertrÃ¤gt Daten vom GesamtDatenset "ErgebnisDS" ins ZielDS
 ///</summary>
 ///<remarks>Die Feldeigenschaften werden dabei anhand der globalen
-/// Festlegungen in AlleErgebnisFelder bzw dem daraus befüllten
-/// ErgebnisFelderDict erneut definiert, da Batchmove diese ändert. </remarks>
+/// Festlegungen in AlleErgebnisFelder bzw dem daraus befÃ¼llten
+/// ErgebnisFelderDict erneut definiert, da Batchmove diese Ã¤ndert. </remarks>
 procedure TKaDataModule.BefuelleAusgabeTabelle(ZielDS :TWDataSet );
 //---------------------------------------------------------------------------
 begin
@@ -165,7 +165,7 @@ begin
 end;
 
 //---------------------------------------------------------------------------
-///<summary>Überträgt Daten vom GesamtDatenset ins Default-AusgabeDatenset
+///<summary>ÃœbertrÃ¤gt Daten vom GesamtDatenset ins Default-AusgabeDatenset
 ///"AusgabeDS" </summary>
 procedure TKaDataModule.BefuelleAusgabeTabelle;
 //---------------------------------------------------------------------------
@@ -175,7 +175,7 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary>Definiert und belegt die Ausgabe-Tabelle
-///mit großem Datenumfang (zu Debug-Zwecken).</summary>
+///mit groÃŸem Datenumfang (zu Debug-Zwecken).</summary>
 procedure TKaDataModule.ErzeugeAusgabeVollFuerDebug;
 //---------------------------------------------------------------------------
 const
@@ -190,7 +190,7 @@ const
   oa	Bezchng	typ	v_besch_art urspr_land ausl_u_land praeferenzkennung
   menge	sme faktlme_sme	lme	bestell_id	bestell_datum	preis basis	pme	bme
   faktlme_bme	faktbme_pme	id_lief lieferant	pos_menge	preis_eu
-  preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
+  preis_n_eu	Summe_Eu	Summe_n_EU	LP je StÃ¼ck	KT_zu_LP
 }
 begin
   //Definiere die Spalten des Ausgabe-Datensets
@@ -205,13 +205,13 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary>Definiert und belegt die Ausgabe-Tabelle
-///für die offizielle Dokumentation (Kurzform) der Analyse.</summary>
+///fÃ¼r die offizielle Dokumentation (Kurzform) der Analyse.</summary>
 procedure TKaDataModule.ErzeugeAusgabeKurzFuerDoku;
 //---------------------------------------------------------------------------
 const
   Felder: TWFeldNamen = ['EbeneNice','t_tg_nr', 'Bezeichnung','MengeTotal',
            'kurzname','PreisEU','PreisNonEU','SummeEU','SummeNonEU',
-           'vk_netto','AnteilNonEU','PräfResult'];
+           'vk_netto','AnteilNonEU','PraefResult'];
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
@@ -223,14 +223,14 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary>Definiert und belegt die Ausgabe-Tabelle
-///für die Abfrage von Preisen bei Neupumpen.</summary>
+///fÃ¼r die Abfrage von Preisen bei Neupumpen.</summary>
 procedure TKaDataModule.ErzeugeAusgabeFuerPreisabfrage(PreisDS:TWDAtaSet);
 //---------------------------------------------------------------------------
 const
   Felder: TWFeldNamen = ['id_pos','Menge', 'stu_t_tg_nr', 'Bezeichnung',
                             'vk_brutto', 'vk_netto', 'ZuKAPos'];
 begin
-  //Die Spalten für die Preisabfrage sind im Formular festgelegt
+  //Die Spalten fÃ¼r die Preisabfrage sind im Formular festgelegt
   //Ansonsten ueber naechste Zeile
 //  PreisFrm.PreisDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
     PreisDS.Active:=False;
@@ -245,9 +245,9 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary>Definiere Tabelle fuer Gesamt-Ergebnis mit allen Feldern
-///der Stücklistenpositionen, der Teile und der Bestellungen.</summary>
+///der StÃ¼cklistenpositionen, der Teile und der Bestellungen.</summary>
 ///<remarks>
-/// Aus diesem Dataset entstehen alle Ausgaben über Teilmengen-Datasets.
+/// Aus diesem Dataset entstehen alle Ausgaben Ã¼ber Teilmengen-Datasets.
 /// Es muss einmalig mit dieser Funktion angelegt werden.
 ///</remarks>
 procedure TKaDataModule.DefiniereGesamtErgebnisDataSet;
@@ -264,7 +264,7 @@ begin
       FeldNamen[I]:=AlleErgebnisFelder[I].N;
    end;
   //Definiere DataSet
-  //ErgebnisFelderDict enthält alle Informationen über die Feldbeschaffenheit
+  //ErgebnisFelderDict enthÃ¤lt alle Informationen Ã¼ber die Feldbeschaffenheit
   //FeldNamen die Liste aller Felder, die in angelegt werden (in dieser Reihenfolge)
 //  ErgebnisDS:=TWDAtaSet.Create(Self);
   ErgebnisDS.DefiniereTabelle(ErgebnisFelderDict, FeldNamen);
