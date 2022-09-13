@@ -3,8 +3,8 @@ PumpenDataSet
 
 Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufzeit. Diese dienen zum Speichern der vom Programm  ermittelten Daten in Tabellenform.  
 
-|Die Eigenschaften der Felder werden über Records vom   Typ TWFeldTypRecord definiert. Die Records aller Felder werden in  einem Dictionary TWFeldTypenDict abgelegt, bei dem der Feldname  als key für den Zugriff dient.  
-|Weiterhin sind Prozeduren zum komfortablen Speichern von Daten  in einem DataSet enthalten. 
+| Die Eigenschaften der Felder werden über Records vom   Typ TWFeldTypRecord definiert. Die Records aller Felder werden in  einem Dictionary TWFeldTypenDict abgelegt, bei dem der Feldname  als key für den Zugriff dient.  
+| Weiterhin sind Prozeduren zum komfortablen Speichern von Daten  in einem DataSet enthalten. 
 
 .. py:module:: PumpenDataSet
    :synopsis: Datenspeicher des Programms auf Basis einer Erweiterung von TClientDataSet. 
@@ -16,9 +16,6 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
 .. cpp:type:: TWFeldTypRecord
 
    Definition eines Dataset-Feldes 
-
-.. cpp:type:: TWFeldTypenDict
-
 
 .. cpp:type:: TWFeldNamen
 
@@ -54,10 +51,10 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       
       Es werden Felder eines Dataset angelegt und konfiguriert.  Die Namen der anzulegenden Felder werden im Array Felder übergeben.  
 
-      | Zuerst werden alle evtl vorhandenen Felder bzw FieldDefs gelöscht.  
-      | Dann werden anhand des Arrays neue FieldDefs erzeugt.  
-      | Für diese wird anhand der Informationen, die in FeldTypen übergeben wurden,  der Datentyp, ein Anzeige-Name und bei String-Feldern  eine Feldbreite definiert.  
-      | Mittels CreateDataSet werden die Felder angelegt und anschließend  über DefiniereFeldEigenschaften weitere FeldEigenschaften definiert. 
+      |  Zuerst werden alle evtl vorhandenen Felder bzw FieldDefs gelöscht.  
+      |  Dann werden anhand des Arrays neue FieldDefs erzeugt.  
+      |  Für diese wird anhand der Informationen, die in FeldTypen übergeben wurden,  der Datentyp, ein Anzeige-Name und bei String-Feldern  eine Feldbreite definiert.  
+      |  Mittels CreateDataSet werden die Felder angelegt und anschließend  über DefiniereFeldEigenschaften weitere FeldEigenschaften definiert. 
       
       :param TWFeldTypenDict FeldTypen:  Dictionary mit Eigenschaften aller Felder. Als key dient ein Name aus "Felder".
       :param TWFeldNamen Felder:  Array mit den Namen aller Felder, die angelegt werden sollen. Das Array definiert auch die Reihenfolge der Spalten. Die Namen müssen in FeldTypen vorhanden sein.  
@@ -67,7 +64,7 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       
       Für alle Felder werden der Anzeigename, die Ausrichtung und für  Float-Felder ein Standard-Display-Format "0.00" gesetzt.  
 
-      | Die Ausrichtung(TWFeldAusrichtung) kann l,c oder r  für left,center oder right sein 
+      |  Die Ausrichtung(TWFeldAusrichtung) kann l,c oder r  für left,center oder right sein 
       
       :param TWFeldTypenDict FeldTypen:  Dictionary mit Eigenschaften aller Felder.
     

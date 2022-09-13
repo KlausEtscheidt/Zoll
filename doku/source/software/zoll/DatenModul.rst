@@ -6,12 +6,33 @@ DatenModul
 
 .. py:class:: TKaDataModule(TDataModule)
    
+   .. py:data:: var BatchMoveTextWriter
+      
+      :type:: TFDBatchMoveTextWriter
    
+   .. py:data:: var BatchMoveDSReader
+      
+      :type:: TFDBatchMoveDataSetReader
    
+   .. py:data:: var BatchMove
+      
+      :type:: TFDBatchMove
    
+   .. py:data:: var BatchMoveDSWriter
+      
+      :type:: TFDBatchMoveDataSetWriter
    
+   .. py:data:: var ErgebnisDS
+      
+      :type:: TWDataSet
    
+   .. py:data:: var AusgabeDS
+      
+      :type:: TWDataSet
    
+   .. py:data:: var ErgebnisFelderDict
+      
+      :type:: TWFeldTypenDict
     
    .. py:method:: DataModuleCreate
       Befüllt ErgebnisFelderDict mit Info aus AlleErgebnisFelder 
@@ -59,3 +80,6 @@ DatenModul
    
    :type:: array [0..49] of TWFeldTypRecord 
 
+.. py:attribute:: var KaDataModule
+   
+   :type:: TKaDataModule

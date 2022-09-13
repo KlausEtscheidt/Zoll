@@ -8,6 +8,9 @@ FertigungsauftragsKopf
 
 .. py:class:: TWFAKopf(TWUniStueliPos)
    
+   .. py:data:: var FA_Nr
+      
+      :type:: String
     
    .. py:method:: Create
       

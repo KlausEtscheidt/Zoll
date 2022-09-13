@@ -6,15 +6,45 @@ Hauptfenster
 
 .. py:class:: TmainFrm(TForm)
    
+   .. py:data:: var Run_Btn
+      
+      :type:: TButton
    
+   .. py:data:: var KA_id_ctrl
+      
+      :type:: TEdit
    
+   .. py:data:: var Label1
+      
+      :type:: TLabel
    
+   .. py:data:: var Ende_Btn
+      
+      :type:: TButton
    
+   .. py:data:: var DBGrid1
+      
+      :type:: TDBGrid
    
+   .. py:data:: var DataSource1
+      
+      :type:: TDataSource
    
+   .. py:data:: var langBtn
+      
+      :type:: TButton
    
+   .. py:data:: var kurzBtn
+      
+      :type:: TButton
    
+   .. py:data:: var Drucken
+      
+      :type:: TButton
    
+   .. py:data:: var ActivityIndicator1
+      
+      :type:: TActivityIndicator
     
    .. py:method:: Run_BtnClick
       
@@ -48,4 +78,10 @@ Hauptfenster
       
       :param TObject Sender: 
 
+.. py:attribute:: var mainFrm
+   
+   :type:: TmainFrm
 
+.. py:attribute:: var Kundenauftrag
+   
+   :type:: TWKundenauftrag

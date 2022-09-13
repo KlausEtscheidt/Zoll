@@ -3,15 +3,6 @@ Tools
 
 
 .. py:module:: Tools
-
-.. cpp:type:: TWUNIPPSQry
-
-
-.. cpp:type:: TWUNIPPSQry
-
-
-.. cpp:type:: TWUNIPPSQry
-
  
 .. py:method:: init
    
@@ -19,7 +10,22 @@ Tools
 .. py:function:: GetQuery
    
 
+.. py:attribute:: var Log
+   
+   :type:: TLogFile
 
+.. py:attribute:: var ErrLog
+   
+   :type:: TLogFile
 
+.. py:attribute:: var CSVKurz
+   
+   :type:: TLogFile
 
+.. py:attribute:: var CSVLang
+   
+   :type:: TLogFile
 
+.. py:attribute:: var DbConnector
+   
+   :type:: TWADOConnector

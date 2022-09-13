@@ -27,4 +27,10 @@ Settings
    
    :type:: 
 
+.. py:attribute:: var ApplicationBaseDir
+   
+   :type:: String
 
+.. py:attribute:: var GuiMode
+   
+   :type:: Boolean

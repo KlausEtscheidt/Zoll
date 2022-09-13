@@ -11,16 +11,21 @@ Die Unit enthält die übergeordneten Funktionen zur Analyse eines  Kundenauftra
 
     Zuordnung von Positionen des Kundenauftrags zu anderen Positionen 
 
-.. cpp:type:: TWZuordnungen
-
-
 .. py:class:: EAuswerten(Exception)
     Ausnahmen während der Ausführung des Threads 
 
 .. py:class:: TWPraeFixThread(TThread)
    Ausführung der UNIPPS-Analyse im thread 
    
+   .. py:data:: var ErrMsg
+      Speichert Meldungen zu Fehlern, die während der Thread-Ausführung entstehen. 
+      
+      :type:: String
    
+   .. py:data:: var Success
+      True, wenn Thread-Ausführung fehlerfrei. 
+      
+      :type:: Boolean
     
    .. py:method:: Execute
       Sucht alle Kinder-Positionen zu einem Kundenauftrag. 
@@ -71,9 +76,18 @@ Die Unit enthält die übergeordneten Funktionen zur Analyse eines  Kundenauftra
    
    Diese Funktion wird von mainfrm.FinishPraefKalk gerufen,  welche wiederum vom OnTerminate-Ereignis des Threads getriggert wird.  Falls der Thread nicht fehlerfrei ablief, bricht die Funktion ab.  
 
-   |  Sonst werden zuerst entsprechend der Benutzerangaben bei der Preisabfrage  Positionen des Kundenauftrags (z.B. Motoren) umgehängt.  Dann werden für den Gesamtbaum die Mengen der Positionen aufmultipliziert  und die Ebene der Pos. im Baum bestimmt.  
-   |  Es werden die Preise aufsummiert und dann die PräferenzBerechtigung berechnet.  Daten für die Ausgabe im Vollumfang werden gesammelt und als CSV ausgegeben.  Für die komprimierte Ausgabe werden dann die Einträge der Fertigungsauftragsköpfe  (nicht die Positionen) aus der Struktur entfernt.  Die Ebene werden neu numeriert, Daten zur Ausgabe erneut gesammelt.  Die Daten werden als CSV ausgegeben und im Hauptfenster angezeigt. 
+   |   Sonst werden zuerst entsprechend der Benutzerangaben bei der Preisabfrage  Positionen des Kundenauftrags (z.B. Motoren) umgehängt.  Dann werden für den Gesamtbaum die Mengen der Positionen aufmultipliziert  und die Ebene der Pos. im Baum bestimmt.  
+   |   Es werden die Preise aufsummiert und dann die PräferenzBerechtigung berechnet.  Daten für die Ausgabe im Vollumfang werden gesammelt und als CSV ausgegeben.  Für die komprimierte Ausgabe werden dann die Einträge der Fertigungsauftragsköpfe  (nicht die Positionen) aus der Struktur entfernt.  Die Ebene werden neu numeriert, Daten zur Ausgabe erneut gesammelt.  Die Daten werden als CSV ausgegeben und im Hauptfenster angezeigt. 
    
 
+.. py:attribute:: var Zuordnungen
+   
+   :type:: TWZuordnungen
 
+.. py:attribute:: var PraeFixKalkThread
+   
+   :type:: TWPraeFixThread
 
+.. py:attribute:: var startzeit
+   
+   :type:: TDateTime

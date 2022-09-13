@@ -6,6 +6,9 @@ DruckeKalkulation
 
 .. py:class:: TWKalkAusgabe(TWDataSetPrinter)
    
+   .. py:data:: var KalkTabelle
+      
+      :type:: TWKalkTabelle
     
    .. py:method:: Create
       
