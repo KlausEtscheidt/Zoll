@@ -1,10 +1,14 @@
 DatenModul
 ==========
 
+Die Unit enthält visuelle Komponenten zum Abspeichern und Ausgeben der ermittelten Daten. Die Gesamtheit der Daten wird im Dataset ErgebnisDS gespeichert. Mittels "BatchMove" kann hieraus ein Extrakt oder eine CSV-Datei erzeugt werden. Die Datenfelder werden mittels der Konstanten AlleErgebnisFelder definiert. 
+
 
 .. py:module:: DatenModul
+   :synopsis: Datenbasis des Programms mit DataSets zum Speichern der Analyse. 
 
 .. py:class:: TKaDataModule(TDataModule)
+   Klasse mit visuellen Komponenten 
    
    .. py:data:: var BatchMoveTextWriter
       
@@ -23,14 +27,20 @@ DatenModul
       :type:: TFDBatchMoveDataSetWriter
    
    .. py:data:: var ErgebnisDS
+      Dataset zum Abspeichern aller Felder der Analyse 
       
       :type:: TWDataSet
    
    .. py:data:: var AusgabeDS
+      Extrakt aus ErgebnisDS zur Ausgabe der Analyse 
       
       :type:: TWDataSet
    
    .. py:data:: var ErgebnisFelderDict
+      Dictionary mit den Feld-Definitionen aus AlleErgebnisFelder 
+      
+      Ermöglicht gegenüber AlleErgebnisFelder einen komfortableren Zugriff. 
+
       
       :type:: TWFeldTypenDict
     
@@ -77,6 +87,7 @@ DatenModul
       :param String DateiName: Dateiname ohne slash am Anfang
 
 .. py:attribute:: const AlleErgebnisFelder
+   Definitionen aller Felder von ErgebnisDS. 
    
    :type:: array [0..49] of TWFeldTypRecord 
 

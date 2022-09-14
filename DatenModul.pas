@@ -1,4 +1,12 @@
-﻿unit DatenModul;
+﻿///<summary>Datenbasis des Programms mit DataSets zum Speichern der Analyse.</summary>
+///<remarks>
+///Die Unit enthält visuelle Komponenten zum Abspeichern und Ausgeben der ermittelten
+///Daten. Die Gesamtheit der Daten wird im Dataset ErgebnisDS gespeichert.
+///Mittels "BatchMove" kann hieraus ein Extrakt oder eine CSV-Datei erzeugt werden.
+///Die Datenfelder werden mittels der Konstanten AlleErgebnisFelder definiert.
+///</remarks>
+
+unit DatenModul;
 
 interface
 
@@ -7,10 +15,9 @@ uses
   FireDAC.Comp.BatchMove.DataSet, FireDAC.Stan.Intf, FireDAC.Comp.BatchMove,
   FireDAC.Comp.BatchMove.Text,
   Settings, PumpenDataSet;
-  //Preiseingabe,
 
   const
-//    AlleAusgabeFelder: array [0..48] of TWFeldTypRecord =
+    ///<summary>Definitionen aller Felder von ErgebnisDS.</summary>
     AlleErgebnisFelder: array [0..49] of TWFeldTypRecord =
      (
       (N: 'EbeneNice'; T:ftString; C:'Ebene'; W:15; J:l),
@@ -66,18 +73,24 @@ uses
      );
 
 type
+  ///<summary>Klasse mit visuellen Komponenten</summary>
   TKaDataModule = class(TDataModule)
     BatchMoveTextWriter: TFDBatchMoveTextWriter;
     BatchMoveDSReader: TFDBatchMoveDataSetReader;
     BatchMove: TFDBatchMove;
     BatchMoveDSWriter: TFDBatchMoveDataSetWriter;
+    ///<summary>Dataset zum Abspeichern aller Felder der Analyse</summary>
     ErgebnisDS: TWDataSet;
+    ///<summary>Extrakt aus ErgebnisDS zur Ausgabe der Analyse</summary>
     AusgabeDS: TWDataSet;
     procedure DataModuleCreate(Sender: TObject);
   private
     procedure BefuelleAusgabeTabelle;overload;
 
   public
+    ///<summary>Dictionary mit den Feld-Definitionen aus AlleErgebnisFelder</summary>
+    ///<remarks>Ermöglicht gegenüber AlleErgebnisFelder
+    ///einen komfortableren Zugriff. </remarks>
     ErgebnisFelderDict: TWFeldTypenDict;
     procedure DefiniereGesamtErgebnisDataSet;
     procedure BefuelleAusgabeTabelle(ZielDS :TWDataSet );overload;
@@ -185,13 +198,6 @@ const
     'lme','bestell_id','bestell_datum','preis','basis','pme','bme',
     'faktlme_bme','faktbme_pme', 'lieferant','kurzname','MengeTotal','PreisEU',
     'PreisNonEU','SummeEU','SummeNonEU','vk_netto','AnteilNonEU','ZuKAPos'];
-{excel
-  Ebene	Typ	zu Teil	FA	id_pos	ueb_s_nr	ds	pos_nr verurs_art  t_tg_nr
-  oa	Bezchng	typ	v_besch_art urspr_land ausl_u_land praeferenzkennung
-  menge	sme faktlme_sme	lme	bestell_id	bestell_datum	preis basis	pme	bme
-  faktlme_bme	faktbme_pme	id_lief lieferant	pos_menge	preis_eu
-  preis_n_eu	Summe_Eu	Summe_n_EU	LP je Stück	KT_zu_LP
-}
 begin
   //Definiere die Spalten des Ausgabe-Datensets
   AusgabeDS.DefiniereTabelle(ErgebnisFelderDict, Felder);
