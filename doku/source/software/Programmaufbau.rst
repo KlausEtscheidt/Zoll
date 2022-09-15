@@ -1,6 +1,10 @@
 Programm-Aufbau
 ===============
 
+Das Programm besteht neben den Modulen, die speziell für dieses Projekt erstellt wurden,
+aus Units allgemeiner Natur, die auch für andere Projekte genutzt werden könnten.
+Hierauf wird in der Beschreibung der Module noch eingegangen. 
+
 Das Programm ist entsprechend der zu bearbeitenden Teilaufgaben auf mehrere Verzeichnisse aufgeteilt:
 
 Hauptprojektverzeichnis
@@ -48,6 +52,11 @@ UNIPPS
 In :doc:`zoll/lib/UNIPPS/index` liegen alle Units, die eine UNIPPS-Struktur auslesen und in Delphi abbilden.
 Dies ist der zentrale und komplexeste Teil des Programms.
 
+Stueli
+------
+
+Die Unit  :doc:`zoll/lib/Stueli/Stueckliste` enthält die Basisklasse für die Stücklisten in UNIPPS.
+Diese Klasse ist allgemeiner Natur und zur Abbildung beliebiger Stücklisten geeignet.
 
 Drucken
 -------
@@ -58,21 +67,5 @@ Tools
 -----
 
 Die Units in :doc:`zoll/lib/Tools/index` sind unterstützender Natur.
-Sie dienen der Konfiguration des Programm, dem Ablegen einiger gloabler Variablen
+Sie dienen der Konfiguration des Programm, dem Ablegen einiger globaler Variablen
 und zum Schreiben in Textfiles.
-
-
-  - dem Hauptformular
-    Benutzeroberfläche und die Software zur Berechnung sind weitestgehend getrennt.
-    Das Hauptformular enthält kaum Code und ist daher selbsterklärend
-    Es ermöglicht die Eingabe, der ID des auszuwertenden Kundenauftrages
-    und das Starten der Auswertung bzw der PDF-Erzeugung.
-
-  - Dem Formular zur :doc:`zoll/Preiseingabe`
-    Wird als modaler Dialog geöffnet und zeigt Daten über ein TDBGrid an.
-    Das TDBGrid bezieht seine Daten aus einem TWDataset (s. xxx), welches von TDataset erbt.
-
-  
-  - Der Unit :doc:`zoll/Auswerten` 
-    Hier wird der Ablauf der Auswertung gesteuert. 
-    Die Unit trenntund die projektspefischen Software-Anteile von den allgemeingültigeren Units in UNIPPS
