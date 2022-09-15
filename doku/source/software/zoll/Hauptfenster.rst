@@ -46,35 +46,35 @@ Hauptfenster
       
       :type:: TActivityIndicator
     
-   .. py:method:: Run_BtnClick
+   .. py:method:: Run_BtnClick(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: Ende_BtnClick
+   .. py:method:: Ende_BtnClick(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: RunIt
+   .. py:method:: RunIt(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: kurzBtnClick
+   .. py:method:: kurzBtnClick(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: langBtnClick
+   .. py:method:: langBtnClick(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: FormDestroy
+   .. py:method:: FormDestroy(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: DruckenClick
+   .. py:method:: DruckenClick(Sender:TObject)
       
       :param TObject Sender: 
     
-   .. py:method:: FinishPraefKalk
+   .. py:method:: FinishPraefKalk(Sender:TObject)
       
       :param TObject Sender: 
 

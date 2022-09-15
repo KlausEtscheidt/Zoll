@@ -56,13 +56,13 @@ Stueckliste
       
       :type:: Boolean
     
-   .. py:method:: Create
+   .. py:method:: Create(einVater:TWStueliPos;StueliPosId:String;eineMenge:Double)
       
       :param TWStueliPos einVater: 
       :param String StueliPosId: 
       :param Double eineMenge: 
     
-   .. py:method:: SetzeEbenenUndMengen
+   .. py:method:: SetzeEbenenUndMengen(Level:Integer;UebMenge:Double)
       Berechnet die Stueli-Ebene und die summierte Menge aller Pos 
       
       Berechnet Stueli-Ebene als Int und mit ... davor.  Berechet die mit den Mengen der Väter multiplizierte MengeTotal aller Pos 
@@ -71,28 +71,28 @@ Stueckliste
       :param Integer Level: 
       :param Double UebMenge: 
     
-   .. py:method:: StueliAdd
+   .. py:method:: StueliAdd(APos:TWStueliPos)
       
       :param TWStueliPos APos: 
     
-   .. py:method:: StueliTakePosFrom
+   .. py:method:: StueliTakePosFrom(APos:TWStueliPos)
       Überträgt Position APos nach Self  
       
       :param TWStueliPos APos: 
     
-   .. py:method:: StueliTakeChildrenFrom
+   .. py:method:: StueliTakeChildrenFrom(APos:TWStueliPos)
       Überträgt die Kind Position APos nach Self,  Apos wird gelöscht  
       
       :param TWStueliPos APos: 
     
-   .. py:method:: ReMove
+   .. py:method:: ReMove)
       
    
-   .. py:function:: PosToStr
+   .. py:function:: PosToStr)
       Liefert wichtige Felder in einem String verkettet  
       
    
-   .. py:function:: BaumAlsText
+   .. py:function:: BaumAlsText(txt:String)
       Verkettet wichtige Felder aller Pos zu einem String  Liefert wichtige Felder aller Positionen in einem String verkettet   
       
       :param String txt: 

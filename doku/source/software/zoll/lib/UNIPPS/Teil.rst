@@ -76,24 +76,24 @@ Teil
       
       :type:: Double
     
-   .. py:method:: Create
+   .. py:method:: Create(TeileQry:TWUNIPPSQry)
       
       :param TWUNIPPSQry TeileQry: 
     
-   .. py:method:: holeBenennung
+   .. py:method:: holeBenennung)
       
     
-   .. py:method:: holeMaxPreisAus3Bestellungen
+   .. py:method:: holeMaxPreisAus3Bestellungen)
       
    
-   .. py:function:: StueliPosGesamtPreis
+   .. py:function:: StueliPosGesamtPreis(menge:Double;faktlme_sme:Double)
       
       :param Double menge: 
       :param Double faktlme_sme: 
    
-   .. py:function:: ToStr
+   .. py:function:: ToStr)
       
     
-   .. py:method:: DatenInAusgabe
+   .. py:method:: DatenInAusgabe(ZielDS:TWDataSet)
       
       :param TWDataSet ZielDS: 

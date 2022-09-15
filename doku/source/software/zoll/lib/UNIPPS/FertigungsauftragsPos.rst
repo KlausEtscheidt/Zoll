@@ -38,11 +38,11 @@ FertigungsauftragsPos
       
       :type:: String
     
-   .. py:method:: Create
+   .. py:method:: Create(einVater:TWUniStueliPos;AQry:TWUNIPPSQry)
       
       :param TWUniStueliPos einVater: 
       :param TWUNIPPSQry AQry: 
     
-   .. py:method:: holeKinderAusASTUELIPOS
+   .. py:method:: holeKinderAusASTUELIPOS(id_pos_vater:Integer)
       
       :param Integer id_pos_vater: 

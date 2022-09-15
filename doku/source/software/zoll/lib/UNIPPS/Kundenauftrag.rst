@@ -20,18 +20,18 @@ Kundenauftrag
       
       :type:: Integer
     
-   .. py:method:: Create
+   .. py:method:: Create(NewKaId:String)
       
       :param String NewKaId: 
     
-   .. py:method:: liesKopfundPositionen
+   .. py:method:: liesKopfundPositionen)
       
     
-   .. py:method:: holeKinder
+   .. py:method:: holeKinder)
       
     
-   .. py:method:: SammleAusgabeDaten
+   .. py:method:: SammleAusgabeDaten)
       
     
-   .. py:method:: ErmittlePraferenzBerechtigung
+   .. py:method:: ErmittlePraferenzBerechtigung)
       

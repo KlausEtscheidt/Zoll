@@ -18,7 +18,7 @@ TeilAlsStuPos
       
       :type:: Integer
     
-   .. py:method:: Create
+   .. py:method:: Create(einVater:TWUniStueliPos;Qry:TWUNIPPSQry)
       
       :param TWUniStueliPos einVater: 
       :param TWUNIPPSQry Qry: 

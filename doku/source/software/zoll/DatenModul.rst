@@ -44,7 +44,7 @@ Die Unit enthält visuelle Komponenten zum Abspeichern und Ausgeben der ermittel
       
       :type:: TWFeldTypenDict
     
-   .. py:method:: DataModuleCreate
+   .. py:method:: DataModuleCreate(Sender:TObject)
       Befüllt ErgebnisFelderDict mit Info aus AlleErgebnisFelder 
       
       Mit den Daten werden beim Anlegen von DataSets die Feldeigenschaften  definiert. 
@@ -52,14 +52,14 @@ Die Unit enthält visuelle Komponenten zum Abspeichern und Ausgeben der ermittel
       
       :param TObject Sender: 
     
-   .. py:method:: DefiniereGesamtErgebnisDataSet
+   .. py:method:: DefiniereGesamtErgebnisDataSet)
       Definiere Tabelle fuer Gesamt-Ergebnis mit allen Feldern der Stücklistenpositionen, der Teile und der Bestellungen. 
       
       Aus diesem Dataset entstehen alle Ausgaben über Teilmengen-Datasets.  Es muss einmalig mit dieser Funktion angelegt werden. 
 
       
     
-   .. py:method:: BefuelleAusgabeTabelle
+   .. py:method:: BefuelleAusgabeTabelle(ZielDS:TWDataSet )
       Überträgt Daten vom GesamtDatenset "ErgebnisDS" ins ZielDS  Überträgt Daten vom GesamtDatenset ins Default-AusgabeDatenset "AusgabeDS"  
       
       Die Feldeigenschaften werden dabei anhand der globalen  Festlegungen in AlleErgebnisFelder bzw dem daraus befüllten  ErgebnisFelderDict erneut definiert, da Batchmove diese ändert. 
@@ -67,20 +67,20 @@ Die Unit enthält visuelle Komponenten zum Abspeichern und Ausgeben der ermittel
       
       :param TWDataSet  ZielDS: 
     
-   .. py:method:: ErzeugeAusgabeKurzFuerDoku
+   .. py:method:: ErzeugeAusgabeKurzFuerDoku)
       Definiert und belegt die Ausgabe-Tabelle für die offizielle Dokumentation (Kurzform) der Analyse. 
       
     
-   .. py:method:: ErzeugeAusgabeVollFuerDebug
+   .. py:method:: ErzeugeAusgabeVollFuerDebug)
       Definiert und belegt die Ausgabe-Tabelle mit großem Datenumfang (zu Debug-Zwecken). 
       
     
-   .. py:method:: ErzeugeAusgabeFuerPreisabfrage
+   .. py:method:: ErzeugeAusgabeFuerPreisabfrage(PreisDS:TWDAtaSet)
       Definiert und belegt die Ausgabe-Tabelle für die Abfrage von Preisen bei Neupumpen. 
       
       :param TWDAtaSet PreisDS: 
     
-   .. py:method:: AusgabeAlsCSV
+   .. py:method:: AusgabeAlsCSV(DateiPfad,DateiName:String)
       Schreibt AusgabeDS in CSV-Datei  
       
       :param String DateiPfad: Pfad ohne slash am Ende 

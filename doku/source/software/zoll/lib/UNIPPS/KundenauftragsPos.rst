@@ -18,11 +18,11 @@ KundenauftragsPos
       
       :type:: String
     
-   .. py:method:: Create
+   .. py:method:: Create(einVater:TWUniStueliPos;Qry:TWUNIPPSQry;Kundenrabatt:Double)
       
       :param TWUniStueliPos einVater: 
       :param TWUNIPPSQry Qry: 
       :param Double Kundenrabatt: 
     
-   .. py:method:: holeKinderAusASTUELIPOS
+   .. py:method:: holeKinderAusASTUELIPOS)
       

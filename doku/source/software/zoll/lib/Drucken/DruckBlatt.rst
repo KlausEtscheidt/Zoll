@@ -50,33 +50,33 @@ DruckBlatt
       
       :type:: String
    
-   .. py:function:: PosHorizAusgerichtet
+   .. py:function:: PosHorizAusgerichtet(Text:String;FeldBreite:Integer;Ausrichtung:TWAusrichtungsArten;NNachKomma:Integer)
       
       :param String Text: 
       :param Integer FeldBreite: 
       :param TWAusrichtungsArten Ausrichtung: 
       :param Integer NNachKomma: 
     
-   .. py:method:: Create
+   .. py:method:: Create(AOwner:TComponent;PrinterName:String)
       
       :param TComponent AOwner: 
       :param String PrinterName: 
     
-   .. py:method:: Drucken
+   .. py:method:: Drucken(DruckJobName:String)
       
       :param String DruckJobName: 
    
-   .. py:function:: NeueSeite
+   .. py:function:: NeueSeite)
       
     
-   .. py:method:: DruckeKopfzeile
+   .. py:method:: DruckeKopfzeile)
       
     
-   .. py:method:: DruckeInhalt
+   .. py:method:: DruckeInhalt)
       
     
-   .. py:method:: DruckeDokumentenkopf
+   .. py:method:: DruckeDokumentenkopf)
       
     
-   .. py:method:: DruckeFusszeile
+   .. py:method:: DruckeFusszeile)
       

@@ -12,39 +12,39 @@ Die Unit ist identisch zu BaumQryUNIPPS arbeitet jedoch mit einer  SQLite-Datenb
 
 .. py:class:: TWBaumQrySQLite(TWADOQuery)
    
-   .. py:function:: SucheKundenAuftragspositionen
+   .. py:function:: SucheKundenAuftragspositionen(KaId:string)
       
       :param string KaId: 
    
-   .. py:function:: SucheFAzuKAPos
+   .. py:function:: SucheFAzuKAPos(KaId:String;id_pos:Integer)
       
       :param String KaId: 
       :param Integer id_pos: 
    
-   .. py:function:: SucheFAzuTeil
+   .. py:function:: SucheFAzuTeil(t_tg_nr:String)
       
       :param String t_tg_nr: 
    
-   .. py:function:: SuchePosZuFA
+   .. py:function:: SuchePosZuFA(FA_Nr:String)
       
       :param String FA_Nr: 
    
-   .. py:function:: SucheStuelizuTeil
+   .. py:function:: SucheStuelizuTeil(t_tg_nr:String)
       
       :param String t_tg_nr: 
    
-   .. py:function:: SucheDatenzumTeil
+   .. py:function:: SucheDatenzumTeil(t_tg_nr:string)
       
       :param string t_tg_nr: 
    
-   .. py:function:: SucheBenennungZuTeil
+   .. py:function:: SucheBenennungZuTeil(t_tg_nr:String)
       
       :param String t_tg_nr: 
    
-   .. py:function:: SucheLetzte3Bestellungen
+   .. py:function:: SucheLetzte3Bestellungen(t_tg_nr:string)
       
       :param string t_tg_nr: 
    
-   .. py:function:: SucheKundenRabatt
+   .. py:function:: SucheKundenRabatt(KaId:string)
       
       :param string KaId: 

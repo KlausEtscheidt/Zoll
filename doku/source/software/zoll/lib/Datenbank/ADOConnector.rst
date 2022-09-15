@@ -39,11 +39,11 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       
       :type:: String
     
-   .. py:method:: Create
+   .. py:method:: Create(AOwner:TComponent)
       
       :param TComponent AOwner: 
    
-   .. py:function:: ConnectToUNIPPS
+   .. py:function:: ConnectToUNIPPS)
       Mit UNIPPS-Datenbank verbinden. 
       
       Die Verbindung erfolgt über die allgemeine Funktion ConnectToDB. 
@@ -51,7 +51,7 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       
       :return: Geöffnete TADOConnection  
    
-   .. py:function:: ConnectToSQLite
+   .. py:function:: ConnectToSQLite(PathTODBFile:String)
       Mit SQLite-Datenbank verbinden. 
       
       Die Verbindung erfolgt über die allgemeine Funktion ConnectToDB. 
@@ -60,7 +60,7 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       :param String PathTODBFile: Pfad zur SQLite-Datenbank-Datei.
       :return: Geöffnete TADOConnection  
    
-   .. py:function:: ConnectToDB
+   .. py:function:: ConnectToDB(AConnectStr:String;AProvider:String)
       Mit beliebiger Datenbank verbinden. 
       
       Per Connection-String und Provider wird eine Verbindung (TADOConnection)  zu einer beliebigen Datenbank hergestellt.  

@@ -4,7 +4,7 @@ Settings
 
 .. py:module:: Settings
  
-.. py:method:: init
+.. py:method:: init)
    
 
 .. py:attribute:: const LogDir

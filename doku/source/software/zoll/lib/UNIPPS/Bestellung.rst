@@ -62,10 +62,10 @@ Bestellung
       
       :type:: String
     
-   .. py:method:: Create
+   .. py:method:: Create(myRecord:TFields)
       
       :param TFields myRecord: 
     
-   .. py:method:: DatenInAusgabe
+   .. py:method:: DatenInAusgabe(ZielDS:TWDataSet)
       
       :param TWDataSet ZielDS: 

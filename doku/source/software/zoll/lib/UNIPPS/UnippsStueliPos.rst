@@ -92,54 +92,54 @@ UnippsStueliPos
       
       :type:: TWTeil
     
-   .. py:method:: Create
+   .. py:method:: Create(einVater:TWUniStueliPos;APosTyp:String;IdStuPos:String;eMenge:Double)
       
       :param TWUniStueliPos einVater: 
       :param String APosTyp: 
       :param String IdStuPos: 
       :param Double eMenge: 
     
-   .. py:method:: PosDatenSpeichern
+   .. py:method:: PosDatenSpeichern(Qry:TWUNIPPSQry)
       
       :param TWUNIPPSQry Qry: 
     
-   .. py:method:: SucheTeilzurStueliPos
+   .. py:method:: SucheTeilzurStueliPos)
       
     
-   .. py:method:: holeKindervonEndKnoten
+   .. py:method:: holeKindervonEndKnoten)
       
    
-   .. py:function:: holeKinderAusASTUELIPOS
+   .. py:function:: holeKinderAusASTUELIPOS)
       
    
-   .. py:function:: holeKinderAusTeileStu
+   .. py:function:: holeKinderAusTeileStu)
       
     
-   .. py:method:: SummierePreise
+   .. py:method:: SummierePreise)
       
     
-   .. py:method:: BerechnePreisDerPosition
+   .. py:method:: BerechnePreisDerPosition)
       
    
-   .. py:function:: ToStr
+   .. py:function:: ToStr)
       
     
-   .. py:method:: DatenInAusgabe
+   .. py:method:: DatenInAusgabe(ZielDS:TWDataSet)
       
       :param TWDataSet ZielDS: 
     
-   .. py:method:: StrukturInErgebnisTabelle
+   .. py:method:: StrukturInErgebnisTabelle(ZielDS:TWDataSet;FirstRun:Boolean)
       
       :param TWDataSet ZielDS: 
       :param Boolean FirstRun: 
     
-   .. py:method:: EntferneFertigungsauftraege
+   .. py:method:: EntferneFertigungsauftraege)
       Entfernt Fertigungsaufträge aus der Struktur  
       
 
 .. py:class:: TWEndKnotenListe(TList<TWUniStueliPos>)
    
-   .. py:function:: ToStr
+   .. py:function:: ToStr)
       
 
 .. py:attribute:: var EndKnotenListe

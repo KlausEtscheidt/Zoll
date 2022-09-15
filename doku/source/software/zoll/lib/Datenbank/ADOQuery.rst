@@ -51,7 +51,7 @@ ADOQuery
       
       :type:: Boolean
    
-   .. py:function:: RunSelectQuery
+   .. py:function:: RunSelectQuery(sql:string)
       Führt Abfragen aus, die Ergebnisse liefern (Select). 
       
       gefunden wird True, wenn Daten gefunden.  n_records enthält, die Anzahl der gefundenen Datensätze. 
@@ -60,7 +60,7 @@ ADOQuery
       :param string sql: SQL-String der Abfrage
       :return: True, wenn Datensätze gefunden. 
    
-   .. py:function:: RunSelectQueryWithParam
+   .. py:function:: RunSelectQueryWithParam(sql:string;paramlist:TWParamlist)
       Führt parametrisierte Abfragen aus, die Ergebnisse liefern (Select) 
       
       gefunden wird True, wenn Daten gefunden wurde.   n_records enthält, die Anzahl der gefundenen Datensätze. 
@@ -69,7 +69,7 @@ ADOQuery
       :param string sql: 
       :param TWParamlist paramlist: 
    
-   .. py:function:: RunExecSQLQuery
+   .. py:function:: RunExecSQLQuery(sql:string)
       Führt Abfragen aus, die keine Ergebnisse liefern (z.B Delete). 
       
       gefunden wird True, wenn Daten gefunden.  n_records enthält, die Anzahl der gefundenen Datensätze. 
@@ -77,12 +77,12 @@ ADOQuery
       
       :param string sql: 
    
-   .. py:function:: InsertFields
+   .. py:function:: InsertFields(tablename:String;myFields:TFields)
         Mittels SQL-Insert werden Daten in "tablename" eingefügt.  
       
       :param String tablename: 
       :param TFields myFields: 
    
-   .. py:function:: GetFieldValuesAsText
+   .. py:function:: GetFieldValuesAsText)
       Zum Debuggen: Liefert alle Ergebnis-Felder eines Datensatzes als CSV-String. 
       
