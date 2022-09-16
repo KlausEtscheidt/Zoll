@@ -18,11 +18,11 @@ FertigungsauftragsKopf
       :param String einTyp: 
       :param TWUNIPPSQry AQry: 
    
-   .. py:function:: IstReparatur)
+   .. py:function:: IstReparatur
       
    
-   .. py:function:: ToStr)
+   .. py:function:: ToStr
       
     
-   .. py:method:: holeKinderAusASTUELIPOS)
+   .. py:method:: holeKinderAusASTUELIPOS
       

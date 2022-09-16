@@ -1,4 +1,12 @@
-﻿unit Kundenauftrag;
+﻿/// <summary>Oberster Knoten der UNIPPS-Struktur</summary>
+/// <remarks>
+/// Die Klasse TWKundenauftrag bildet die oberste Ebene der auszulesenden
+/// UNIPPS-Struktur ab. Sie ist vom Typ Stücklistenposition, da sie eine
+/// untergeordnete Stückliste besitzt (geerbt von TWStueliPos). Diese enthält
+/// die direkt untergeordneten Positionen des Kundenauftrags, die aus der
+/// UNIPPS-Tabelle Auftragpos gelesen werden.
+/// </remarks>
+unit Kundenauftrag;
 
 interface
 
@@ -8,14 +16,19 @@ uses Vcl.Forms, Vcl.Dialogs, System.SysUtils, System.Classes,
         PumpenDataSet, UnippsStueliPos, Tools, Datenmodul;
 
 type
+  /// <summary>Klasse für Exceptions dieser Unit</summary>
   EWKundenauftrag = class(Exception);
 
 type
+  /// <summary>Kundenauftrag: Oberster Knoten der UNIPPS-Struktur</summary>
   TWKundenauftrag = class(TWUniStueliPos)
   private
   public
+    /// <summary>UNIPPS-Id des Kundenauftrages</summary>
     KaId: String;
+    /// <summary>Kommissionsnummer des Kundenauftrages</summary>
     komm_nr: String;
+    /// <summary>UNIPPS-Id des Kunden zu diesem Auftrag</summary>
     kunden_id: Integer;
     constructor Create(NewKaId: String);
     procedure liesKopfundPositionen;
@@ -26,6 +39,8 @@ type
 
 implementation
 
+/// <summary>Erzeugt über Basisklasse eine Stücklistenposition </summary>
+/// <param name="NewKaId">UNIPPS-Id des Kundenauftrages</param>
 constructor TWKundenauftrag.Create(NewKaId: String);
 begin
   //Top-Knoten hat keine IdStuVater,IdStueliPos=NewKaId;Menge=1.
@@ -33,6 +48,8 @@ begin
   KaId := NewKaId;
 end;
 
+/// <summary>Überträgt nach erfolgter Analyse rekursiv alle
+///relevanten Daten in das DataSet ErgebnisDS.</summary>
 procedure TWKundenauftrag.SammleAusgabeDaten;
 begin
 
@@ -47,6 +64,13 @@ begin
 
 end;
 
+/// <summary>Liest die Kopfdaten und die direkt (1. Ebene) untergeordneten
+///Positionen des Kundenauftrags aus UNIPPS.</summary>
+/// <remarks>
+/// Über die KundenId wird der prinzipielle Rabatt dieses Kunden gelesen.
+/// Für die gefundenen Positionen werden Objekte des Typs TWKundenauftragsPos
+/// erzeugt und in die eigene Stückliste eingetragen.
+/// </remarks>
 procedure TWKundenauftrag.liesKopfundPositionen();
 
 var
@@ -82,18 +106,15 @@ begin
   if RabattQry.n_records = 1 then
     Rabatt := RabattQry.FieldByName('zu_ab_proz').AsFloat / 100;
 
-
   //Positionen beabeiten
   while not KAQry.Eof do
   begin
-    //KundenauftragsPos erzeugen; �bertrage relevante Daten aus Qry in Felder
+    //KundenauftragsPos erzeugen; Übertrage relevante Daten aus Qry in Felder
     KAPos := TWKundenauftragsPos.Create(Self, KAQry, Rabatt);
     Tools.Log.Log('--------- KA-Pos -----------');
     Tools.Log.Log(KAPos.ToStr);
 
-    //neue Pos in St�ckliste aufnehmen
-//    Stueli.Add(KAPos.PosData['pos_nr'], KAPos);
-//    Stueli.Add(KAPos.KaPosIdPos, KAPos);
+    //neue Pos in Stückliste aufnehmen
     StueliAdd(KAPos);
     KAQry.next;
   end;
@@ -101,22 +122,31 @@ begin
 end;
 
 
-//Schrittweise Suche aller untergeordneten Elemente
+/// <summary>Schrittweise Suche aller untergeordneten Elemente </summary>
+/// <remarks>
+/// |Kommissions-FA haben bei der Suche Priorität. Daher zuerst:
+/// |Fuer alle Stüli-Pos, die kein Kaufteil sind,
+/// rekursiv in der UNIPPS-Tabelle ASTUELIPOS nach Kindern suchen.
+/// |Gefundene Kinder werden in die zugehörige Stückliste aufgenommen.
+/// |Alle Kinder, die in ASTUELIPOS selbst keine Kinder mehr haben,
+/// werden in der Liste EndKnoten vermerkt, wenn es keine Kaufteile sind.
+/// |
+/// |In EndKnoten sollten jetzt nur noch Serien- und Fremd-Fertigungsteile sein.
+/// |Mit TWUniStueliPos.holeKindervonEndKnoten wird nun nach Kindern
+/// der Endknoten gesucht.
+/// |Gefundene Kinder werden in die zugehörige Stückliste aufgenommen.
+/// |Kinder, die nicht Kaufteil sind, werden in eine neue EndKnoten-Liste übernommen.
+/// |Dies wird wiederholt, bis die neue EndKnoten-Liste leer bleibt.
+/// </remarks>
 procedure TWKundenauftrag.holeKinder();
-{Bei jedem Schritt werden alle Knoten, fuer die in der bisherigen Suche
- noch keine Kinder gefunden wurden, in der Liste EndKnoten abgelegt,
- sofern es keine Kaufteile sind.
- Im naechsten Schritt werden, dann Kinder fuer die Knoten aus EndKnoten gesucht
- Die Suche wird so lange wiederholt, bis EndKnoten leer bleibt.
- Die untersten Knoten m�ssen dann alle Kaufteil sein.
-}
-var StueliPos: TWUniStueliPos;
-var StueliPosKey: Integer;
-//var keyArray: System.TArray<Integer>;
-var KaPos: TWKundenauftragsPos;
-var alteEndKnotenListe: TWEndKnotenListe;
-var EndKnoten: TWUniStueliPos;
-var txt:String;
+
+var
+ StueliPos: TWUniStueliPos;
+ StueliPosKey: Integer;
+ KaPos: TWKundenauftragsPos;
+ alteEndKnotenListe: TWEndKnotenListe;
+ EndKnoten: TWUniStueliPos;
+ txt:String;
 
 begin
   //Schritt 1 nur ueber Kommissions-FA suchen. Diese haben Prio 1.
@@ -128,11 +158,9 @@ begin
   EndKnotenListe:=TWEndKnotenListe.Create;
   alteEndKnotenListe:=TWEndKnotenListe.Create;
 
-  //Unsortierte Zugriffs-Keys in sortiertes Array wandeln
-//    keyArray:=Stueli.Keys.ToArray;
-//    TArray.Sort<Integer>(keyArray);
-
-  //Loop �ber alle Pos des Kundenauftrages
+  //Loop über alle Pos des Kundenauftrages
+  //StueliKeys ist Eigenschaft von Basisklasse TWStulipos und enthält
+  //die Keys zur Stueckliste sortierter Reihenfolge
   for StueliPosKey in StueliKeys do
   begin
 //      KaPos:= Stueli[StueliPosKey].AsType<TWKundenauftragsPos>;
@@ -160,11 +188,12 @@ begin
     alteEndKnotenListe.Clear;
     alteEndKnotenListe.AddRange(EndKnotenListe);
     EndKnotenListe.Clear;
+    //Zum Debuggen loggen
     txt:=alteEndKnotenListe.ToStr();
     Tools.Log.Log(txt);
 
     //Suche weiter
-    //Bisherige Endknoten m�ssten Serien- und Fremd-Fertigungsteile sein
+    //Bisherige Endknoten müssten Serien- und Fremd-Fertigungsteile sein
     for EndKnoten in alteEndKnotenListe do
     begin
       StueliPos:= EndKnoten As TWUniStueliPos;
@@ -181,9 +210,22 @@ begin
 
 end;
 
+/// <summary>Ermittelt die Präferenz-Berechtigung für alle Positionen
+///des Kundenauftrages.</summary>
+/// <remarks>
+/// Vorraussetzungen: Für alle Pos sind Verkaufspreise bekannt und die Kosten
+/// der untergeordneten Kaufteile wurden für die Pos aufsummiert.
+/// Dabei fließen die Preise der Teile, die in UNIPPS kein Flag praeferenzkennung
+/// besitzen, in den Wert SummeNonEU ein.
+/// |Bei Positionen, die aus einem Kauf- oder Fremdfertigungs-Teil bestehen und
+/// bei denen SummeNonEU nicht Null ist, war dieses Flag nicht gesetzt. Sie sind
+/// daher selbst auch nicht "Präferenz berechtigt".
+/// |Für alle anderen Pos wird das Verhältnis aus SummeNonEU zum Verkaufspreis
+/// gebildet. Überschreitet dieses den Grenzwert MaxAnteilNonEU aus Settings.pas,
+/// ist die Pos nicht "Präferenz berechtigt".
+/// </remarks>
 procedure TWKundenauftrag.ErmittlePraferenzBerechtigung;
 var
-//  StueliPos: TWUniStueliPos;
   StueliPosKey: Integer;
   KaPos: TWKundenauftragsPos;
 

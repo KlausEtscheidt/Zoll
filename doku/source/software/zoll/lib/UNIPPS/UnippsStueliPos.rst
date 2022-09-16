@@ -103,25 +103,25 @@ UnippsStueliPos
       
       :param TWUNIPPSQry Qry: 
     
-   .. py:method:: SucheTeilzurStueliPos)
+   .. py:method:: SucheTeilzurStueliPos
       
     
-   .. py:method:: holeKindervonEndKnoten)
+   .. py:method:: holeKindervonEndKnoten
       
    
-   .. py:function:: holeKinderAusASTUELIPOS)
+   .. py:function:: holeKinderAusASTUELIPOS
       
    
-   .. py:function:: holeKinderAusTeileStu)
+   .. py:function:: holeKinderAusTeileStu
       
     
-   .. py:method:: SummierePreise)
+   .. py:method:: SummierePreise
       
     
-   .. py:method:: BerechnePreisDerPosition)
+   .. py:method:: BerechnePreisDerPosition
       
    
-   .. py:function:: ToStr)
+   .. py:function:: ToStr
       
     
    .. py:method:: DatenInAusgabe(ZielDS:TWDataSet)
@@ -133,13 +133,14 @@ UnippsStueliPos
       :param TWDataSet ZielDS: 
       :param Boolean FirstRun: 
     
-   .. py:method:: EntferneFertigungsauftraege)
+   .. py:method:: EntferneFertigungsauftraege
+      
       Entfernt Fertigungsaufträge aus der Struktur  
       
 
 .. py:class:: TWEndKnotenListe(TList<TWUniStueliPos>)
    
-   .. py:function:: ToStr)
+   .. py:function:: ToStr
       
 
 .. py:attribute:: var EndKnotenListe

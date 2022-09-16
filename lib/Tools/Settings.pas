@@ -3,10 +3,6 @@ unit Settings;
 interface
 
 uses System.SysUtils;
-//System.IOUtils,Logger,
-//ADOConnector, BaumQryUNIPPS, BaumQrySQLite;
-//Vcl.Forms,  System.IOUtils, System.Classes, Logger
-
 
 {$IFDEF HOME}
 const LogDir: String =

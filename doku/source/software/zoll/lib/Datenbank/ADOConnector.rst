@@ -9,32 +9,39 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
    :synopsis: Komfort-Funktionen zum Verbinden mit einer Datenbank  
 
 .. py:class:: EADOConnector(Exception)
+   
    Wenn die Verbindung zur Datenbank fehlschlägt, wird der Fehler: &quot;Konnte Datenbank nicht öffen.&quot; erzeugt. 
 
 .. py:class:: TWADOConnector(TComponent)
+   
    Klasse zur einfachen Verbindung mit UNIPPS oder SQLite 
    
    .. py:property:: Connection
+      
       Verbindung zur Datenbank 
       
       :type:: TADOConnection 
    
    .. py:property:: Tabellen
+      
       Liste aller Tabellen der Datenbank 
       
       :type:: System.TArray<String> 
    
    .. py:data:: var verbunden
+      
       True, wenn Verbindung hergestellt. 
       
       :type:: Boolean
    
    .. py:data:: var Datenbank
+      
       Name der Datenbank (z Debuggen) 
       
       :type:: String
    
    .. py:data:: var Datenbankpfad
+      
       Pfad zur Datenbank (bei SQLite-DB) 
       
       :type:: String
@@ -43,7 +50,8 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       
       :param TComponent AOwner: 
    
-   .. py:function:: ConnectToUNIPPS)
+   .. py:function:: ConnectToUNIPPS
+      
       Mit UNIPPS-Datenbank verbinden. 
       
       Die Verbindung erfolgt über die allgemeine Funktion ConnectToDB. 
@@ -52,6 +60,7 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       :return: Geöffnete TADOConnection  
    
    .. py:function:: ConnectToSQLite(PathTODBFile:String)
+      
       Mit SQLite-Datenbank verbinden. 
       
       Die Verbindung erfolgt über die allgemeine Funktion ConnectToDB. 
@@ -61,6 +70,7 @@ Funktionalitäten aus der Delphi-Klasse TADOConnection werden ergänzt,  um komf
       :return: Geöffnete TADOConnection  
    
    .. py:function:: ConnectToDB(AConnectStr:String;AProvider:String)
+      
       Mit beliebiger Datenbank verbinden. 
       
       Per Connection-String und Provider wird eine Verbindung (TADOConnection)  zu einer beliebigen Datenbank hergestellt.  

@@ -24,5 +24,5 @@ KundenauftragsPos
       :param TWUNIPPSQry Qry: 
       :param Double Kundenrabatt: 
     
-   .. py:method:: holeKinderAusASTUELIPOS)
+   .. py:method:: holeKinderAusASTUELIPOS
       

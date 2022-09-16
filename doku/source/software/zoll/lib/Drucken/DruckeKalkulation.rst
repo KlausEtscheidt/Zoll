@@ -16,7 +16,7 @@ DruckeKalkulation
       :param String PrinterName: 
       :param TDataSet DS: 
     
-   .. py:method:: DruckeInhalt)
+   .. py:method:: DruckeInhalt
       
  
 .. py:method:: PraeferenzKalkulationDrucken(DS:TDataSet;KaId:String)

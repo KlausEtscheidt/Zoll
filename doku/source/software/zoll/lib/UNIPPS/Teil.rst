@@ -80,10 +80,10 @@ Teil
       
       :param TWUNIPPSQry TeileQry: 
     
-   .. py:method:: holeBenennung)
+   .. py:method:: holeBenennung
       
     
-   .. py:method:: holeMaxPreisAus3Bestellungen)
+   .. py:method:: holeMaxPreisAus3Bestellungen
       
    
    .. py:function:: StueliPosGesamtPreis(menge:Double;faktlme_sme:Double)
@@ -91,7 +91,7 @@ Teil
       :param Double menge: 
       :param Double faktlme_sme: 
    
-   .. py:function:: ToStr)
+   .. py:function:: ToStr
       
     
    .. py:method:: DatenInAusgabe(ZielDS:TWDataSet)

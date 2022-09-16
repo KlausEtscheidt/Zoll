@@ -4,10 +4,10 @@ Tools
 
 .. py:module:: Tools
  
-.. py:method:: init)
+.. py:method:: init
    
 
-.. py:function:: GetQuery)
+.. py:function:: GetQuery
    
 
 .. py:attribute:: var Log

@@ -11,19 +11,23 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
 
 .. cpp:type:: TWFeldAusrichtung
 
+   
    Ausrichtung l wird zu left c zu center r zu right 
 
 .. cpp:type:: TWFeldTypRecord
 
+   
    Definition eines Dataset-Feldes 
 
 .. cpp:type:: TWFeldNamen
 
+   
    Array mit Feldnamen 
 
 .. py:class:: TWDataSet(TClientDataSet)
     
    .. py:method:: AddFields(Felder:TFields)
+      
       Alle Felder aus einer TFields-Liste speichern. 
       
       Hiermit können komplette Datensätze aus Datenbank-Querys im  DataSet gespeichert werden. 
@@ -32,6 +36,7 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       :param TFields Felder: Liste von Feldern
     
    .. py:method:: AddFieldByName(FeldName:String;Felder:TFields)
+      
       Einzelnes Feld aus einer TFields-Liste speichern. 
       
       Hiermit können einzelne Felder aus Datenbank-Query im  DataSet gespeichert werden. 
@@ -41,12 +46,14 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       :param TFields Felder: Liste von Feldern
     
    .. py:method:: AddValue(FeldName:String;Val:Variant)
+      
       Einen Wert in das Dataset-Feld mit Namen Key speichern. 
       
       :param String FeldName: 
       :param Variant Val: Wert, der gespeichert wird.
     
    .. py:method:: DefiniereTabelle(FeldTypen:TWFeldTypenDict;Felder:TWFeldNamen)
+      
       Definiert dynamisch ein Dataset 
       
       Es werden Felder eines Dataset angelegt und konfiguriert.  Die Namen der anzulegenden Felder werden im Array Felder übergeben.  
@@ -60,6 +67,7 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       :param TWFeldNamen Felder:  Array mit den Namen aller Felder, die angelegt werden sollen. Das Array definiert auch die Reihenfolge der Spalten. Die Namen müssen in FeldTypen vorhanden sein.  
     
    .. py:method:: DefiniereFeldEigenschaften(FeldTypen:TWFeldTypenDict)
+      
       Es werden Eigenschaften der Felder eines DataSet definiert. 
       
       Für alle Felder werden der Anzeigename, die Ausrichtung und für  Float-Felder ein Standard-Display-Format "0.00" gesetzt.  
@@ -69,6 +77,7 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       :param TWFeldTypenDict FeldTypen:  Dictionary mit Eigenschaften aller Felder.
     
    .. py:method:: SetzeSchreibmodus(Felder:TWFeldNamen)
+      
       Setzt die ReadOnly-Eigenschaft der übergebenen Felder auf False  
       
       Für alle Felder des DataSet, die nicht in der Liste übergeben wurden, wird ReadOnly auf True gesetzt. 
@@ -76,16 +85,19 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       
       :param TWFeldNamen Felder:  Array mit den Namen der Felder,   die "schreibbar" werden sollen. 
    
-   .. py:function:: ToCSV)
+   .. py:function:: ToCSV
+      
        Erzeugt einen String mit allen Feldnamen (; getrennt) 
       
     
    .. py:method:: FiltereSpalten(Felder:TWFeldNamen)
+      
       Setzt alle Felder, die nicht in Felder übergeben wurden,  auf unsichtbar. 
       
       :param TWFeldNamen Felder: 
     
    .. py:method:: print(TxtFile:TStreamWriter)
+      
       Gibt die Feldeigenschaften in eine Datei aus. 
       
       Das Format ist geeignet, als Source-Code zur Definition einer Feldliste  vom Typ array of TWFeldTypRecord (s. Unit Datenmodul) verwendet zu werden. 
@@ -93,5 +105,5 @@ Die Unit ermöglicht die dynamische Definition verschiedener  Datasets zur Laufz
       
       :param TStreamWriter TxtFile: 
  
-.. py:method:: Register)
+.. py:method:: Register
    

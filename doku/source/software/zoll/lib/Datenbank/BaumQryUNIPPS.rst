@@ -19,14 +19,17 @@ Abfrage-Generator für Präfix-UNIPPS-Abfragen.
    :synopsis: UNIPPS-Datenbank-Abfragen für das Programm PräFix 
 
 .. py:class:: TWBaumQryUNIPPS(TWADOQuery)
+   
    Abfragengenerator für alle nötigen UNIPPS-Abfragen.  
    
    .. py:data:: var Export2SQLite
+      
       Flag: Bei True werden bei jeder Abfrage Daten von UNIPPS nach SQLite kopiert. 
       
       :type:: Boolean
    
    .. py:data:: var SQLiteConnector
+      
       Datenbank-Verbindung für SQLite. 
       
       Muss gesetzt werden, wenn Daten kopiert werden sollen. 
@@ -35,52 +38,62 @@ Abfrage-Generator für Präfix-UNIPPS-Abfragen.
       :type:: TWADOConnector
    
    .. py:function:: SucheKundenAuftragspositionen(KaId:string)
+      
       Suche Positionen eines Kunden-Auftrags in UNIPPS auftragpos 
       
       :param string KaId: UNIPPS-Id des Kundenauftrags (auftragpos.ident_nr1)
    
    .. py:function:: SucheFAzuKAPos(KaId:String;id_pos:Integer)
+      
       Suche Fertigungs-Aufrag(Kommissions-FA) zu einer zu Kunden-Auftrags-Position 
       
       :param String KaId: UNIPPS-Id des Kundenauftrags (f_auftragkopf.auftr_nr)
       :param Integer id_pos: UNIPPS-Id der Position des Kundenauftrags (f_auftragkopf.auftr_pos)
    
    .. py:function:: SucheFAzuTeil(t_tg_nr:String)
+      
       Suche Fertigungs-Aufrag(Serien-FA) zu einer Teile-Nummer  in UNIPPS.f_auftragkopf 
       
       :param String t_tg_nr: UNIPPS-Teilenummer (f_auftragkopf.t_tg_nr)
    
    .. py:function:: SuchePosZuFA(FA_Nr:String)
+      
       Suche alle Positionen zu einem Fertigungsauftrag in UNIPPS ASTUELIPOS 
       
       :param String FA_Nr: UNIPPS-ID des Fertigungsauftrages (astuelipos.ident_nr1)
    
    .. py:function:: SucheStuelizuTeil(t_tg_nr:String)
+      
       Suche Stueckliste zu einem Teil in UNIPPS teil_stuelipos 
       
       :param String t_tg_nr: UNIPPS-Teilenummer (teil_stuelipos.ident_nr1)
    
    .. py:function:: SucheDatenzumTeil(t_tg_nr:string)
+      
       Suche Daten zu einem Teil aus UNIPPS.teil bzw teil_uw 
       
       :param string t_tg_nr: UNIPPS-Teilenummer teil_uw.t_tg_nr
    
    .. py:function:: SucheBenennungZuTeil(t_tg_nr:String)
+      
       Suche Benennung zu einem Teil aus UNIPPS teil_bez. 
       
       :param String t_tg_nr: UNIPPS-Teilenummer (teil_bez.ident_nr1)
    
    .. py:function:: SucheLetzte3Bestellungen(t_tg_nr:string)
+      
       Suche letzte 3 Bestellungen zu einem Teil um Preis zu bestimmen (aus UNIPPS bestellpos). 
       
       :param string t_tg_nr: UNIPPS-Teilenummer (bestellpos.t_tg_nr)
    
    .. py:function:: SucheKundenRabatt(kunden_id:string)
+      
       Suche Rabatt zu einem Kunden aus UNIPPS-kunde_zuab 
       
       :param string kunden_id: UNIPPS-ID des Kunden (kunde_zuab.ident_nr1)
     
    .. py:method:: UNI2SQLite(tablename:String)
+      
       Kopiert Daten 1:1 nach SQLite 
       
       :param String tablename: Name der Sqlite-Ziel-Tabelle

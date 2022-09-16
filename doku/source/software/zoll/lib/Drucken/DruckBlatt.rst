@@ -66,17 +66,17 @@ DruckBlatt
       
       :param String DruckJobName: 
    
-   .. py:function:: NeueSeite)
+   .. py:function:: NeueSeite
       
     
-   .. py:method:: DruckeKopfzeile)
+   .. py:method:: DruckeKopfzeile
       
     
-   .. py:method:: DruckeInhalt)
+   .. py:method:: DruckeInhalt
       
     
-   .. py:method:: DruckeDokumentenkopf)
+   .. py:method:: DruckeDokumentenkopf
       
     
-   .. py:method:: DruckeFusszeile)
+   .. py:method:: DruckeFusszeile
       
