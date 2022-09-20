@@ -11,10 +11,9 @@ Präfix: Ein Programm zur Präferenzkalkulation
    :caption: Inhalt:
    
    allgemein/Zweck
-   software/Programmaufbau
+   allgemein/Software-Konzept
+   software/Programm-Verzeichnisse
    Software im Detail<software/Softwareverzeichnisse>
-
-
 
 Indices and tables
 ==================

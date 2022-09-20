@@ -71,6 +71,7 @@ end;
 /// Für die gefundenen Positionen werden Objekte des Typs TWKundenauftragsPos
 /// erzeugt und in die eigene Stückliste eingetragen.
 /// </remarks>
+///:raises EWKundenauftrag: Wenn keine Kinder-Pos gefunden
 procedure TWKundenauftrag.liesKopfundPositionen();
 
 var

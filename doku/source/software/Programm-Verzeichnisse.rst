@@ -1,5 +1,5 @@
-Programm-Aufbau
-===============
+Verzeichnis-Struktur
+====================
 
 Das Programm besteht neben den Modulen, die speziell für dieses Projekt erstellt wurden,
 aus Units allgemeiner Natur, die auch für andere Projekte genutzt werden könnten.

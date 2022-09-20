@@ -45,6 +45,7 @@ Die Klasse TWKundenauftrag bildet die oberste Ebene der auszulesenden  UNIPPS-St
       
       Über die KundenId wird der prinzipielle Rabatt dieses Kunden gelesen.  Für die gefundenen Positionen werden Objekte des Typs TWKundenauftragsPos  erzeugt und in die eigene Stückliste eingetragen. 
 
+      :raises EWKundenauftrag: Wenn keine Kinder-Pos gefunden
       
     
    .. py:method:: holeKinder

@@ -1,4 +1,9 @@
-﻿unit KundenauftragsPos;
+﻿///<summary>Position eines Kundenauftrags</summary>
+///<remarks>Die Unit bildet über die Klasse TWKundenauftragsPos die Position eines Kundenauftrags ab.
+///In der Basisklasse TWUniStueliPos werden alle Eigenschaften abgelegt, die auch für andere
+///Stücklisten-Typen (z.B Fertigungsauftrag) relevant sind.
+///</remarks>
+unit KundenauftragsPos;
 
 interface
 
@@ -6,39 +11,53 @@ uses  System.SysUtils,FertigungsauftragsKopf, UnippsStueliPos,
          Tools;
 
 type
+  ///<summary>Klasse zur Abbildung einer Kundenauftrags-Position</summary>
   TWKundenauftragsPos = class(TWUniStueliPos)
     private
       Rabatt:Double;
     public
       //Einige Felder mit eindeutigen Namen zur Unterscheidung von Basisklasse
-      KaPosIdStuVater: String;   //nur f Debug, redundant in Posdaten
+      ///<summary>Id der Vater-Stueli aus UNIPPS auftragpos.ident_nr1</summary>
+      KaPosIdStuVater: String;
+      ///<summary>Id der Position in der Vater-Stueli aus UNIPPS auftragpos.ident_nr2</summary>
       KaPosIdPos: Integer;
-      KaPosPosNr: String;  //hier nur zum Debuggen, redundant in Posdaten
+      ///<summary>Positionsnr der Position in der Vater-Stueli aus UNIPPS auftragpos.pos</summary>
+      KaPosPosNr: String;
       constructor Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
       procedure holeKinderAusASTUELIPOS;
     end;
 
 implementation
 
+///<summary>Erzeugt eine Kundenauftrags-Position</summary>
+///<remarks>Die Position wird aus den übergebenen Daten der in "Kundenauftrag" ausgeführten Abfrage
+/// "SucheKundenAuftragspositionen" erzeugt.
+/// |Mit UnippsStueliPos.PosDatenSpeichern werden diejenigen Daten aus der Qry in Objekt-Felder
+/// übernommen, welche auch für die anderen Stücklistentypen (z.B FA) relevant sind.
+/// |Mit UnippsStueliPos.SucheTeilzurStueliPos wird das UNIPPS-Teil zu dieser Stücklisten-Position gesucht.
+///</remarks>
+/// <param name="einVater">Vaterknoten Objekt</param>
+/// <param name="Qry">Aus den Daten der Abfrage wird die Position erzeugt.</param>
+/// <param name="Kundenrabatt">Rabatt, der dem Kunden gewährt wird.</param>
 constructor TWKundenauftragsPos.Create(einVater: TWUniStueliPos; Qry: TWUNIPPSQry; Kundenrabatt: Double);
 var
   Menge:Double;
   IdStuPos:String;
 begin
-  //UNIPPS-Mapping SucheKundenAuftragspositionen
-  // auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos
-  // auftragpos.pos as pos_nr,
+  //UNIPPS-Mapping aus Abfrage SucheKundenAuftragspositionen:
+  // auftragpos.ident_nr1 as id_stu, auftragpos.ident_nr2 as id_pos, auftragpos.pos as pos_nr
   { TODO : einiges doppelt hier ? }
   KaPosIdStuVater:=Qry.FieldByName('id_stu').AsString;
   KaPosIdPos:=Qry.FieldByName('id_pos').Value;
   KaPosPosNr:=Trim(Qry.FieldByName('pos_nr').AsString);
+  //Die Id der Stuecklistenpos in der Basisklasse
   IdStuPos:=KaPosIdStuVater+'_'+ KaPosPosNr;  //Eigene ID
   Menge:=Qry.FieldByName('menge').Value;
   inherited Create(einVater, 'KA_Pos', IdStuPos, Menge);
 
-  //Speichere typunabh�ngige Daten �ber geerbte Funktion
+  //Speichere typunabhängige Daten über geerbte Funktion
   PosDatenSpeichern(Qry);
-  //Speichere typabh�ngige Daten
+  //Speichere typabhängige Daten
   Rabatt:=Kundenrabatt;
   VerkaufsPreisUnRabattiert:=Qry.FieldByName('preis').AsFloat;
   VerkaufsPreisRabattiert:=VerkaufsPreisUnRabattiert * (1 + Rabatt); //Rabbat hat Minuszeichen in UNIPPS
@@ -48,6 +67,7 @@ begin
 
 end;
 
+///<summary>Sucht kommissionsbezogene Fertigungsaufträge und deren Kinder</summary>
 procedure TWKundenauftragsPos.holeKinderAusASTUELIPOS;
 
 var gefunden: Boolean;
@@ -68,7 +88,7 @@ begin
   end;
 
   //Ein oder mehrere FA gefunden => Suche deren Kinder in ASTUELIPOS
-  //Zu Doku und Testzwecken werden die FA-K�pfe als Dummy-St�cklisten-Eintr�ge
+  //Zu Doku und Testzwecken werden die FA-Köpfe als Dummy-Stücklisten-Einträge
   //in die Stückliste mit aufgenommen
   while not Qry.Eof do
   begin
@@ -78,7 +98,7 @@ begin
     Tools.Log.Log('-------FA Komm -----');
     Tools.Log.Log(FAKopf.ToStr);
 
-    // in Stueck-Liste �bernehmen
+    // in Stueck-Liste übernehmen
     StueliAdd(FAKopf);
 
     // Kinder suchen
