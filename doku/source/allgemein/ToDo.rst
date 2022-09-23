@@ -9,3 +9,4 @@ Unterschiede zu Excel
   nur toplevel (uebs=0) einlesen
 - Mengen bei verschobenen KA-Pos (Motoren) auf 1 setzen
 - Preisermittlung wenn netto>2*brutto brutto verwenden (Wkz-Kosten)
+- Status in ASTUELIPOS ds<9 
