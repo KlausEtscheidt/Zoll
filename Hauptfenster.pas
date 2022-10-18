@@ -1,4 +1,4 @@
-unit Hauptfenster;
+﻿unit Hauptfenster;
 
 interface
 
