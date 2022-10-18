@@ -1,0 +1,17 @@
+﻿[ADOConnection1]
+Coordinates=267,56,99,33
+
+[ADOQuery1]
+Coordinates=10,10,72,105
+Visible=False
+
+[]
+Coordinates=101,1,77,51
+Visible=True
+LayerNames=NewLayer0
+
+[Module Settings]
+ModelLayerNames=NewLayer0
+ActiveLayerNames=NewLayer0
+EditingLayerName=NewLayer0
+
