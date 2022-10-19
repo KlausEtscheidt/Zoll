@@ -6,9 +6,10 @@ interface
 uses System.SysUtils, Data.DB,
      Init,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
+procedure BasisImportFromUNIPPS();
 procedure BestellungenLesen();
-procedure BestellPositionenLesen();
-procedure BestellKopfLesen();
+procedure LieferantenLesen();
+procedure LieferantenZusatzInfoLesen();
 
 var
   ExportQry: TWQry;
@@ -17,10 +18,7 @@ var
 
 implementation
 
-procedure BestellKopfLesen();
-  var
-    IdBestellung: Integer;
-    BestellDatum: TDateTime;
+procedure BestellungenLesen();
 
 begin
 
@@ -29,40 +27,71 @@ begin
   if not gefunden then
     raise Exception.Create('Keine Bestellungen gefunden.');
 
+  ExportQry.RunExecSQLQuery('delete from Bestellungen;');
+  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+
   while not UnippsQry.Eof do
   begin
-    BestellDatum := UnippsQry.FieldByName('BestDatum').AsDateTime;
-    IdBestellung := UnippsQry.FieldByName('id').AsInteger;
-    ExportQry.InsertFields('BestellKopf', UnippsQry.Fields);
+    ExportQry.InsertFields('Bestellungen', UnippsQry.Fields);
     UnippsQry.next;
   end;
 
+  ExportQry.RunExecSQLQuery('COMMIT;');
+
 end;
 
-procedure BestellPositionenLesen();
-  var
-    IdBestellung: Integer;
-    TeileNr: String;
+procedure LieferantenLesen();
+var
+  OK: Boolean;
 
 begin
 
-  gefunden := UnippsQry.SucheBestellPositionen()    ;
+  ExportQry.RunExecSQLQuery('delete from Lieferanten;');
+
+  OK := ExportQry.HoleLieferanten()    ;
+
+  if not OK then
+    raise Exception.Create('HoleLieferanten fehlgeschlagen.');
+
+end;
+
+procedure LieferantenZusatzInfoLesen();
+var
+  IdLieferant: Integer;
+  LocalQuery2: TWQry;
+
+begin
+
+  //Weiter lokale Query anlegen
+  LocalQuery2 := Init.GetQuery;
+  gefunden := LocalQuery2.HoleLieferantenLokal()    ;
 
   if not gefunden then
-    raise Exception.Create('Keine Bestellungen gefunden.');
+    raise Exception.Create('HoleLieferanten fehlgeschlagen.');
 
-  while not UnippsQry.Eof do
+  ExportQry.RunExecSQLQuery('delete from Lieferanten;');
+  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+  while not LocalQuery2.Eof do
   begin
-    IdBestellung := UnippsQry.FieldByName('BestId').AsInteger;
-    TeileNr:= trim(UnippsQry.FieldByName('t_tg_nr').AsString);
-    ExportQry.InsertFields('BestellPos', UnippsQry.Fields);
-    UnippsQry.next;
+//    ExportQry.InsertFields('Lieferanten', UnippsQry.Fields);
+    IdLieferant:=LocalQuery2.FieldByName('IdLieferant').AsInteger;
+
+    gefunden := UnippsQry.SucheZusatzInfoZuLieferant(IdLieferant);
+
+    if not gefunden then
+      raise Exception.Create('Keine ZusatzInfo zu Lieferant gefunden.');
+    ExportQry.InsertFields('Lieferanten', UnippsQry.Fields);
+    LocalQuery2.next;
   end;
+
+  ExportQry.RunExecSQLQuery('COMMIT;');
 
 end;
 
 
-procedure BestellungenLesen();
+
+procedure BasisImportFromUNIPPS();
 var
   dbUnippsConn: TWADOConnector;
 
@@ -82,8 +111,9 @@ begin
   //Qry fuer lokale DB anlegen
   ExportQry := Init.GetQuery;
 
-  BestellKopfLesen;
-//  BestellPositionenLesen;
+//  BestellungenLesen;
+  LieferantenLesen;
+  LieferantenZusatzInfoLesen();
   UnippsQry.Free;
 
 {$ENDIF}

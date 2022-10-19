@@ -26,7 +26,7 @@ interface
     ///</summary>
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: Integer): Boolean;
-      function SucheBestellPositionen():Boolean;
+      function SucheZusatzInfoZuLieferant(IdLieferant: Integer):Boolean;
     end;
 
 
@@ -37,35 +37,45 @@ implementation
 ///<param name="delta_days">Zeitraum ab heute-delta_days</param>
 //---------------------------------------------------------------------------
 function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
-var sql: String;
+var sql_sub, sql: String;
 begin
   //siehe Access Abfrage "xxxxxxx"
 
-  sql := 'select ident_nr as id, freigabe_datum as BestDatum,'
-      +  'lieferant as IdLieferant '
-      +  'from bestellkopf '
-      +  'where freigabe_datum > TODAY -5*365 order by ident_nr;';
+    sql_sub := 'SELECT bestellkopf.lieferant as IdLieferant, '
+      + 'bestellpos.t_tg_nr, '
+      + 'bestellkopf.freigabe_datum as BestDatumSub '
+      + 'FROM bestellkopf '
+      + 'INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 '
+      + 'where bestellkopf.freigabe_datum > TODAY -5*365 '
+      + 'order by bestellpos.t_tg_nr, IdLieferant';
 //      +  'where freigabe_datum < TODAY - ? order by ident_nr;';
+
+    sql := 'SELECT IdLieferant, t_tg_nr, max(BestDatumSub) as BestDatum, '
+      + 'TODAY as eingelesen '
+      + 'FROM (' + sql_sub + ') '
+      + 'GROUP BY IdLieferant, t_tg_nr '
+      + 'order by t_tg_nr, IdLieferant';
+
 
 //  Result:= RunSelectQueryWithParam(sql,[delta_days]);
   Result:= RunSelectQuery(sql);
 
 end;
 
-///<summary>Suche BestellPositionen in UNIPPS bestellkopf</summary>
+// Hole Zusatzinfos zu Lieferanten
 //---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheBestellPositionen():Boolean;
-var sql: String;
+function TWQryUNIPPS.SucheZusatzInfoZuLieferant(IdLieferant: Integer):Boolean;
 begin
-  //siehe Access Abfrage "xxxxxxx"
+  var sql: String;
 
-    sql := 'SELECT bestellkopf.ident_nr as BestId, bestellpos.t_tg_nr '
-      + ' FROM bestellkopf '
-      + ' INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 '
-      +  'where bestellkopf.freigabe_datum > TODAY -5*365 order by ident_nr;';
-;
-
-  Result:= RunSelectQuery(sql);
+  sql:= 'SELECT lieferant.ident_nr as IdLieferant, adresse.kurzname, '
+      + 'adresse.name1, adresse.name2, '
+      + 'TODAY as eingelesen '
+      + 'FROM lieferant '
+      + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr '
+      + 'where lieferant.ident_nr = ? '
+      + 'ORDER BY lieferant.ident_nr';
+  Result:= RunSelectQueryWithParam(sql,[IntToStr(IdLieferant)]);
 
 end;
 

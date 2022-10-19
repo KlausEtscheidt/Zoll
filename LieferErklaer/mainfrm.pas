@@ -17,6 +17,7 @@ type
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -31,9 +32,14 @@ implementation
 {$R *.dfm}
 
 
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+close;
+end;
+
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  Import.BestellungenLesen;
+  Import.BasisImportFromUNIPPS;
 end;
 
 end.

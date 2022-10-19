@@ -16,8 +16,9 @@ const SQLiteDBFileName: String =
 const LogDir: String =
     'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
                    'Zoll\data\output';
-const SQLiteDBFileName: String = 'V:\E-MAIL\Dr Etscheidt\Exportkontrolle u Zoll\' +
-                 'Warenursprung\Lieferantenerklaerung\lekl.db';
+const SQLiteDBFileName: String =
+    'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
+                 'Zoll\data\db\lekl.db';
 
 {$ENDIF}
 
