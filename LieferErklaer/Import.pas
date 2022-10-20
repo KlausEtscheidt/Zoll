@@ -27,18 +27,43 @@ begin
   if not gefunden then
     raise Exception.Create('Keine Bestellungen gefunden.');
 
-  ExportQry.RunExecSQLQuery('delete from Bestellungen;');
+  ExportQry.RunExecSQLQuery('delete from LieferantTeile;');
   ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
   while not UnippsQry.Eof do
   begin
-    ExportQry.InsertFields('Bestellungen', UnippsQry.Fields);
+    ExportQry.InsertFields('LieferantTeile', UnippsQry.Fields);
     UnippsQry.next;
   end;
 
   ExportQry.RunExecSQLQuery('COMMIT;');
 
 end;
+
+procedure TeilBenennungLesen();
+    var text:String;
+
+begin
+
+  gefunden := UnippsQry.SucheTeileBenennung;
+
+  if not gefunden then
+    raise Exception.Create('Keine TeileBenennung gefunden.');
+
+  ExportQry.RunExecSQLQuery('delete from TeileBenennung;');
+  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+  while not UnippsQry.Eof do
+  begin
+    ExportQry.InsertFields('TeileBenennung', UnippsQry.Fields);
+    text:=UnippsQry.FieldByName('Text').AsString;
+    UnippsQry.next;
+  end;
+
+  ExportQry.RunExecSQLQuery('COMMIT;');
+
+end;
+
 
 procedure LieferantenLesen();
 var
@@ -111,9 +136,10 @@ begin
   //Qry fuer lokale DB anlegen
   ExportQry := Init.GetQuery;
 
-//  BestellungenLesen;
-  LieferantenLesen;
-  LieferantenZusatzInfoLesen();
+  BestellungenLesen;
+  TeilBenennungLesen;
+//  LieferantenLesen;
+//  LieferantenZusatzInfoLesen();
   UnippsQry.Free;
 
 {$ENDIF}
