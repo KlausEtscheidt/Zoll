@@ -12,7 +12,6 @@ uses
 
 type
   TForm1 = class(TForm)
-    ADOConnection1: TADOConnection;
     ADOQuery1: TADOQuery;
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;

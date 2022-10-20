@@ -7,18 +7,17 @@ uses System.SysUtils, Data.DB,
      Init,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
 procedure BasisImportFromUNIPPS();
-procedure BestellungenLesen();
-procedure LieferantenLesen();
-procedure LieferantenZusatzInfoLesen();
+procedure BestellungenAusUnipps();
+procedure TeileBenennungAusUnipps();
 
 var
-  ExportQry: TWQry;
+  LocalQry: TWQry;
   UnippsQry: TWQryUNIPPS;
   gefunden: Boolean;
 
 implementation
 
-procedure BestellungenLesen();
+procedure BestellungenAusUnipps();
 
 begin
 
@@ -27,20 +26,20 @@ begin
   if not gefunden then
     raise Exception.Create('Keine Bestellungen gefunden.');
 
-  ExportQry.RunExecSQLQuery('delete from LieferantTeile;');
-  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+  LocalQry.RunExecSQLQuery('delete from Bestellungen;');
+  LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
   while not UnippsQry.Eof do
   begin
-    ExportQry.InsertFields('LieferantTeile', UnippsQry.Fields);
+    LocalQry.InsertFields('Bestellungen', UnippsQry.Fields);
     UnippsQry.next;
   end;
 
-  ExportQry.RunExecSQLQuery('COMMIT;');
+  LocalQry.RunExecSQLQuery('COMMIT;');
 
 end;
 
-procedure TeilBenennungLesen();
+procedure TeileBenennungAusUnipps();
     var text:String;
 
 begin
@@ -50,17 +49,17 @@ begin
   if not gefunden then
     raise Exception.Create('Keine TeileBenennung gefunden.');
 
-  ExportQry.RunExecSQLQuery('delete from TeileBenennung;');
-  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+  LocalQry.RunExecSQLQuery('delete from tmpTeileBenennung;');
+  LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
   while not UnippsQry.Eof do
   begin
-    ExportQry.InsertFields('TeileBenennung', UnippsQry.Fields);
-    text:=UnippsQry.FieldByName('Text').AsString;
+    LocalQry.InsertFields('tmpTeileBenennung', UnippsQry.Fields);
+//    text:=UnippsQry.FieldByName('Text').AsString;
     UnippsQry.next;
   end;
 
-  ExportQry.RunExecSQLQuery('COMMIT;');
+  LocalQry.RunExecSQLQuery('COMMIT;');
 
 end;
 
@@ -71,9 +70,9 @@ var
 
 begin
 
-  ExportQry.RunExecSQLQuery('delete from Lieferanten;');
+  LocalQry.RunExecSQLQuery('delete from Lieferanten;');
 
-  OK := ExportQry.HoleLieferanten()    ;
+  OK := LocalQry.HoleLieferanten()    ;
 
   if not OK then
     raise Exception.Create('HoleLieferanten fehlgeschlagen.');
@@ -94,8 +93,8 @@ begin
   if not gefunden then
     raise Exception.Create('HoleLieferanten fehlgeschlagen.');
 
-  ExportQry.RunExecSQLQuery('delete from Lieferanten;');
-  ExportQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+  LocalQry.RunExecSQLQuery('delete from Lieferanten;');
+  LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
   while not LocalQuery2.Eof do
   begin
@@ -106,14 +105,30 @@ begin
 
     if not gefunden then
       raise Exception.Create('Keine ZusatzInfo zu Lieferant gefunden.');
-    ExportQry.InsertFields('Lieferanten', UnippsQry.Fields);
+    LocalQry.InsertFields('Lieferanten', UnippsQry.Fields);
     LocalQuery2.next;
   end;
 
-  ExportQry.RunExecSQLQuery('COMMIT;');
+  LocalQry.RunExecSQLQuery('COMMIT;');
 
 end;
 
+procedure TeileBenennungInTeileTabelle();
+begin
+
+  LocalQry.RunExecSQLQuery('delete from Teile;');
+
+  gefunden := LocalQry.TeileName1InTabelle()    ;
+
+  if not gefunden then
+    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
+
+  gefunden := LocalQry.TeileName2InTabelle()    ;
+
+  if not gefunden then
+    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
+
+end;
 
 
 procedure BasisImportFromUNIPPS();
@@ -121,8 +136,13 @@ var
   dbUnippsConn: TWADOConnector;
 
 begin
+
   Init.start;
-{$IFNDEF HOME}
+
+  //Qry fuer lokale DB anlegen
+  LocalQry := Init.GetQuery;
+
+  {$IFNDEF HOME}
 
   //mit UNIPPS verbinden
   dbUnippsConn:=TWADOConnector.Create(nil);
@@ -133,18 +153,15 @@ begin
   UnippsQry:= TWQryUNIPPS.Create(nil);
   UnippsQry.Connector:=dbUnippsConn;
 
-  //Qry fuer lokale DB anlegen
-  ExportQry := Init.GetQuery;
-
-  BestellungenLesen;
-  TeilBenennungLesen;
+  BestellungenAusUnipps;
+  TeileBenennungAusUnipps;
 //  LieferantenLesen;
 //  LieferantenZusatzInfoLesen();
   UnippsQry.Free;
 
 {$ENDIF}
 
-
+  TeileBenennungInTeileTabelle;
 
 end;
 

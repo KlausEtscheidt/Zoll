@@ -10,7 +10,7 @@ const LogDir: String =
     'zoll\data\output';
 const SQLiteDBFileName: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                 'Zoll\data\db\zoll.sqlite';
+                 'Zoll\data\db\lekl.db';
 
 {$ELSE}
 const LogDir: String =

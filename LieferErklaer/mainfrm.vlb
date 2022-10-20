@@ -1,12 +1,9 @@
-﻿[ADOConnection1]
-Coordinates=267,56,99,33
-
-[ADOQuery1]
+﻿[ADOQuery1]
 Coordinates=10,10,72,105
 Visible=False
 
 []
-Coordinates=101,1,77,51
+Coordinates=267,56,99,33
 Visible=True
 LayerNames=NewLayer0
 

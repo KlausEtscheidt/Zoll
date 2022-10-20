@@ -19,6 +19,8 @@ interface
     TWQrySQLite = class(TWADOQuery)
       function HoleLieferanten():Boolean;
       function HoleLieferantenLokal():Boolean;
+      function TeileName1InTabelle():Boolean;
+      function TeileName2InTabelle():Boolean;
     end;
 
 implementation
@@ -44,6 +46,35 @@ begin
   sql := 'select IdLieferant from lieferanten ORDER BY IdLieferant;';
 
   Result:= RunSelectQuery(sql);
+end;
+
+
+// Zeile 1 der Benennung aus tmp-Tabelle in Tabelle Teile
+//---------------------------------------------------------------------------
+function TWQrySQLite.TeileName1InTabelle():Boolean;
+begin
+  var sql: String;
+  sql := 'INSERT INTO Teile (TeileNr, TName1)  '
+      +  'SELECT TeileNr, text AS TName1 from tmpTeileBenennung '
+      +  'WHERE Zeile=1 ORDER BY TeileNr; ';
+
+  Result:= RunExecSQLQuery(sql);
+//  Result:= RunSelectQuery(sql);
+
+end;
+
+// Zeile 2 der Benennung aus tmp-Tabelle in Tabelle Teile
+//---------------------------------------------------------------------------
+function TWQrySQLite.TeileName2InTabelle():Boolean;
+begin
+  var sql: String;
+  sql := 'UPDATE Teile SET TName2 =  '
+      +  '(SELECT text from tmpTeileBenennung '
+      +  'WHERE Teile.TeileNr=tmpTeileBenennung.TeileNr '
+      +  'AND tmpTeileBenennung.Zeile=2);' ;
+
+  Result:= RunExecSQLQuery(sql);
+
 end;
 
 end.
