@@ -40,7 +40,7 @@ begin
 end;
 
 procedure TeileBenennungAusUnipps();
-    var text:String;
+//    var text:String;
 
 begin
 
@@ -63,8 +63,41 @@ begin
 
 end;
 
+procedure PumpenteileAusUnipps();
+    var TeileNr:String;
 
-procedure LieferantenLesen();
+begin
+
+  gefunden :=LocalQry.HoleTeile;
+
+  while not LocalQry.Eof do
+  begin
+    TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
+
+    gefunden := UnippsQry.SucheTeileInFA(TeileNr);
+    if not gefunden then
+      gefunden := UnippsQry.SucheTeileInKA(TeileNr);
+    if not gefunden then
+      gefunden := UnippsQry.SucheTeileInSTU(TeileNr);
+    if not gefunden then
+      gefunden := UnippsQry.SucheTeileInFAKopf(TeileNr);
+
+    if gefunden then
+    begin
+      LocalQry.Edit;
+      LocalQry.FieldByName('Pumpenteil').Value := True;
+      LocalQry.Post;
+    end;
+
+    LocalQry.next;
+
+  end;
+
+
+end;
+
+
+procedure LieferantenTabelleFuellen();
 var
   OK: Boolean;
 
@@ -72,46 +105,13 @@ begin
 
   LocalQry.RunExecSQLQuery('delete from Lieferanten;');
 
-  OK := LocalQry.HoleLieferanten()    ;
+  OK := LocalQry.FuelleLieferantenTabelle()    ;
 
   if not OK then
-    raise Exception.Create('HoleLieferanten fehlgeschlagen.');
+    raise Exception.Create('FuelleLieferantenTabelle fehlgeschlagen.');
 
 end;
 
-procedure LieferantenZusatzInfoLesen();
-var
-  IdLieferant: Integer;
-  LocalQuery2: TWQry;
-
-begin
-
-  //Weiter lokale Query anlegen
-  LocalQuery2 := Init.GetQuery;
-  gefunden := LocalQuery2.HoleLieferantenLokal()    ;
-
-  if not gefunden then
-    raise Exception.Create('HoleLieferanten fehlgeschlagen.');
-
-  LocalQry.RunExecSQLQuery('delete from Lieferanten;');
-  LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
-
-  while not LocalQuery2.Eof do
-  begin
-//    ExportQry.InsertFields('Lieferanten', UnippsQry.Fields);
-    IdLieferant:=LocalQuery2.FieldByName('IdLieferant').AsInteger;
-
-    gefunden := UnippsQry.SucheZusatzInfoZuLieferant(IdLieferant);
-
-    if not gefunden then
-      raise Exception.Create('Keine ZusatzInfo zu Lieferant gefunden.');
-    LocalQry.InsertFields('Lieferanten', UnippsQry.Fields);
-    LocalQuery2.next;
-  end;
-
-  LocalQry.RunExecSQLQuery('COMMIT;');
-
-end;
 
 procedure TeileBenennungInTeileTabelle();
 begin
@@ -153,15 +153,33 @@ begin
   UnippsQry:= TWQryUNIPPS.Create(nil);
   UnippsQry.Connector:=dbUnippsConn;
 
-  BestellungenAusUnipps;
-  TeileBenennungAusUnipps;
-//  LieferantenLesen;
-//  LieferantenZusatzInfoLesen();
-  UnippsQry.Free;
+  // Tabelle Bestellungen leeren und neu befüllen
+  // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
+//     BestellungenAusUnipps;
+
+  // Tabelle tmpTeileBenennung leeren und neu befüllen
+  // je Teil Zeile 1 und 2 der Benennung
+//     TeileBenennungAusUnipps;
+
+  // Tabelle Teile leeren und neu befüllen
+  // Eindeutige TeileNr mit Zeile 1 und 2 der Benennung
+  // Flags Pumpenteil und PFk auf False
+//     TeileBenennungInTeileTabelle;
+
+  // Prüfe ob Teil für Pumpen verwendet wird
+  // Setzt Flag Pumpenteil in Tabelle Teile
+//     PumpenteileAusUnipps;
+
+  // Tabelle Lieferanten leeren und neu befüllen
+  // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
+     LieferantenTabelleFuellen;
 
 {$ENDIF}
 
-  TeileBenennungInTeileTabelle;
+
+
+
+  UnippsQry.Free;
 
 end;
 

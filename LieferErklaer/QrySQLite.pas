@@ -17,8 +17,9 @@ interface
 
   type
     TWQrySQLite = class(TWADOQuery)
+      function FuelleLieferantenTabelle():Boolean;
       function HoleLieferanten():Boolean;
-      function HoleLieferantenLokal():Boolean;
+      function HoleTeile():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
     end;
@@ -28,22 +29,34 @@ implementation
 
 // Hole Lieferanten; Erstmalige Befuellung der Tabelle lieferanten
 //---------------------------------------------------------------------------
-function TWQrySQLite.HoleLieferanten():Boolean;
+function TWQrySQLite.FuelleLieferantenTabelle():Boolean;
 begin
   var sql: String;
-  sql := 'INSERT INTO lieferanten ( IdLieferant ) '
-      +  'SELECT DISTINCT Bestellungen.IdLieferant '
+
+  sql := 'INSERT INTO lieferanten '
+      +  '( IdLieferant, kurzname, name1, name1, eingelesen ) '
+      +  'SELECT DISTINCT IdLieferant,LKurzname,LName1,LName2,eingelesen '
       +  'FROM Bestellungen '
-      +  'ORDER BY Bestellungen.IdLieferant;';
+      +  'ORDER BY IdLieferant;';
   Result:= RunExecSQLQuery(sql);
 end;
 
 // Liest Lieferanten aus lokaler Tabelle lieferanten
 //---------------------------------------------------------------------------
-function TWQrySQLite.HoleLieferantenLokal():Boolean;
+function TWQrySQLite.HoleLieferanten():Boolean;
 begin
   var sql: String;
   sql := 'select IdLieferant from lieferanten ORDER BY IdLieferant;';
+
+  Result:= RunSelectQuery(sql);
+end;
+
+// Liest Lieferanten aus lokaler Tabelle lieferanten
+//---------------------------------------------------------------------------
+function TWQrySQLite.HoleTeile():Boolean;
+begin
+  var sql: String;
+  sql := 'select * From Teile;';
 
   Result:= RunSelectQuery(sql);
 end;
@@ -54,8 +67,8 @@ end;
 function TWQrySQLite.TeileName1InTabelle():Boolean;
 begin
   var sql: String;
-  sql := 'INSERT INTO Teile (TeileNr, TName1)  '
-      +  'SELECT TeileNr, text AS TName1 from tmpTeileBenennung '
+  sql := 'INSERT INTO Teile (TeileNr, TName1, Pumpenteil, PFK)  '
+      +  'SELECT TeileNr, text AS TName1, 0, 0 from tmpTeileBenennung '
       +  'WHERE Zeile=1 ORDER BY TeileNr; ';
 
   Result:= RunExecSQLQuery(sql);

@@ -13,8 +13,6 @@
 ///| Für das Programm PräFix wurden die ersten beiden Schritte
 ///  in der Methode getQuery der Unit Tools zusammengfasst:
 ///| KAQry := Tools.getQuery;
-///| Die Unit verfügt außerdem über einen Modus, bei alle Ergebnisse aus
-///  UNIPPS-Abfragen in eine SQLite-Datenbank kopiert werden.
 /// </remarks>//
 unit QryUNIPPS;
 
@@ -27,11 +25,15 @@ interface
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: Integer): Boolean;
       function SucheTeileBenennung():Boolean;
-      function SucheZusatzInfoZuLieferant(IdLieferant: Integer):Boolean;
+      function SucheTeileInFA(TeileNr: String):Boolean;
+      function SucheTeileInFAKopf(TeileNr: String):Boolean;
+      function SucheTeileInKA(TeileNr: String):Boolean;
+      function SucheTeileInSTU(TeileNr: String):Boolean;
+
     end;
 
   const
-      sql_suche_Bestllungen : String = 'SELECT bestellkopf.lieferant as IdLieferant, '
+      sql_suche_Bestellungen : String = 'SELECT bestellkopf.lieferant as IdLieferant, '
       + 'bestellpos.t_tg_nr as TeileNr, '
       + 'bestellkopf.freigabe_datum as BestDatumSub '
       + 'FROM bestellkopf '
@@ -45,6 +47,10 @@ implementation
 
 
 ///<summary>Suche Bestellungen in UNIPPS bestellkopf</summary>
+/// <remarks>
+/// Eindeutige Kombination aus IdLieferant, TeileNr
+/// Zusatzinfo zu Lieferant: Kurzname,LName1,LName2 bzw zu Teil LTeileNr
+/// </remarks>
 ///<param name="delta_days">Zeitraum ab heute-delta_days</param>
 //---------------------------------------------------------------------------
 function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
@@ -53,7 +59,7 @@ begin
   //siehe Access Abfrage "xxxxxxx"
 
     sql := 'SELECT IdLieferant, TeileNr, max(BestDatumSub) as BestDatum '
-      + 'FROM (' + sql_suche_Bestllungen + ') '
+      + 'FROM (' + sql_suche_Bestellungen + ') '
       + 'GROUP BY IdLieferant, TeileNr '
       + 'order by TeileNr, IdLieferant';
 
@@ -88,7 +94,7 @@ begin
   //siehe Access Abfrage "xxxxxxx"
 
       sql := 'SELECT TeileNr '
-           + 'FROM (' + sql_suche_Bestllungen + ') '
+           + 'FROM (' + sql_suche_Bestellungen + ') '
            + 'group by TeileNr ';
 
        sql := 'SELECT trim(ident_nr1) as TeileNr, art as Zeile, trim(Text) as Text '
@@ -101,23 +107,46 @@ begin
 
 end;
 
-// Hole Zusatzinfos zu Lieferanten
+
+///<summary>Sucht Teil als Position eines FA in UNIPPS astuelipos</summary>
+///<param name="TeileNr">t_tg_nr des Teils</param>
 //---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheZusatzInfoZuLieferant(IdLieferant: Integer):Boolean;
+function TWQryUNIPPS.SucheTeileInFA(TeileNr: String):Boolean;
+var  sql: String;
 begin
-  var sql: String;
-
-  sql:= 'SELECT lieferant.ident_nr as IdLieferant, adresse.kurzname, '
-      + 'adresse.name1, adresse.name2, '
-      + 'TODAY as eingelesen '
-      + 'FROM lieferant '
-      + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr '
-      + 'where lieferant.ident_nr = ? '
-      + 'ORDER BY lieferant.ident_nr';
-  Result:= RunSelectQueryWithParam(sql,[IntToStr(IdLieferant)]);
-
+  sql := 'SELECT t_tg_nr FROM astuelipos where t_tg_nr=?;' ;
+  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
 end;
 
+///<summary>Sucht Teil als Position eines KA in UNIPPS auftragpos</summary>
+///<param name="TeileNr">t_tg_nr des Teils</param>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.SucheTeileInKA(TeileNr: String):Boolean;
+var  sql: String;
+begin
+  sql := 'SELECT t_tg_nr FROM auftragpos where t_tg_nr=?;' ;
+  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+end;
+
+///<summary>Sucht Teil in Stücklisten in UNIPPS teil_stuelipos</summary>
+///<param name="TeileNr">t_tg_nr des Teils</param>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.SucheTeileInSTU(TeileNr: String):Boolean;
+var  sql: String;
+begin
+  sql := 'SELECT t_tg_nr FROM teil_stuelipos where t_tg_nr=?;' ;
+  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+end;
+
+///<summary>Sucht Teil in FA-Kopf in UNIPPS f_auftragkopf</summary>
+///<param name="TeileNr">t_tg_nr des Teils</param>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.SucheTeileInFAKopf(TeileNr: String):Boolean;
+var  sql: String;
+begin
+  sql := 'SELECT t_tg_nr FROM f_auftragkopf where t_tg_nr=?;' ;
+  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+end;
 
 
 end.
