@@ -176,9 +176,6 @@ begin
 
 {$ENDIF}
 
-
-
-
   UnippsQry.Free;
 
 end;

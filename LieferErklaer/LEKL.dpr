@@ -11,7 +11,9 @@ uses
   Logger in '..\lib\Tools\Logger.pas',
   QryAccess in 'QryAccess.pas',
   QrySQLite in 'QrySQLite.pas',
-  QryUNIPPS in 'QryUNIPPS.pas';
+  QryUNIPPS in 'QryUNIPPS.pas',
+  LieferantenFrm in 'LieferantenFrm.pas' {Lieferanten: TFrame},
+  datenmodul in 'datenmodul.pas' {DataModule1: TDataModule};
 
 {$R *.res}
 
@@ -19,5 +21,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TDataModule1, DataModule1);
   Application.Run;
 end.

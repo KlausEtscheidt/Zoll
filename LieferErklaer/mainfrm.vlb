@@ -1,9 +1,5 @@
-﻿[ADOQuery1]
-Coordinates=10,10,72,105
-Visible=False
-
-[]
-Coordinates=267,56,99,33
+﻿[]
+Coordinates=371,221,77,36
 Visible=True
 LayerNames=NewLayer0
 
@@ -11,4 +7,31 @@ LayerNames=NewLayer0
 ModelLayerNames=NewLayer0
 ActiveLayerNames=NewLayer0
 EditingLayerName=NewLayer0
+
+[Unipps1]
+Coordinates=240,1,62,36
+
+[(TMenuItem)]
+Coordinates=282,257,88,36
+
+[UnippsEinlesen]
+Coordinates=32,183,104,36
+
+[MainMenu1]
+Coordinates=371,1,81,36
+
+[Datei1]
+Coordinates=371,56,52,36
+
+[Ende1]
+Coordinates=371,111,51,36
+
+[StatusBar1]
+Coordinates=34,87,78,58
+
+[LieferantenTab]
+Coordinates=371,166,77,36
+
+[PageContol1]
+Coordinates=240,111,93,36
 
