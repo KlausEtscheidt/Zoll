@@ -90,26 +90,4 @@ object DataModule1: TDataModule1
     Left = 280
     Top = 224
   end
-  object ADOQuery3: TADOQuery
-    Active = True
-    Connection = ADOConnection1
-    CursorType = ctStatic
-    Parameters = <>
-    SQL.Strings = (
-      'select * from LieferantenStatus;')
-    Left = 184
-    Top = 160
-    object ADOQuery3Id: TIntegerField
-      FieldName = 'Id'
-    end
-    object ADOQuery3Status: TStringField
-      FieldName = 'Status'
-      Size = 50
-    end
-  end
-  object LStatusDQuelle: TDataSource
-    DataSet = ADOQuery3
-    Left = 272
-    Top = 160
-  end
 end

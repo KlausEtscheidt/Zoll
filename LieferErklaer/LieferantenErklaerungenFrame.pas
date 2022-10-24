@@ -18,7 +18,6 @@ type
     IdLieferant: TDBText;
     DBNavigator1: TDBNavigator;
     LKurzname: TDBText;
-    DBLookupListBox1: TDBLookupListBox;
     TName1: TDBText;
     DBText1: TDBText;
     TName2: TDBText;

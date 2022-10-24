@@ -12,10 +12,6 @@ type
     ADOConnection1: TADOConnection;
     ADOQuery2: TADOQuery;
     LieferantenDQuelle: TDataSource;
-    ADOQuery3: TADOQuery;
-    ADOQuery3Id: TIntegerField;
-    ADOQuery3Status: TStringField;
-    LStatusDQuelle: TDataSource;
     ADOQuery1IdLieferant: TIntegerField;
     ADOQuery1TeileNr: TStringField;
     ADOQuery1LTeileNr: TStringField;

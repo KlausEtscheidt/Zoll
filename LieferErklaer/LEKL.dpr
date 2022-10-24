@@ -14,7 +14,8 @@ uses
   QryUNIPPS in 'QryUNIPPS.pas',
   datenmodul in 'datenmodul.pas' {DataModule1: TDataModule},
   LieferantenErklaerungenFrame in 'LieferantenErklaerungenFrame.pas' {LieferantenErklaerungenFrm: TFrame},
-  LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame};
+  LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame},
+  LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog};
 
 {$R *.res}
 
@@ -23,5 +24,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainForm, mainForm);
   Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
   Application.Run;
 end.

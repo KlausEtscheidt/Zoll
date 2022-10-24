@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
-  Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul;
+  Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
+  LieferantenStatusDlg;
 
 type
   TLieferantenStatusFrm = class(TFrame)
@@ -36,6 +37,7 @@ type
     procedure FilterNameChange(Sender: TObject);
     procedure FilterKurznameChange(Sender: TObject);
     procedure TeileBtnClick(Sender: TObject);
+    procedure StatusBtnClick(Sender: TObject);
 
   private
     { Private-Deklarationen }
@@ -60,6 +62,25 @@ begin
   end
   else
     ADOQuery1.Filtered :=False;
+
+end;
+
+procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
+
+begin
+   LieferantenStatusDialog.alterStatus.Caption
+            := ADOQuery1.FieldByName('Status').AsString;
+   LieferantenStatusDialog.DateTimePicker1.DateTime
+            := ADOQuery1.FieldByName('gilt_bis').AsDateTime;
+    //User-Abfrage
+    if (LieferantenStatusDialog.ShowModal=mrOK) then
+    begin
+      ADOQuery1.Edit;
+      ADOQuery1.FieldByName('gilt_bis').AsDateTime :=
+        LieferantenStatusDialog.DateTimePicker1.DateTime;
+      ADOQuery1.Post;
+    end;
+
 
 end;
 

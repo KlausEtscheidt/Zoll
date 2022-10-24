@@ -293,6 +293,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Height = 25
       Caption = 'Status'
       TabOrder = 0
+      OnClick = StatusBtnClick
     end
     object TeileBtn: TButton
       Left = 544
@@ -326,7 +327,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     Connected = True
     ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl'
     LoginPrompt = False
-    Left = 384
-    Top = 8
+    Left = 424
+    Top = 64
   end
 end

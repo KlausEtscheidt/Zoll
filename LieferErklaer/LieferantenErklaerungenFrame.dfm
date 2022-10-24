@@ -89,17 +89,4 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbPost]
     TabOrder = 1
   end
-  object DBLookupListBox1: TDBLookupListBox
-    Left = 232
-    Top = 57
-    Width = 121
-    Height = 43
-    DataField = 'lekl'
-    DataSource = DataModule1.LieferantenDQuelle
-    KeyField = 'Id'
-    ListField = 'Status'
-    ListFieldIndex = 1
-    ListSource = DataModule1.LStatusDQuelle
-    TabOrder = 2
-  end
 end
