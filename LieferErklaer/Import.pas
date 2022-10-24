@@ -96,6 +96,32 @@ begin
 
 end;
 
+// Tabelle LErklaerungen aktualisieren
+procedure LErklaerungenUpdaten();
+var
+  OK: Boolean;
+  NRecordsVorher,NeueTeile : Integer;
+
+begin
+  LocalQry.RunSelectQuery('Select count() as n from LErklaerungen;');
+  NRecordsVorher := LocalQry.FieldByName('n').AsInteger;
+
+  OK := LocalQry.UpdateLErklaerungen()    ;
+  if not OK then
+    raise Exception.Create('Update LErklaerungen fehlgeschlagen.');
+
+  LocalQry.RunSelectQuery('Select count() as n from LErklaerungen;');
+  NeueTeile := LocalQry.FieldByName('n').AsInteger-NRecordsVorher;
+
+  LocalQry.HoleStatuswert('neue_Teile');
+
+  LocalQry.Edit;
+//  LocalQry.FieldByName('Name').Value := 'neue_Teile';
+  LocalQry.FieldByName('IntWert').Value := NeueTeile;
+  LocalQry.Post;
+
+
+end;
 
 procedure LieferantenTabelleFuellen();
 var
@@ -170,13 +196,17 @@ begin
   // Setzt Flag Pumpenteil in Tabelle Teile
 //     PumpenteileAusUnipps;
 
+  UnippsQry.Free;
+
+{$ENDIF}
+
   // Tabelle Lieferanten leeren und neu befüllen
   // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
      LieferantenTabelleFuellen;
 
-{$ENDIF}
-
-  UnippsQry.Free;
+  // Tabelle LErklaerungen aktualisieren
+  // Neue Teile aus Bestellungen übernehmen
+     LErklaerungenUpdaten;
 
 end;
 

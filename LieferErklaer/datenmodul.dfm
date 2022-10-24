@@ -14,27 +14,58 @@ object DataModule1: TDataModule1
     DataSource = LieferantenDQuelle
     Parameters = <>
     SQL.Strings = (
-      'select * from Teile;')
+      'select *, TName1,TName2,Pumpenteil from LErklaerungen'
+      'join Teile on LErklaerungen.TeileNr=Teile.TeileNr ;')
     Left = 176
     Top = 296
-    object ADOQuery1TeileNr: TWideStringField
-      DisplayWidth = 22
-      FieldName = 'TeileNr'
-      Size = 25
+    object ADOQuery1IdLieferant: TIntegerField
+      FieldName = 'IdLieferant'
     end
-    object ADOQuery1TName1: TWideStringField
-      DisplayWidth = 27
+    object ADOQuery1TeileNr: TStringField
+      FieldName = 'TeileNr'
+      Size = 255
+    end
+    object ADOQuery1LTeileNr: TStringField
+      FieldName = 'LTeileNr'
+      Size = 255
+    end
+    object ADOQuery1LPfk: TIntegerField
+      FieldName = 'LPfk'
+    end
+    object ADOQuery1Stand: TDateTimeField
+      FieldName = 'Stand'
+    end
+    object ADOQuery1BestDatum: TDateTimeField
+      FieldName = 'BestDatum'
+    end
+    object ADOQuery1TeileNr_1: TStringField
+      FieldName = 'TeileNr_1'
+      Size = 255
+    end
+    object ADOQuery1TName1: TStringField
       FieldName = 'TName1'
       Size = 255
     end
-    object ADOQuery1TName2: TWideStringField
-      DisplayWidth = 30
+    object ADOQuery1TName2: TStringField
       FieldName = 'TName2'
       Size = 255
     end
+    object ADOQuery1Pumpenteil: TIntegerField
+      FieldName = 'Pumpenteil'
+    end
     object ADOQuery1PFK: TIntegerField
-      DisplayWidth = 10
       FieldName = 'PFK'
+    end
+    object ADOQuery1TName1_1: TStringField
+      FieldName = 'TName1_1'
+      Size = 255
+    end
+    object ADOQuery1TName2_1: TStringField
+      FieldName = 'TName2_1'
+      Size = 255
+    end
+    object ADOQuery1Pumpenteil_1: TIntegerField
+      FieldName = 'Pumpenteil_1'
     end
   end
   object ADOConnection1: TADOConnection
@@ -53,27 +84,6 @@ object DataModule1: TDataModule1
       'select * from Lieferanten;')
     Left = 184
     Top = 224
-    object ADOQuery2IdLieferant: TIntegerField
-      FieldName = 'IdLieferant'
-    end
-    object ADOQuery2eingelesen: TDateTimeField
-      FieldName = 'eingelesen'
-    end
-    object ADOQuery2LKurzname: TStringField
-      FieldName = 'LKurzname'
-      Size = 200
-    end
-    object ADOQuery2LName1: TStringField
-      FieldName = 'LName1'
-      Size = 200
-    end
-    object ADOQuery2LName2: TStringField
-      FieldName = 'LName2'
-      Size = 200
-    end
-    object ADOQuery2lekl: TIntegerField
-      FieldName = 'lekl'
-    end
   end
   object LieferantenDQuelle: TDataSource
     DataSet = ADOQuery2

@@ -6,24 +6,27 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
-  Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, LieferantenFrm, Vcl.DBCGrids,
-  Vcl.DBCtrls;
+  Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
+  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame;
 
 type
-  TForm1 = class(TForm)
+  TmainForm = class(TForm)
     MainMenu1: TMainMenu;
-    Datei1: TMenuItem;
-    Ende1: TMenuItem;
-    Unipps1: TMenuItem;
-    UnippsEinlesen: TMenuItem;
+    DateiMen: TMenuItem;
+    DateiMenEnde: TMenuItem;
+    UnippsMen: TMenuItem;
+    UnippsMenEinlesen: TMenuItem;
     StatusBar1: TStatusBar;
-    PageContol1: TPageControl;
-    LieferantenTab: TTabSheet;
-    StatusTab: TTabSheet;
-    LieferantenFrame: TLieferanten;
+    LieferantenMen: TMenuItem;
+    LMenStatus: TMenuItem;
+    LMenErklaer: TMenuItem;
+    LieferantenStatusFrm1: TLieferantenStatusFrm;
+    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure UnippsEinlesenClick(Sender: TObject);
+    procedure UnippsMenEinlesenClick(Sender: TObject);
+    procedure LMenStatusClick(Sender: TObject);
+    procedure LMenErklaerClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -31,24 +34,38 @@ type
   end;
 
 var
-  Form1: TForm1;
+  mainForm: TmainForm;
 
 implementation
 
 {$R *.dfm}
 
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TmainForm.FormDestroy(Sender: TObject);
 begin
   close;
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TmainForm.FormShow(Sender: TObject);
 begin
 //  Import.BasisImportFromUNIPPS;
+    LieferantenStatusFrm1.Visible := True;
+    LieferantenErklaerungenFrm1.Visible := False;
 end;
 
-procedure TForm1.UnippsEinlesenClick(Sender: TObject);
+procedure TmainForm.LMenErklaerClick(Sender: TObject);
+begin
+    LieferantenStatusFrm1.Visible := False;
+    LieferantenErklaerungenFrm1.Visible := True;
+end;
+
+procedure TmainForm.LMenStatusClick(Sender: TObject);
+begin
+    LieferantenStatusFrm1.Visible := True;
+    LieferantenErklaerungenFrm1.Visible := False;
+end;
+
+procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 begin
   Import.BasisImportFromUNIPPS;
 end;

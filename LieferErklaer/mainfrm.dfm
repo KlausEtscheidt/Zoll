@@ -1,8 +1,8 @@
-object Form1: TForm1
+object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'Form1'
-  ClientHeight = 511
+  Caption = 'mainForm'
+  ClientHeight = 562
   ClientWidth = 847
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,54 +19,59 @@ object Form1: TForm1
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 492
+    Top = 543
     Width = 847
     Height = 19
     Panels = <>
-    ExplicitLeft = 584
-    ExplicitTop = 480
-    ExplicitWidth = 0
+    ExplicitTop = 492
   end
-  object PageContol1: TPageControl
+  inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
     Top = 0
-    Width = 847
-    Height = 497
-    ActivePage = LieferantenTab
+    Width = 803
+    Height = 445
     TabOrder = 1
-    object StatusTab: TTabSheet
-      Caption = 'Status'
-      ImageIndex = 1
+    inherited ADOConnection1: TADOConnection
+      ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl'
     end
-    object LieferantenTab: TTabSheet
-      Caption = 'Lieferanten'
-      ImageIndex = 1
-      inline LieferantenFrame: TLieferanten
-        Left = 0
-        Top = 0
-        Width = 719
-        Height = 383
-        TabOrder = 0
-        inherited DBNavigator1: TDBNavigator
-          Hints.Strings = ()
-        end
-      end
+  end
+  inline LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm
+    Left = 8
+    Top = 8
+    Width = 719
+    Height = 383
+    TabOrder = 2
+    ExplicitLeft = 8
+    ExplicitTop = 8
+    inherited DBNavigator1: TDBNavigator
+      Hints.Strings = ()
     end
   end
   object MainMenu1: TMainMenu
     Left = 488
-    object Datei1: TMenuItem
+    object DateiMen: TMenuItem
       Caption = 'Datei'
-      object Ende1: TMenuItem
+      object DateiMenEnde: TMenuItem
         Caption = 'Ende'
         OnClick = FormDestroy
       end
     end
-    object Unipps1: TMenuItem
+    object UnippsMen: TMenuItem
       Caption = 'Unipps'
-      object UnippsEinlesen: TMenuItem
+      object UnippsMenEinlesen: TMenuItem
         Caption = 'Einlesen'
-        OnClick = UnippsEinlesenClick
+        OnClick = UnippsMenEinlesenClick
+      end
+    end
+    object LieferantenMen: TMenuItem
+      Caption = 'Lieferanten'
+      object LMenStatus: TMenuItem
+        Caption = 'Status'
+        OnClick = LMenStatusClick
+      end
+      object LMenErklaer: TMenuItem
+        Caption = 'Erkl'#228'rungen'
+        OnClick = LMenErklaerClick
       end
     end
   end

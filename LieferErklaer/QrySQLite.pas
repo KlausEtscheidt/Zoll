@@ -17,6 +17,8 @@ interface
 
   type
     TWQrySQLite = class(TWADOQuery)
+      function HoleStatuswert(Name: String):Boolean;
+      function UpdateLErklaerungen():Boolean;
       function FuelleLieferantenTabelle():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile():Boolean;
@@ -26,6 +28,35 @@ interface
 
 implementation
 
+// Liest Statuswerte aus lokaler Tabelle Stati
+//----------------------------------------------------------------
+function TWQrySQLite.HoleStatuswert(Name: String):Boolean;
+  var sql: String;
+
+begin
+  sql := 'select * From Stati where name=? ;';
+
+  Result:= RunSelectQueryWithParam(sql,[Name]);
+end;
+
+// Ergänzt Tabelle LErklaerungen mit neuen Teilen aus Bestellungen
+//---------------------------------------------------------------------------
+function TWQrySQLite.UpdateLErklaerungen():Boolean;
+  var
+   sql: String;
+begin
+  sql := 'Insert Into LErklaerungen '
+       + 'SELECT Bestellungen.TeileNr, Bestellungen.IdLieferant, '
+       + 'Bestellungen.LTeileNr, Bestellungen.BestDatum, 0 as LPfk, '
+       + 'date() as Stand '
+       + 'from Bestellungen '
+       + 'left join LErklaerungen on '
+       + 'Bestellungen.TeileNr=LErklaerungen.TeileNr '
+       + 'and Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+       + 'WHERE LErklaerungen.IdLieferant Is Null' ;
+
+  Result:= RunExecSQLQuery(sql);
+end;
 
 // Hole Lieferanten; Erstmalige Befuellung der Tabelle lieferanten
 //---------------------------------------------------------------------------
@@ -34,7 +65,7 @@ begin
   var sql: String;
 
   sql := 'INSERT INTO lieferanten '
-      +  '( IdLieferant, kurzname, name1, name1, eingelesen ) '
+      +  '( IdLieferant, LKurzname, LName1, LName1, eingelesen ) '
       +  'SELECT DISTINCT IdLieferant,LKurzname,LName1,LName2,eingelesen '
       +  'FROM Bestellungen '
       +  'ORDER BY IdLieferant;';

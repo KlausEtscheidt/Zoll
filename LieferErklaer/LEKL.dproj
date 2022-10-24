@@ -123,7 +123,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="mainfrm.pas">
-            <Form>Form1</Form>
+            <Form>mainForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Settings.pas"/>
@@ -135,15 +135,20 @@
         <DCCReference Include="QryAccess.pas"/>
         <DCCReference Include="QrySQLite.pas"/>
         <DCCReference Include="QryUNIPPS.pas"/>
-        <DCCReference Include="LieferantenFrm.pas">
-            <Form>Lieferanten</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="datenmodul.pas">
             <Form>DataModule1</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="LieferantenErklaerungenFrame.pas">
+            <Form>LieferantenErklaerungenFrm</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="LieferantenStatusFrame.pas">
+            <Form>LieferantenStatusFrm</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
