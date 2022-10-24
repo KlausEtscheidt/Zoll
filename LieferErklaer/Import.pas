@@ -6,6 +6,7 @@ interface
 uses System.SysUtils, Data.DB,
      Init,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
+procedure BasisImport();
 procedure BasisImportFromUNIPPS();
 procedure BestellungenAusUnipps();
 procedure TeileBenennungAusUnipps();
@@ -156,8 +157,7 @@ begin
 
 end;
 
-
-procedure BasisImportFromUNIPPS();
+procedure BasisImport();
 var
   dbUnippsConn: TWADOConnector;
 
@@ -169,6 +169,28 @@ begin
   LocalQry := Init.GetQuery;
 
   {$IFNDEF HOME}
+//  BasisImportFromUNIPPS;
+  {$ENDIF}
+
+  // Tabelle Lieferanten leeren und neu befüllen
+  // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
+     LieferantenTabelleFuellen;
+                 { TODO :
+Nur neue Lieferanten dazu, alte löschen oder deaktivieren.
+Stand soll erhalten bleiben. }
+ 
+  // Tabelle LErklaerungen aktualisieren
+  // Neue Teile aus Bestellungen übernehmen
+     LErklaerungenUpdaten;
+
+
+end;
+
+procedure BasisImportFromUNIPPS();
+var
+  dbUnippsConn: TWADOConnector;
+
+begin
 
   //mit UNIPPS verbinden
   dbUnippsConn:=TWADOConnector.Create(nil);
@@ -181,32 +203,23 @@ begin
 
   // Tabelle Bestellungen leeren und neu befüllen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
-//     BestellungenAusUnipps;
+     BestellungenAusUnipps;
 
   // Tabelle tmpTeileBenennung leeren und neu befüllen
   // je Teil Zeile 1 und 2 der Benennung
-//     TeileBenennungAusUnipps;
+     TeileBenennungAusUnipps;
 
   // Tabelle Teile leeren und neu befüllen
   // Eindeutige TeileNr mit Zeile 1 und 2 der Benennung
   // Flags Pumpenteil und PFk auf False
-//     TeileBenennungInTeileTabelle;
+     TeileBenennungInTeileTabelle;
 
   // Prüfe ob Teil für Pumpen verwendet wird
   // Setzt Flag Pumpenteil in Tabelle Teile
-//     PumpenteileAusUnipps;
+     PumpenteileAusUnipps;
 
   UnippsQry.Free;
 
-{$ENDIF}
-
-  // Tabelle Lieferanten leeren und neu befüllen
-  // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
-     LieferantenTabelleFuellen;
-
-  // Tabelle LErklaerungen aktualisieren
-  // Neue Teile aus Bestellungen übernehmen
-     LErklaerungenUpdaten;
 
 end;
 

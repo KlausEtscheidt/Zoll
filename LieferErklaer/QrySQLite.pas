@@ -65,8 +65,8 @@ begin
   var sql: String;
 
   sql := 'INSERT INTO lieferanten '
-      +  '( IdLieferant, LKurzname, LName1, LName1, eingelesen ) '
-      +  'SELECT DISTINCT IdLieferant,LKurzname,LName1,LName2,eingelesen '
+      +  '( IdLieferant, LKurzname, LName1, LName1, Stand ) '
+      +  'SELECT DISTINCT IdLieferant,LKurzname,LName1,LName2, eingelesen '
       +  'FROM Bestellungen '
       +  'ORDER BY IdLieferant;';
   Result:= RunExecSQLQuery(sql);

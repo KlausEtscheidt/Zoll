@@ -23,7 +23,6 @@ object mainForm: TmainForm
     Width = 847
     Height = 19
     Panels = <>
-    ExplicitTop = 492
   end
   inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0

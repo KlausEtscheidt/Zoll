@@ -67,7 +67,7 @@ end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 begin
-  Import.BasisImportFromUNIPPS;
+  Import.BasisImport;
 end;
 
 end.
