@@ -21,7 +21,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 24
       Top = 18
       Width = 63
-      Height = 20
+      Height = 16
       Caption = 'Kurz-Name'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -34,7 +34,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 232
       Top = 18
       Width = 33
-      Height = 20
+      Height = 16
       Caption = 'Name'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -47,7 +47,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 93
       Top = 18
       Width = 121
-      Height = 20
+      Height = 24
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -61,7 +61,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 271
       Top = 18
       Width = 172
-      Height = 20
+      Height = 24
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
