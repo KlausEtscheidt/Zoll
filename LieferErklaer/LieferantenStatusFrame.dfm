@@ -4,6 +4,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   Width = 803
   Height = 445
   TabOrder = 0
+  Visible = False
   object GroupBox1: TGroupBox
     Left = 16
     Top = 12
@@ -132,9 +133,9 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   end
   object GroupBox3: TGroupBox
     Left = 16
-    Top = 312
-    Width = 721
-    Height = 113
+    Top = 295
+    Width = 729
+    Height = 130
     Caption = 'gew'#228'hlt'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -144,19 +145,12 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     ParentFont = False
     TabOrder = 2
     object DBText2: TDBText
-      Left = 321
-      Top = 56
+      Left = 83
+      Top = 67
       Width = 217
       Height = 17
       DataField = 'LName2'
       DataSource = DataSource1
-    end
-    object Label8: TLabel
-      Left = 201
-      Top = 79
-      Width = 116
-      Height = 14
-      Caption = 'Lieferantenerkl'#228'rung:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -164,11 +158,24 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = []
       ParentFont = False
     end
-    object Label7: TLabel
-      Left = 21
-      Top = 79
-      Width = 94
+    object Label8: TLabel
+      Left = 311
+      Top = 28
+      Width = 132
       Height = 14
+      Caption = 'Lieferantenerkl'#228'rung:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label7: TLabel
+      Left = 332
+      Top = 96
+      Width = 94
+      Height = 20
       Caption = 'zuletzt ge'#228'ndert:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -179,7 +186,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     end
     object Label6: TLabel
       Left = 21
-      Top = 56
+      Top = 48
       Width = 35
       Height = 14
       Caption = 'Name:'
@@ -191,8 +198,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
     end
     object Label5: TLabel
-      Left = 129
-      Top = 33
+      Left = 21
+      Top = 28
       Width = 57
       Height = 14
       Caption = 'Kurzname:'
@@ -205,7 +212,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     end
     object Label4: TLabel
       Left = 21
-      Top = 33
+      Top = 90
       Width = 15
       Height = 14
       Caption = 'Id:'
@@ -217,10 +224,10 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
     end
     object DBText4: TDBText
-      Left = 121
-      Top = 80
+      Left = 444
+      Top = 96
       Width = 82
-      Height = 13
+      Height = 20
       DataField = 'Stand'
       DataSource = DataSource1
       Font.Charset = DEFAULT_CHARSET
@@ -230,11 +237,11 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = []
       ParentFont = False
     end
-    object DBText3: TDBText
-      Left = 337
-      Top = 80
+    object Status: TDBText
+      Left = 444
+      Top = 51
       Width = 81
-      Height = 13
+      Height = 20
       DataField = 'Status'
       DataSource = DataSource1
       Font.Charset = DEFAULT_CHARSET
@@ -245,8 +252,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
     end
     object DBText1: TDBText
-      Left = 65
-      Top = 56
+      Left = 84
+      Top = 48
       Width = 233
       Height = 13
       DataField = 'LName1'
@@ -259,8 +266,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
     end
     object LKurznameTxt: TDBText
-      Left = 209
-      Top = 33
+      Left = 84
+      Top = 28
       Width = 130
       Height = 17
       DataField = 'LKurzname'
@@ -269,12 +276,12 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object IDLieferantTxt: TDBText
-      Left = 57
-      Top = 33
+      Left = 84
+      Top = 90
       Width = 49
       Height = 17
       DataField = 'IdLieferant'
@@ -286,9 +293,62 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = []
       ParentFont = False
     end
+    object Label3: TLabel
+      Left = 387
+      Top = 70
+      Width = 38
+      Height = 20
+      Caption = 'gilt bis:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object DBText3: TDBText
+      Left = 443
+      Top = 70
+      Width = 82
+      Height = 20
+      DataField = 'gilt_bis'
+      DataSource = DataSource1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label9: TLabel
+      Left = 388
+      Top = 50
+      Width = 39
+      Height = 20
+      Caption = 'Status:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label10: TLabel
+      Left = 519
+      Top = 31
+      Width = 52
+      Height = 14
+      Caption = 'Eingabe:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
     object StatusBtn: TButton
-      Left = 544
-      Top = 25
+      Left = 600
+      Top = 43
       Width = 73
       Height = 25
       Caption = 'Status'
@@ -296,26 +356,19 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       OnClick = StatusBtnClick
     end
     object TeileBtn: TButton
-      Left = 544
-      Top = 72
+      Left = 600
+      Top = 80
       Width = 73
       Height = 25
       Hint = 'Pr'#228'ferenz f'#252'r einzelne Teile eingeben'
       Caption = 'Teile'
       TabOrder = 1
+      Visible = False
       OnClick = TeileBtnClick
     end
   end
-  object StandEdit: TDBEdit
-    Left = 456
-    Top = 296
-    Width = 121
-    Height = 21
-    DataField = 'Stand'
-    DataSource = DataSource1
-    TabOrder = 3
-  end
   object DataSource1: TDataSource
+    OnDataChange = DataSource1DataChange
     Left = 560
     Top = 16
   end

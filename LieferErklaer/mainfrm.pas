@@ -50,9 +50,8 @@ procedure TmainForm.FormShow(Sender: TObject);
 begin
 //  Import.BasisImportFromUNIPPS;
     Init.Start;
-    LieferantenStatusFrm1.InitFrame;
-    LieferantenStatusFrm1.Visible := True;
-    LieferantenErklaerungenFrm1.Visible := False;
+    LieferantenStatusFrm1.ShowFrame;
+    LieferantenErklaerungenFrm1.HideFrame;
 end;
 
 procedure TmainForm.LMenErklaerClick(Sender: TObject);
@@ -61,7 +60,7 @@ var
   SQL: String;
 
 begin
-    LieferantenStatusFrm1.Visible := False;
+    LieferantenStatusFrm1.HideFrame;
     LieferantenErklaerungenFrm1.Visible := True;
 end;
 
@@ -69,8 +68,8 @@ procedure TmainForm.LMenStatusClick(Sender: TObject);
 var
   SQL: String;
 begin
-    LieferantenStatusFrm1.Visible := True;
-    LieferantenErklaerungenFrm1.Visible := False;
+    LieferantenStatusFrm1.ShowFrame;
+    LieferantenErklaerungenFrm1.HideFrame;
 end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);

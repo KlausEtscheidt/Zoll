@@ -30,17 +30,22 @@ object mainForm: TmainForm
     Width = 803
     Height = 445
     TabOrder = 1
+    Visible = False
   end
   inline LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm
     Left = 8
     Top = 8
     Width = 719
-    Height = 383
+    Height = 423
     TabOrder = 2
     ExplicitLeft = 8
     ExplicitTop = 8
-    inherited DBNavigator1: TDBNavigator
-      Hints.Strings = ()
+    inherited Label1: TLabel
+      Width = 56
+      ExplicitWidth = 56
+    end
+    inherited DataSource1: TDataSource
+      OnDataChange = nil
     end
   end
   object MainMenu1: TMainMenu

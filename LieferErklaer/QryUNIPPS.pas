@@ -33,6 +33,9 @@ interface
     end;
 
   const
+      //SQL zum Holen von Bestellungen mit Positionen und Datum seit xxx
+      // => IdLieferant, TeileNr, BestDatumSub
+      // s. Access "1_HoleBestellungen_seit"
       sql_suche_Bestellungen : String = 'SELECT bestellkopf.lieferant as IdLieferant, '
       + 'bestellpos.t_tg_nr as TeileNr, '
       + 'bestellkopf.freigabe_datum as BestDatumSub '
@@ -56,13 +59,16 @@ implementation
 function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
 var  sql: String;
 begin
-  //siehe Access Abfrage "xxxxxxx"
 
+    //Neueste Bestellung je Teil und Lieferant (unique) seit Datum xxx
+    //siehe Access Abfrage "2a_Bestellungen_grouped_Teil_u_Lieferant"
     sql := 'SELECT IdLieferant, TeileNr, max(BestDatumSub) as BestDatum '
       + 'FROM (' + sql_suche_Bestellungen + ') '
       + 'GROUP BY IdLieferant, TeileNr '
       + 'order by TeileNr, IdLieferant';
 
+    //Lieferanten Kurz- und Langname dazu
+    //siehe Access Abfrage "2a_Bestellungen_grouped_Teil_u_Lieferant"
     sql := 'SELECT IdLieferant, TeileNr, BestDatum, '
       + 'lieferant.adresse as LAdressId, adresse.kurzname AS LKurzname, '
       + 'adresse.name1 AS LName1, adresse.name2 AS LName2 '
@@ -70,6 +76,8 @@ begin
       + 'INNER JOIN lieferant on lieferant.ident_nr = IdLieferant '
       + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr ';
 
+    //TeileNummer des Lieferanten dazu
+    //siehe Access Abfrage "2b_Bestellungen_Lieferantendaten"
     sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
          + 'LAdressId, trim(LKurzname) as LKurzname, '
          + 'trim(LName1) as LName1, trim(LName2) as LName2,  '
@@ -78,7 +86,6 @@ begin
          + 'FROM (' + sql + ') '
          + 'LEFT JOIN lieferant_teil on TeileNr = lieferant_teil.ident_nr2  '
          + ' AND IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
-
 
 //  Result:= RunSelectQueryWithParam(sql,[delta_days]);
   Result:= RunSelectQuery(sql);
@@ -91,12 +98,15 @@ end;
 function TWQryUNIPPS.SucheTeileBenennung():Boolean;
 var  sql: String;
 begin
-  //siehe Access Abfrage "xxxxxxx"
 
+      //Eindeutige TeileNr aus Bestellungen der letzten 5 Jahre
+      //siehe Access Abfrage "3a_Teile_aus_Bestellungen_unique"
       sql := 'SELECT TeileNr '
            + 'FROM (' + sql_suche_Bestellungen + ') '
            + 'group by TeileNr ';
 
+       // Zeilen 1 und 2 der deutschen Benennung dazu
+       //siehe Access Abfrage "xxxxxxx"
        sql := 'SELECT trim(ident_nr1) as TeileNr, art as Zeile, trim(Text) as Text '
            + 'FROM teil_bez  '
            + 'where (art=1 or art=2) '

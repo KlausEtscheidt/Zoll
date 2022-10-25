@@ -10,10 +10,6 @@ Coordinates=60,204,73,33
 [DataModule1.Erklaerung]
 Coordinates=90,1,135,33
 
-[IdLieferant]
-Coordinates=390,110,66,51
-Visible=True
-
 [DataModule1.ADOQuery1]
 Coordinates=10,10,139,123
 
@@ -21,10 +17,8 @@ Coordinates=10,10,139,123
 Coordinates=10,204,40,33
 
 []
-Coordinates=90,143,71,51
-
-[DBNavigator1]
 Coordinates=336,1,82,51
+Visible=True
 
 [DataModule1.]
 Coordinates=244,143,175,33

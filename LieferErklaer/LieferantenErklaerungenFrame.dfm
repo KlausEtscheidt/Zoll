@@ -2,62 +2,68 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   Left = 0
   Top = 0
   Width = 719
-  Height = 383
+  Height = 423
   TabOrder = 0
-  object IdLieferant: TDBText
-    Left = 32
-    Top = 32
-    Width = 65
-    Height = 17
-    DataField = 'IdLieferant'
-    DataSource = DataModule1.LieferantenDQuelle
+  object Label1: TLabel
+    Left = 25
+    Top = 3
+    Width = 80
+    Height = 18
+    Caption = 'Lieferant'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
   end
-  object LKurzname: TDBText
-    Left = 123
-    Top = 32
-    Width = 65
-    Height = 17
-    DataField = 'LKurzname'
-    DataSource = DataModule1.LieferantenDQuelle
+  object LKurznameLbl: TLabel
+    Left = 25
+    Top = 27
+    Width = 47
+    Height = 13
+    Caption = 'Kurzname'
   end
-  object DBText1: TDBText
-    Left = 480
-    Top = 248
-    Width = 65
-    Height = 17
+  object IdLieferantLbl: TLabel
+    Left = 25
+    Top = 46
+    Width = 53
+    Height = 13
+    Caption = 'IdLieferant'
   end
   object DBCtrlGrid1: TDBCtrlGrid
-    Left = 14
-    Top = 112
+    Left = 17
+    Top = 72
     Width = 702
-    Height = 232
-    DataSource = DataModule1.Erklaerung
-    PanelHeight = 77
+    Height = 275
+    DataSource = DataSource1
+    PanelHeight = 55
     PanelWidth = 685
     TabOrder = 0
+    RowCount = 5
     object TeileNr: TDBText
       Left = 8
       Top = 8
       Width = 114
       Height = 17
       DataField = 'TeileNr'
-      DataSource = DataModule1.Erklaerung
+      DataSource = DataSource1
     end
     object TName1: TDBText
       Left = 160
       Top = 8
-      Width = 65
+      Width = 145
       Height = 17
       DataField = 'TName1'
-      DataSource = DataModule1.Erklaerung
+      DataSource = DataSource1
     end
     object TName2: TDBText
       Left = 160
-      Top = 40
-      Width = 65
+      Top = 31
+      Width = 161
       Height = 17
       DataField = 'TName2'
-      DataSource = DataModule1.Erklaerung
+      DataSource = DataSource1
     end
     object LTeileNr: TDBText
       Left = 368
@@ -65,7 +71,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
       Width = 65
       Height = 17
       DataField = 'LTeileNr'
-      DataSource = DataModule1.Erklaerung
+      DataSource = DataSource1
     end
     object PFK: TDBCheckBox
       Left = 592
@@ -74,19 +80,23 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
       Height = 17
       Caption = 'PFK'
       DataField = 'LPfk'
-      DataSource = DataModule1.Erklaerung
+      DataSource = DataSource1
       TabOrder = 0
       ValueChecked = '-1'
       ValueUnchecked = '0'
     end
   end
-  object DBNavigator1: TDBNavigator
-    Left = 280
-    Top = 26
-    Width = 210
+  object Button1: TButton
+    Left = 272
+    Top = 376
+    Width = 105
     Height = 25
-    DataSource = DataModule1.LieferantenDQuelle
-    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbPost]
+    Caption = 'Zur'#252'ck'
     TabOrder = 1
+    OnClick = Button1Click
+  end
+  object DataSource1: TDataSource
+    Left = 560
+    Top = 16
   end
 end

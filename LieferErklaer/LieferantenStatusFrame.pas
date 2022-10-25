@@ -26,18 +26,23 @@ type
     Label5: TLabel;
     Label4: TLabel;
     DBText4: TDBText;
-    DBText3: TDBText;
+    Status: TDBText;
     DBText1: TDBText;
     LKurznameTxt: TDBText;
     IDLieferantTxt: TDBText;
     StatusBtn: TButton;
     TeileBtn: TButton;
-    StandEdit: TDBEdit;
+    Label3: TLabel;
+    DBText3: TDBText;
+    Label9: TLabel;
+    Label10: TLabel;
     procedure FilterNameChange(Sender: TObject);
     procedure FilterKurznameChange(Sender: TObject);
     procedure TeileBtnClick(Sender: TObject);
     procedure StatusBtnClick(Sender: TObject);
-    procedure InitFrame();
+    procedure ShowFrame();
+    procedure HideFrame();
+    procedure DataSource1DataChange(Sender: TObject; Field: TField);
 
   private
     { Private-Deklarationen }
@@ -53,7 +58,7 @@ implementation
 
 uses mainfrm;
 
-procedure TLieferantenStatusFrm.InitFrame();
+procedure TLieferantenStatusFrm.ShowFrame();
 var
   SQL : String;
 
@@ -63,10 +68,18 @@ begin
          + 'join LieferantenStatus '
          + 'on LieferantenStatus.id=lieferanten.lekl '
          + 'order by LKurzname;';
+//    SQL := 'select * from lieferanten ;';
     LocalQry.RunSelectQuery(SQL);
     DataSource1.DataSet := LocalQry;
+    Self.Visible := True;
 end;
 
+procedure TLieferantenStatusFrm.HideFrame();
+begin
+  if assigned(LocalQry) then
+    LocalQry.Close;
+  Self.Visible := False;
+end;
 
 procedure TLieferantenStatusFrm.FilterNameChange(Sender: TObject);
 begin
@@ -81,34 +94,61 @@ begin
 
 end;
 
+
 procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
 var
   SQL: String;
   LiefId: String;
-  Stand: String;
+  Stand, GiltBis: String;
+  lekl : String;
   Qry:TWQry;
+  BM:TBookmark;
 
 begin
+
+   // ------- Steuererlemente des Dialogs vorbesetzen
+   // Anzeige des Ist-Status der Lieferantenerklärung
    LieferantenStatusDialog.alterStatus.Caption
             := LocalQry.FieldByName('Status').AsString;
+   // Ist-Status der Lieferantenerklärung in List-Box vorauswählen
+   LieferantenStatusDialog.StatusListBox.KeyValue
+            := LocalQry.FieldByName('lekl').AsInteger;
+   // Datumswähler auf bisheriges Gültigkeitsdatum
    LieferantenStatusDialog.DateTimePicker1.DateTime
             := LocalQry.FieldByName('gilt_bis').AsDateTime;
-   LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+
+   // Dialog anzeigen
    if (LieferantenStatusDialog.ShowModal=mrOK) then
     begin
-//      ADOQuery1.Active:=False;
-//      LocalQry.Close;
-      Stand := DateToStr(LieferantenStatusDialog.DateTimePicker1.DateTime);
-      LocalQry.Edit;
-      StandEdit.Field.Value:=
-              LieferantenStatusDialog.DateTimePicker1.DateTime;
-      //      Qry := Init.GetQuery;
-//      SQL := 'Update Lieferanten set stand="' + Stand
-//          + '" where IdLieferant=' + LiefId +';' ;
-//      Qry.RunExecSQLQuery(SQL);
-//      LocalQry.FieldByName('Stand').Value :=
-//        LieferantenStatusDialog.DateTimePicker1.DateTime;
-      LocalQry.Post;
+
+      // akt. Datensatz merken
+      BM := LocalQry.GetBookmark;
+
+      // --- Daten fuer Update-Abfrage vorbereiten
+      // Datenstand ist heute
+      Stand := FormatDateTime('YYYY-MM-DD', Date);
+      // Lekl gilt bis aus Dialog
+      GiltBis := FormatDateTime('YYYY-MM-DD',
+                        LieferantenStatusDialog.DateTimePicker1.DateTime);
+      // Gewählten Status aus Dialog
+      lekl := LieferantenStatusDialog.StatusListBox.KeyValue ;
+      // Id des Lieferanen aus Basis-Abfrage
+      LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+
+      // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
+      Qry := Init.GetQuery;
+      SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
+          +  'gilt_bis="' + GiltBis + ' " , '
+          +  'lekl="' + lekl + ' "  '
+          +  'where IdLieferant=' + LiefId +';' ;
+      Qry.RunExecSQLQuery(SQL);
+
+      // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
+      LocalQry.Requery();
+
+      // Gehe auf urspünglichen Datensatz
+      LocalQry.GotoBookmark(BM);
+
     end;
 
 
@@ -116,8 +156,26 @@ end;
 
 procedure TLieferantenStatusFrm.TeileBtnClick(Sender: TObject);
 begin
+    mainForm.LieferantenErklaerungenFrm1.IdLieferant
+      :=  LocalQry.FieldByName('IdLieferant').AsString;
+    mainForm.LieferantenErklaerungenFrm1.IdLieferantLbl.Caption
+      := mainForm.LieferantenErklaerungenFrm1.IdLieferant;
+    mainForm.LieferantenErklaerungenFrm1.LKurznameLbl.Caption
+      :=  LocalQry.FieldByName('LKurzname').AsString;
+
     mainForm.LieferantenStatusFrm1.Visible := False;
-    mainForm.LieferantenErklaerungenFrm1.Visible := True;
+    mainForm.LieferantenErklaerungenFrm1.ShowFrame(
+                                    mainForm.LieferantenStatusFrm1);
+end;
+
+procedure TLieferantenStatusFrm.DataSource1DataChange(Sender: TObject;
+  Field: TField);
+begin
+    // Bei LEKL-Status "einige Teile" Dateneingabe für Teile ermöglichen
+    if LocalQry.FieldByName('lekl').AsInteger =3 then
+      TeileBtn.Visible:=True
+    else
+      TeileBtn.Visible:=False;
 
 end;
 

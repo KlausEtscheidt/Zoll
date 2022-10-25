@@ -41,7 +41,6 @@ begin
 end;
 
 procedure TeileBenennungAusUnipps();
-//    var text:String;
 
 begin
 
@@ -56,7 +55,6 @@ begin
   while not UnippsQry.Eof do
   begin
     LocalQry.InsertFields('tmpTeileBenennung', UnippsQry.Fields);
-//    text:=UnippsQry.FieldByName('Text').AsString;
     UnippsQry.next;
   end;
 
@@ -174,7 +172,7 @@ begin
 
   // Tabelle Lieferanten leeren und neu befüllen
   // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
-     LieferantenTabelleFuellen;
+//     LieferantenTabelleFuellen;
                  { TODO :
 Nur neue Lieferanten dazu, alte löschen oder deaktivieren.
 Stand soll erhalten bleiben. }
@@ -182,7 +180,6 @@ Stand soll erhalten bleiben. }
   // Tabelle LErklaerungen aktualisieren
   // Neue Teile aus Bestellungen übernehmen
      LErklaerungenUpdaten;
-
 
 end;
 
@@ -203,7 +200,7 @@ begin
 
   // Tabelle Bestellungen leeren und neu befüllen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
-     BestellungenAusUnipps;
+//     BestellungenAusUnipps;
 
   // Tabelle tmpTeileBenennung leeren und neu befüllen
   // je Teil Zeile 1 und 2 der Benennung

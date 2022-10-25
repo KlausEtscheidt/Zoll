@@ -46,6 +46,7 @@ function TWQrySQLite.UpdateLErklaerungen():Boolean;
    sql: String;
 begin
   sql := 'Insert Into LErklaerungen '
+       + '(TeileNr, IdLieferant, LTeileNr, BestDatum, LPfk, Stand)'
        + 'SELECT Bestellungen.TeileNr, Bestellungen.IdLieferant, '
        + 'Bestellungen.LTeileNr, Bestellungen.BestDatum, 0 as LPfk, '
        + 'date() as Stand '
@@ -82,7 +83,7 @@ begin
   Result:= RunSelectQuery(sql);
 end;
 
-// Liest Lieferanten aus lokaler Tabelle lieferanten
+// Liest Teile aus lokaler Tabelle Teile
 //---------------------------------------------------------------------------
 function TWQrySQLite.HoleTeile():Boolean;
 begin
@@ -94,6 +95,7 @@ end;
 
 
 // Zeile 1 der Benennung aus tmp-Tabelle in Tabelle Teile
+// siehe Access "4a_TeileName1_In_Tabelle_Teile"
 //---------------------------------------------------------------------------
 function TWQrySQLite.TeileName1InTabelle():Boolean;
 begin
@@ -108,6 +110,7 @@ begin
 end;
 
 // Zeile 2 der Benennung aus tmp-Tabelle in Tabelle Teile
+// siehe Access "4b_TeileName2_In_Tabelle_Teile"
 //---------------------------------------------------------------------------
 function TWQrySQLite.TeileName2InTabelle():Boolean;
 begin
