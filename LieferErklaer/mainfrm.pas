@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
-  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame;
+  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Init;
 
 type
   TmainForm = class(TForm)
@@ -49,17 +49,25 @@ end;
 procedure TmainForm.FormShow(Sender: TObject);
 begin
 //  Import.BasisImportFromUNIPPS;
+    Init.Start;
+    LieferantenStatusFrm1.InitFrame;
     LieferantenStatusFrm1.Visible := True;
     LieferantenErklaerungenFrm1.Visible := False;
 end;
 
 procedure TmainForm.LMenErklaerClick(Sender: TObject);
+var
+  Qry : TWQry;
+  SQL: String;
+
 begin
     LieferantenStatusFrm1.Visible := False;
     LieferantenErklaerungenFrm1.Visible := True;
 end;
 
 procedure TmainForm.LMenStatusClick(Sender: TObject);
+var
+  SQL: String;
 begin
     LieferantenStatusFrm1.Visible := True;
     LieferantenErklaerungenFrm1.Visible := False;

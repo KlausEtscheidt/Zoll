@@ -6,13 +6,11 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
-  LieferantenStatusDlg;
+  LieferantenStatusDlg, Init, Vcl.Mask;
 
 type
   TLieferantenStatusFrm = class(TFrame)
-    ADOQuery1: TADOQuery;
     DataSource1: TDataSource;
-    ADOConnection1: TADOConnection;
     GroupBox1: TGroupBox;
     Label2: TLabel;
     FilterKurzname: TEdit;
@@ -34,16 +32,20 @@ type
     IDLieferantTxt: TDBText;
     StatusBtn: TButton;
     TeileBtn: TButton;
+    StandEdit: TDBEdit;
     procedure FilterNameChange(Sender: TObject);
     procedure FilterKurznameChange(Sender: TObject);
     procedure TeileBtnClick(Sender: TObject);
     procedure StatusBtnClick(Sender: TObject);
+    procedure InitFrame();
 
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
+    LocalQry: TWQry;
   end;
+
 
 implementation
 
@@ -51,34 +53,62 @@ implementation
 
 uses mainfrm;
 
+procedure TLieferantenStatusFrm.InitFrame();
+var
+  SQL : String;
+
+begin
+    LocalQry := Init.GetQuery;
+    SQL := 'select *,Status from lieferanten '
+         + 'join LieferantenStatus '
+         + 'on LieferantenStatus.id=lieferanten.lekl '
+         + 'order by LKurzname;';
+    LocalQry.RunSelectQuery(SQL);
+    DataSource1.DataSet := LocalQry;
+end;
+
 
 procedure TLieferantenStatusFrm.FilterNameChange(Sender: TObject);
 begin
   if length(FilterName.Text)>0 then
   begin
     FilterKurzname.Text := '';
-    ADOQuery1.Filtered :=True;
-    ADOQuery1.Filter := 'LName1 Like ''%' + FilterName.Text + '%''';
+    LocalQry.Filtered :=True;
+    LocalQry.Filter := 'LName1 Like ''%' + FilterName.Text + '%''';
   end
   else
-    ADOQuery1.Filtered :=False;
+    LocalQry.Filtered :=False;
 
 end;
 
 procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
+var
+  SQL: String;
+  LiefId: String;
+  Stand: String;
+  Qry:TWQry;
 
 begin
    LieferantenStatusDialog.alterStatus.Caption
-            := ADOQuery1.FieldByName('Status').AsString;
+            := LocalQry.FieldByName('Status').AsString;
    LieferantenStatusDialog.DateTimePicker1.DateTime
-            := ADOQuery1.FieldByName('gilt_bis').AsDateTime;
-    //User-Abfrage
-    if (LieferantenStatusDialog.ShowModal=mrOK) then
+            := LocalQry.FieldByName('gilt_bis').AsDateTime;
+   LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+   if (LieferantenStatusDialog.ShowModal=mrOK) then
     begin
-      ADOQuery1.Edit;
-      ADOQuery1.FieldByName('gilt_bis').AsDateTime :=
-        LieferantenStatusDialog.DateTimePicker1.DateTime;
-      ADOQuery1.Post;
+//      ADOQuery1.Active:=False;
+//      LocalQry.Close;
+      Stand := DateToStr(LieferantenStatusDialog.DateTimePicker1.DateTime);
+      LocalQry.Edit;
+      StandEdit.Field.Value:=
+              LieferantenStatusDialog.DateTimePicker1.DateTime;
+      //      Qry := Init.GetQuery;
+//      SQL := 'Update Lieferanten set stand="' + Stand
+//          + '" where IdLieferant=' + LiefId +';' ;
+//      Qry.RunExecSQLQuery(SQL);
+//      LocalQry.FieldByName('Stand').Value :=
+//        LieferantenStatusDialog.DateTimePicker1.DateTime;
+      LocalQry.Post;
     end;
 
 
@@ -96,11 +126,11 @@ begin
   if length(FilterKurzname.Text)>0 then
   begin
     FilterName.Text := '';
-    ADOQuery1.Filtered :=True;
-    ADOQuery1.Filter := 'LKurzname Like ''%' + FilterKurzname.Text + '%''';
+    LocalQry.Filtered :=True;
+    LocalQry.Filter := 'LKurzname Like ''%' + FilterKurzname.Text + '%''';
   end
   else
-    ADOQuery1.Filtered :=False;
+    LocalQry.Filtered :=False;
 
 end;
 

@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.DBCtrls,
-  Vcl.Mask, Data.DB, Data.Win.ADODB, Vcl.Grids, Vcl.DBGrids;
+  Vcl.Mask, Data.DB, Data.Win.ADODB, Vcl.Grids, Vcl.DBGrids, Init;
 
 type
   TLieferantenStatusDialog = class(TForm)
@@ -14,18 +14,17 @@ type
     OKBtn: TButton;
     ESCBtn: TButton;
     DateTimePicker1: TDateTimePicker;
-    LStatusDQuelle: TDataSource;
-    ADOQuery3: TADOQuery;
-    ADOQuery3Id: TIntegerField;
-    ADOQuery3Status: TStringField;
-    ADOConnection1: TADOConnection;
+    DataSource1: TDataSource;
     StatusListBox: TDBLookupListBox;
     alterStatus: TLabel;
     procedure StatusListBoxClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
+    LocalQry: TWQry;
+
   end;
 
 var
@@ -36,6 +35,19 @@ implementation
 {$R *.dfm}
 
 uses mainfrm;
+
+procedure TLieferantenStatusDialog.FormCreate(Sender: TObject);
+var
+  SQL : String;
+
+begin
+    Init.Start;
+    LocalQry := Init.GetQuery;
+    SQL := 'select * from LieferantenStatus; ';
+    LocalQry.RunSelectQuery(SQL);
+    DataSource1.DataSet := LocalQry;
+
+end;
 
 procedure TLieferantenStatusDialog.StatusListBoxClick(Sender: TObject);
 begin

@@ -30,9 +30,6 @@ object mainForm: TmainForm
     Width = 803
     Height = 445
     TabOrder = 1
-    inherited ADOConnection1: TADOConnection
-      ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl'
-    end
   end
   inline LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm
     Left = 8

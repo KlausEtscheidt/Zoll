@@ -11,6 +11,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -83,38 +84,12 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     KeyField = 'Id'
     ListField = 'Status'
     ListFieldIndex = 2
-    ListSource = LStatusDQuelle
+    ListSource = DataSource1
     TabOrder = 3
     OnClick = StatusListBoxClick
   end
-  object LStatusDQuelle: TDataSource
-    DataSet = ADOQuery3
-    Left = 488
-    Top = 144
-  end
-  object ADOQuery3: TADOQuery
-    Active = True
-    Connection = ADOConnection1
-    CursorType = ctStatic
-    MaxRecords = 4
-    Parameters = <>
-    SQL.Strings = (
-      'select * from LieferantenStatus;')
-    Left = 400
-    Top = 144
-    object ADOQuery3Id: TIntegerField
-      FieldName = 'Id'
-    end
-    object ADOQuery3Status: TStringField
-      FieldName = 'Status'
-      Size = 50
-    end
-  end
-  object ADOConnection1: TADOConnection
-    Connected = True
-    ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl'
-    LoginPrompt = False
-    Left = 304
-    Top = 136
+  object DataSource1: TDataSource
+    Left = 536
+    Top = 56
   end
 end

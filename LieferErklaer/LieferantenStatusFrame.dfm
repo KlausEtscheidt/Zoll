@@ -306,28 +306,17 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       OnClick = TeileBtnClick
     end
   end
-  object ADOQuery1: TADOQuery
-    Active = True
-    Connection = ADOConnection1
-    CursorType = ctStatic
-    Parameters = <>
-    SQL.Strings = (
-      'select *,Status from lieferanten join LieferantenStatus'
-      'on LieferantenStatus.id=lieferanten .lekl'
-      'order by LKurzname;')
-    Left = 496
-    Top = 16
+  object StandEdit: TDBEdit
+    Left = 456
+    Top = 296
+    Width = 121
+    Height = 21
+    DataField = 'Stand'
+    DataSource = DataSource1
+    TabOrder = 3
   end
   object DataSource1: TDataSource
-    DataSet = ADOQuery1
     Left = 560
     Top = 16
-  end
-  object ADOConnection1: TADOConnection
-    Connected = True
-    ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl'
-    LoginPrompt = False
-    Left = 424
-    Top = 64
   end
 end
