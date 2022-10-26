@@ -3,6 +3,7 @@ unit Init;
 interface
 
 uses
+Data.Win.ADODB,
 Settings, Logger, ADOConnector,QryAccess,QrySQLite ;
 
 
@@ -25,6 +26,7 @@ type
 
 procedure start();
 function GetQuery() : TWQry;
+function GetTable(Tablename : String) : TADOTable;
 
 var
   Log: TLogFile;
@@ -62,6 +64,20 @@ begin
    //Connector setzen
    Qry.Connector:=DbConnector;
    Result:= Qry;
+end;
+
+function GetTable(Tablename : String) : TADOTable;
+var
+  Tab: TADOTable;
+
+begin
+  //Query erzeugen
+  Tab := TADOTable.Create(nil);
+  Tab.TableDirect := True;
+  Tab.TableName := Tablename;
+  //Connector setzen
+  Tab.Connection := DbConnector.Connection;
+  Result:= Tab;
 end;
 
 end.

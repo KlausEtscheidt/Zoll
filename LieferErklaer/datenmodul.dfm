@@ -68,9 +68,9 @@ object DataModule1: TDataModule1
     end
   end
   object ADOConnection1: TADOConnection
+    Connected = True
     ConnectionString = 'Provider=MSDASQL.1;Persist Security Info=False;Data Source=lekl;'
     LoginPrompt = False
-    Provider = 'MSDASQL.1'
     Left = 40
     Top = 288
   end
@@ -87,5 +87,13 @@ object DataModule1: TDataModule1
     DataSet = ADOQuery2
     Left = 280
     Top = 224
+  end
+  object ADOTable1: TADOTable
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    TableDirect = True
+    TableName = 'Bestellungen'
+    Left = 296
+    Top = 88
   end
 end

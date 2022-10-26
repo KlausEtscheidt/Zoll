@@ -26,6 +26,7 @@ type
     ADOQuery1TName1_1: TStringField;
     ADOQuery1TName2_1: TStringField;
     ADOQuery1Pumpenteil_1: TIntegerField;
+    ADOTable1: TADOTable;
   private
     { Private-Deklarationen }
   public

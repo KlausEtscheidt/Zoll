@@ -20,6 +20,7 @@ interface
       function HoleStatuswert(Name: String):Boolean;
       function UpdateLErklaerungen():Boolean;
       function FuelleLieferantenTabelle():Boolean;
+      function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile():Boolean;
       function TeileName1InTabelle():Boolean;
@@ -71,6 +72,15 @@ begin
       +  'FROM Bestellungen '
       +  'ORDER BY IdLieferant;';
   Result:= RunExecSQLQuery(sql);
+end;
+
+// Liest Bestellungen aus lokaler Tabelle
+//---------------------------------------------------------------------------
+function TWQrySQLite.HoleBestellungen():Boolean;
+begin
+  var sql: String;
+  sql := 'select * From Bestellungen;';
+  Result:= RunSelectQuery(sql);
 end;
 
 // Liest Lieferanten aus lokaler Tabelle lieferanten

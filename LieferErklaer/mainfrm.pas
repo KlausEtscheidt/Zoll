@@ -27,6 +27,7 @@ type
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LMenStatusClick(Sender: TObject);
     procedure LMenErklaerClick(Sender: TObject);
+    procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -48,10 +49,17 @@ end;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
-//  Import.BasisImportFromUNIPPS;
     Init.Start;
+    //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
+//    Import.BasisImport;
     LieferantenStatusFrm1.ShowFrame;
     LieferantenErklaerungenFrm1.HideFrame;
+end;
+
+procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
+begin
+  LieferantenErklaerungenFrm1.Button1Click(Sender);
+
 end;
 
 procedure TmainForm.LMenErklaerClick(Sender: TObject);

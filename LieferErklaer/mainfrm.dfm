@@ -22,7 +22,10 @@ object mainForm: TmainForm
     Top = 543
     Width = 847
     Height = 19
-    Panels = <>
+    Panels = <
+      item
+        Width = 50
+      end>
   end
   inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
@@ -40,12 +43,8 @@ object mainForm: TmainForm
     TabOrder = 2
     ExplicitLeft = 8
     ExplicitTop = 8
-    inherited Label1: TLabel
-      Width = 56
-      ExplicitWidth = 56
-    end
-    inherited DataSource1: TDataSource
-      OnDataChange = nil
+    inherited Button1: TButton
+      OnClick = LieferantenErklaerungenFrm1Button1Click
     end
   end
   object MainMenu1: TMainMenu

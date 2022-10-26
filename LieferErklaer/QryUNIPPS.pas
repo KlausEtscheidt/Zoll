@@ -24,6 +24,9 @@ interface
     ///</summary>
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: Integer): Boolean;
+      function SucheLieferantenTeilenummer(delta_days: Integer): Boolean;
+      function xSucheLieferantenTeilenummer(IdLieferant: String;
+                                   TeileNr: String): Boolean;
       function SucheTeileBenennung():Boolean;
       function SucheTeileInFA(TeileNr: String):Boolean;
       function SucheTeileInFAKopf(TeileNr: String):Boolean;
@@ -57,7 +60,7 @@ implementation
 ///<param name="delta_days">Zeitraum ab heute-delta_days</param>
 //---------------------------------------------------------------------------
 function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
-var  sql: String;
+var  sql,sqlx: String;
 begin
 
     //Neueste Bestellung je Teil und Lieferant (unique) seit Datum xxx
@@ -75,10 +78,11 @@ begin
       + 'FROM (' + sql + ') as Bestellungen '
       + 'INNER JOIN lieferant on lieferant.ident_nr = IdLieferant '
       + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr ';
+//  Result:= RunSelectQuery(sql);
 
     //TeileNummer des Lieferanten dazu
     //siehe Access Abfrage "2b_Bestellungen_Lieferantendaten"
-    sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
+    sqlx := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
          + 'LAdressId, trim(LKurzname) as LKurzname, '
          + 'trim(LName1) as LName1, trim(LName2) as LName2,  '
          + 'lieferant_teil.l_teile_nr AS LTeileNr,  '
@@ -87,11 +91,59 @@ begin
          + 'LEFT JOIN lieferant_teil on TeileNr = lieferant_teil.ident_nr2  '
          + ' AND IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
 
+    sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
+         + ' trim(LKurzname) as LKurzname, '
+         + 'trim(LName1) as LName1, trim(LName2) as LName2,  '
+         + 'TODAY as eingelesen '
+         + 'FROM (' + sql + ') ;' ;
+
 //  Result:= RunSelectQueryWithParam(sql,[delta_days]);
   Result:= RunSelectQuery(sql);
 
 end;
 
+///<summary>Suche Lieferanten-Teilenummer in UNIPPS </summary>
+//---------------------------------------------------------------------
+function TWQryUNIPPS.SucheLieferantenTeilenummer(delta_days: Integer): Boolean;
+var
+  sql_sub, sql: String;
+begin
+  sql_sub := 'SELECT lieferant as IdLieferant '
+          + 'FROM bestellkopf '
+          + 'where freigabe_datum > TODAY -5*365 +1' ;
+
+//  sql := 'SELECT first 2000 IdLieferant, trim(lieferant_teil.ident_nr2) as TeileNr, '
+//         + 'trim(lieferant_teil.l_teile_nr) AS LTeileNr  '
+//         + 'FROM (' + sql_sub + ') '
+//         + 'LEFT JOIN lieferant_teil on  '
+//         + 'IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
+
+  sql :=   'SELECT  ident_nr1, ident_nr2, l_teile_nr '
+         + 'FROM lieferant_teil where length(l_teile_nr)>0;';
+//         + 'FROM lieferant_teil where ident_nr1 in (' + sql_sub + '); '        ;
+//         + 'LEFT JOIN lieferant_teil on  '
+//         + 'IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
+
+  Result:= RunSelectQuery(sql);
+  //Result:= RunSelectQueryWithParam(sql,[IdLieferant, TeileNr]);
+end;
+
+
+///<summary>Suche Lieferanten-Teilenummer in UNIPPS </summary>
+//---------------------------------------------------------------------
+function TWQryUNIPPS.xSucheLieferantenTeilenummer(IdLieferant: String;
+                                                 TeileNr: String): Boolean;
+var
+  sql: String;
+begin
+  sql := 'SELECT ident_nr1 as IdLieferant, TRIM(ident_nr2) AS TeileNr, '
+       + 'TRIM(l_teile_nr) AS LTeileNr '
+       + 'FROM lieferant_teil '
+       + 'where ident_nr1=? and ident_nr2=?;';
+//       + 'where length(l_teile_nr)>0 and ident_nr1=? order by ident_nr2;';
+//  Result:= RunSelectQuery(sql);
+  Result:= RunSelectQueryWithParam(sql,[IdLieferant,TeileNr]);
+end;
 
 ///<summary>Suche Benennung zu Teilen in UNIPPS </summary>
 //---------------------------------------------------------------------------

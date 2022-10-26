@@ -3,7 +3,7 @@ unit Import;
 
 interface
 
-uses System.SysUtils, Data.DB,
+uses System.SysUtils, Data.DB, Data.Win.ADODB,
      Init,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
 procedure BasisImport();
@@ -18,6 +18,16 @@ var
 
 implementation
 
+/// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
+
+
+uses mainfrm;/// <remarks>
+/// Erste Abfrage zur Erstellung der Datenbasis des Programms
+/// Liest Bestellungen seit xxx Tagen aus UNIPPS in lokale Tabelle Bestellungen
+/// Eindeutige Kombination aus IdLieferant, TeileNr
+/// Zusatzinfo zu Lieferant: Kurzname,LName1,LName2
+/// Zusatzinfo zum Teil  LTeileNr (Lieferanten-Teilenummer)
+/// </remarks>
 procedure BestellungenAusUnipps();
 
 begin
@@ -40,8 +50,105 @@ begin
 
 end;
 
-procedure TeileBenennungAusUnipps();
+/// <summary>Lieferanten-Teilenummer aus UNIPPS lesen </summary>
+/// <remarks>
+/// Wird von BasisImportFromUNIPPS benutzt,
+/// um LTeileNr in lokale Tabelle Bestellungen zu schreiben.
+/// </remarks>
+procedure LieferantenTeilenummerAusUnipps();
 
+var
+  IdLieferant: String;
+  TeileNr, LTeileNr: String;
+  Bestellungen: TADOTable;
+  NRec,cRecNo : Integer;
+  xx:String;
+  failed: Boolean;
+
+begin
+
+  Bestellungen := Init.GetTable('Bestellungen');
+
+  Bestellungen.Open;
+  NRec:=Bestellungen.RecordCount;
+
+  Bestellungen.First;
+
+//  LocalQry.RunExecSQLQuery('delete from tmpLTeileNr;');
+
+  while not Bestellungen.Eof do
+  begin
+
+//    LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+    cRecNo:=Bestellungen.RecNo;
+    IdLieferant:=Bestellungen.FieldByName('IdLieferant').AsString;
+    TeileNr:=Bestellungen.FieldByName('TeileNr').AsString;
+
+    try
+      gefunden := UnippsQry.xSucheLieferantenTeilenummer(IdLieferant,TeileNr);
+    except on E: Exception do
+      xx:= 'nix';
+    end;
+
+    if not gefunden then
+      xx:= 'nix';
+
+//      raise Exception.Create('nix gefunden.');
+
+//    LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
+
+//    while not UnippsQry.Eof do
+//    begin
+//      failed := False;
+//      try
+//        TeileNr := UnippsQry.FieldByName('TeileNr').AsString;
+//      except on E: Exception do
+//        xx:= 'nix' + E.Message;
+//      end;
+//      try
+//        LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
+//      except on E: Exception do
+//        xx:= 'nix' + E.Message;
+//      end;
+//      try
+//        LocalQry.InsertFields('tmpLTeileNr', UnippsQry.Fields);
+//        xx:= UnippsQry.GetFieldValuesAsText;
+//      except on E: Exception do
+//        xx:= 'nix' + E.Message;
+//      end;
+//      try
+//        UnippsQry.next;
+//      finally
+//        failed := True;
+//      end;
+//
+//      if failed then
+//        break;
+//
+//    end;
+
+//    LocalQry.RunExecSQLQuery('COMMIT;');
+    if gefunden then
+      begin
+        try
+          LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
+        except on E: Exception do
+          xx:= 'nix' + E.Message;
+        end;
+        Bestellungen.Edit;
+        Bestellungen.FieldByName('LTeileNr').AsString:= LTeileNr;
+        Bestellungen.Post;
+      end;
+    Bestellungen.next;
+  end;
+
+end;
+
+
+procedure TeileBenennungAusUnipps();
+var
+    cRecNo: Integer;
 begin
 
   gefunden := UnippsQry.SucheTeileBenennung;
@@ -54,6 +161,10 @@ begin
 
   while not UnippsQry.Eof do
   begin
+    cRecNo:=UnippsQry.RecNo;
+    mainForm.StatusBar1.Panels[0].Text := IntToStr(cRecNo) + ' von '
+        + IntToStr(UnippsQry.n_records);
+
     LocalQry.InsertFields('tmpTeileBenennung', UnippsQry.Fields);
     UnippsQry.next;
   end;
@@ -161,13 +272,13 @@ var
 
 begin
 
-  Init.start;
+//  Init.start;
 
   //Qry fuer lokale DB anlegen
   LocalQry := Init.GetQuery;
 
   {$IFNDEF HOME}
-//  BasisImportFromUNIPPS;
+  BasisImportFromUNIPPS;
   {$ENDIF}
 
   // Tabelle Lieferanten leeren und neu befüllen
@@ -183,6 +294,11 @@ Stand soll erhalten bleiben. }
 
 end;
 
+/// <summary>Liest alle noetigen Daten aus UNIPPS lesen </summary>
+/// <remarks>
+/// Liest Bestellungen seit xxx Tagen mit Zusatz-Info
+/// aus UNIPPS in lokale Tabelle Bestellungen
+/// </remarks>
 procedure BasisImportFromUNIPPS();
 var
   dbUnippsConn: TWADOConnector;
@@ -201,6 +317,8 @@ begin
   // Tabelle Bestellungen leeren und neu befüllen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
 //     BestellungenAusUnipps;
+  // Liest Lieferanten-Teilenummer aus UNIPPS in lok. Tab Bestellungen
+//     LieferantenTeilenummerAusUnipps;
 
   // Tabelle tmpTeileBenennung leeren und neu befüllen
   // je Teil Zeile 1 und 2 der Benennung
