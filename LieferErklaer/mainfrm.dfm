@@ -39,7 +39,7 @@ object mainForm: TmainForm
     Left = 8
     Top = 8
     Width = 719
-    Height = 423
+    Height = 466
     TabOrder = 2
     ExplicitLeft = 8
     ExplicitTop = 8

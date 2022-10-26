@@ -19,11 +19,17 @@ type
     TName2: TDBText;
     LTeileNr: TDBText;
     DataSource1: TDataSource;
-    Button1: TButton;
+    BackBtn: TButton;
     Label1: TLabel;
     LKurznameLbl: TLabel;
     IdLieferantLbl: TLabel;
-    procedure Button1Click(Sender: TObject);
+    SortLTeileNrBtn: TButton;
+    SortTeilenrBtn: TButton;
+    SortLTNameBtn: TButton;
+    procedure BackBtnClick(Sender: TObject);
+    procedure SortLTeileNrBtnClick(Sender: TObject);
+    procedure SortLTNameBtnClick(Sender: TObject);
+    procedure SortTeilenrBtnClick(Sender: TObject);
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
@@ -46,7 +52,7 @@ var
 begin
     OldFrame := myOldFrame;
     LocalQry := Init.GetQuery;
-    SQL := 'select *, TName1,TName2,Pumpenteil '
+    SQL := 'select *, TName1, TName2, Pumpenteil '
          + 'from LErklaerungen '
          + 'join Teile on LErklaerungen.TeileNr=Teile.TeileNr '
          + 'where IdLieferant= ' + IdLieferant ;
@@ -55,7 +61,22 @@ begin
     Self.Visible := True;
 end;
 
-procedure TLieferantenErklaerungenFrm.Button1Click(Sender: TObject);
+procedure TLieferantenErklaerungenFrm.SortLTeileNrBtnClick(Sender: TObject);
+begin
+   LocalQry.Sort := 'LTeileNr';
+end;
+
+procedure TLieferantenErklaerungenFrm.SortTeilenrBtnClick(Sender: TObject);
+begin
+   LocalQry.Sort := 'TeileNr';
+end;
+
+procedure TLieferantenErklaerungenFrm.SortLTNameBtnClick(Sender: TObject);
+begin
+   LocalQry.Sort := 'TName1,TName1';
+end;
+
+procedure TLieferantenErklaerungenFrm.BackBtnClick(Sender: TObject);
 begin
     Self.HideFrame;
     OldFrame.Visible := True;
@@ -67,6 +88,5 @@ begin
     LocalQry.Close;
   Self.Visible := False;
 end;
-
 
 end.
