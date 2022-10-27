@@ -69,7 +69,6 @@ begin
          + 'join LieferantenStatus '
          + 'on LieferantenStatus.id=lieferanten.lekl '
          + 'order by LKurzname;';
-//    SQL := 'select * from lieferanten ;';
     LocalQry.RunSelectQuery(SQL);
     DataSource1.DataSet := LocalQry;
     Self.Visible := True;
@@ -99,10 +98,10 @@ end;
 procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
 var
   SQL: String;
-  LiefId: String;
+  IdLieferant: Integer;
   Stand, GiltBis: String;
   lekl : String;
-  Qry:TWQry;
+  UpdateQry:TWQry;
   BM:TBookmark;
 
 begin
@@ -134,15 +133,11 @@ begin
       // Gewählten Status aus Dialog
       lekl := LieferantenStatusDialog.StatusListBox.KeyValue ;
       // Id des Lieferanen aus Basis-Abfrage
-      LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+      IdLieferant := LocalQry.FieldByName('IdLieferant').AsInteger;
 
       // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
-      Qry := Init.GetQuery;
-      SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
-          +  'gilt_bis="' + GiltBis + ' " , '
-          +  'lekl="' + lekl + ' "  '
-          +  'where IdLieferant=' + LiefId +';' ;
-      Qry.RunExecSQLQuery(SQL);
+      UpdateQry := Init.GetQuery;
+      UpdateQry.UpdateLieferantenStatus(IdLieferant, Stand, GiltBis, lekl);
 
       // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
       LocalQry.Requery();
@@ -158,9 +153,9 @@ end;
 procedure TLieferantenStatusFrm.TeileBtnClick(Sender: TObject);
 begin
     mainForm.LieferantenErklaerungenFrm1.IdLieferant
-      :=  LocalQry.FieldByName('IdLieferant').AsString;
+      :=  LocalQry.FieldByName('IdLieferant').AsInteger;
     mainForm.LieferantenErklaerungenFrm1.IdLieferantLbl.Caption
-      := mainForm.LieferantenErklaerungenFrm1.IdLieferant;
+      := IntToStr(mainForm.LieferantenErklaerungenFrm1.IdLieferant);
     mainForm.LieferantenErklaerungenFrm1.LKurznameLbl.Caption
       :=  LocalQry.FieldByName('LKurzname').AsString;
 

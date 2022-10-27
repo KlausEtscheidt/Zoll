@@ -31,13 +31,13 @@ type
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
     procedure PFKChkBoxClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
   public
     LocalQry: TWQry;
-    IdLieferant: String;
+    LErklaerungenTab: TADOTable;
+    IdLieferant: Integer;
     procedure ShowFrame(myOldFrame: TFrame);
     procedure HideFrame();
 
@@ -54,12 +54,13 @@ var
 begin
     OldFrame := myOldFrame;
     LocalQry := Init.GetQuery;
-    SQL := 'select *, TName1, TName2, Pumpenteil '
-         + 'from LErklaerungen '
-         + 'join Teile on LErklaerungen.TeileNr=Teile.TeileNr '
-         + 'where IdLieferant= ' + IdLieferant ;
-    LocalQry.RunSelectQuery(SQL);
+    LocalQry.HoleLErklaerungen(IdLieferant);
     DataSource1.DataSet := LocalQry;
+
+    //langsam Update-Query ist schneller
+//    LErklaerungenTab := Init.GetTable('LErklaerungen');
+//    LErklaerungenTab.Open;
+
     Self.Visible := True;
 end;
 
@@ -85,12 +86,6 @@ begin
 end;
 
 
-procedure TLieferantenErklaerungenFrm.Button1Click(Sender: TObject);
-begin
-var i:Integer;
-i:=10;
-end;
-
 procedure TLieferantenErklaerungenFrm.HideFrame();
 begin
   if assigned(LocalQry) then
@@ -113,20 +108,20 @@ end;
 ///</remarks>
 procedure TLieferantenErklaerungenFrm.PFKChkBoxClick(Sender: TObject);
 var
-  Qry:TWQry;
+  UpdateQry:TWQry;
   BM:TBookmark;
-  SQL,LiefId,TeileNr:String;
+  TeileNr:String;
   Pfk,PanelIndex:Integer;
 
 begin
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
 
-    // Id des Lieferanen und TeileNr aus Basis-Abfrage
-    LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+    // TeileNr aus Basis-Abfrage
     TeileNr := LocalQry.FieldByName('TeileNr').AsString;
-    Pfk := LocalQry.FieldByName('LPfk').AsInteger;
+//    Pfk := LocalQry.FieldByName('LPfk').AsInteger;
 
+    //Pfk aus Formular
     if PFKChkBox.Checked then
         Pfk:=-1
     else
@@ -138,12 +133,14 @@ begin
     // Formular von der Abfrage trennen
     DataSource1.DataSet := nil;
 
-    // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
-    Qry := Init.GetQuery;
-    SQL := 'Update LErklaerungen set LPfk="' + IntToSTr(Pfk) + '"  '
-        +  'where IdLieferant=' + LiefId + ' '
-        +  'and TeileNr="' + TeileNr + '";' ;
-    Qry.RunExecSQLQuery(SQL);
+//    LErklaerungenTab.Locate('IdLieferant;TeileNr',VarArrayOf([LiefId,TeileNr]),[]);
+//    LErklaerungenTab.Edit;
+//    LErklaerungenTab.FieldByName('LPfk').AsInteger:=Pfk;
+//    LErklaerungenTab.Post;
+
+    // --- Update-Abfrage übernimmt Daten in LErklaerungen-Tabelle
+    UpdateQry := Init.GetQuery;
+    UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant, TeileNr, Pfk);
 
     // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
     LocalQry.Requery();
