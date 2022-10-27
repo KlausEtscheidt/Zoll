@@ -3,7 +3,8 @@ unit LieferantenStatusFrame;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.DateUtils, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
   LieferantenStatusDlg, Init, Vcl.Mask;
@@ -114,8 +115,8 @@ begin
    LieferantenStatusDialog.StatusListBox.KeyValue
             := LocalQry.FieldByName('lekl').AsInteger;
    // Datumswähler auf bisheriges Gültigkeitsdatum
-   LieferantenStatusDialog.DateTimePicker1.DateTime
-            := LocalQry.FieldByName('gilt_bis').AsDateTime;
+   GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
+   LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
 
    // Dialog anzeigen
    if (LieferantenStatusDialog.ShowModal=mrOK) then

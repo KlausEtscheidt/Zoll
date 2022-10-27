@@ -18,10 +18,10 @@ var
 
 implementation
 
+uses mainfrm;
+
 /// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
-
-
-uses mainfrm;/// <remarks>
+/// <remarks>
 /// Erste Abfrage zur Erstellung der Datenbasis des Programms
 /// Liest Bestellungen seit xxx Tagen aus UNIPPS in lokale Tabelle Bestellungen
 /// Eindeutige Kombination aus IdLieferant, TeileNr
@@ -210,44 +210,18 @@ end;
 procedure LErklaerungenUpdaten();
 var
   OK: Boolean;
-  NRecordsVorher,NeueTeile : Integer;
-
 begin
-  LocalQry.RunSelectQuery('Select count() as n from LErklaerungen;');
-  NRecordsVorher := LocalQry.FieldByName('n').AsInteger;
-
-  OK := LocalQry.UpdateLErklaerungen()    ;
-  if not OK then
-    raise Exception.Create('Update LErklaerungen fehlgeschlagen.');
-
-  LocalQry.RunSelectQuery('Select count() as n from LErklaerungen;');
-  NeueTeile := LocalQry.FieldByName('n').AsInteger-NRecordsVorher;
-
-  LocalQry.HoleStatuswert('neue_Teile');
-
-  LocalQry.Edit;
-//  LocalQry.FieldByName('Name').Value := 'neue_Teile';
-  LocalQry.FieldByName('IntWert').Value := NeueTeile;
-  LocalQry.Post;
-
-
+  OK := LocalQry.NeueLErklaerungenInTabelle;
+  OK := LocalQry.AlteLErklaerungenLoeschen;
 end;
 
-procedure LieferantenTabelleFuellen();
+procedure LieferantenTabelleUpdaten();
 var
   OK: Boolean;
-
 begin
-
-  LocalQry.RunExecSQLQuery('delete from Lieferanten;');
-
-  OK := LocalQry.FuelleLieferantenTabelle()    ;
-
-  if not OK then
-    raise Exception.Create('FuelleLieferantenTabelle fehlgeschlagen.');
-
+  OK := LocalQry.NeueLieferantenInTabelle;
+  OK := LocalQry.AlteLieferantenLoeschen;
 end;
-
 
 procedure TeileBenennungInTeileTabelle();
 begin
@@ -272,26 +246,20 @@ var
 
 begin
 
-//  Init.start;
-
-  //Qry fuer lokale DB anlegen
+  // Qry fuer lokale DB anlegen
   LocalQry := Init.GetQuery;
 
   {$IFNDEF HOME}
   BasisImportFromUNIPPS;
   {$ENDIF}
 
-  // Tabelle Lieferanten leeren und neu befüllen
-  // Eindeutige IdLieferant mit Zeile 1 und 2 der Benennung
-//     LieferantenTabelleFuellen;
-                 { TODO :
-Nur neue Lieferanten dazu, alte löschen oder deaktivieren.
-Stand soll erhalten bleiben. }
- 
+  // Tabelle Lieferanten updaten
+  // Neue Lieferanten dazu, Alte (nicht in Bestellungen) löschen
+     LieferantenTabelleUpdaten;
+
   // Tabelle LErklaerungen aktualisieren
   // Neue Teile aus Bestellungen übernehmen
      LErklaerungenUpdaten;
-
 end;
 
 /// <summary>Liest alle noetigen Daten aus UNIPPS lesen </summary>
@@ -316,9 +284,9 @@ begin
 
   // Tabelle Bestellungen leeren und neu befüllen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
-//     BestellungenAusUnipps;
+     BestellungenAusUnipps;
   // Liest Lieferanten-Teilenummer aus UNIPPS in lok. Tab Bestellungen
-//     LieferantenTeilenummerAusUnipps;
+     LieferantenTeilenummerAusUnipps;
 
   // Tabelle tmpTeileBenennung leeren und neu befüllen
   // je Teil Zeile 1 und 2 der Benennung

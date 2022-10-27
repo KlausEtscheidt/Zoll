@@ -13,7 +13,7 @@ uses
 type
   TLieferantenErklaerungenFrm = class(TFrame)
     DBCtrlGrid1: TDBCtrlGrid;
-    PFK: TDBCheckBox;
+    PFKChkBox: TDBCheckBox;
     TeileNr: TDBText;
     TName1: TDBText;
     TName2: TDBText;
@@ -30,6 +30,7 @@ type
     procedure SortLTeileNrBtnClick(Sender: TObject);
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
+    procedure PFKChkBoxClick(Sender: TObject);
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
@@ -87,6 +88,41 @@ begin
   if assigned(LocalQry) then
     LocalQry.Close;
   Self.Visible := False;
+end;
+
+procedure TLieferantenErklaerungenFrm.PFKChkBoxClick(Sender: TObject);
+var
+  Qry:TWQry;
+  BM:TBookmark;
+  SQL,LiefId,TeileNr:String;
+  Pfk:Integer;
+
+begin
+    // akt. Datensatz merken
+    BM := LocalQry.GetBookmark;
+    // Id des Lieferanen aus Basis-Abfrage
+    LiefId := LocalQry.FieldByName('IdLieferant').AsString;
+    TeileNr := LocalQry.FieldByName('TeileNr').AsString;
+    Pfk := LocalQry.FieldByName('LPfk').AsInteger;
+
+    if PFKChkBox.Checked then
+        Pfk:=-1
+    else
+        Pfk:=0;
+
+    // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
+    Qry := Init.GetQuery;
+    SQL := 'Update LErklaerungen set LPfk="' + IntToSTr(Pfk) + '"  '
+        +  'where IdLieferant=' + LiefId + ' '
+        +  'and TeileNr="' + TeileNr + '";' ;
+    Qry.RunExecSQLQuery(SQL);
+
+    // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
+    LocalQry.Requery();
+    // Gehe auf urspünglichen Datensatz
+    LocalQry.GotoBookmark(BM);
+//    LocalQry.Edit;
+
 end;
 
 end.

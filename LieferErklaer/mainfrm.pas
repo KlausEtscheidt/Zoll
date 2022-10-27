@@ -58,7 +58,7 @@ end;
 
 procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
 begin
-  LieferantenErklaerungenFrm1.Button1Click(Sender);
+  LieferantenErklaerungenFrm1.BackBtnClick(Sender);
 
 end;
 

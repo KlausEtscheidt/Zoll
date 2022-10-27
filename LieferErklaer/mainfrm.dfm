@@ -43,7 +43,7 @@ object mainForm: TmainForm
     TabOrder = 2
     ExplicitLeft = 8
     ExplicitTop = 8
-    inherited Button1: TButton
+    inherited BackBtn: TButton
       OnClick = LieferantenErklaerungenFrm1Button1Click
     end
   end

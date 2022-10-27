@@ -175,7 +175,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 332
       Top = 96
       Width = 94
-      Height = 20
+      Height = 14
       Caption = 'zuletzt ge'#228'ndert:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -297,7 +297,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 387
       Top = 70
       Width = 38
-      Height = 20
+      Height = 14
       Caption = 'gilt bis:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -324,7 +324,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Left = 388
       Top = 50
       Width = 39
-      Height = 20
+      Height = 14
       Caption = 'Status:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

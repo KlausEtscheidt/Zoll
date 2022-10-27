@@ -36,6 +36,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 72
     Width = 702
     Height = 352
+    AllowInsert = False
     DataSource = DataSource1
     PanelHeight = 44
     PanelWidth = 685
@@ -68,12 +69,12 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     object LTeileNr: TDBText
       Left = 368
       Top = 8
-      Width = 65
+      Width = 193
       Height = 17
       DataField = 'LTeileNr'
       DataSource = DataSource1
     end
-    object PFK: TDBCheckBox
+    object PFKChkBox: TDBCheckBox
       Left = 592
       Top = 7
       Width = 41
@@ -84,6 +85,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
       TabOrder = 0
       ValueChecked = '-1'
       ValueUnchecked = '0'
+      OnClick = PFKChkBoxClick
     end
   end
   object BackBtn: TButton

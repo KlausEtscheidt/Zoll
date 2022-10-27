@@ -18,8 +18,10 @@ interface
   type
     TWQrySQLite = class(TWADOQuery)
       function HoleStatuswert(Name: String):Boolean;
-      function UpdateLErklaerungen():Boolean;
-      function FuelleLieferantenTabelle():Boolean;
+      function NeueLErklaerungenInTabelle():Boolean;
+      function AlteLErklaerungenLoeschen():Boolean;
+      function NeueLieferantenInTabelle():Boolean;
+      function AlteLieferantenLoeschen():Boolean;
       function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile():Boolean;
@@ -42,7 +44,7 @@ end;
 
 // Ergänzt Tabelle LErklaerungen mit neuen Teilen aus Bestellungen
 //---------------------------------------------------------------------------
-function TWQrySQLite.UpdateLErklaerungen():Boolean;
+function TWQrySQLite.NeueLErklaerungenInTabelle():Boolean;
   var
    sql: String;
 begin
@@ -60,19 +62,40 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-// Hole Lieferanten; Erstmalige Befuellung der Tabelle lieferanten
-//---------------------------------------------------------------------------
-function TWQrySQLite.FuelleLieferantenTabelle():Boolean;
-begin
+function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
   var sql: String;
-
-  sql := 'INSERT INTO lieferanten '
-      +  '( IdLieferant, LKurzname, LName1, LName1, Stand ) '
-      +  'SELECT DISTINCT IdLieferant,LKurzname,LName1,LName2, eingelesen '
-      +  'FROM Bestellungen '
-      +  'ORDER BY IdLieferant;';
+begin
+  sql := 'DELETE FROM LErklaerungen LEFT JOIN Bestellungen '
+       + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
+       + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+       + 'WHERE Bestellungen.IdLieferant Is Null ;' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
+
+// Neue Lieferanten in Tabelle lieferanten
+//---------------------------------------------------------------------------
+function TWQrySQLite.NeueLieferantenInTabelle():Boolean;
+  var sql: String;
+begin
+  sql := 'INSERT INTO lieferanten '
+      +  '( IdLieferant, LKurzname, LName1, LName1, Stand ) '
+       + 'SELECT DISTINCT IdLieferant, LKurzname, LName1, LName2, eingelesen '
+       + 'FROM Bestellungen where IdLieferant not in '
+       + '(SELECT IdLieferant FROM Lieferanten) ORDER BY IdLieferant;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+// Entfallene Lieferanten aus Tabelle entfernen
+//---------------------------------------------
+function TWQrySQLite.AlteLieferantenLoeschen():Boolean;
+  var sql: String;
+begin
+  sql := 'delete FROM Lieferanten where IdLieferant not in '
+       + '(SELECT IdLieferant FROM Bestellungen); ';
+  Result:= RunExecSQLQuery(sql);
+end;
+
 
 // Liest Bestellungen aus lokaler Tabelle
 //---------------------------------------------------------------------------
