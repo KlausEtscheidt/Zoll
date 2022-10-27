@@ -43,6 +43,9 @@ object mainForm: TmainForm
     TabOrder = 2
     ExplicitLeft = 8
     ExplicitTop = 8
+    inherited DBCtrlGrid1: TDBCtrlGrid
+      OnPaintPanel = LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel
+    end
     inherited BackBtn: TButton
       OnClick = LieferantenErklaerungenFrm1Button1Click
     end
@@ -68,10 +71,6 @@ object mainForm: TmainForm
       object LMenStatus: TMenuItem
         Caption = 'Status'
         OnClick = LMenStatusClick
-      end
-      object LMenErklaer: TMenuItem
-        Caption = 'Erkl'#228'rungen'
-        OnClick = LMenErklaerClick
       end
     end
   end

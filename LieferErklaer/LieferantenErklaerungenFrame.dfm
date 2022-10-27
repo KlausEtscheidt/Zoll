@@ -36,6 +36,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 72
     Width = 702
     Height = 352
+    AllowDelete = False
     AllowInsert = False
     DataSource = DataSource1
     PanelHeight = 44

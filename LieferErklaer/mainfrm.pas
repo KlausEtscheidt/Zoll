@@ -19,7 +19,6 @@ type
     StatusBar1: TStatusBar;
     LieferantenMen: TMenuItem;
     LMenStatus: TMenuItem;
-    LMenErklaer: TMenuItem;
     LieferantenStatusFrm1: TLieferantenStatusFrm;
     LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
     procedure FormShow(Sender: TObject);
@@ -28,6 +27,8 @@ type
     procedure LMenStatusClick(Sender: TObject);
     procedure LMenErklaerClick(Sender: TObject);
     procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
+    procedure LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel(
+      DBCtrlGrid: TDBCtrlGrid; Index: Integer);
   private
     { Private-Deklarationen }
   public
@@ -60,6 +61,13 @@ procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
 begin
   LieferantenErklaerungenFrm1.BackBtnClick(Sender);
 
+end;
+
+procedure TmainForm.LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel(
+  DBCtrlGrid: TDBCtrlGrid; Index: Integer);
+begin
+ var i:Integer;
+    i:=Index;
 end;
 
 procedure TmainForm.LMenErklaerClick(Sender: TObject);

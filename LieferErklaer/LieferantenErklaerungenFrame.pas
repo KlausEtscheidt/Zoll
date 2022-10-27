@@ -31,6 +31,7 @@ type
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
     procedure PFKChkBoxClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
@@ -83,6 +84,13 @@ begin
     OldFrame.Visible := True;
 end;
 
+
+procedure TLieferantenErklaerungenFrm.Button1Click(Sender: TObject);
+begin
+var i:Integer;
+i:=10;
+end;
+
 procedure TLieferantenErklaerungenFrm.HideFrame();
 begin
   if assigned(LocalQry) then
@@ -90,17 +98,31 @@ begin
   Self.Visible := False;
 end;
 
+///<summary> Uebertragen des PFK-Flags in die Datenbank</summary>
+///<remarks>
+/// Durch den left-Join geht dies nicht direkt in der LocalQry
+/// Die Daten werden in die Tabelle LErklaerungen eingetragen
+/// Das Formular merkt sich aber, das Daten geändert wurden,
+/// was wiederum zu Problemen führt.
+/// Nach dem Auslesen der Daten aus dem Formular,
+/// wird dieses daher von der Datenquelle getrennt.
+/// Nach dem Abspeichern der Daten in der Tabelle,
+/// erhaelt LocalQry durch ein Requery die aktuellen Daten
+/// und wird wieder mit dem Formular verbunden.
+/// LocalQry und Formular werden wieder auf den geänderten Record positionert.
+///</remarks>
 procedure TLieferantenErklaerungenFrm.PFKChkBoxClick(Sender: TObject);
 var
   Qry:TWQry;
   BM:TBookmark;
   SQL,LiefId,TeileNr:String;
-  Pfk:Integer;
+  Pfk,PanelIndex:Integer;
 
 begin
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
-    // Id des Lieferanen aus Basis-Abfrage
+
+    // Id des Lieferanen und TeileNr aus Basis-Abfrage
     LiefId := LocalQry.FieldByName('IdLieferant').AsString;
     TeileNr := LocalQry.FieldByName('TeileNr').AsString;
     Pfk := LocalQry.FieldByName('LPfk').AsInteger;
@@ -110,6 +132,12 @@ begin
     else
         Pfk:=0;
 
+    // Anzeige-Position des aktuellen Datensatzes im Panel merken
+    PanelIndex:=DBCtrlGrid1.PanelIndex;
+
+    // Formular von der Abfrage trennen
+    DataSource1.DataSet := nil;
+
     // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
     Qry := Init.GetQuery;
     SQL := 'Update LErklaerungen set LPfk="' + IntToSTr(Pfk) + '"  '
@@ -117,11 +145,23 @@ begin
         +  'and TeileNr="' + TeileNr + '";' ;
     Qry.RunExecSQLQuery(SQL);
 
-    // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
+    // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
     LocalQry.Requery();
-    // Gehe auf urspünglichen Datensatz
+
+    // Zurueck auf alten Datensatz
     LocalQry.GotoBookmark(BM);
-//    LocalQry.Edit;
+
+    // Formular wieder mit Abfrage verbinden
+    DataSource1.DataSet := LocalQry;
+
+    // Positioniere auf "PanelIndex" Datensätze vorher,
+    // um die alte Position im Anzeige-Panel wieder herzustellen.
+    // DBCtrlGrid1 setzt den aktiven Record (hoffentlich) immer auf Position 0
+    // Der mit MoveBy aktivierte Record wird also an erster Pos dargestellt
+    // Der geänderte Record erhalt die alte Pos "PanelIndex"
+    LocalQry.MoveBy(-PanelIndex) ;
+
+//    DBCtrlGrid1.PanelIndex:=0;
 
 end;
 
