@@ -1,0 +1,18 @@
+function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
+  var sql: String;
+begin
+  sql := 'SELECT Id FROM LErklaerungen LEFT JOIN Bestellungen '
+       + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
+       + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+       + 'WHERE Bestellungen.IdLieferant Is Null ' ;
+  sql := 'DELETE FROM LErklaerungen WHERE Id IN (' + sql + ');' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+#Markiere Pumpenteil-Lieferanten
+UPDATE Lieferanten SET Pumpenteile=-1 WHERE IdLieferant IN (SELECT DISTINCT IdLieferant FROM LErklaerungen 
+JOIN Teile ON LErklaerungen.TeileNr=Teile.TeileNr WHERE Pumpenteil=-1);  
+
+SELECT * FROM Lieferanten WHERE Pumpenteile=-1 and gilt_bis>date();
+
+
