@@ -24,6 +24,10 @@ object mainForm: TmainForm
     Height = 19
     Panels = <
       item
+        Text = 'Hallo'
+        Width = 270
+      end
+      item
         Width = 50
       end>
   end

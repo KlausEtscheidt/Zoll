@@ -24,8 +24,7 @@ interface
     ///</summary>
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: Integer): Boolean;
-      function SucheLieferantenTeilenummer(delta_days: Integer): Boolean;
-      function xSucheLieferantenTeilenummer(IdLieferant: String;
+      function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung():Boolean;
       function SucheTeileInFA(TeileNr: String):Boolean;
@@ -102,36 +101,10 @@ begin
 
 end;
 
-///<summary>Suche Lieferanten-Teilenummer in UNIPPS </summary>
-//---------------------------------------------------------------------
-function TWQryUNIPPS.SucheLieferantenTeilenummer(delta_days: Integer): Boolean;
-var
-  sql_sub, sql: String;
-begin
-  sql_sub := 'SELECT lieferant as IdLieferant '
-          + 'FROM bestellkopf '
-          + 'where freigabe_datum > TODAY -5*365 +1' ;
-
-//  sql := 'SELECT first 2000 IdLieferant, trim(lieferant_teil.ident_nr2) as TeileNr, '
-//         + 'trim(lieferant_teil.l_teile_nr) AS LTeileNr  '
-//         + 'FROM (' + sql_sub + ') '
-//         + 'LEFT JOIN lieferant_teil on  '
-//         + 'IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
-
-  sql :=   'SELECT  ident_nr1, ident_nr2, l_teile_nr '
-         + 'FROM lieferant_teil where length(l_teile_nr)>0;';
-//         + 'FROM lieferant_teil where ident_nr1 in (' + sql_sub + '); '        ;
-//         + 'LEFT JOIN lieferant_teil on  '
-//         + 'IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
-
-  Result:= RunSelectQuery(sql);
-  //Result:= RunSelectQueryWithParam(sql,[IdLieferant, TeileNr]);
-end;
-
 
 ///<summary>Suche Lieferanten-Teilenummer in UNIPPS </summary>
 //---------------------------------------------------------------------
-function TWQryUNIPPS.xSucheLieferantenTeilenummer(IdLieferant: String;
+function TWQryUNIPPS.SucheLieferantenTeilenummer(IdLieferant: String;
                                                  TeileNr: String): Boolean;
 var
   sql: String;
@@ -140,8 +113,6 @@ begin
        + 'TRIM(l_teile_nr) AS LTeileNr '
        + 'FROM lieferant_teil '
        + 'where ident_nr1=? and ident_nr2=?;';
-//       + 'where length(l_teile_nr)>0 and ident_nr1=? order by ident_nr2;';
-//  Result:= RunSelectQuery(sql);
   Result:= RunSelectQueryWithParam(sql,[IdLieferant,TeileNr]);
 end;
 

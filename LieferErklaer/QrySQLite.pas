@@ -68,12 +68,20 @@ begin
 end;
 
 function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
-  var sql: String;
+  var sql1,sql2,sql: String;
 begin
-  sql := 'DELETE FROM LErklaerungen LEFT JOIN Bestellungen '
-       + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
-       + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
-       + 'WHERE Bestellungen.IdLieferant Is Null ;' ;
+  sql1 := 'SELECT LErklaerungen.IdLieferant '
+        + 'FROM LErklaerungen LEFT JOIN Bestellungen '
+        + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
+        + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+        + 'WHERE Bestellungen.IdLieferant Is Null' ;
+  sql2 := 'SELECT LErklaerungen.TeileNr '
+        + 'FROM LErklaerungen LEFT JOIN Bestellungen '
+        + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
+        + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+        + 'WHERE Bestellungen.IdLieferant Is Null ' ;
+  sql := 'DELETE FROM LErklaerungen '
+       + 'WHERE IdLieferant in (' + sql1 + ') and TeileNr in (' + sql2 + ');';
   Result:= RunExecSQLQuery(sql);
 end;
 

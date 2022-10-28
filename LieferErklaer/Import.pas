@@ -20,6 +20,20 @@ implementation
 
 uses mainfrm;
 
+procedure StatusBarLeft(text:String);
+begin
+  mainForm.StatusBar1.Panels[0].Text := text;
+  mainForm.StatusBar1.Panels[1].Text := '';
+  mainForm.StatusBar1.Update;
+end;
+
+procedure StatusBar(akt,max: Integer);
+begin
+   mainForm.StatusBar1.Panels[1].Text :=
+          IntToStr(akt) + ' von ' + IntToStr(max);
+   mainForm.StatusBar1.Update;
+end;
+
 /// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
 /// <remarks>
 /// Erste Abfrage zur Erstellung der Datenbasis des Programms
@@ -32,6 +46,7 @@ procedure BestellungenAusUnipps();
 
 begin
 
+  StatusBarLeft('Import Schritt 1: Lese Bestellungen');
   gefunden := UnippsQry.SucheBestellungen(5*365);
 
   if not gefunden then
@@ -42,6 +57,7 @@ begin
 
   while not UnippsQry.Eof do
   begin
+    StatusBar(UnippsQry.RecNo, UnippsQry.n_records);
     LocalQry.InsertFields('Bestellungen', UnippsQry.Fields);
     UnippsQry.next;
   end;
@@ -61,80 +77,44 @@ var
   IdLieferant: String;
   TeileNr, LTeileNr: String;
   Bestellungen: TADOTable;
-  NRec,cRecNo : Integer;
-  xx:String;
+  ErrMsg:String;
   failed: Boolean;
 
 begin
 
+  StatusBarLeft('Import Schritt 2: Lese Lieferanten-Teilenummern');
   Bestellungen := Init.GetTable('Bestellungen');
 
   Bestellungen.Open;
-  NRec:=Bestellungen.RecordCount;
-
   Bestellungen.First;
-
-//  LocalQry.RunExecSQLQuery('delete from tmpLTeileNr;');
 
   while not Bestellungen.Eof do
   begin
 
-//    LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+    StatusBar(Bestellungen.RecNo, Bestellungen.RecordCount);
 
-    cRecNo:=Bestellungen.RecNo;
     IdLieferant:=Bestellungen.FieldByName('IdLieferant').AsString;
-    TeileNr:=Bestellungen.FieldByName('TeileNr').AsString;
+    try
+      TeileNr:=Bestellungen.FieldByName('TeileNr').AsString;
+    except on E: Exception do
+      ErrMsg:=  E.Message;
+    end;
 
     try
-      gefunden := UnippsQry.xSucheLieferantenTeilenummer(IdLieferant,TeileNr);
+      gefunden := UnippsQry.SucheLieferantenTeilenummer(IdLieferant, TeileNr);
     except on E: Exception do
-      xx:= 'nix';
+      ErrMsg:=  E.Message;
     end;
 
     if not gefunden then
-      xx:= 'nix';
+      ErrMsg:= 'nix gfunne';
 
-//      raise Exception.Create('nix gefunden.');
-
-//    LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
-
-//    while not UnippsQry.Eof do
-//    begin
-//      failed := False;
-//      try
-//        TeileNr := UnippsQry.FieldByName('TeileNr').AsString;
-//      except on E: Exception do
-//        xx:= 'nix' + E.Message;
-//      end;
-//      try
-//        LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
-//      except on E: Exception do
-//        xx:= 'nix' + E.Message;
-//      end;
-//      try
-//        LocalQry.InsertFields('tmpLTeileNr', UnippsQry.Fields);
-//        xx:= UnippsQry.GetFieldValuesAsText;
-//      except on E: Exception do
-//        xx:= 'nix' + E.Message;
-//      end;
-//      try
-//        UnippsQry.next;
-//      finally
-//        failed := True;
-//      end;
-//
-//      if failed then
-//        break;
-//
-//    end;
-
-//    LocalQry.RunExecSQLQuery('COMMIT;');
     if gefunden then
       begin
         try
           LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
         except on E: Exception do
-          xx:= 'nix' + E.Message;
+          ErrMsg:=  E.Message;
         end;
         Bestellungen.Edit;
         Bestellungen.FieldByName('LTeileNr').AsString:= LTeileNr;
@@ -147,9 +127,10 @@ end;
 
 
 procedure TeileBenennungAusUnipps();
-var
-    cRecNo: Integer;
+
 begin
+
+  StatusBarLeft('Import Schritt 3: Lese Benennung zu Teilen');
 
   gefunden := UnippsQry.SucheTeileBenennung;
 
@@ -161,9 +142,7 @@ begin
 
   while not UnippsQry.Eof do
   begin
-    cRecNo:=UnippsQry.RecNo;
-    mainForm.StatusBar1.Panels[0].Text := IntToStr(cRecNo) + ' von '
-        + IntToStr(UnippsQry.n_records);
+    StatusBar(UnippsQry.RecNo, UnippsQry.RecordCount);
 
     LocalQry.InsertFields('tmpTeileBenennung', UnippsQry.Fields);
     UnippsQry.next;
@@ -173,15 +152,40 @@ begin
 
 end;
 
+procedure TeileBenennungInTeileTabelle();
+begin
+
+  StatusBarLeft('Import Schritt 4: Übertrage Benennung der Teile');
+
+  LocalQry.RunExecSQLQuery('delete from Teile;');
+
+  gefunden := LocalQry.TeileName1InTabelle()    ;
+
+  if not gefunden then
+    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
+
+  gefunden := LocalQry.TeileName2InTabelle()    ;
+
+  if not gefunden then
+    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
+
+end;
+
+
 procedure PumpenteileAusUnipps();
     var TeileNr:String;
 
 begin
 
+  StatusBarLeft('Import Schritt 5: Test ob Teil Pumpenteil');
+
   gefunden :=LocalQry.HoleTeile;
 
   while not LocalQry.Eof do
   begin
+
+    StatusBar(LocalQry.RecNo, LocalQry.n_records);
+
     TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
 
     gefunden := UnippsQry.SucheTeileInFA(TeileNr);
@@ -206,38 +210,24 @@ begin
 
 end;
 
+procedure LieferantenTabelleUpdaten();
+var
+  OK: Boolean;
+begin
+  StatusBarLeft('Import Schritt 6: Lieferanten-Tabelle');
+  OK := LocalQry.NeueLieferantenInTabelle;
+  OK := LocalQry.AlteLieferantenLoeschen;
+end;
+
+
 // Tabelle LErklaerungen aktualisieren
 procedure LErklaerungenUpdaten();
 var
   OK: Boolean;
 begin
+  StatusBarLeft('Import Schritt 7: Lief-Erklaerungen');
   OK := LocalQry.NeueLErklaerungenInTabelle;
   OK := LocalQry.AlteLErklaerungenLoeschen;
-end;
-
-procedure LieferantenTabelleUpdaten();
-var
-  OK: Boolean;
-begin
-  OK := LocalQry.NeueLieferantenInTabelle;
-  OK := LocalQry.AlteLieferantenLoeschen;
-end;
-
-procedure TeileBenennungInTeileTabelle();
-begin
-
-  LocalQry.RunExecSQLQuery('delete from Teile;');
-
-  gefunden := LocalQry.TeileName1InTabelle()    ;
-
-  if not gefunden then
-    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
-
-  gefunden := LocalQry.TeileName2InTabelle()    ;
-
-  if not gefunden then
-    raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
-
 end;
 
 procedure BasisImport();
@@ -250,7 +240,7 @@ begin
   LocalQry := Init.GetQuery;
 
   {$IFNDEF HOME}
-  BasisImportFromUNIPPS;
+//  BasisImportFromUNIPPS;
   {$ENDIF}
 
   // Tabelle Lieferanten updaten
