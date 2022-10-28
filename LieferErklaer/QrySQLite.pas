@@ -17,35 +17,40 @@ interface
 
   type
     TWQrySQLite = class(TWADOQuery)
-      function HoleStatuswert(Name: String):Boolean;
+      //Nacharbeit des UNIPPS-Imports
       function NeueLErklaerungenInTabelle():Boolean;
       function AlteLErklaerungenLoeschen():Boolean;
       function NeueLieferantenInTabelle():Boolean;
-      function AlteLieferantenLoeschen():Boolean;
+      function MarkiereAlteLieferanten():Boolean;
+      function MarkiereAktuelleLieferanten():Boolean;
+      function TeileName1InTabelle():Boolean;
+      function TeileName2InTabelle():Boolean;
+
+      //Nur lesen für Formulare etc
+      function HoleLieferantenMitStatusTxt():Boolean;
+      function HoleLieferantenStatusTxt():Boolean;
+      function HoleLErklaerungen(IdLieferant:Integer):Boolean;
+      function HoleProgrammDaten(Name: String):Boolean;
       function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile():Boolean;
-      function TeileName1InTabelle():Boolean;
-      function TeileName2InTabelle():Boolean;
-      function HoleLErklaerungen(IdLieferant:Integer):Boolean;
+
+      //Datenpflege nach Benutzeraktion
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
-      function UpdateLieferantenStatus(IdLieferant:Integer;
+      function UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl:String):Boolean;
+
     end;
 
 implementation
 
-// Liest Statuswerte aus lokaler Tabelle Stati
-//----------------------------------------------------------------
-function TWQrySQLite.HoleStatuswert(Name: String):Boolean;
-  var sql: String;
-
-begin
-  sql := 'select * From Stati where name=? ;';
-
-  Result:= RunSelectQueryWithParam(sql,[Name]);
-end;
+// ---------------------------------------------------------------
+//
+// Abfragen fuer Basis-Datenimport
+// (Aufbereiten der aus UNIPPS importierten Daten vor Benutzeraktionen)
+//
+// ---------------------------------------------------------------
 
 // Ergänzt Tabelle LErklaerungen mit neuen Teilen aus Bestellungen
 //---------------------------------------------------------------------------
@@ -54,10 +59,9 @@ function TWQrySQLite.NeueLErklaerungenInTabelle():Boolean;
    sql: String;
 begin
   sql := 'Insert Into LErklaerungen '
-       + '(TeileNr, IdLieferant, LTeileNr, BestDatum, LPfk, Stand)'
+       + '(TeileNr, IdLieferant, LTeileNr, BestDatum, LPfk)'
        + 'SELECT Bestellungen.TeileNr, Bestellungen.IdLieferant, '
-       + 'Bestellungen.LTeileNr, Bestellungen.BestDatum, 0 as LPfk, '
-       + 'date() as Stand '
+       + 'Bestellungen.LTeileNr, Bestellungen.BestDatum, 0 as LPfk '
        + 'from Bestellungen '
        + 'left join LErklaerungen on '
        + 'Bestellungen.TeileNr=LErklaerungen.TeileNr '
@@ -70,18 +74,11 @@ end;
 function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
   var sql1,sql2,sql: String;
 begin
-  sql1 := 'SELECT LErklaerungen.IdLieferant '
-        + 'FROM LErklaerungen LEFT JOIN Bestellungen '
-        + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
-        + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
-        + 'WHERE Bestellungen.IdLieferant Is Null' ;
-  sql2 := 'SELECT LErklaerungen.TeileNr '
-        + 'FROM LErklaerungen LEFT JOIN Bestellungen '
-        + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
-        + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
-        + 'WHERE Bestellungen.IdLieferant Is Null ' ;
-  sql := 'DELETE FROM LErklaerungen '
-       + 'WHERE IdLieferant in (' + sql1 + ') and TeileNr in (' + sql2 + ');';
+  sql := 'SELECT Id FROM LErklaerungen LEFT JOIN Bestellungen '
+       + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
+       + 'AND Bestellungen.IdLieferant = LErklaerungen.IdLieferant '
+       + 'WHERE Bestellungen.IdLieferant Is Null ' ;
+  sql := 'DELETE FROM LErklaerungen WHERE Id IN (' + sql + ');' ;
   Result:= RunExecSQLQuery(sql);
 end;
 
@@ -92,51 +89,33 @@ function TWQrySQLite.NeueLieferantenInTabelle():Boolean;
   var sql: String;
 begin
   sql := 'INSERT INTO lieferanten '
-      +  '( IdLieferant, LKurzname, LName1, LName1, Stand ) '
-       + 'SELECT DISTINCT IdLieferant, LKurzname, LName1, LName2, eingelesen '
+      +  '( IdLieferant, LKurzname, LName1, LName1  ) '
+       + 'SELECT DISTINCT IdLieferant, LKurzname, LName1, LName2  '
        + 'FROM Bestellungen where IdLieferant not in '
        + '(SELECT IdLieferant FROM Lieferanten) ORDER BY IdLieferant;' ;
   Result:= RunExecSQLQuery(sql);
 end;
 
-// Entfallene Lieferanten aus Tabelle entfernen
-//---------------------------------------------
-function TWQrySQLite.AlteLieferantenLoeschen():Boolean;
+// Markiere Lieferanten die neu waren als aktuell
+//-----------------------------------------------
+function TWQrySQLite.MarkiereAktuelleLieferanten():Boolean;
   var sql: String;
 begin
-  sql := 'delete FROM Lieferanten where IdLieferant not in '
-       + '(SELECT IdLieferant FROM Bestellungen); ';
+  sql := 'update Lieferanten set Lieferstatus="aktuell" '
+       + 'where Lieferstatus="neu" and '
+       + 'IdLieferant in (SELECT IdLieferant FROM Bestellungen); ';
   Result:= RunExecSQLQuery(sql);
 end;
 
-
-// Liest Bestellungen aus lokaler Tabelle
-//---------------------------------------------------------------------------
-function TWQrySQLite.HoleBestellungen():Boolean;
-begin
+// Entfallene Lieferanten in  Tabelle markieren
+//---------------------------------------------
+function TWQrySQLite.MarkiereAlteLieferanten():Boolean;
   var sql: String;
-  sql := 'select * From Bestellungen;';
-  Result:= RunSelectQuery(sql);
-end;
-
-// Liest Lieferanten aus lokaler Tabelle lieferanten
-//---------------------------------------------------------------------------
-function TWQrySQLite.HoleLieferanten():Boolean;
 begin
-  var sql: String;
-  sql := 'select IdLieferant from lieferanten ORDER BY IdLieferant;';
-
-  Result:= RunSelectQuery(sql);
-end;
-
-// Liest Teile aus lokaler Tabelle Teile
-//---------------------------------------------------------------------------
-function TWQrySQLite.HoleTeile():Boolean;
-begin
-  var sql: String;
-  sql := 'select * From Teile;';
-
-  Result:= RunSelectQuery(sql);
+  sql := 'update Lieferanten set Lieferstatus="entfallen" '
+       + 'where IdLieferant not in '
+       + '(SELECT IdLieferant FROM Bestellungen); ';
+  Result:= RunExecSQLQuery(sql);
 end;
 
 
@@ -171,7 +150,35 @@ begin
 
 end;
 
-///<summary> Uebertragen des PFK-Flags in die Datenbank</summary>
+// ---------------------------------------------------------------
+//
+// Select-Abfragen
+// (Input für Formulare, etc. Keine Datenänderungen
+//
+// ---------------------------------------------------------------
+
+///<summary> Liest Tabelle Lieferanten mit Status im Klartext</summary>
+function TWQrySQLite.HoleLieferantenMitStatusTxt():Boolean;
+  var
+    sql: String;
+begin
+    SQL := 'select *,StatusTxt from lieferanten '
+         + 'join LieferantenStatusTxt '
+         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+         + 'order by LKurzname;';
+  Result:= RunSelectQuery(sql);
+end;
+
+///<summary> Liest LieferantenStatus im Klartext</summary>
+function TWQrySQLite.HoleLieferantenStatusTxt():Boolean;
+  var
+    sql: String;
+begin
+    SQL := 'select * from LieferantenStatusTxt; ';
+  Result:= RunSelectQuery(sql);
+end;
+
+///<summary> Liest Tabelle LErklaerungen mit Zusazdaten zu Teilen. </summary>
 function TWQrySQLite.HoleLErklaerungen(IdLieferant:Integer):Boolean;
   var
     sql: String;
@@ -183,11 +190,55 @@ begin
   Result:= RunSelectQueryWithParam(sql,[IntToSTr(IdLieferant)]);
 end;
 
-//-----------------------------------------------------------------
-//Update-Querys
-//-----------------------------------------------------------------
+// Liest Statuswerte aus Tabelle ProgrammDaten
+//----------------------------------------------------------------
+function TWQrySQLite.HoleProgrammDaten(Name: String):Boolean;
+  var sql: String;
 
-///<summary> Uebertragen des PFK-Flags in die Datenbank</summary>
+begin
+  sql := 'select * From ProgrammDaten where name=? ;';
+
+  Result:= RunSelectQueryWithParam(sql,[Name]);
+end;
+
+// Liest Bestellungen aus lokaler Tabelle
+//---------------------------------------------------------------------------
+function TWQrySQLite.HoleBestellungen():Boolean;
+begin
+  var sql: String;
+  sql := 'select * From Bestellungen;';
+  Result:= RunSelectQuery(sql);
+end;
+
+// Liest Lieferanten aus lokaler Tabelle lieferanten
+//---------------------------------------------------------------------------
+function TWQrySQLite.HoleLieferanten():Boolean;
+begin
+  var sql: String;
+  sql := 'select IdLieferant from lieferanten ORDER BY IdLieferant;';
+
+  Result:= RunSelectQuery(sql);
+end;
+
+// Liest Teile aus lokaler Tabelle Teile
+//---------------------------------------------------------------------------
+function TWQrySQLite.HoleTeile():Boolean;
+begin
+  var sql: String;
+  sql := 'select * From Teile;';
+
+  Result:= RunSelectQuery(sql);
+end;
+
+
+// ---------------------------------------------------------------
+//
+// Änderungs-Abfragen
+// Datenänderungen zur Pflege der Datenbasis nach Benutzeraktionen
+//
+// ---------------------------------------------------------------
+
+///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
 function TWQrySQLite.UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
   var
@@ -199,8 +250,8 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-///<summary> Uebertragen des PFK-Flags in die Datenbank</summary>
-function TWQrySQLite.UpdateLieferantenStatus(IdLieferant:Integer;
+///<summary> Set Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
+function TWQrySQLite.UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl:String):Boolean;
   var
     sql: String;
@@ -211,6 +262,7 @@ begin
           +  'where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
 
 
 end.

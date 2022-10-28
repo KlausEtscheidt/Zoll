@@ -242,7 +242,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 51
       Width = 81
       Height = 20
-      DataField = 'Status'
+      DataField = 'StatusTxt'
       DataSource = DataSource1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

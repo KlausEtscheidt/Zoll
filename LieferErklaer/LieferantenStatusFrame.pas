@@ -65,11 +65,7 @@ var
 
 begin
     LocalQry := Init.GetQuery;
-    SQL := 'select *,Status from lieferanten '
-         + 'join LieferantenStatus '
-         + 'on LieferantenStatus.id=lieferanten.lekl '
-         + 'order by LKurzname;';
-    LocalQry.RunSelectQuery(SQL);
+    LocalQry.HoleLieferantenMitStatusTxt;
     DataSource1.DataSet := LocalQry;
     Self.Visible := True;
 end;
@@ -109,7 +105,7 @@ begin
    // ------- Steuererlemente des Dialogs vorbesetzen
    // Anzeige des Ist-Status der Lieferantenerklärung
    LieferantenStatusDialog.alterStatus.Caption
-            := LocalQry.FieldByName('Status').AsString;
+            := LocalQry.FieldByName('StatusTxt').AsString;
    // Ist-Status der Lieferantenerklärung in List-Box vorauswählen
    LieferantenStatusDialog.StatusListBox.KeyValue
             := LocalQry.FieldByName('lekl').AsInteger;
@@ -137,7 +133,7 @@ begin
 
       // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
       UpdateQry := Init.GetQuery;
-      UpdateQry.UpdateLieferantenStatus(IdLieferant, Stand, GiltBis, lekl);
+      UpdateQry.UpdateLieferant(IdLieferant, Stand, GiltBis, lekl);
 
       // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
       LocalQry.Requery();

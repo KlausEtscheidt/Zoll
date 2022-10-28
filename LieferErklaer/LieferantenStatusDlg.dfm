@@ -82,7 +82,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Width = 273
     Height = 56
     KeyField = 'Id'
-    ListField = 'Status'
+    ListField = 'StatusTxt'
     ListFieldIndex = 2
     ListSource = DataSource1
     TabOrder = 3

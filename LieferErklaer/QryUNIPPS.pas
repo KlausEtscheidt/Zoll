@@ -26,7 +26,7 @@ interface
       function SucheBestellungen(delta_days: Integer): Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
-      function SucheTeileBenennung():Boolean;
+      function SucheTeileBenennung(delta_days: Integer):Boolean;
       function SucheTeileInFA(TeileNr: String):Boolean;
       function SucheTeileInFAKopf(TeileNr: String):Boolean;
       function SucheTeileInKA(TeileNr: String):Boolean;
@@ -38,15 +38,23 @@ interface
       //SQL zum Holen von Bestellungen mit Positionen und Datum seit xxx
       // => IdLieferant, TeileNr, BestDatumSub
       // s. Access "1_HoleBestellungen_seit"
+
+      //Var. 1 mit festem Zeitraum
+      sql_suche_Bestellungen_fix : String = 'SELECT bestellkopf.lieferant as IdLieferant, '
+      + 'bestellpos.t_tg_nr as TeileNr, '
+      + 'bestellkopf.freigabe_datum as BestDatumSub '
+      + 'FROM bestellkopf '
+      + 'INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 '
+      + 'where bestellkopf.freigabe_datum > TODAY -5*365 ';
+//      + 'order by bestellpos.t_tg_nr, IdLieferant ;';
+
+      //Var. 2 mit Zeitraum als Parameter
       sql_suche_Bestellungen : String = 'SELECT bestellkopf.lieferant as IdLieferant, '
       + 'bestellpos.t_tg_nr as TeileNr, '
       + 'bestellkopf.freigabe_datum as BestDatumSub '
       + 'FROM bestellkopf '
       + 'INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 '
-      + 'where bestellkopf.freigabe_datum > TODAY -5*365 '
-      + 'order by bestellpos.t_tg_nr, IdLieferant ';
-//      +  'where freigabe_datum < TODAY - ? order by ident_nr;';
-
+      + 'where TODAY - freigabe_datum <  ?  ' ;
 
 implementation
 
@@ -59,7 +67,7 @@ implementation
 ///<param name="delta_days">Zeitraum ab heute-delta_days</param>
 //---------------------------------------------------------------------------
 function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
-var  sql,sqlx: String;
+var  sql: String;
 begin
 
     //Neueste Bestellung je Teil und Lieferant (unique) seit Datum xxx
@@ -70,34 +78,17 @@ begin
       + 'order by TeileNr, IdLieferant';
 
     //Lieferanten Kurz- und Langname dazu
-    //siehe Access Abfrage "2a_Bestellungen_grouped_Teil_u_Lieferant"
-    sql := 'SELECT IdLieferant, TeileNr, BestDatum, '
-      + 'lieferant.adresse as LAdressId, adresse.kurzname AS LKurzname, '
-      + 'adresse.name1 AS LName1, adresse.name2 AS LName2 '
+    //siehe Access Abfrage "2b_Bestellungen_Lieferantendaten"
+    sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
+      + 'trim(adresse.kurzname) AS LKurzname, '
+      + 'trim(adresse.name1) AS LName1, trim(adresse.name2) AS LName2, '
+      + 'TODAY as eingelesen '
       + 'FROM (' + sql + ') as Bestellungen '
       + 'INNER JOIN lieferant on lieferant.ident_nr = IdLieferant '
       + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr ';
+
+  Result:= RunSelectQueryWithParam(sql,[intToStr(delta_days)]);
 //  Result:= RunSelectQuery(sql);
-
-    //TeileNummer des Lieferanten dazu
-    //siehe Access Abfrage "2b_Bestellungen_Lieferantendaten"
-    sqlx := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
-         + 'LAdressId, trim(LKurzname) as LKurzname, '
-         + 'trim(LName1) as LName1, trim(LName2) as LName2,  '
-         + 'lieferant_teil.l_teile_nr AS LTeileNr,  '
-         + 'TODAY as eingelesen '
-         + 'FROM (' + sql + ') '
-         + 'LEFT JOIN lieferant_teil on TeileNr = lieferant_teil.ident_nr2  '
-         + ' AND IdLieferant =  lieferant_teil.ident_nr1 ;'  ;
-
-    sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
-         + ' trim(LKurzname) as LKurzname, '
-         + 'trim(LName1) as LName1, trim(LName2) as LName2,  '
-         + 'TODAY as eingelesen '
-         + 'FROM (' + sql + ') ;' ;
-
-//  Result:= RunSelectQueryWithParam(sql,[delta_days]);
-  Result:= RunSelectQuery(sql);
 
 end;
 
@@ -116,9 +107,9 @@ begin
   Result:= RunSelectQueryWithParam(sql,[IdLieferant,TeileNr]);
 end;
 
-///<summary>Suche Benennung zu Teilen in UNIPPS </summary>
+///<summary>Suche Benennung zu bestellten Teilen in UNIPPS </summary>
 //---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheTeileBenennung():Boolean;
+function TWQryUNIPPS.SucheTeileBenennung(delta_days: Integer):Boolean;
 var  sql: String;
 begin
 
@@ -136,7 +127,9 @@ begin
            + 'and sprache="D" and ident_nr1 in (' + sql + ') '
            + 'order by ident_nr1 ';
 
-  Result:= RunSelectQuery(sql);
+//  Result:= RunSelectQuery(sql);
+  Result:= RunSelectQueryWithParam(sql,[intToStr(delta_days)]);
+
 
 end;
 

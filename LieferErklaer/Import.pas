@@ -36,11 +36,11 @@ end;
 
 /// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
 /// <remarks>
-/// Erste Abfrage zur Erstellung der Datenbasis des Programms
-/// Liest Bestellungen seit xxx Tagen aus UNIPPS in lokale Tabelle Bestellungen
-/// Eindeutige Kombination aus IdLieferant, TeileNr
-/// Zusatzinfo zu Lieferant: Kurzname,LName1,LName2
-/// Zusatzinfo zum Teil  LTeileNr (Lieferanten-Teilenummer)
+/// Erste Abfrage zur Erstellung der Datenbasis des Programms.
+/// Liest Bestellungen seit xxx Tagen aus UNIPPS in lokale Tabelle Bestellungen.
+/// Eindeutige Kombination aus IdLieferant, TeileNr.
+/// Zusatzinfo zu Lieferant: Kurzname,LName1,LName2.
+/// Zusatzinfo zum Teil  LTeileNr (Lieferanten-Teilenummer).
 /// </remarks>
 procedure BestellungenAusUnipps();
 
@@ -114,7 +114,10 @@ begin
         try
           LTeileNr := UnippsQry.FieldByName('LTeileNr').AsString;
         except on E: Exception do
-          ErrMsg:=  E.Message;
+          begin
+            ErrMsg:=  E.Message;
+            LTeileNr :=  '---Importfehler';
+          end;
         end;
         Bestellungen.Edit;
         Bestellungen.FieldByName('LTeileNr').AsString:= LTeileNr;
@@ -125,14 +128,15 @@ begin
 
 end;
 
-
+//Import Schritt 3: Lese Benennung zu Teilen
 procedure TeileBenennungAusUnipps();
 
 begin
 
   StatusBarLeft('Import Schritt 3: Lese Benennung zu Teilen');
 
-  gefunden := UnippsQry.SucheTeileBenennung;
+  //Zeitraum erhöhen um sicher alle Namen zu bekommen
+  gefunden := UnippsQry.SucheTeileBenennung(5*365+5);
 
   if not gefunden then
     raise Exception.Create('Keine TeileBenennung gefunden.');
@@ -215,8 +219,12 @@ var
   OK: Boolean;
 begin
   StatusBarLeft('Import Schritt 6: Lieferanten-Tabelle');
+  //Markiere Lieferanten, neu waren und die noch aktuell sind als aktuell
+  OK := LocalQry.MarkiereAktuelleLieferanten;
+  //Uebertrage neue Lieferanten
   OK := LocalQry.NeueLieferantenInTabelle;
-  OK := LocalQry.AlteLieferantenLoeschen;
+  //Markiere Lieferanten, die im Zeitraum nicht geliefert haben, als "entfallen"
+  OK := LocalQry.MarkiereAlteLieferanten;
 end;
 
 
@@ -240,7 +248,7 @@ begin
   LocalQry := Init.GetQuery;
 
   {$IFNDEF HOME}
-//  BasisImportFromUNIPPS;
+  BasisImportFromUNIPPS;
   {$ENDIF}
 
   // Tabelle Lieferanten updaten

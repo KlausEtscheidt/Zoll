@@ -43,8 +43,7 @@ var
 begin
     Init.Start;
     LocalQry := Init.GetQuery;
-    SQL := 'select * from LieferantenStatus; ';
-    LocalQry.RunSelectQuery(SQL);
+    LocalQry.HoleLieferantenStatusTxt;
     DataSource1.DataSet := LocalQry;
 
 end;
