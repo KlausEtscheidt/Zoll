@@ -129,6 +129,7 @@ begin
 end;
 
 //Import Schritt 3: Lese Benennung zu Teilen
+///<summary>Lese Benennung zu Teilen aus UNIPPS in temp Tabelle</summary>
 procedure TeileBenennungAusUnipps();
 
 begin
@@ -156,6 +157,8 @@ begin
 
 end;
 
+//Import Schritt 4: Übertrage Benennung der Teile
+///<summary>Uebernahme der Benennung zu Teilen in Tabelle Teile</summary>
 procedure TeileBenennungInTeileTabelle();
 begin
 
@@ -175,7 +178,8 @@ begin
 
 end;
 
-
+//Import Schritt 5: Test ob Teil Pumpenteil
+///<summary>Markiere Pumpenteile in Tabelle Teile</summary>
 procedure PumpenteileAusUnipps();
     var TeileNr:String;
 
@@ -214,6 +218,8 @@ begin
 
 end;
 
+//Import Schritt 6: Lieferanten-Tabelle
+///<summary>Pflege Tabelle Lieferanten</summary>
 procedure LieferantenTabelleUpdaten();
 var
   OK: Boolean;
@@ -225,10 +231,12 @@ begin
   OK := LocalQry.NeueLieferantenInTabelle;
   //Markiere Lieferanten, die im Zeitraum nicht geliefert haben, als "entfallen"
   OK := LocalQry.MarkiereAlteLieferanten;
+  // Markiere Lieferanten die mind. 1 Pumpenteil liefern
+  OK := LocalQry.MarkierePumpenteilLieferanten;
 end;
 
-
-// Tabelle LErklaerungen aktualisieren
+// Import Schritt 7: Lief-Erklaerungen
+///<summary>Pflege Tabelle LErklaerungen</summary>
 procedure LErklaerungenUpdaten();
 var
   OK: Boolean;
@@ -238,6 +246,7 @@ begin
   OK := LocalQry.AlteLErklaerungenLoeschen;
 end;
 
+///<summary>Lese alle Daten aus UNIPPS zum jährlichen Neustart.</summary>
 procedure BasisImport();
 var
   dbUnippsConn: TWADOConnector;

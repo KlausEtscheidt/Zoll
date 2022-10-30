@@ -7,7 +7,8 @@ uses
   System.DateUtils, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
-  LieferantenStatusDlg, Init, Vcl.Mask;
+  LieferantenStatusDlg, Init, Vcl.Mask, System.ImageList, Vcl.ImgList,
+  Vcl.Buttons;
 
 type
   TLieferantenStatusFrm = class(TFrame)
@@ -37,6 +38,10 @@ type
     DBText3: TDBText;
     Label9: TLabel;
     Label10: TLabel;
+    PumpenTeileChkBox: TCheckBox;
+    Label11: TLabel;
+    Button1: TButton;
+    ImageList1: TImageList;
     procedure FilterNameChange(Sender: TObject);
     procedure FilterKurznameChange(Sender: TObject);
     procedure TeileBtnClick(Sender: TObject);
@@ -44,12 +49,15 @@ type
     procedure ShowFrame();
     procedure HideFrame();
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
+    procedure PumpenTeileChkBoxClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
 
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
     LocalQry: TWQry;
+    procedure FilterUpdate();
   end;
 
 
@@ -67,6 +75,7 @@ begin
     LocalQry := Init.GetQuery;
     LocalQry.HoleLieferantenMitStatusTxt;
     DataSource1.DataSet := LocalQry;
+    FilterUpdate;
     Self.Visible := True;
 end;
 
@@ -77,19 +86,10 @@ begin
   Self.Visible := False;
 end;
 
-procedure TLieferantenStatusFrm.FilterNameChange(Sender: TObject);
+procedure TLieferantenStatusFrm.PumpenTeileChkBoxClick(Sender: TObject);
 begin
-  if length(FilterName.Text)>0 then
-  begin
-    FilterKurzname.Text := '';
-    LocalQry.Filtered :=True;
-    LocalQry.Filter := 'LName1 Like ''%' + FilterName.Text + '%''';
-  end
-  else
-    LocalQry.Filtered :=False;
-
+    Self.FilterUpdate;
 end;
-
 
 procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
 var
@@ -171,16 +171,61 @@ begin
 
 end;
 
+procedure TLieferantenStatusFrm.FilterUpdate();
+var
+  FilterStr : String;
+  filtern : Boolean;
+begin
+
+    filtern := False;
+    FilterStr := '';
+
+    if PumpenTeileChkBox.State = cbChecked then
+    begin
+      FilterStr := 'Pumpenteile=-1';
+      filtern := True;
+    end;
+
+    if length(FilterName.Text)>0 then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'LName1 Like ''%' + FilterName.Text + '%''';
+    end;
+
+    if length(FilterKurzname.Text)>0 then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'LKurzname Like ''' + FilterKurzname.Text + '%''';
+    end;
+
+    LocalQry.Filter := FilterStr;
+    LocalQry.Filtered := filtern;
+
+end;
+
+procedure TLieferantenStatusFrm.Button1Click(Sender: TObject);
+begin
+  FilterKurzname.Text := '';
+  FilterName.Text := '';
+  FilterUpdate;
+
+end;
+
+
+procedure TLieferantenStatusFrm.FilterNameChange(Sender: TObject);
+begin
+  FilterUpdate;
+
+end;
+
+
 procedure TLieferantenStatusFrm.FilterKurznameChange(Sender: TObject);
 begin
-  if length(FilterKurzname.Text)>0 then
-  begin
-    FilterName.Text := '';
-    LocalQry.Filtered :=True;
-    LocalQry.Filter := 'LKurzname Like ''%' + FilterKurzname.Text + '%''';
-  end
-  else
-    LocalQry.Filtered :=False;
+  FilterUpdate;
 
 end;
 

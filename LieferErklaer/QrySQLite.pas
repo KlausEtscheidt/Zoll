@@ -23,6 +23,7 @@ interface
       function NeueLieferantenInTabelle():Boolean;
       function MarkiereAlteLieferanten():Boolean;
       function MarkiereAktuelleLieferanten():Boolean;
+      function MarkierePumpenteilLieferanten():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
 
@@ -52,8 +53,8 @@ implementation
 //
 // ---------------------------------------------------------------
 
-// Ergänzt Tabelle LErklaerungen mit neuen Teilen aus Bestellungen
 //---------------------------------------------------------------------------
+///<summary>Neue Teile-Lieferanten-Kombis aus Bestellungen in LErklaerungen</summary>
 function TWQrySQLite.NeueLErklaerungenInTabelle():Boolean;
   var
    sql: String;
@@ -71,6 +72,8 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
+///<summary>Lösche Teile-Lieferanten-Kombis, die nicht in Bestellungen sind.
+///</summary>
 function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
   var sql1,sql2,sql: String;
 begin
@@ -82,9 +85,8 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-
-// Neue Lieferanten in Tabelle lieferanten
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------
+///<summary> Neue Lieferanten in Tabelle lieferanten</summary>
 function TWQrySQLite.NeueLieferantenInTabelle():Boolean;
   var sql: String;
 begin
@@ -96,25 +98,38 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-// Markiere Lieferanten die neu waren als aktuell
 //-----------------------------------------------
+///<summary>Entfallene Lieferanten in Tabelle markieren. </summary>
 function TWQrySQLite.MarkiereAktuelleLieferanten():Boolean;
   var sql: String;
 begin
   sql := 'update Lieferanten set Lieferstatus="aktuell" '
-       + 'where Lieferstatus="neu" and '
+//       + 'where Lieferstatus="neu" and '
+       + 'where  '
        + 'IdLieferant in (SELECT IdLieferant FROM Bestellungen); ';
   Result:= RunExecSQLQuery(sql);
 end;
 
-// Entfallene Lieferanten in  Tabelle markieren
 //---------------------------------------------
+///<summary>Entfallene Lieferanten in Tabelle markieren</summary>
 function TWQrySQLite.MarkiereAlteLieferanten():Boolean;
   var sql: String;
 begin
   sql := 'update Lieferanten set Lieferstatus="entfallen" '
        + 'where IdLieferant not in '
        + '(SELECT IdLieferant FROM Bestellungen); ';
+  Result:= RunExecSQLQuery(sql);
+end;
+
+//----------------------------------------------------
+///<summary>Markiere Lieferanten die mind. 1 Pumpenteil liefern</summary>
+function TWQrySQLite.MarkierePumpenteilLieferanten():Boolean;
+  var sql: String;
+begin
+  sql := 'UPDATE Lieferanten SET Pumpenteile=-1 WHERE IdLieferant '
+       + 'IN (SELECT DISTINCT IdLieferant FROM LErklaerungen '
+       + 'JOIN Teile ON LErklaerungen.TeileNr=Teile.TeileNr  '
+       + 'WHERE Pumpenteil=-1);';
   Result:= RunExecSQLQuery(sql);
 end;
 

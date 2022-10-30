@@ -8,7 +8,7 @@ uses
   Data.DB, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB, Vcl.DBCtrls, Vcl.DBCGrids,
   datenmodul, Vcl.ExtCtrls, Data.Bind.EngExt, Vcl.Bind.DBEngExt, System.Rtti,
   System.Bindings.Outputs, Vcl.Bind.Editors, Data.Bind.Components,
-  Data.Bind.DBScope, Init;
+  Data.Bind.DBScope, Init, System.ImageList, Vcl.ImgList;
 
 type
   TLieferantenErklaerungenFrm = class(TFrame)
@@ -26,11 +26,24 @@ type
     SortLTeileNrBtn: TButton;
     SortTeilenrBtn: TButton;
     SortLTNameBtn: TButton;
+    LabelSort: TLabel;
+    LabelFiltern: TLabel;
+    FilterTeileNr: TEdit;
+    FilterTName1: TEdit;
+    FilterLTeileNr: TEdit;
+    FilterTName2: TEdit;
+    FilterOffBtn: TButton;
+    ImageList1: TImageList;
     procedure BackBtnClick(Sender: TObject);
     procedure SortLTeileNrBtnClick(Sender: TObject);
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
     procedure PFKChkBoxClick(Sender: TObject);
+    procedure FilterTeileNrChange(Sender: TObject);
+    procedure FilterTName1Change(Sender: TObject);
+    procedure FilterLTeileNrChange(Sender: TObject);
+    procedure FilterTName2Change(Sender: TObject);
+    procedure FilterOffBtnClick(Sender: TObject);
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
@@ -40,6 +53,7 @@ type
     IdLieferant: Integer;
     procedure ShowFrame(myOldFrame: TFrame);
     procedure HideFrame();
+    procedure FilterUpdate();
 
   end;
 
@@ -84,6 +98,7 @@ begin
     Self.HideFrame;
     OldFrame.Visible := True;
 end;
+
 
 
 procedure TLieferantenErklaerungenFrm.HideFrame();
@@ -160,6 +175,79 @@ begin
 
 //    DBCtrlGrid1.PanelIndex:=0;
 
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterUpdate();
+var
+  FilterStr : String;
+  filtern : Boolean;
+begin
+
+    filtern := False;
+    FilterStr := '';
+
+    if length(FilterTeileNr.Text)>0 then
+    begin
+      FilterStr := 'TeileNr Like ''' + FilterTeileNr.Text + '%''';
+      filtern := True;
+    end;
+
+    if length(FilterTName1.Text)>0 then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'TName1 Like ''%' + FilterTName1.Text + '%''';
+    end;
+
+    if length(FilterTName2.Text)>0 then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'TName2 Like ''%' + FilterTName2.Text + '%''';
+    end;
+
+    if length(FilterLTeileNr.Text)>0 then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'LTeileNr Like ''' + FilterLTeileNr.Text + '%''';
+    end;
+
+    LocalQry.Filter := FilterStr;
+    LocalQry.Filtered := filtern;
+
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterOffBtnClick(Sender: TObject);
+begin
+ FilterTeileNr.Text := '';
+ FilterTName1.Text := '';
+ FilterTName2.Text := '';
+ FilterLTeileNr.Text := '';
+ FilterUpdate;
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterLTeileNrChange(Sender: TObject);
+begin
+  FilterUpdate();
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterTeileNrChange(Sender: TObject);
+begin
+  FilterUpdate();
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterTName1Change(Sender: TObject);
+begin
+  FilterUpdate();
+end;
+
+procedure TLieferantenErklaerungenFrm.FilterTName2Change(Sender: TObject);
+begin
+  FilterUpdate();
 end;
 
 end.
