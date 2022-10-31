@@ -7,7 +7,7 @@ uses
   System.DateUtils, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
-  LieferantenStatusDlg, Init, Vcl.Mask, System.ImageList, Vcl.ImgList,
+  LieferantenStatusDlg, Tools, Vcl.Mask, System.ImageList, Vcl.ImgList,
   Vcl.Buttons;
 
 type
@@ -72,7 +72,7 @@ var
   SQL : String;
 
 begin
-    LocalQry := Init.GetQuery;
+    LocalQry := Tools.GetQuery;
     LocalQry.HoleLieferantenMitStatusTxt;
     DataSource1.DataSet := LocalQry;
     FilterUpdate;
@@ -103,13 +103,13 @@ var
 begin
 
    // ------- Steuererlemente des Dialogs vorbesetzen
-   // Anzeige des Ist-Status der Lieferantenerklärung
+   // Anzeige des Ist-Status der Lieferantenerklï¿½rung
    LieferantenStatusDialog.alterStatus.Caption
             := LocalQry.FieldByName('StatusTxt').AsString;
-   // Ist-Status der Lieferantenerklärung in List-Box vorauswählen
+   // Ist-Status der Lieferantenerklï¿½rung in List-Box vorauswï¿½hlen
    LieferantenStatusDialog.StatusListBox.KeyValue
             := LocalQry.FieldByName('lekl').AsInteger;
-   // Datumswähler auf bisheriges Gültigkeitsdatum
+   // Datumswï¿½hler auf bisheriges Gï¿½ltigkeitsdatum
    GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
    LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
 
@@ -126,19 +126,19 @@ begin
       // Lekl gilt bis aus Dialog
       GiltBis := FormatDateTime('YYYY-MM-DD',
                         LieferantenStatusDialog.DateTimePicker1.DateTime);
-      // Gewählten Status aus Dialog
+      // Gewï¿½hlten Status aus Dialog
       lekl := LieferantenStatusDialog.StatusListBox.KeyValue ;
       // Id des Lieferanen aus Basis-Abfrage
       IdLieferant := LocalQry.FieldByName('IdLieferant').AsInteger;
 
-      // --- Update-Abfrage übernimmt Daten in Lieferanten-Tabelle
-      UpdateQry := Init.GetQuery;
+      // --- Update-Abfrage ï¿½bernimmt Daten in Lieferanten-Tabelle
+      UpdateQry := Tools.GetQuery;
       UpdateQry.UpdateLieferant(IdLieferant, Stand, GiltBis, lekl);
 
       // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
       LocalQry.Requery();
 
-      // Gehe auf urspünglichen Datensatz
+      // Gehe auf urspï¿½nglichen Datensatz
       LocalQry.GotoBookmark(BM);
 
     end;
@@ -163,7 +163,7 @@ end;
 procedure TLieferantenStatusFrm.DataSource1DataChange(Sender: TObject;
   Field: TField);
 begin
-    // Bei LEKL-Status "einige Teile" Dateneingabe für Teile ermöglichen
+    // Bei LEKL-Status "einige Teile" Dateneingabe fï¿½r Teile ermï¿½glichen
     if LocalQry.FieldByName('lekl').AsInteger =3 then
       TeileBtn.Visible:=True
     else

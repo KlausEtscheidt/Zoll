@@ -8,7 +8,7 @@ uses
   Data.DB, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB, Vcl.DBCtrls, Vcl.DBCGrids,
   datenmodul, Vcl.ExtCtrls, Data.Bind.EngExt, Vcl.Bind.DBEngExt, System.Rtti,
   System.Bindings.Outputs, Vcl.Bind.Editors, Data.Bind.Components,
-  Data.Bind.DBScope, Init, System.ImageList, Vcl.ImgList;
+  Data.Bind.DBScope, Tools, System.ImageList, Vcl.ImgList;
 
 type
   TLieferantenErklaerungenFrm = class(TFrame)
@@ -67,12 +67,12 @@ var
 
 begin
     OldFrame := myOldFrame;
-    LocalQry := Init.GetQuery;
+    LocalQry := Tools.GetQuery;
     LocalQry.HoleLErklaerungen(IdLieferant);
     DataSource1.DataSet := LocalQry;
 
     //langsam Update-Query ist schneller
-//    LErklaerungenTab := Init.GetTable('LErklaerungen');
+//    LErklaerungenTab := Tools.GetTable('LErklaerungen');
 //    LErklaerungenTab.Open;
 
     Self.Visible := True;
@@ -112,14 +112,14 @@ end;
 ///<remarks>
 /// Durch den left-Join geht dies nicht direkt in der LocalQry
 /// Die Daten werden in die Tabelle LErklaerungen eingetragen
-/// Das Formular merkt sich aber, das Daten geändert wurden,
-/// was wiederum zu Problemen führt.
+/// Das Formular merkt sich aber, das Daten geï¿½ndert wurden,
+/// was wiederum zu Problemen fï¿½hrt.
 /// Nach dem Auslesen der Daten aus dem Formular,
 /// wird dieses daher von der Datenquelle getrennt.
 /// Nach dem Abspeichern der Daten in der Tabelle,
 /// erhaelt LocalQry durch ein Requery die aktuellen Daten
 /// und wird wieder mit dem Formular verbunden.
-/// LocalQry und Formular werden wieder auf den geänderten Record positionert.
+/// LocalQry und Formular werden wieder auf den geï¿½nderten Record positionert.
 ///</remarks>
 procedure TLieferantenErklaerungenFrm.PFKChkBoxClick(Sender: TObject);
 var
@@ -153,8 +153,8 @@ begin
 //    LErklaerungenTab.FieldByName('LPfk').AsInteger:=Pfk;
 //    LErklaerungenTab.Post;
 
-    // --- Update-Abfrage übernimmt Daten in LErklaerungen-Tabelle
-    UpdateQry := Init.GetQuery;
+    // --- Update-Abfrage ï¿½bernimmt Daten in LErklaerungen-Tabelle
+    UpdateQry := Tools.GetQuery;
     UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant, TeileNr, Pfk);
 
     // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
@@ -166,11 +166,11 @@ begin
     // Formular wieder mit Abfrage verbinden
     DataSource1.DataSet := LocalQry;
 
-    // Positioniere auf "PanelIndex" Datensätze vorher,
+    // Positioniere auf "PanelIndex" Datensï¿½tze vorher,
     // um die alte Position im Anzeige-Panel wieder herzustellen.
     // DBCtrlGrid1 setzt den aktiven Record (hoffentlich) immer auf Position 0
     // Der mit MoveBy aktivierte Record wird also an erster Pos dargestellt
-    // Der geänderte Record erhalt die alte Pos "PanelIndex"
+    // Der geï¿½nderte Record erhalt die alte Pos "PanelIndex"
     LocalQry.MoveBy(-PanelIndex) ;
 
 //    DBCtrlGrid1.PanelIndex:=0;

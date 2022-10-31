@@ -1,4 +1,4 @@
-unit Init;
+unit Tools;
 
 interface
 
@@ -24,7 +24,7 @@ type
 
 {$ENDIF}
 
-procedure start();
+procedure init();
 function GetQuery() : TWQry;
 function GetTable(Tablename : String) : TADOTable;
 
@@ -35,7 +35,7 @@ var
 
 implementation
 
-procedure start();
+procedure init();
 begin
   Log:=TLogFile.Create();
   ErrLog:=TLogFile.Create();

@@ -5,7 +5,7 @@ uses
   mainfrm in 'mainfrm.pas' {mainForm},
   Settings in 'Settings.pas',
   Import in 'Import.pas',
-  Init in 'Init.pas',
+  Tools in 'Tools.pas',
   ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
   ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
   Logger in '..\lib\Tools\Logger.pas',

@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
-  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Init;
+  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Tools;
 
 type
   TmainForm = class(TForm)
@@ -21,6 +21,7 @@ type
     LMenStatus: TMenuItem;
     LieferantenStatusFrm1: TLieferantenStatusFrm;
     LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
+    NAcharbe1: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure UnippsMenEinlesenClick(Sender: TObject);
@@ -29,6 +30,7 @@ type
     procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
     procedure LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel(
       DBCtrlGrid: TDBCtrlGrid; Index: Integer);
+    procedure NAcharbe1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -50,7 +52,7 @@ end;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
-    Init.Start;
+    Tools.init;
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //    Import.BasisImport;
     LieferantenStatusFrm1.ShowFrame;
@@ -86,6 +88,11 @@ var
 begin
     LieferantenStatusFrm1.ShowFrame;
     LieferantenErklaerungenFrm1.HideFrame;
+end;
+
+procedure TmainForm.NAcharbe1Click(Sender: TObject);
+begin
+  Import.Auswerten;
 end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);

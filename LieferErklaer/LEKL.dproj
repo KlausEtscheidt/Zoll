@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -128,7 +128,7 @@
         </DCCReference>
         <DCCReference Include="Settings.pas"/>
         <DCCReference Include="Import.pas"/>
-        <DCCReference Include="Init.pas"/>
+        <DCCReference Include="Tools.pas"/>
         <DCCReference Include="..\lib\Datenbank\ADOConnector.pas"/>
         <DCCReference Include="..\lib\Datenbank\ADOQuery.pas"/>
         <DCCReference Include="..\lib\Tools\Logger.pas"/>

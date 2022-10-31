@@ -26,6 +26,8 @@ interface
       function MarkierePumpenteilLieferanten():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
+      function UpdateTeileZaehleLieferanten():Boolean;
+      function UpdateTeileZaehleLErklaerungen():Boolean;
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitStatusTxt():Boolean;
@@ -164,6 +166,43 @@ begin
   Result:= RunExecSQLQuery(sql);
 
 end;
+
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der Lieferanten eines Teils in Tabelle Teile</summary>
+function TWQrySQLite.UpdateTeileZaehleLieferanten():Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET n_Lieferanten= '
+       + '(SELECT N_liefer FROM '
+       + '(SELECT TeileNr as TNr, Count(IdLieferant) as N_liefer '
+       + ' FROM LErklaerungen GROUP BY LErklaerungen.TeileNr) '
+       + ' WHERE  Teile.TeileNr=TNr );' ;
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in Tabelle Teile</summary>
+function TWQrySQLite.UpdateTeileZaehleLErklaerungen():Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET n_LPfk= '
+       + '(SELECT Anz_Pfk FROM '
+       + '(SELECT TeileNr as TNr, Count(Lieferanten.IdLieferant) as Anz_Pfk '
+       + 'FROM LErklaerungen '
+       + 'JOIN Lieferanten ON LErklaerungen.IdLieferant=Lieferanten.IdLieferant '
+       + 'WHERE  LErklaerungen.LPfk=-1 AND gilt_bis > DATE()-100000 '
+       + 'GROUP BY LErklaerungen.TeileNr)'
+       + 'WHERE  Teile.TeileNr=TNr  ); ' ;
+
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
 
 // ---------------------------------------------------------------
 //

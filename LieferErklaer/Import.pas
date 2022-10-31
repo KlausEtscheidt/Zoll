@@ -1,15 +1,16 @@
-
+ï»¿
 unit Import;
 
 interface
 
 uses System.SysUtils, Data.DB, Data.Win.ADODB,
-     Init,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
+     Tools,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
 procedure BasisImport();
 procedure BasisImportFromUNIPPS();
 procedure BestellungenAusUnipps();
 procedure TeileBenennungAusUnipps();
+procedure Auswerten();
 
 var
   LocalQry: TWQry;
@@ -32,6 +33,18 @@ begin
    mainForm.StatusBar1.Panels[1].Text :=
           IntToStr(akt) + ' von ' + IntToStr(max);
    mainForm.StatusBar1.Update;
+end;
+
+procedure Auswerten();
+
+begin
+  // Qry fuer lokale DB anlegen
+  LocalQry := Tools.GetQuery;
+  //Anzahl der Lieferanten je Teil in Tabelle Teile
+  LocalQry.UpdateTeileZaehleLieferanten;
+  //Anzahl der Lieferanten mit gÃ¼ltiger Erklaerung je Teil in Tabelle Teile
+  LocalQry.UpdateTeileZaehleLErklaerungen;
+
 end;
 
 /// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
@@ -83,7 +96,7 @@ var
 begin
 
   StatusBarLeft('Import Schritt 2: Lese Lieferanten-Teilenummern');
-  Bestellungen := Init.GetTable('Bestellungen');
+  Bestellungen := Tools.GetTable('Bestellungen');
 
   Bestellungen.Open;
   Bestellungen.First;
@@ -136,7 +149,7 @@ begin
 
   StatusBarLeft('Import Schritt 3: Lese Benennung zu Teilen');
 
-  //Zeitraum erhöhen um sicher alle Namen zu bekommen
+  //Zeitraum erhï¿½hen um sicher alle Namen zu bekommen
   gefunden := UnippsQry.SucheTeileBenennung(5*365+5);
 
   if not gefunden then
@@ -157,12 +170,12 @@ begin
 
 end;
 
-//Import Schritt 4: Übertrage Benennung der Teile
+//Import Schritt 4: ï¿½bertrage Benennung der Teile
 ///<summary>Uebernahme der Benennung zu Teilen in Tabelle Teile</summary>
 procedure TeileBenennungInTeileTabelle();
 begin
 
-  StatusBarLeft('Import Schritt 4: Übertrage Benennung der Teile');
+  StatusBarLeft('Import Schritt 4: ï¿½bertrage Benennung der Teile');
 
   LocalQry.RunExecSQLQuery('delete from Teile;');
 
@@ -246,7 +259,7 @@ begin
   OK := LocalQry.AlteLErklaerungenLoeschen;
 end;
 
-///<summary>Lese alle Daten aus UNIPPS zum jährlichen Neustart.</summary>
+///<summary>Lese alle Daten aus UNIPPS zum jï¿½hrlichen Neustart.</summary>
 procedure BasisImport();
 var
   dbUnippsConn: TWADOConnector;
@@ -254,18 +267,18 @@ var
 begin
 
   // Qry fuer lokale DB anlegen
-  LocalQry := Init.GetQuery;
+  LocalQry := Tools.GetQuery;
 
   {$IFNDEF HOME}
   BasisImportFromUNIPPS;
   {$ENDIF}
 
   // Tabelle Lieferanten updaten
-  // Neue Lieferanten dazu, Alte (nicht in Bestellungen) löschen
+  // Neue Lieferanten dazu, Alte (nicht in Bestellungen) lï¿½schen
      LieferantenTabelleUpdaten;
 
   // Tabelle LErklaerungen aktualisieren
-  // Neue Teile aus Bestellungen übernehmen
+  // Neue Teile aus Bestellungen ï¿½bernehmen
      LErklaerungenUpdaten;
 end;
 
@@ -289,22 +302,22 @@ begin
   UnippsQry:= TWQryUNIPPS.Create(nil);
   UnippsQry.Connector:=dbUnippsConn;
 
-  // Tabelle Bestellungen leeren und neu befüllen
+  // Tabelle Bestellungen leeren und neu befï¿½llen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
      BestellungenAusUnipps;
   // Liest Lieferanten-Teilenummer aus UNIPPS in lok. Tab Bestellungen
      LieferantenTeilenummerAusUnipps;
 
-  // Tabelle tmpTeileBenennung leeren und neu befüllen
+  // Tabelle tmpTeileBenennung leeren und neu befï¿½llen
   // je Teil Zeile 1 und 2 der Benennung
      TeileBenennungAusUnipps;
 
-  // Tabelle Teile leeren und neu befüllen
+  // Tabelle Teile leeren und neu befï¿½llen
   // Eindeutige TeileNr mit Zeile 1 und 2 der Benennung
   // Flags Pumpenteil und PFk auf False
      TeileBenennungInTeileTabelle;
 
-  // Prüfe ob Teil für Pumpen verwendet wird
+  // Prï¿½fe ob Teil fï¿½r Pumpen verwendet wird
   // Setzt Flag Pumpenteil in Tabelle Teile
      PumpenteileAusUnipps;
 

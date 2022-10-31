@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.DBCtrls,
-  Vcl.Mask, Data.DB, Data.Win.ADODB, Vcl.Grids, Vcl.DBGrids, Init;
+  Vcl.Mask, Data.DB, Data.Win.ADODB, Vcl.Grids, Vcl.DBGrids, Tools;
 
 type
   TLieferantenStatusDialog = class(TForm)
@@ -41,8 +41,8 @@ var
   SQL : String;
 
 begin
-    Init.Start;
-    LocalQry := Init.GetQuery;
+    Tools.init;
+    LocalQry := Tools.GetQuery;
     LocalQry.HoleLieferantenStatusTxt;
     DataSource1.DataSet := LocalQry;
 

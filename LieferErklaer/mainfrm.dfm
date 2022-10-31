@@ -30,7 +30,6 @@ object mainForm: TmainForm
       item
         Width = 50
       end>
-    ExplicitTop = 543
   end
   inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
@@ -154,6 +153,10 @@ object mainForm: TmainForm
       object UnippsMenEinlesen: TMenuItem
         Caption = 'Einlesen'
         OnClick = UnippsMenEinlesenClick
+      end
+      object NAcharbe1: TMenuItem
+        Caption = 'Auswerten'
+        OnClick = NAcharbe1Click
       end
     end
     object LieferantenMen: TMenuItem
