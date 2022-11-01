@@ -1,4 +1,4 @@
-unit LieferantenErklaerungenFrame;
+﻿unit LieferantenErklaerungenFrame;
 
 interface
 
@@ -98,8 +98,6 @@ begin
     Self.HideFrame;
     OldFrame.Visible := True;
 end;
-
-
 
 procedure TLieferantenErklaerungenFrm.HideFrame();
 begin

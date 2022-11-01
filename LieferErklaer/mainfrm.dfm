@@ -15,6 +15,9 @@ object mainForm: TmainForm
   Position = poDesigned
   OnDestroy = FormDestroy
   OnShow = FormShow
+  DesignSize = (
+    847
+    612)
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar1: TStatusBar
@@ -79,7 +82,6 @@ object mainForm: TmainForm
       Top = 184
       Height = 350
       PanelHeight = 43
-      OnPaintPanel = LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel
       ExplicitTop = 184
       ExplicitHeight = 350
     end
@@ -139,6 +141,40 @@ object mainForm: TmainForm
       ExplicitTop = 120
     end
   end
+  inline GesamtStatusFrm1: TGesamtStatusFrm
+    Left = 8
+    Top = 8
+    Width = 265
+    Height = 207
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = True
+    TabOrder = 3
+    Visible = False
+    ExplicitLeft = 8
+    ExplicitTop = 8
+    inherited Label1: TLabel
+      Left = 0
+      Top = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
+    end
+    inherited nTeile: TLabel
+      Width = 28
+      ExplicitWidth = 28
+    end
+  end
+  inline TeileFrm1: TTeileFrm
+    Left = 56
+    Top = 37
+    Width = 320
+    Height = 240
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = True
+    TabOrder = 4
+    Visible = False
+    ExplicitLeft = 56
+    ExplicitTop = 37
+  end
   object MainMenu1: TMainMenu
     Left = 488
     object DateiMen: TMenuItem
@@ -148,22 +184,36 @@ object mainForm: TmainForm
         OnClick = FormDestroy
       end
     end
+    object LieferantenMen: TMenuItem
+      Caption = 'Lieferanten'
+      object LMenStatus: TMenuItem
+        Caption = 'Status'
+        OnClick = LMenStatusClick
+      end
+    end
     object UnippsMen: TMenuItem
       Caption = 'Unipps'
       object UnippsMenEinlesen: TMenuItem
         Caption = 'Einlesen'
         OnClick = UnippsMenEinlesenClick
       end
-      object NAcharbe1: TMenuItem
+      object UnippsMenAuswerten: TMenuItem
         Caption = 'Auswerten'
-        OnClick = NAcharbe1Click
+        OnClick = UnippsMenAuswertenClick
       end
     end
-    object LieferantenMen: TMenuItem
-      Caption = 'Lieferanten'
-      object LMenStatus: TMenuItem
-        Caption = 'Status'
-        OnClick = LMenStatusClick
+    object TeileMen: TMenuItem
+      Caption = 'Teile'
+      object TeileMenUebersicht: TMenuItem
+        Caption = #220'bersicht'
+        OnClick = TeileMenUebersichtClick
+      end
+    end
+    object StatusMen: TMenuItem
+      Caption = 'Status'
+      object StatusMenAnzeigen: TMenuItem
+        Caption = 'Anzeigen'
+        OnClick = StatusMenAnzeigenClick
       end
     end
   end

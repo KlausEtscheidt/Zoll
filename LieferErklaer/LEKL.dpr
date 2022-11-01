@@ -15,7 +15,10 @@ uses
   datenmodul in 'datenmodul.pas' {DataModule1: TDataModule},
   LieferantenErklaerungenFrame in 'LieferantenErklaerungenFrame.pas' {LieferantenErklaerungenFrm: TFrame},
   LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame},
-  LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog};
+  LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog},
+  TeileFrame in 'TeileFrame.pas' {TeileFrm: TFrame},
+  GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame},
+  LocalDbQuerys in 'LocalDbQuerys.pas';
 
 {$R *.res}
 

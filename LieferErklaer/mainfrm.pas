@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
-  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Tools;
+  Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Tools,
+  GesamtStatusFrame, TeileFrame;
 
 type
   TmainForm = class(TForm)
@@ -21,16 +22,23 @@ type
     LMenStatus: TMenuItem;
     LieferantenStatusFrm1: TLieferantenStatusFrm;
     LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
-    NAcharbe1: TMenuItem;
+    UnippsMenAuswerten: TMenuItem;
+    TeileMen: TMenuItem;
+    TeileMenUebersicht: TMenuItem;
+    StatusMen: TMenuItem;
+    StatusMenAnzeigen: TMenuItem;
+    GesamtStatusFrm1: TGesamtStatusFrm;
+    TeileFrm1: TTeileFrm;
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HideAllFrames;
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LMenStatusClick(Sender: TObject);
     procedure LMenErklaerClick(Sender: TObject);
     procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
-    procedure LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel(
-      DBCtrlGrid: TDBCtrlGrid; Index: Integer);
-    procedure NAcharbe1Click(Sender: TObject);
+    procedure UnippsMenAuswertenClick(Sender: TObject);
+    procedure StatusMenAnzeigenClick(Sender: TObject);
+    procedure TeileMenUebersichtClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -43,6 +51,14 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TmainForm.HideAllFrames;
+begin
+    LieferantenStatusFrm1.Visible:=False;
+    LieferantenErklaerungenFrm1.Visible:=False;
+    GesamtStatusFrm1.Visible:=False;
+    TeileFrm1.Visible:=False;
+end;
 
 
 procedure TmainForm.FormDestroy(Sender: TObject);
@@ -65,13 +81,6 @@ begin
 
 end;
 
-procedure TmainForm.LieferantenErklaerungenFrm1DBCtrlGrid1PaintPanel(
-  DBCtrlGrid: TDBCtrlGrid; Index: Integer);
-begin
- var i:Integer;
-    i:=Index;
-end;
-
 procedure TmainForm.LMenErklaerClick(Sender: TObject);
 var
   Qry : TWQry;
@@ -82,15 +91,29 @@ begin
     LieferantenErklaerungenFrm1.Visible := True;
 end;
 
+procedure TmainForm.StatusMenAnzeigenClick(Sender: TObject);
+begin
+    HideAllFrames;
+    GesamtStatusFrm1.Visible:=True;
+    GesamtStatusFrm1.InitFrame;
+end;
+
+procedure TmainForm.TeileMenUebersichtClick(Sender: TObject);
+begin
+    HideAllFrames;
+    TeileFrm1.Visible:=True;
+end;
+
 procedure TmainForm.LMenStatusClick(Sender: TObject);
 var
   SQL: String;
 begin
+    HideAllFrames;
     LieferantenStatusFrm1.ShowFrame;
     LieferantenErklaerungenFrm1.HideFrame;
 end;
 
-procedure TmainForm.NAcharbe1Click(Sender: TObject);
+procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);
 begin
   Import.Auswerten;
 end;

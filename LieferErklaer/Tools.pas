@@ -32,6 +32,7 @@ var
   Log: TLogFile;
   ErrLog: TLogFile;
   DbConnector:TWADOConnector;
+  ProgDataTable: TADOTable;
 
 implementation
 
@@ -52,6 +53,7 @@ begin
 
   {$ENDIF}
 
+  ProgDataTable:= GetTable('ProgrammDaten');
 end;
 
 function GetQuery() : TWQry;
