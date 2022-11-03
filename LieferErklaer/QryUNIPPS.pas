@@ -23,7 +23,7 @@ interface
     ///<summary>Abfragengenerator für alle nötigen UNIPPS-Abfragen.
     ///</summary>
     TWQryUNIPPS = class(TWADOQuery)
-      function SucheBestellungen(delta_days: Integer): Boolean;
+      function SucheBestellungen(delta_days: String): Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung(delta_days: Integer):Boolean;
@@ -66,7 +66,7 @@ implementation
 /// </remarks>
 ///<param name="delta_days">Zeitraum ab heute-delta_days</param>
 //---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheBestellungen(delta_days: Integer):Boolean;
+function TWQryUNIPPS.SucheBestellungen(delta_days: String):Boolean;
 var  sql: String;
 begin
 
@@ -87,7 +87,7 @@ begin
       + 'INNER JOIN lieferant on lieferant.ident_nr = IdLieferant '
       + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr ';
 
-  Result:= RunSelectQueryWithParam(sql,[intToStr(delta_days)]);
+  Result:= RunSelectQueryWithParam(sql,[delta_days]);
 //  Result:= RunSelectQuery(sql);
 
 end;

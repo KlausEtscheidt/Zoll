@@ -12,6 +12,10 @@ function HoleAnzahlLieferanten():Integer;
 function HoleAnzahlLieferPumpenteile():Integer;
 function HoleAnzahlLieferStatusUnbekannt():Integer;
 
+function LiesProgrammDatenWert(Name:String):String;
+function SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
+
+
 implementation
 
 function HoleAnzahlTabelleneintraege(tablename:String) :Integer;
@@ -83,6 +87,28 @@ begin
 
   LocalQry.RunSelectQuery(SQL);
   result:= LocalQry.FieldByName('n').AsInteger;
+end;
+
+function SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
+var
+  LocalQry: TWQry;
+  SQL:string;
+begin
+  LocalQry:=Tools.GetQuery;
+  SQL := 'Update ProgrammDaten SET wert=' + Wert
+       + ' where name="' + Name + '";' ;
+  result:= LocalQry.RunExecSQLQuery(SQL);
+end;
+
+function LiesProgrammDatenWert(Name:String):String;
+var
+  LocalQry: TWQry;
+  SQL:string;
+begin
+  LocalQry:=Tools.GetQuery;
+  SQL := 'SELECT Wert FROM ProgrammDaten where Name=?; ';
+  LocalQry.RunSelectQueryWithParam(SQL,[Name]);
+  result:= LocalQry.FieldByName('Wert').AsString;
 end;
 
 end.

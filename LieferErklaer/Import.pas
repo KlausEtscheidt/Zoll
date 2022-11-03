@@ -4,7 +4,7 @@ unit Import;
 interface
 
 uses System.SysUtils, Data.DB, Data.Win.ADODB,
-     Tools,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
+     Tools,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite, LocalDbQuerys;
 
 procedure BasisImport();
 procedure BasisImportFromUNIPPS();
@@ -40,19 +40,24 @@ end;
 
 
 procedure Auswerten();
+var
+  minRestGueltigkeit:String;
 
 begin
   // Qry fuer lokale DB anlegen
   LocalQry := Tools.GetQuery;
 
+  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
+  minRestGueltigkeit:=LocalDbQuerys.LiesProgrammDatenWert('Gueltigkeit_Lekl');
+
   //Leere Zwischentabelle
   LocalQry.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
 
   //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
-  LocalQry.LeklAlleTeileInTmpTabelle('-500');
+  LocalQry.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
 
   //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
-  LocalQry.LeklEinigeTeileInTmpTabelle('-500');
+  LocalQry.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
 
   //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleGueltigeLErklaerungen;
@@ -69,11 +74,16 @@ end;
 /// Zusatzinfo zum Teil  LTeileNr (Lieferanten-Teilenummer).
 /// </remarks>
 procedure BestellungenAusUnipps();
-
+var
+  BestellZeitraum:String;
 begin
 
   StatusBarLeft('Import Schritt 1: Lese Bestellungen');
-  gefunden := UnippsQry.SucheBestellungen(5*365);
+
+  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
+  BestellZeitraum:=LocalDbQuerys.LiesProgrammDatenWert('Bestellzeitraum');
+
+  gefunden := UnippsQry.SucheBestellungen(Bestellzeitraum);
 
   if not gefunden then
     raise Exception.Create('Keine Bestellungen gefunden.');
