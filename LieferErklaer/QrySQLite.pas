@@ -27,7 +27,6 @@ interface
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
-      function UpdateTeileZaehleLErklaerungen():Boolean;
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitStatusTxt():Boolean;
@@ -43,6 +42,11 @@ interface
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
       function UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl:String):Boolean;
+
+      //Auswertung nach Benutzereingaben
+      function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
+      function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
+      function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
 
     end;
 
@@ -183,26 +187,6 @@ begin
 
 end;
 
-//---------------------------------------------------------------------------
-///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
-///                           eines Teils in Tabelle Teile</summary>
-function TWQrySQLite.UpdateTeileZaehleLErklaerungen():Boolean;
-  var
-    sql: String;
-begin
-  sql := 'UPDATE Teile SET n_LPfk= '
-       + '(SELECT Anz_Pfk FROM '
-       + '(SELECT TeileNr as TNr, Count(Lieferanten.IdLieferant) as Anz_Pfk '
-       + 'FROM LErklaerungen '
-       + 'JOIN Lieferanten ON LErklaerungen.IdLieferant=Lieferanten.IdLieferant '
-       + 'WHERE  LErklaerungen.LPfk=-1 AND gilt_bis > DATE()-100000 '
-       + 'GROUP BY LErklaerungen.TeileNr)'
-       + 'WHERE  Teile.TeileNr=TNr  ); ' ;
-
-  Result:= RunExecSQLQuery(sql);
-
-end;
-
 
 // ---------------------------------------------------------------
 //
@@ -219,6 +203,7 @@ begin
     SQL := 'select *,StatusTxt from lieferanten '
          + 'join LieferantenStatusTxt '
          + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+         + 'WHERE Lieferstatus !="entfallen" '
          + 'order by LKurzname;';
   Result:= RunSelectQuery(sql);
 end;
@@ -315,6 +300,62 @@ begin
           +  'lekl="' + lekl + ' "  '
           +  'where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
+end;
+
+
+// ---------------------------------------------------------------
+//
+// Änderungs-Abfragen
+// Datenänderungen zur Auswertung nach allen Benutzeraktionen
+//
+// ---------------------------------------------------------------
+
+///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile"
+///</summary>
+function TWQrySQLite.LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
+           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
+           + 'FROM Lieferanten JOIN LErklaerungen '
+           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+           + 'WHERE lekl=2 and Lieferstatus !="entfallen" and '
+           + 'Julianday(gilt_bis)-Julianday(Date())>+' + delta_days + ' ;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
+///</summary>
+function TWQrySQLite.LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
+           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
+           + 'FROM Lieferanten JOIN LErklaerungen '
+           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+           + 'WHERE lekl=3 and Lieferstatus !="entfallen" and LPfk=-1 and '
+           + 'Julianday(gilt_bis)-Julianday(Date())>+' + delta_days + ' ;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in Tabelle Teile</summary>
+function TWQrySQLite.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET n_LPfk= '
+       + '(SELECT Anz_Pfk FROM '
+       + '(SELECT TeileNr as TNr, Count(IdLieferant) as Anz_Pfk '
+       + 'FROM tmpLieferantTeilPfk '
+       + 'GROUP BY TeileNr)'
+       + 'WHERE  Teile.TeileNr=TNr  ); ' ;
+
+  Result:= RunExecSQLQuery(sql);
+
 end;
 
 

@@ -9,7 +9,8 @@ uses System.SysUtils, Data.DB, Data.Win.ADODB,
 procedure BasisImport();
 procedure BasisImportFromUNIPPS();
 procedure BestellungenAusUnipps();
-procedure TeileBenennungAusUnipps();
+procedure TeileBenennungAusUnipps;
+procedure TeileUpdateZaehleLieferanten;
 procedure Auswerten();
 
 var
@@ -21,6 +22,7 @@ implementation
 
 uses mainfrm;
 
+/// <summary>Ausgabe in linkes panel des Statusbar </summary>
 procedure StatusBarLeft(text:String);
 begin
   mainForm.StatusBar1.Panels[0].Text := text;
@@ -28,6 +30,7 @@ begin
   mainForm.StatusBar1.Update;
 end;
 
+/// <summary>Ausgabe in rechtes panel des Statusbar </summary>
 procedure StatusBar(akt,max: Integer);
 begin
    mainForm.StatusBar1.Panels[1].Text :=
@@ -35,19 +38,29 @@ begin
    mainForm.StatusBar1.Update;
 end;
 
+
 procedure Auswerten();
 
 begin
   // Qry fuer lokale DB anlegen
   LocalQry := Tools.GetQuery;
-  //Anzahl der Lieferanten je Teil in Tabelle Teile
-  LocalQry.UpdateTeileZaehleLieferanten;
+
+  //Leere Zwischentabelle
+  LocalQry.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
+
+  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
+  LocalQry.LeklAlleTeileInTmpTabelle('-500');
+
+  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
+  LocalQry.LeklEinigeTeileInTmpTabelle('-500');
+
   //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
-  LocalQry.UpdateTeileZaehleLErklaerungen;
+  LocalQry.UpdateTeileZaehleGueltigeLErklaerungen;
 
 end;
 
-/// <summary>Bestellungen mit Zusatzinfo aus UNIPPS lesen </summary>
+/// <summary>Bestellungen mit Zusatzinfo aus UNIPPS in Tabelle
+///          Bestellungen lesen </summary>
 /// <remarks>
 /// Erste Abfrage zur Erstellung der Datenbasis des Programms.
 /// Liest Bestellungen seit xxx Tagen aus UNIPPS in lokale Tabelle Bestellungen.
@@ -79,10 +92,10 @@ begin
 
 end;
 
-/// <summary>Lieferanten-Teilenummer aus UNIPPS lesen </summary>
+/// <summary>Lieferanten-Teilenummer aus UNIPPS in Tabelle
+///          Bestellungen lesen </summary>
 /// <remarks>
-/// Wird von BasisImportFromUNIPPS benutzt,
-/// um LTeileNr in lokale Tabelle Bestellungen zu schreiben.
+/// Zweite Abfrage zur Erstellung der Datenbasis des Programms.
 /// </remarks>
 procedure LieferantenTeilenummerAusUnipps();
 
@@ -141,8 +154,10 @@ begin
 
 end;
 
-//Import Schritt 3: Lese Benennung zu Teilen
 ///<summary>Lese Benennung zu Teilen aus UNIPPS in temp Tabelle</summary>
+/// <remarks>
+/// Dritte Abfrage zur Erstellung der Datenbasis des Programms.
+/// </remarks>
 procedure TeileBenennungAusUnipps();
 
 begin
@@ -170,12 +185,12 @@ begin
 
 end;
 
-//Import Schritt 4: �bertrage Benennung der Teile
+//Import Schritt 4: Übertrage Benennung der Teile
 ///<summary>Uebernahme der Benennung zu Teilen in Tabelle Teile</summary>
 procedure TeileBenennungInTeileTabelle();
 begin
 
-  StatusBarLeft('Import Schritt 4: �bertrage Benennung der Teile');
+  StatusBarLeft('Import Schritt 4: Übertrage Benennung der Teile');
 
   LocalQry.RunExecSQLQuery('delete from Teile;');
 
@@ -259,6 +274,16 @@ begin
   OK := LocalQry.AlteLErklaerungenLoeschen;
 end;
 
+// Import Schritt 8
+///<summary>Anzahl der Lieferanten je Teil in Tabelle Teile</summary>
+procedure TeileUpdateZaehleLieferanten();
+begin
+  //Anzahl der Lieferanten je Teil in Tabelle Teile
+  LocalQry.UpdateTeileZaehleLieferanten;
+  StatusBarLeft('Import fertig gestellt');
+
+end;
+
 ///<summary>Lese alle Daten aus UNIPPS zum j�hrlichen Neustart.</summary>
 procedure BasisImport();
 var
@@ -280,6 +305,10 @@ begin
   // Tabelle LErklaerungen aktualisieren
   // Neue Teile aus Bestellungen �bernehmen
      LErklaerungenUpdaten;
+
+  // Tabelle Teile updaten: Anzahl der Lieferanten je Teil
+     TeileUpdateZaehleLieferanten;
+
 end;
 
 /// <summary>Liest alle noetigen Daten aus UNIPPS lesen </summary>

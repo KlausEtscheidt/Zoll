@@ -90,8 +90,8 @@ Schritt 6.2: Lieferant ist in Bestellungen, war nicht in Tabelle =>
 Schritt 6.3: Lieferant ist nicht in Bestellungen, aber in Tabelle => 
              SET Lieferstatus="entfallen"  
 
-LieferErklaer
--------------
+Lieferanten-Erklärungen
+-----------------------
 
 CREATE TABLE LErklaerungen (Id INTEGER, IdLieferant INTEGER NOT NULL, TeileNr varchar (255) NOT NULL, LTeileNr varchar (255), LPfk INTEGER DEFAULT 0, Stand varchar (50) DEFAULT "1900-01-01", BestDatum varchar (50) DEFAULT "1900-01-01", PRIMARY KEY (Id) AUTOINCREMENT);
 
@@ -108,11 +108,31 @@ BestDatum: zur Info; letztes Bestelldatum für Teil bei Lieferant
 
 Import
 
-!?!?! Ist es Ziel, alte Eingaben zu erhalten !?!?! 
-Nein, eher nicht
-
 Schritt 7.1: Neue IdLieferant/TeileNr-Kombinationen einfuegen
 Schritt 7.2: Nicht in Bestelungen vorhandene Kombinationen löschen
 
-evtl 
-Schritt 7.3: LPfk auf 0 und Stand auf 1.1.1900
+Ablauf
+======
+
+UNIPPS-Import (Basis-Import)
+----------------------------
+
+1. Suche Bestellungen seit xxx: Leere Tabelle Bestellungen und fülle neu
+2. Lieferanten-Teilenummer in Tab Bestellungen
+3. Lese Benennung zu Teilen aus UNIPPS in Tabelle tmpTeileBenennung
+4. Leere Tabelle Teile und fuelle mit TeileNr und Bennenung (1 und 2)
+5. Markiere Pumpenteile in Tabelle Teile
+6. Pflege Tabelle Lieferanten (markiere neue und entfallene)
+7. Pflege Tabelle LErklaerungen (neue dazu , alte loeschen)
+8. Anzahl Lieferanten in Tabelle Teile (Quelle LErklaerungen)
+
+manuelle Pflege
+---------------
+- Pflege des Lieferantenstatus bzgl Lieferanten-Erklärung inkl Gültigkeit
+Abfrage "HoleLieferantenMitStatusTxt" für Formular "LieferantenStatusFrame"
+- Eingabe der teilebezogenen Lieferanten-Erklärungen in LErklaerungen
+Abfrage "HoleLErklaerungen" für Formular "LieferantenErklaerungenFrame" 
+
+Auswertung
+----------
+- 

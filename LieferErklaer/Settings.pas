@@ -7,18 +7,18 @@ uses System.SysUtils;
 {$IFDEF HOME}
 const LogDir: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-    'zoll\data\output';
+                  'Zoll\LieferErklaer\db\output';
 const SQLiteDBFileName: String =
     'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                 'Zoll\data\db\lekl.db';
+                 'Zoll\LieferErklaer\db\lekl.db';
 
 {$ELSE}
 const LogDir: String =
     'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                   'Zoll\data\output';
+                   'Zoll\LieferErklaer\db\output';
 const SQLiteDBFileName: String =
     'C:\Users\Etscheidt\Documents\Embarcadero\Studio\Projekte\' +
-                 'Zoll\data\db\lekl.db';
+                 'Zoll\LieferErklaer\db\lekl.db';
 
 {$ENDIF}
 
