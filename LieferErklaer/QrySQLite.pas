@@ -23,7 +23,9 @@ interface
       function NeueLieferantenInTabelle():Boolean;
       function MarkiereAlteLieferanten():Boolean;
       function MarkiereAktuelleLieferanten():Boolean;
+      function ResetPumpenErsatzteilMarkierungInLieferanten():Boolean;
       function MarkierePumpenteilLieferanten():Boolean;
+      function MarkiereErsatzteilLieferanten():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
@@ -81,7 +83,7 @@ end;
 ///<summary>Lösche Teile-Lieferanten-Kombis, die nicht in Bestellungen sind.
 ///</summary>
 function TWQrySQLite.AlteLErklaerungenLoeschen():Boolean;
-  var sql1,sql2,sql: String;
+  var sql: String;
 begin
   sql := 'SELECT Id FROM LErklaerungen LEFT JOIN Bestellungen '
        + 'ON Bestellungen.TeileNr=LErklaerungen.TeileNr '
@@ -105,7 +107,8 @@ begin
 end;
 
 //-----------------------------------------------
-///<summary>Entfallene Lieferanten in Tabelle markieren. </summary>
+///<summary>Markiere Lieferanten, die neu waren
+/// und die noch aktuell sind, als aktuell.</summary>
 function TWQrySQLite.MarkiereAktuelleLieferanten():Boolean;
   var sql: String;
 begin
@@ -127,6 +130,17 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
+
+//----------------------------------------------------
+///<summary>Setze Markierung f Pumpen-/Ersatzteile zurück.</summary>
+function TWQrySQLite.ResetPumpenErsatzteilMarkierungInLieferanten():Boolean;
+  var sql: String;
+begin
+  sql := 'UPDATE Lieferanten SET Pumpenteile=0, Ersatzteile=0;';
+  Result:= RunExecSQLQuery(sql);
+end;
+
+
 //----------------------------------------------------
 ///<summary>Markiere Lieferanten die mind. 1 Pumpenteil liefern</summary>
 function TWQrySQLite.MarkierePumpenteilLieferanten():Boolean;
@@ -136,6 +150,18 @@ begin
        + 'IN (SELECT DISTINCT IdLieferant FROM LErklaerungen '
        + 'JOIN Teile ON LErklaerungen.TeileNr=Teile.TeileNr  '
        + 'WHERE Pumpenteil=-1);';
+  Result:= RunExecSQLQuery(sql);
+end;
+
+//----------------------------------------------------
+///<summary>Markiere Lieferanten die mind. 1 Ersatzteil liefern</summary>
+function TWQrySQLite.MarkiereErsatzteilLieferanten():Boolean;
+  var sql: String;
+begin
+  sql := 'UPDATE Lieferanten SET Ersatzteile=-1 WHERE IdLieferant '
+       + 'IN (SELECT DISTINCT IdLieferant FROM LErklaerungen '
+       + 'JOIN Teile ON LErklaerungen.TeileNr=Teile.TeileNr  '
+       + 'WHERE Ersatzteil=-1);';
   Result:= RunExecSQLQuery(sql);
 end;
 

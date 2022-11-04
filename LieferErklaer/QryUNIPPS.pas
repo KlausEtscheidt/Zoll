@@ -26,7 +26,7 @@ interface
       function SucheBestellungen(delta_days: String): Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
-      function SucheTeileBenennung(delta_days: Integer):Boolean;
+      function SucheTeileBenennung(delta_days: String):Boolean;
       function SucheTeileInFA(TeileNr: String):Boolean;
       function SucheTeileInFAKopf(TeileNr: String):Boolean;
       function SucheTeileInKA(TeileNr: String):Boolean;
@@ -109,7 +109,7 @@ end;
 
 ///<summary>Suche Benennung zu bestellten Teilen in UNIPPS </summary>
 //---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheTeileBenennung(delta_days: Integer):Boolean;
+function TWQryUNIPPS.SucheTeileBenennung(delta_days: String):Boolean;
 var  sql: String;
 begin
 
@@ -128,7 +128,7 @@ begin
            + 'order by ident_nr1 ';
 
 //  Result:= RunSelectQuery(sql);
-  Result:= RunSelectQueryWithParam(sql,[intToStr(delta_days)]);
+  Result:= RunSelectQueryWithParam(sql,[delta_days]);
 
 
 end;

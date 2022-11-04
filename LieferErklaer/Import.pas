@@ -80,7 +80,7 @@ begin
 
   StatusBarLeft('Import Schritt 1: Lese Bestellungen');
 
-  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
+  //Lies den BestellZeitraum
   BestellZeitraum:=LocalDbQuerys.LiesProgrammDatenWert('Bestellzeitraum');
 
   gefunden := UnippsQry.SucheBestellungen(Bestellzeitraum);
@@ -169,13 +169,19 @@ end;
 /// Dritte Abfrage zur Erstellung der Datenbasis des Programms.
 /// </remarks>
 procedure TeileBenennungAusUnipps();
+var
+  BestellZeitraum:String;
 
 begin
 
   StatusBarLeft('Import Schritt 3: Lese Benennung zu Teilen');
 
-  //Zeitraum erh�hen um sicher alle Namen zu bekommen
-  gefunden := UnippsQry.SucheTeileBenennung(5*365+5);
+  //Lies den Bestellzeitraum
+  BestellZeitraum:=LocalDbQuerys.LiesProgrammDatenWert('Bestellzeitraum');
+
+  //Zeitraum erhoehen um sicher alle Namen zu bekommen
+  BestellZeitraum:=IntToStr(StrToInt(BestellZeitraum)+5);
+  gefunden := UnippsQry.SucheTeileBenennung(BestellZeitraum);
 
   if not gefunden then
     raise Exception.Create('Keine TeileBenennung gefunden.');
@@ -220,6 +226,7 @@ end;
 ///<summary>Markiere Pumpenteile in Tabelle Teile</summary>
 procedure PumpenteileAusUnipps();
     var TeileNr:String;
+    var Ersatzteil:Boolean;
 
 begin
 
@@ -234,9 +241,10 @@ begin
 
     TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
 
-    gefunden := UnippsQry.SucheTeileInFA(TeileNr);
+    gefunden := UnippsQry.SucheTeileInKA(TeileNr);
+    Ersatzteil:=gefunden;
     if not gefunden then
-      gefunden := UnippsQry.SucheTeileInKA(TeileNr);
+      gefunden := UnippsQry.SucheTeileInFA(TeileNr);
     if not gefunden then
       gefunden := UnippsQry.SucheTeileInSTU(TeileNr);
     if not gefunden then
@@ -246,6 +254,8 @@ begin
     begin
       LocalQry.Edit;
       LocalQry.FieldByName('Pumpenteil').Value := True;
+      if Ersatzteil then
+        LocalQry.FieldByName('Ersatzteil').Value := True;
       LocalQry.Post;
     end;
 
@@ -259,18 +269,21 @@ end;
 //Import Schritt 6: Lieferanten-Tabelle
 ///<summary>Pflege Tabelle Lieferanten</summary>
 procedure LieferantenTabelleUpdaten();
-var
-  OK: Boolean;
+
 begin
   StatusBarLeft('Import Schritt 6: Lieferanten-Tabelle');
   //Markiere Lieferanten, neu waren und die noch aktuell sind als aktuell
-  OK := LocalQry.MarkiereAktuelleLieferanten;
+  LocalQry.MarkiereAktuelleLieferanten;
   //Uebertrage neue Lieferanten
-  OK := LocalQry.NeueLieferantenInTabelle;
+  LocalQry.NeueLieferantenInTabelle;
   //Markiere Lieferanten, die im Zeitraum nicht geliefert haben, als "entfallen"
-  OK := LocalQry.MarkiereAlteLieferanten;
+  LocalQry.MarkiereAlteLieferanten;
+  //Setze Markierung f Pumpen-/Ersatzteile zurück.
+  LocalQry.ResetPumpenErsatzteilMarkierungInLieferanten;
   // Markiere Lieferanten die mind. 1 Pumpenteil liefern
-  OK := LocalQry.MarkierePumpenteilLieferanten;
+  LocalQry.MarkierePumpenteilLieferanten;
+  // Markiere Lieferanten die mind. 1 Ersatzteil liefern
+  LocalQry.MarkiereErsatzteilLieferanten;
 end;
 
 // Import Schritt 7: Lief-Erklaerungen

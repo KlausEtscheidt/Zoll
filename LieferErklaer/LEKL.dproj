@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -135,11 +135,6 @@
         <DCCReference Include="QryAccess.pas"/>
         <DCCReference Include="QrySQLite.pas"/>
         <DCCReference Include="QryUNIPPS.pas"/>
-        <DCCReference Include="datenmodul.pas">
-            <Form>DataModule1</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="LieferantenErklaerungenFrame.pas">
             <Form>LieferantenErklaerungenFrm</Form>
             <FormType>dfm</FormType>
