@@ -27,6 +27,9 @@
         <Projects Include="LieferErklaer\LEKL.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="AE\AE.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -107,14 +110,23 @@
     <Target Name="LEKL:Make">
         <MSBuild Projects="LieferErklaer\LEKL.dproj" Targets="Make"/>
     </Target>
+    <Target Name="AE">
+        <MSBuild Projects="AE\AE.dproj"/>
+    </Target>
+    <Target Name="AE:Clean">
+        <MSBuild Projects="AE\AE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AE:Make">
+        <MSBuild Projects="AE\AE.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;LEKL"/>
+        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;LEKL;AE"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;LEKL:Clean"/>
+        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;LEKL:Clean;AE:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;LEKL:Make"/>
+        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;LEKL:Make;AE:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
