@@ -1,7 +1,7 @@
 object LieferantenStatusFrm: TLieferantenStatusFrm
   Left = 0
   Top = 0
-  Width = 769
+  Width = 1099
   Height = 569
   ParentBackground = False
   TabOrder = 0
@@ -21,7 +21,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   object GroupBox1: TGroupBox
     Left = 5
     Top = 44
-    Width = 750
+    Width = 1036
     Height = 53
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
@@ -69,7 +69,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      OnChange = FilterKurznameChange
+      OnChange = FilterUpdateActionExecute
     end
     object FilterName: TEdit
       Left = 293
@@ -83,13 +83,14 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      OnChange = FilterNameChange
+      OnChange = FilterUpdateActionExecute
     end
     object PumpenTeileChkBox: TCheckBox
-      Left = 575
+      Left = 527
       Top = 14
-      Width = 154
+      Width = 162
       Height = 25
+      Action = FilterUpdateAction
       Caption = 'nur Lief. v. Pumpenteilen'
       Checked = True
       Font.Charset = DEFAULT_CHARSET
@@ -100,28 +101,56 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
       State = cbChecked
       TabOrder = 2
-      OnClick = PumpenTeileChkBoxClick
     end
-    object Button1: TButton
+    object FilterAusBtn: TButton
       Left = 487
       Top = 16
       Width = 25
       Height = 25
       DisabledImageIndex = 0
-      DisabledImages = ImageList1
       HotImageIndex = 0
       ImageIndex = 0
       ImageMargins.Left = 2
       ImageMargins.Top = 2
       Images = ImageList1
       TabOrder = 3
-      OnClick = Button1Click
+      OnClick = FilterAusBtnClick
+    end
+    object AbgelaufenChkBox: TCheckBox
+      Left = 711
+      Top = 14
+      Width = 114
+      Height = 25
+      Caption = 'nur abgelaufene'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      OnClick = AbgelaufenChkBoxClick
+    end
+    object EinigeTeileChkBox: TCheckBox
+      Left = 849
+      Top = 14
+      Width = 114
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'nur "einige Teile"'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
     end
   end
   object GroupBox2: TGroupBox
     Left = 5
     Top = 122
-    Width = 750
+    Width = 1036
     Height = 231
     Caption = 'gefiltert'
     Font.Charset = DEFAULT_CHARSET
@@ -134,7 +163,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     object DBGrid1: TDBGrid
       Left = 62
       Top = 29
-      Width = 667
+      Width = 760
       Height = 188
       DataSource = DataSource1
       Font.Charset = DEFAULT_CHARSET
@@ -143,6 +172,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ReadOnly = True
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -153,7 +183,6 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         item
           Expanded = False
           FieldName = 'LKurzname'
-          ReadOnly = True
           Title.Caption = 'Kurzname'
           Width = 100
           Visible = True
@@ -161,7 +190,6 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         item
           Expanded = False
           FieldName = 'LName1'
-          ReadOnly = True
           Title.Caption = 'Name1'
           Width = 220
           Visible = True
@@ -169,9 +197,24 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         item
           Expanded = False
           FieldName = 'LName2'
-          ReadOnly = True
           Title.Caption = 'Name2'
-          Width = 150
+          Width = 94
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'gilt_bis'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'lekl'
+          Visible = True
+        end
+        item
+          Alignment = taCenter
+          Expanded = False
+          FieldName = 'Pumpenteile'
           Visible = True
         end>
     end
@@ -179,7 +222,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   object GroupBox3: TGroupBox
     Left = 5
     Top = 398
-    Width = 758
+    Width = 1036
     Height = 144
     Caption = 'gew'#228'hlt'
     Font.Charset = DEFAULT_CHARSET
@@ -418,9 +461,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     Top = 200
   end
   object ImageList1: TImageList
-    ImageType = itMask
-    Left = 248
-    Top = 264
+    Left = 368
+    Top = 272
     Bitmap = {
       494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
@@ -560,5 +602,14 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       0003000300000000000300030000000000030003000000000003000300000000
       0003000300000000000100030000000000000000000000000000000000000000
       000000000000}
+  end
+  object ActionList1: TActionList
+    Left = 536
+    Top = 272
+    object FilterUpdateAction: TAction
+      Category = 'Filter'
+      Caption = 'FilterUpdate'
+      OnExecute = FilterUpdateActionExecute
+    end
   end
 end

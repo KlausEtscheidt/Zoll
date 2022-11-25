@@ -48,7 +48,7 @@ begin
       //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
          DbConnector.ConnectToSQLite(SQLiteDBFileName);
       {$ELSE}
-         DbConnector.ConnectToUNIPPS();
+         DbConnector.ConnectToAccess(AccessDBFileName);
       {$ENDIF}
 
   {$ENDIF}

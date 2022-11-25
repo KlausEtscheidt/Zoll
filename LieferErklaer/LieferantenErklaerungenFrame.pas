@@ -47,6 +47,8 @@ type
   private
     { Private-Deklarationen }
     OldFrame: TFrame;
+    DatenGeaendert:Boolean;
+
   public
     LocalQry: TWQry;
     LErklaerungenTab: TADOTable;
@@ -62,19 +64,13 @@ implementation
 {$R *.dfm}
 
 procedure TLieferantenErklaerungenFrm.ShowFrame(myOldFrame: TFrame);
-var
-  SQL : String;
 
 begin
     OldFrame := myOldFrame;
     LocalQry := Tools.GetQuery;
     LocalQry.HoleLErklaerungen(IdLieferant);
     DataSource1.DataSet := LocalQry;
-
-    //langsam Update-Query ist schneller
-//    LErklaerungenTab := Tools.GetTable('LErklaerungen');
-//    LErklaerungenTab.Open;
-
+    DatenGeaendert:=False;
     Self.Visible := True;
 end;
 
@@ -90,13 +86,22 @@ end;
 
 procedure TLieferantenErklaerungenFrm.SortLTNameBtnClick(Sender: TObject);
 begin
-   LocalQry.Sort := 'TName1,TName1';
+   LocalQry.Sort := 'TName1,TName2';
 end;
 
 procedure TLieferantenErklaerungenFrm.BackBtnClick(Sender: TObject);
+
 begin
     Self.HideFrame;
+    //Stand aktualisieren, wenn Flags geändert wurden
+    if DatenGeaendert then
+        // Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
+        // Datenstand ist heute
+        LocalQry.UpdateLieferantStand(IdLieferant,
+                       FormatDateTime('YYYY-MM-DD', Date));
     OldFrame.Visible := True;
+
+
 end;
 
 procedure TLieferantenErklaerungenFrm.HideFrame();
@@ -127,6 +132,8 @@ var
   Pfk,PanelIndex:Integer;
 
 begin
+    //merken das Daten geaendert wurden
+    DatenGeaendert:=True;
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
 
@@ -186,7 +193,7 @@ begin
 
     if length(FilterTeileNr.Text)>0 then
     begin
-      FilterStr := 'TeileNr Like ''' + FilterTeileNr.Text + '%''';
+      FilterStr := 'TeileNr Like ''%' + FilterTeileNr.Text + '%''';
       filtern := True;
     end;
 
@@ -211,7 +218,7 @@ begin
       if filtern then
         FilterStr := FilterStr + ' AND ' ;
       filtern := True;
-      FilterStr := FilterStr + 'LTeileNr Like ''' + FilterLTeileNr.Text + '%''';
+      FilterStr := FilterStr + 'LTeileNr Like ''%' + FilterLTeileNr.Text + '%''';
     end;
 
     LocalQry.Filter := FilterStr;

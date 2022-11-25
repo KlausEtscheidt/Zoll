@@ -24,6 +24,7 @@ interface
     ///</summary>
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: String): Boolean;
+      function HoleLieferantenAdressen():Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung(delta_days: String):Boolean;
@@ -58,6 +59,17 @@ interface
 
 implementation
 
+function TWQryUNIPPS.HoleLieferantenAdressen():Boolean;
+var  sql: String;
+begin
+
+    sql := 'SELECT lieferant.ident_nr as IdLieferant, adresse, kurzname, name1, '
+         + 'name2, name3, name4, strasse, postfach, staat, plz_haus, '
+         + 'plz_postfach, ort, ort_postfach, telefon, telefax, email '
+         + 'FROM lieferant '
+         + 'INNER JOIN adresse ON lieferant.adresse = adresse.ident_nr;' ;
+   Result:= RunSelectQuery(sql);
+end;
 
 ///<summary>Suche Bestellungen in UNIPPS bestellkopf</summary>
 /// <remarks>
@@ -121,7 +133,7 @@ begin
 
        // Zeilen 1 und 2 der deutschen Benennung dazu
        //siehe Access Abfrage "xxxxxxx"
-       sql := 'SELECT trim(ident_nr1) as TeileNr, art as Zeile, trim(Text) as Text '
+       sql := 'SELECT trim(ident_nr1) as TeileNr, art as Zeile, trim(Text) as Benennung '
            + 'FROM teil_bez  '
            + 'where (art=1 or art=2) '
            + 'and sprache="D" and ident_nr1 in (' + sql + ') '

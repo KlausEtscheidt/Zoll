@@ -1,4 +1,4 @@
-unit LieferantenStatusFrame;
+﻿unit LieferantenStatusFrame;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
   LieferantenStatusDlg, Tools, Vcl.Mask, System.ImageList, Vcl.ImgList,
-  Vcl.Buttons;
+  Vcl.Buttons, System.Actions, Vcl.ActnList;
 
 type
   TLieferantenStatusFrm = class(TFrame)
@@ -40,24 +40,26 @@ type
     Label10: TLabel;
     PumpenTeileChkBox: TCheckBox;
     Label11: TLabel;
-    Button1: TButton;
+    FilterAusBtn: TButton;
     ImageList1: TImageList;
-    procedure FilterNameChange(Sender: TObject);
-    procedure FilterKurznameChange(Sender: TObject);
+    AbgelaufenChkBox: TCheckBox;
+    EinigeTeileChkBox: TCheckBox;
+    ActionList1: TActionList;
+    FilterUpdateAction: TAction;
     procedure TeileBtnClick(Sender: TObject);
     procedure StatusBtnClick(Sender: TObject);
     procedure ShowFrame();
     procedure HideFrame();
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
-    procedure PumpenTeileChkBoxClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure FilterAusBtnClick(Sender: TObject);
+    procedure AbgelaufenChkBoxClick(Sender: TObject);
+    procedure FilterUpdateActionExecute(Sender: TObject);
 
   private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
+    //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
+    minRestGueltigkeit:String;
     LocalQry: TWQry;
-    procedure FilterUpdate();
+  public
   end;
 
 
@@ -68,14 +70,13 @@ implementation
 uses mainfrm;
 
 procedure TLieferantenStatusFrm.ShowFrame();
-var
-  SQL : String;
-
 begin
     LocalQry := Tools.GetQuery;
+    //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
+    minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
     LocalQry.HoleLieferantenMitStatusTxt;
     DataSource1.DataSet := LocalQry;
-    FilterUpdate;
+    FilterUpdateActionExecute(nil);
     Self.Visible := True;
 end;
 
@@ -86,14 +87,8 @@ begin
   Self.Visible := False;
 end;
 
-procedure TLieferantenStatusFrm.PumpenTeileChkBoxClick(Sender: TObject);
-begin
-    Self.FilterUpdate;
-end;
-
 procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
 var
-  SQL: String;
   IdLieferant: Integer;
   Stand, GiltBis: String;
   lekl : String;
@@ -109,6 +104,8 @@ begin
    // Ist-Status der Lieferantenerkl�rung in List-Box vorausw�hlen
    LieferantenStatusDialog.StatusListBox.KeyValue
             := LocalQry.FieldByName('lekl').AsInteger;
+   //Zeiteingabe nur bei Status 'alle Teile' oder 'einige Teile'
+   LieferantenStatusDialog.ValidateDateTime;
    // Datumsw�hler auf bisheriges G�ltigkeitsdatum
    GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
    LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
@@ -158,6 +155,7 @@ begin
     mainForm.LieferantenStatusFrm1.Visible := False;
     mainForm.LieferantenErklaerungenFrm1.ShowFrame(
                                     mainForm.LieferantenStatusFrm1);
+
 end;
 
 procedure TLieferantenStatusFrm.DataSource1DataChange(Sender: TObject;
@@ -171,7 +169,8 @@ begin
 
 end;
 
-procedure TLieferantenStatusFrm.FilterUpdate();
+
+procedure TLieferantenStatusFrm.FilterUpdateActionExecute(Sender: TObject);
 var
   FilterStr : String;
   filtern : Boolean;
@@ -182,9 +181,18 @@ begin
 
     if PumpenTeileChkBox.State = cbChecked then
     begin
-      FilterStr := 'Pumpenteile=-1';
       filtern := True;
+      FilterStr := 'Pumpenteile=-1';
     end;
+
+    if EinigeTeileChkBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'lekl=3';
+    end;
+
 
     if length(FilterName.Text)>0 then
     begin
@@ -205,28 +213,27 @@ begin
     LocalQry.Filter := FilterStr;
     LocalQry.Filtered := filtern;
 
+    GroupBox2.Caption:= 'gefiltert '
+                   + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
 end;
 
-procedure TLieferantenStatusFrm.Button1Click(Sender: TObject);
+
+
+procedure TLieferantenStatusFrm.AbgelaufenChkBoxClick(Sender: TObject);
+begin
+    if AbgelaufenChkBox.State = cbChecked then
+      LocalQry.HoleLieferantenMitStatusTxtAbgelaufen(minRestGueltigkeit)
+    else
+      LocalQry.HoleLieferantenMitStatusTxt;
+    DataSource1.DataSet := LocalQry;
+    FilterUpdateActionExecute(Sender);
+end;
+
+procedure TLieferantenStatusFrm.FilterAusBtnClick(Sender: TObject);
 begin
   FilterKurzname.Text := '';
   FilterName.Text := '';
-  FilterUpdate;
-
-end;
-
-
-procedure TLieferantenStatusFrm.FilterNameChange(Sender: TObject);
-begin
-  FilterUpdate;
-
-end;
-
-
-procedure TLieferantenStatusFrm.FilterKurznameChange(Sender: TObject);
-begin
-  FilterUpdate;
-
+  FilterUpdateActionExecute(Sender);
 end;
 
 

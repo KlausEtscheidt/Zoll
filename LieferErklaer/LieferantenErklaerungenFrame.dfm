@@ -48,7 +48,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   object LabelFiltern: TLabel
     Left = 19
     Top = 88
-    Width = 58
+    Width = 41
     Height = 16
     Caption = 'Filtern:'
     Font.Charset = DEFAULT_CHARSET
@@ -62,7 +62,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Left = 14
     Top = 164
     Width = 702
-    Height = 337
+    Height = 336
     AllowDelete = False
     AllowInsert = False
     DataSource = DataSource1

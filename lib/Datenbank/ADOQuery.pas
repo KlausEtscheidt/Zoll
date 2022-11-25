@@ -163,7 +163,6 @@ begin
   begin
       felder:=felder + myField.FieldName + ', ';
       werte:=werte +':'+ myField.FieldName + ', ';
-//        werte:=werte +'"'+ myField.AsString + '", ';
   end;
 
   System.delete(felder,length(felder)-1,5);

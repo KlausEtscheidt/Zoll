@@ -28,10 +28,12 @@ interface
       function MarkiereErsatzteilLieferanten():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
+      function UpdateTmpAnzLieferantenJeTeil():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitStatusTxt():Boolean;
+      function HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String):Boolean;
       function HoleLieferantenStatusTxt():Boolean;
       function HoleLErklaerungen(IdLieferant:Integer):Boolean;
       function HoleProgrammDaten(Name: String):Boolean;
@@ -44,11 +46,25 @@ interface
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
       function UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl:String):Boolean;
+      function UpdateLieferantStand(IdLieferant:Integer;Stand:String):Boolean;
 
       //Auswertung nach Benutzereingaben
       function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
       function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
+      function UpdateTmpAnzErklaerungenJeTeil():Boolean;
       function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
+
+      //nur lesen mit 1 einzigen Rückgabewert
+      function HoleAnzahlTabelleneintraege(tablename:String):Integer;
+      function HoleAnzahlPumpenteile():Integer;
+      function HoleAnzahlPumpenteileMitPfk():Integer;
+      function HoleAnzahlLieferanten():Integer;
+      function HoleAnzahlLieferPumpenteile():Integer;
+      function HoleAnzahlLieferStatusUnbekannt():Integer;
+
+      // Abfragen zum Lesen/Schreiben der ProgrammDaten (Konfiguration)
+      function LiesProgrammDatenWert(Name:String):String;
+      function SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
 
     end;
 
@@ -99,7 +115,7 @@ function TWQrySQLite.NeueLieferantenInTabelle():Boolean;
   var sql: String;
 begin
   sql := 'INSERT INTO lieferanten '
-      +  '( IdLieferant, LKurzname, LName1, LName1  ) '
+      +  '( IdLieferant, LKurzname, LName1, LName2  ) '
        + 'SELECT DISTINCT IdLieferant, LKurzname, LName1, LName2  '
        + 'FROM Bestellungen where IdLieferant not in '
        + '(SELECT IdLieferant FROM Lieferanten) ORDER BY IdLieferant;' ;
@@ -173,11 +189,10 @@ function TWQrySQLite.TeileName1InTabelle():Boolean;
 begin
   var sql: String;
   sql := 'INSERT INTO Teile (TeileNr, TName1, Pumpenteil, PFK)  '
-      +  'SELECT TeileNr, text AS TName1, 0, 0 from tmpTeileBenennung '
+      +  'SELECT TeileNr, Benennung AS TName1, 0, 0 '
+      +  'from tmpTeileBenennung '
       +  'WHERE Zeile=1 ORDER BY TeileNr; ';
-
   Result:= RunExecSQLQuery(sql);
-//  Result:= RunSelectQuery(sql);
 
 end;
 
@@ -189,10 +204,25 @@ function TWQrySQLite.TeileName2InTabelle():Boolean;
     sql: String;
 begin
   sql := 'UPDATE Teile SET TName2 =  '
-      +  '(SELECT text from tmpTeileBenennung '
+      +  '(SELECT Benennung from tmpTeileBenennung '
       +  'WHERE Teile.TeileNr=tmpTeileBenennung.TeileNr '
       +  'AND tmpTeileBenennung.Zeile=2);' ;
 
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der Lieferanten eines Teils in tmp Tabelle
+/// tmp_anz_lieferanten_je_teil </summary>
+function TWQrySQLite.UpdateTmpAnzLieferantenJeTeil():Boolean;
+  var
+    sql: String;
+begin
+
+  sql := 'INSERT INTO tmp_anz_xxx_je_teil ( TeileNr, n ) '
+       + 'SELECT TeileNr, Count(TeileNr) AS n FROM LErklaerungen '
+       + 'GROUP BY TeileNr; ' ;
   Result:= RunExecSQLQuery(sql);
 
 end;
@@ -204,11 +234,16 @@ function TWQrySQLite.UpdateTeileZaehleLieferanten():Boolean;
   var
     sql: String;
 begin
+// Update ohne tmp Zwischentabelle: Geht nur in SQLite nicht in Access
+//  sql := 'UPDATE Teile SET n_Lieferanten= '
+//       + '(SELECT N_liefer FROM '
+//       + '(SELECT TeileNr as TNr, Count(IdLieferant) as N_liefer '
+//       + ' FROM LErklaerungen GROUP BY LErklaerungen.TeileNr) '
+//       + ' WHERE  Teile.TeileNr=TNr );' ;
   sql := 'UPDATE Teile SET n_Lieferanten= '
-       + '(SELECT N_liefer FROM '
-       + '(SELECT TeileNr as TNr, Count(IdLieferant) as N_liefer '
-       + ' FROM LErklaerungen GROUP BY LErklaerungen.TeileNr) '
-       + ' WHERE  Teile.TeileNr=TNr );' ;
+       + '(SELECT n as n_Lieferanten FROM tmp_anz_xxx_je_teil'
+       + ' WHERE  Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr );' ;
+
   Result:= RunExecSQLQuery(sql);
 
 end;
@@ -233,6 +268,23 @@ begin
          + 'order by LKurzname;';
   Result:= RunSelectQuery(sql);
 end;
+
+///<summary> Liest Tabelle Lieferanten mit Status im Klartext,
+///jedoch nur diejenigen mit bald ablaufenden Erklärungen</summary>
+function TWQrySQLite.HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String)
+                                                                 :Boolean;
+  var
+    sql: String;
+begin
+    SQL := 'select *,StatusTxt from lieferanten '
+         + 'inner join LieferantenStatusTxt '
+         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+         + 'WHERE Lieferstatus <> "entfallen" AND '
+         + 'Julianday(gilt_bis)-Julianday(Date())<=' + delta_days
+         + ' order by LKurzname;';
+  Result:= RunSelectQuery(sql);
+end;
+
 
 ///<summary> Liest LieferantenStatus im Klartext</summary>
 function TWQrySQLite.HoleLieferantenStatusTxt():Boolean;
@@ -315,7 +367,7 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-///<summary> Set Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
+///<summary> Setzt Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
 function TWQrySQLite.UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl:String):Boolean;
   var
@@ -325,6 +377,17 @@ begin
           +  'gilt_bis="' + GiltBis + ' " , '
           +  'lekl="' + lekl + ' "  '
           +  'where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary> Setzt Stand (Bearbeitungsdatum) in Tabelle Lieferanten</summary>
+function TWQrySQLite.UpdateLieferantStand(IdLieferant:Integer;
+                                               Stand:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set stand=' +QuotedStr(Stand)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
 end;
 
@@ -347,7 +410,7 @@ begin
            + 'FROM Lieferanten JOIN LErklaerungen '
            + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
            + 'WHERE lekl=2 and Lieferstatus !="entfallen" and '
-           + 'Julianday(gilt_bis)-Julianday(Date())>+' + delta_days + ' ;' ;
+           + 'Julianday(gilt_bis)-Julianday(Date())>' + delta_days + ' ;' ;
   Result:= RunExecSQLQuery(sql);
 end;
 
@@ -362,8 +425,23 @@ begin
            + 'FROM Lieferanten JOIN LErklaerungen '
            + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
            + 'WHERE lekl=3 and Lieferstatus !="entfallen" and LPfk=-1 and '
-           + 'Julianday(gilt_bis)-Julianday(Date())>+' + delta_days + ' ;' ;
+           + 'Julianday(gilt_bis)-Julianday(Date())>' + delta_days + ' ;' ;
   Result:= RunExecSQLQuery(sql);
+end;
+
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in temp Tabelle </summary>
+function TWQrySQLite.UpdateTmpAnzErklaerungenJeTeil():Boolean;
+  var
+    sql: String;
+begin
+  sql := 'INSERT INTO tmp_anz_xxx_je_teil ( TeileNr, n ) '
+       + 'SELECT TeileNr, Count(TeileNr) AS n FROM tmpLieferantTeilPfk '
+       + 'GROUP BY TeileNr; ' ;
+  Result:= RunExecSQLQuery(sql);
+
 end;
 
 //---------------------------------------------------------------------------
@@ -373,17 +451,104 @@ function TWQrySQLite.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
   var
     sql: String;
 begin
+
   sql := 'UPDATE Teile SET n_LPfk= '
-       + '(SELECT Anz_Pfk FROM '
-       + '(SELECT TeileNr as TNr, Count(IdLieferant) as Anz_Pfk '
-       + 'FROM tmpLieferantTeilPfk '
-       + 'GROUP BY TeileNr)'
-       + 'WHERE  Teile.TeileNr=TNr  ); ' ;
+       + '(SELECT n as n_LPfk FROM tmp_anz_xxx_je_teil'
+       + ' WHERE  Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr );' ;
 
   Result:= RunExecSQLQuery(sql);
 
 end;
 
+// ---------------------------------------------------------------
+//
+// Nur lesen mit 1 einzigen Rückgabewert
+//
+// ---------------------------------------------------------------
+
+//Anzahl der Einträge in tablename
+function TWQrySQLite.HoleAnzahlTabelleneintraege(tablename:String) :Integer;
+var
+  SQL:string;
+
+begin
+  SQL:='Select count() as n from ''' + tablename + ''';';
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+function TWQrySQLite.HoleAnzahlPumpenteile :Integer;
+var
+  SQL:string;
+begin
+  SQL:='Select count() as n from Teile where Pumpenteil=-1;';
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+function TWQrySQLite.HoleAnzahlPumpenteileMitPfk :Integer;
+var
+  SQL:string;
+begin
+  SQL := 'Select count() as n from Teile where Pumpenteil=-1 ' +
+          'AND n_Lieferanten=n_LPfk;';
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+function TWQrySQLite.HoleAnzahlLieferanten():Integer;
+var
+  SQL:string;
+begin
+  SQL := 'Select count() as n from Lieferanten where Lieferstatus!="entfallen"; ';
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+function TWQrySQLite.HoleAnzahlLieferPumpenteile():Integer;
+var
+  SQL:string;
+begin
+  SQL := 'Select count() as n from Lieferanten where Pumpenteile=-1 '
+       + 'and Lieferstatus!="entfallen" ; ';
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+function TWQrySQLite.HoleAnzahlLieferStatusUnbekannt():Integer;
+var
+  SQL:string;
+begin
+  SQL := 'Select count() as n from Lieferanten where Pumpenteile=-1 '
+       + 'and Lieferstatus!="entfallen" and lekl=0; ';
+
+  RunSelectQuery(SQL);
+  result:= FieldByName('n').AsInteger;
+end;
+
+// ---------------------------------------------------------------
+//
+// Abfragen zum Lesen/Schreiben der ProgrammDaten (Konfiguration)
+//
+// ---------------------------------------------------------------
+
+function TWQrySQLite.SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
+var
+  SQL:string;
+begin
+  SQL := 'Update ProgrammDaten SET wert=' + Wert
+       + ' where name="' + Name + '";' ;
+  result:= RunExecSQLQuery(SQL);
+end;
+
+function TWQrySQLite.LiesProgrammDatenWert(Name:String):String;
+var
+  SQL:string;
+begin
+  SQL := 'SELECT Wert FROM ProgrammDaten where Name=?; ';
+  RunSelectQueryWithParam(SQL,[Name]);
+  result:= FieldByName('Wert').AsString;
+end;
 
 
 end.

@@ -16,8 +16,7 @@ uses
   LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame},
   LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog},
   TeileFrame in 'TeileFrame.pas' {TeileFrm: TFrame},
-  GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame},
-  LocalDbQuerys in 'LocalDbQuerys.pas';
+  GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame};
 
 {$R *.res}
 

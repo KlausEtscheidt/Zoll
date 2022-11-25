@@ -4,7 +4,7 @@ unit Import;
 interface
 
 uses System.SysUtils, Data.DB, Data.Win.ADODB,
-     Tools,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite, LocalDbQuerys;
+     Tools,Settings,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
 procedure BasisImport();
 procedure BasisImportFromUNIPPS();
@@ -12,10 +12,12 @@ procedure BestellungenAusUnipps();
 procedure TeileBenennungAusUnipps;
 procedure TeileUpdateZaehleLieferanten;
 procedure Auswerten();
+procedure LieferantenAdressdatenAusUnipps();
 
 var
   LocalQry: TWQry;
   UnippsQry: TWQryUNIPPS;
+  dbUnippsConn: TWADOConnector;
   gefunden: Boolean;
 
 implementation
@@ -44,11 +46,12 @@ var
   minRestGueltigkeit:String;
 
 begin
+  StatusBarLeft('Beginne Auswertung');
   // Qry fuer lokale DB anlegen
   LocalQry := Tools.GetQuery;
 
   //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
-  minRestGueltigkeit:=LocalDbQuerys.LiesProgrammDatenWert('Gueltigkeit_Lekl');
+  minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
 
   //Leere Zwischentabelle
   LocalQry.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
@@ -59,9 +62,20 @@ begin
   //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
   LocalQry.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
 
+  //Leere Zwischentabelle
+  LocalQry.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
+
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in tmp Tabelle
+  LocalQry.UpdateTmpAnzErklaerungenJeTeil;
+
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
+  //in Tabelle Teile auf 0 setzen
+  LocalQry.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
+
   //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleGueltigeLErklaerungen;
 
+  StatusBarLeft('Auswertung fertig');
 end;
 
 /// <summary>Bestellungen mit Zusatzinfo aus UNIPPS in Tabelle
@@ -81,7 +95,7 @@ begin
   StatusBarLeft('Import Schritt 1: Lese Bestellungen');
 
   //Lies den BestellZeitraum
-  BestellZeitraum:=LocalDbQuerys.LiesProgrammDatenWert('Bestellzeitraum');
+  BestellZeitraum:=LocalQry.LiesProgrammDatenWert('Bestellzeitraum');
 
   gefunden := UnippsQry.SucheBestellungen(Bestellzeitraum);
 
@@ -114,7 +128,6 @@ var
   TeileNr, LTeileNr: String;
   Bestellungen: TADOTable;
   ErrMsg:String;
-  failed: Boolean;
 
 begin
 
@@ -177,7 +190,7 @@ begin
   StatusBarLeft('Import Schritt 3: Lese Benennung zu Teilen');
 
   //Lies den Bestellzeitraum
-  BestellZeitraum:=LocalDbQuerys.LiesProgrammDatenWert('Bestellzeitraum');
+  BestellZeitraum:=LocalQry.LiesProgrammDatenWert('Bestellzeitraum');
 
   //Zeitraum erhoehen um sicher alle Namen zu bekommen
   BestellZeitraum:=IntToStr(StrToInt(BestellZeitraum)+5);
@@ -193,6 +206,7 @@ begin
   begin
     StatusBar(UnippsQry.RecNo, UnippsQry.RecordCount);
 
+//    INSERT INTO tmpTeileBenennung ( TeileNr, Zeile, [Text] )
     LocalQry.InsertFields('tmpTeileBenennung', UnippsQry.Fields);
     UnippsQry.next;
   end;
@@ -286,21 +300,44 @@ begin
   LocalQry.MarkiereErsatzteilLieferanten;
 end;
 
+///<summary>Hole Adressdaten aus UNIPPS in eigene Tabelle</summary>
+procedure LieferantenAdressdatenAusUnipps();
+begin
+  gefunden := UnippsQry.HoleLieferantenAdressen;
+
+  if not gefunden then
+    raise Exception.Create('Keine Lieferanten-Adressen gefunden.');
+
+  LocalQry.RunExecSQLQuery('delete from Lieferanten_Adressen;');
+  LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+  while not UnippsQry.Eof do
+  begin
+    StatusBar(UnippsQry.RecNo, UnippsQry.n_records);
+    LocalQry.InsertFields('Lieferanten_Adressen', UnippsQry.Fields);
+    UnippsQry.next;
+  end;
+
+  LocalQry.RunExecSQLQuery('COMMIT;');
+
+end;
 // Import Schritt 7: Lief-Erklaerungen
 ///<summary>Pflege Tabelle LErklaerungen</summary>
 procedure LErklaerungenUpdaten();
-var
-  OK: Boolean;
 begin
   StatusBarLeft('Import Schritt 7: Lief-Erklaerungen');
-  OK := LocalQry.NeueLErklaerungenInTabelle;
-  OK := LocalQry.AlteLErklaerungenLoeschen;
+  LocalQry.NeueLErklaerungenInTabelle;
+  LocalQry.AlteLErklaerungenLoeschen;
 end;
 
 // Import Schritt 8
 ///<summary>Anzahl der Lieferanten je Teil in Tabelle Teile</summary>
 procedure TeileUpdateZaehleLieferanten();
 begin
+  // tmp Tabelle leeren
+  LocalQry.RunExecSQLQuery('delete from tmp_anz_lieferanten_je_teil;');
+  //Anzahl der Lieferanten je Teil in tmp Tabelle tmp_anz_lieferanten_je_teil
+  LocalQry.UpdateTmpAnzLieferantenJeTeil;
   //Anzahl der Lieferanten je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleLieferanten;
   StatusBarLeft('Import fertig gestellt');
@@ -309,13 +346,8 @@ end;
 
 ///<summary>Lese alle Daten aus UNIPPS zum j�hrlichen Neustart.</summary>
 procedure BasisImport();
-var
-  dbUnippsConn: TWADOConnector;
 
 begin
-
-  // Qry fuer lokale DB anlegen
-  LocalQry := Tools.GetQuery;
 
   {$IFNDEF HOME}
   BasisImportFromUNIPPS;
@@ -340,19 +372,8 @@ end;
 /// aus UNIPPS in lokale Tabelle Bestellungen
 /// </remarks>
 procedure BasisImportFromUNIPPS();
-var
-  dbUnippsConn: TWADOConnector;
 
 begin
-
-  //mit UNIPPS verbinden
-  dbUnippsConn:=TWADOConnector.Create(nil);
-  dbUnippsConn.ConnectToUNIPPS();
-
-  //Query fuer UNIPPS anlegen und Verbindung setzen
-  //Qry anlegen und mit Connector versorgen
-  UnippsQry:= TWQryUNIPPS.Create(nil);
-  UnippsQry.Connector:=dbUnippsConn;
 
   // Tabelle Bestellungen leeren und neu bef�llen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
@@ -373,10 +394,26 @@ begin
   // Setzt Flag Pumpenteil in Tabelle Teile
      PumpenteileAusUnipps;
 
+  // Hole Adressdaten in eigene Tabelle
+     LieferantenAdressdatenAusUnipps;
+
   UnippsQry.Free;
 
 
 end;
 
+initialization
+    Tools.init;
+  //mit UNIPPS verbinden
+  dbUnippsConn:=TWADOConnector.Create(nil);
+  dbUnippsConn.ConnectToUNIPPS();
+
+  //Query fuer UNIPPS anlegen und Verbindung setzen
+  //Qry anlegen und mit Connector versorgen
+  UnippsQry:= TWQryUNIPPS.Create(nil);
+  UnippsQry.Connector:=dbUnippsConn;
+
+  // Qry fuer lokale DB anlegen
+  LocalQry := Tools.GetQuery;
 
 end.

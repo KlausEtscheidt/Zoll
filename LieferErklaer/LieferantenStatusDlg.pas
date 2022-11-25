@@ -19,12 +19,9 @@ type
     alterStatus: TLabel;
     procedure StatusListBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-  private
-    { Private-Deklarationen }
   public
-    { Public-Deklarationen }
     LocalQry: TWQry;
-
+    procedure ValidateDateTime;
   end;
 
 var
@@ -37,21 +34,28 @@ implementation
 uses mainfrm;
 
 procedure TLieferantenStatusDialog.FormCreate(Sender: TObject);
-var
-  SQL : String;
-
 begin
-    Tools.init;
     LocalQry := Tools.GetQuery;
+    //Lieferanten-Status-Daten aus Datenbank in DataSource für Formular
     LocalQry.HoleLieferantenStatusTxt;
     DataSource1.DataSet := LocalQry;
-
 end;
 
 procedure TLieferantenStatusDialog.StatusListBoxClick(Sender: TObject);
 begin
   alterStatus.Caption
             := StatusListBox.SelectedItem;
+  ValidateDateTime;
+end;
+
+//Zeiteingabe nur bei Auswahl 'alle Teile' oder 'einige Teile'
+procedure TLieferantenStatusDialog.ValidateDateTime;
+var
+  OK:Boolean;
+begin
+  OK:= StatusListBox.KeyValue>1;
+  DateTimePicker1.Enabled:= OK;
+  DateTimePicker1.Visible:= OK;
 end;
 
 end.

@@ -29,6 +29,7 @@ type
     StatusMenAnzeigen: TMenuItem;
     GesamtStatusFrm1: TGesamtStatusFrm;
     TeileFrm1: TTeileFrm;
+    UnippsMenLAdressen: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HideAllFrames;
@@ -39,6 +40,7 @@ type
     procedure UnippsMenAuswertenClick(Sender: TObject);
     procedure StatusMenAnzeigenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
+    procedure UnippsMenLAdressenClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -68,11 +70,16 @@ end;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
-    Tools.init;
+//    Tools.init;
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //    Import.BasisImport;
     LieferantenStatusFrm1.ShowFrame;
     LieferantenErklaerungenFrm1.HideFrame;
+end;
+
+procedure TmainForm.UnippsMenLAdressenClick(Sender: TObject);
+begin
+      Import.LieferantenAdressdatenAusUnipps;
 end;
 
 procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
@@ -82,10 +89,6 @@ begin
 end;
 
 procedure TmainForm.LMenErklaerClick(Sender: TObject);
-var
-  Qry : TWQry;
-  SQL: String;
-
 begin
     LieferantenStatusFrm1.HideFrame;
     LieferantenErklaerungenFrm1.Visible := True;
@@ -105,8 +108,6 @@ begin
 end;
 
 procedure TmainForm.LMenStatusClick(Sender: TObject);
-var
-  SQL: String;
 begin
     HideAllFrames;
     LieferantenStatusFrm1.ShowFrame;
@@ -119,8 +120,24 @@ begin
 end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
+var
+  msg:String;
+
 begin
-  Import.BasisImport;
+  msg := 'Achtung: ' + #13 + #13
+       + 'Dieser Vorgang dauert ca 10 Minuten!'
+       + #13 + #13
+       + 'Er sollte und muss genau EINMAL im Jahr,' + #13
+       + 'zu Beginn der Eingabe der Lieferantenerklärungen ausgeführt werden.'
+       + #13 + #13 + 'Wollen Sie jetzt Daten aus UNIPPS einlesen ?';
+  if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+    Import.BasisImport;
+
 end;
+
+//Setze Pfade, Verbinde zur Datenbank etc
+//!! wird sogar noch vor Application.Initialize ausgeführt
+initialization
+  Tools.init;
 
 end.

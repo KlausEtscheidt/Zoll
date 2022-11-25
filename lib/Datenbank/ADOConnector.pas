@@ -24,6 +24,7 @@ type
       constructor Create(AOwner: TComponent);
       function ConnectToUNIPPS(): TADOConnection;
       function ConnectToSQLite(PathTODBFile: String): TADOConnection;
+      function ConnectToAccess(PathTODBFile: String): TADOConnection;
       function ConnectToDB(AConnectStr : String; AProvider: String):TADOConnection;
     private
       FConnection:TADOConnection;
@@ -86,6 +87,49 @@ var
 
   Result:=FConnection;
 end;
+
+///<summary>Mit MS-Access-Datenbank verbinden.</summary>
+/// <remarks>
+/// Die Verbindung erfolgt über die allgemeine Funktion ConnectToDB.
+/// </remarks>
+/// <param name="PathTODBFile">Pfad zur Access-Datenbank-Datei.</param>
+/// <returns>Geöffnete TADOConnection </returns>
+function TWADOConnector.ConnectToAccess(PathTODBFile: String): TADOConnection;
+var
+  ConnString, Provider :String;
+
+  begin
+
+  //Variante mit Datei-DSN C:\Users\Etscheidt\Documents\access.dsn
+  //access.dsn müsste in Programmverzeichnis
+//  ConnString :=
+//    'DBQ=' + PathTODBFile + ';' +
+//    'Driver={Microsoft Access Driver (*.mdb, *.accdb)};'+
+//    'FILEDSN=C:\Users\Etscheidt\Documents\access.dsn;' ;
+
+  //Variante mit 'Microsoft.ACE.OLEDB.16.0'
+  //dieser Name wird nur in der Delphi-Entwicklungsumgebung beim AUfbau eines
+  // Connection string angezeigt
+  //Wie kann man prüfen ob der Treiber auf dem lokalen Rechner vorliegt ?
+  Provider := 'Microsoft.ACE.OLEDB.16.0';
+  ConnString :=
+        'Provider=' + Provider + ';Persist Security Info=False;' +
+        'Data Source=' + PathTODBFile + ';';
+
+    //verbinden
+  try
+    ConnectToDB(ConnString, Provider);
+  except
+    raise EADOConnector.Create(
+      'Konnte Datenbank >>' + PathTODBFile + '<< nicht öffnen.' );
+  end;
+
+  Datenbank:='Access';   //nur Info
+  Datenbankpfad:=PathTODBFile; //nur Info
+
+  Result:=FConnection;
+end;
+
 
 ///<summary>Mit UNIPPS-Datenbank verbinden.</summary>
 /// <remarks>

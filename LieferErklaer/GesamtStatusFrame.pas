@@ -4,8 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  LocalDbQuerys;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 type
   TGesamtStatusFrm = class(TFrame)
@@ -35,23 +34,28 @@ implementation
 
 {$R *.dfm}
 
+uses ADOQuery, Tools;
+
 procedure TGesamtStatusFrm.InitFrame;
 
 var
   Anzahl: Integer;
+  LocalQry: TWQry;
 
 begin
-  Anzahl:=HoleAnzahlTabelleneintraege('Teile');
+  LocalQry := Tools.GetQuery;
+
+  Anzahl:= LocalQry.HoleAnzahlTabelleneintraege('Teile');
   nTeile.Caption:=IntToStr(Anzahl);
-  Anzahl:= HoleAnzahlPumpenteile;
+  Anzahl:= LocalQry.HoleAnzahlPumpenteile;
   nPumpenteile.Caption:=IntToStr(Anzahl);
-  Anzahl:= HoleAnzahlPumpenteileMitPFK;
+  Anzahl:= LocalQry.HoleAnzahlPumpenteileMitPFK;
   nPfk.Caption:=IntToStr(Anzahl);
-  Anzahl:=HoleAnzahlLieferanten;
+  Anzahl:= LocalQry.HoleAnzahlLieferanten;
   nLieferanten.Caption:=IntToStr(Anzahl);
-  Anzahl:=HoleAnzahlLieferPumpenteile;
+  Anzahl:= LocalQry.HoleAnzahlLieferPumpenteile;
   nLieferPumpenteile.Caption:=IntToStr(Anzahl);
-  Anzahl:=HoleAnzahlLieferStatusUnbekannt;
+  Anzahl:= LocalQry.HoleAnzahlLieferStatusUnbekannt;
   nLieferStatusUnbekannt.Caption:=IntToStr(Anzahl);
 
 end;
