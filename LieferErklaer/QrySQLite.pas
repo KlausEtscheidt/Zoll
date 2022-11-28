@@ -40,6 +40,8 @@ interface
       function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile():Boolean;
+      function HoleTeileZumLieferanten(IdLieferant:String):Boolean;
+
 
       //Datenpflege nach Benutzeraktion
       function UpdateLPfkInLErklaerungen(
@@ -357,6 +359,20 @@ begin
   var sql: String;
   sql := 'select * From Teile;';
 
+  Result:= RunSelectQuery(sql);
+end;
+
+// Liest Teile eines Lieferanten aus Tabelle Teile
+//----------------------------------------------------------------------
+function TWQrySQLite.HoleTeileZumLieferanten(IdLieferant:String):Boolean;
+begin
+  var sql: String;
+  sql := 'select Teile.TeileNr, TName1, TName2, '
+       + 'Abs(Pumpenteil) as Pumpenteil, '
+       + 'Abs(Ersatzteil) as Ersatzteil '
+       + 'From Teile '
+       + 'JOIN LErklaerungen ON LErklaerungen.TeileNr=Teile.TeileNr '
+       + 'where IdLieferant=' + IdLieferant;
   Result:= RunSelectQuery(sql);
 end;
 

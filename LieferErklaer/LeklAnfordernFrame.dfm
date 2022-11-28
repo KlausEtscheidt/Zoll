@@ -4,11 +4,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   Width = 1099
   Height = 636
   ParentBackground = False
+  PopupMenu = PopupMenu1
   TabOrder = 0
   object GroupBox1: TGroupBox
     Left = 5
     Top = 44
-    Width = 1036
+    Width = 1076
     Height = 53
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
@@ -137,7 +138,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   object GroupBox2: TGroupBox
     Left = 5
     Top = 122
-    Width = 1036
+    Width = 1076
     Height = 231
     Caption = 'gefiltert'
     Font.Charset = DEFAULT_CHARSET
@@ -159,6 +160,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      PopupMenu = PopupMenu1
       ReadOnly = True
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
@@ -207,7 +209,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   object GroupBox3: TGroupBox
     Left = 5
     Top = 367
-    Width = 1036
+    Width = 1076
     Height = 194
     Caption = 'gew'#228'hlt'
     Font.Charset = DEFAULT_CHARSET
@@ -218,8 +220,8 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     ParentFont = False
     TabOrder = 2
     object Label8: TLabel
-      Left = 500
-      Top = 26
+      Left = 652
+      Top = 27
       Width = 50
       Height = 14
       Caption = 'Kontakt'
@@ -231,7 +233,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
     end
     object Label10: TLabel
-      Left = 767
+      Left = 907
       Top = 26
       Width = 57
       Height = 14
@@ -244,8 +246,8 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
     end
     object Label12: TLabel
-      Left = 264
-      Top = 26
+      Left = 423
+      Top = 28
       Width = 89
       Height = 14
       Caption = 'Lief.-Erkl'#228'rung'
@@ -270,11 +272,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
     end
     object Label16: TLabel
-      Left = 881
-      Top = 26
-      Width = 122
+      Left = 995
+      Top = 42
+      Width = 77
       Height = 14
-      Caption = 'Status aktualisieren'
+      Caption = 'aktualisieren'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -283,9 +285,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
     end
     object Label11: TLabel
-      Left = 243
-      Top = 122
-      Width = 112
+      Left = 400
+      Top = 127
+      Width = 74
       Height = 18
       Margins.Left = 15
       Alignment = taRightJustify
@@ -326,17 +328,30 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Style = [fsBold]
       ParentFont = False
     end
+    object Label13: TLabel
+      Left = 995
+      Top = 26
+      Width = 41
+      Height = 14
+      Caption = 'Status'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
     object StatusBtn: TButton
-      Left = 895
-      Top = 46
-      Width = 73
+      Left = 1000
+      Top = 62
+      Width = 64
       Height = 25
       Action = StatusUpdateAction
       TabOrder = 0
     end
     object FaxBtn: TButton
-      Left = 792
-      Top = 77
+      Left = 907
+      Top = 91
       Width = 73
       Height = 25
       Action = FaxAction
@@ -345,7 +360,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     object Panel1b: TPanel
       Left = 70
       Top = 48
-      Width = 154
+      Width = 275
       Height = 121
       BevelOuter = bvNone
       ParentColor = True
@@ -353,7 +368,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object DBText1: TDBText
         Left = 0
         Top = 0
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'name1'
@@ -371,7 +386,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object DBText2: TDBText
         Left = 0
         Top = 18
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'name2'
@@ -384,11 +399,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         ParentFont = False
         ExplicitLeft = -17
         ExplicitTop = 24
+        ExplicitWidth = 154
       end
       object PlzDBText: TDBText
         Left = 0
         Top = 36
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'plz_haus'
@@ -406,7 +422,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object OrtDBText: TDBText
         Left = 0
         Top = 54
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'ort'
@@ -418,11 +434,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Style = []
         ParentFont = False
         ExplicitTop = 40
+        ExplicitWidth = 154
       end
       object StrasseDBText: TDBText
         Left = 0
         Top = 72
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'strasse'
@@ -434,11 +451,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Style = []
         ParentFont = False
         ExplicitTop = 66
+        ExplicitWidth = 154
       end
       object StaatDBText: TDBText
         Left = 0
         Top = 90
-        Width = 154
+        Width = 275
         Height = 18
         Align = alTop
         DataField = 'staat'
@@ -450,6 +468,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Style = []
         ParentFont = False
         ExplicitTop = 80
+        ExplicitWidth = 154
       end
     end
     object Panel1: TPanel
@@ -469,6 +488,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Margins.Top = 5
         Align = alTop
         Alignment = taRightJustify
+        AutoSize = False
         Caption = 'Name:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -485,6 +505,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Margins.Left = 15
         Align = alTop
         Alignment = taRightJustify
+        AutoSize = False
         Caption = 'Plz:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -501,6 +522,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Height = 18
         Align = alTop
         Alignment = taRightJustify
+        AutoSize = False
         Caption = 'Ort:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -516,6 +538,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Height = 18
         Align = alTop
         Alignment = taRightJustify
+        AutoSize = False
         Caption = 'Strasse:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -533,6 +556,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Margins.Left = 15
         Margins.Top = 5
         Align = alTop
+        AutoSize = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -561,9 +585,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel2: TPanel
-      Left = 243
+      Left = 400
       Top = 48
-      Width = 112
+      Width = 74
       Height = 73
       BevelOuter = bvNone
       ParentColor = True
@@ -571,7 +595,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label3: TLabel
         Left = 0
         Top = 50
-        Width = 112
+        Width = 74
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -584,13 +608,14 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = -5
-        ExplicitTop = 74
+        ExplicitLeft = 80
+        ExplicitTop = 42
+        ExplicitWidth = 112
       end
       object giltbislbl: TLabel
         Left = 0
         Top = 18
-        Width = 112
+        Width = 74
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -604,11 +629,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Style = []
         ParentFont = False
         ExplicitTop = 14
+        ExplicitWidth = 112
       end
       object Label9: TLabel
         Left = 0
         Top = 0
-        Width = 112
+        Width = 74
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -621,11 +647,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 112
       end
       object Label7: TLabel
         Left = 0
         Top = 36
-        Width = 112
+        Width = 74
         Height = 14
         Margins.Left = 15
         Align = alTop
@@ -643,9 +670,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel3: TPanel
-      Left = 375
+      Left = 480
       Top = 48
-      Width = 66
+      Width = 65
       Height = 89
       BevelOuter = bvNone
       ParentColor = True
@@ -653,7 +680,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Status: TDBText
         Left = 0
         Top = 0
-        Width = 66
+        Width = 65
         Height = 18
         Align = alTop
         DataField = 'StatusTxt'
@@ -671,7 +698,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object giltBisDBText: TDBText
         Left = 0
         Top = 18
-        Width = 66
+        Width = 65
         Height = 18
         Align = alTop
         DataField = 'gilt_bis'
@@ -689,7 +716,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object letzteAbfrageDBText: TDBText
         Left = 0
         Top = 36
-        Width = 66
+        Width = 65
         Height = 18
         Align = alTop
         DataField = 'letzteAnfrage'
@@ -700,14 +727,13 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 30
-        ExplicitTop = 71
-        ExplicitWidth = 82
+        ExplicitTop = 42
+        ExplicitWidth = 66
       end
       object StandDBText: TDBText
         Left = 0
         Top = 54
-        Width = 66
+        Width = 65
         Height = 18
         Align = alTop
         DataField = 'Stand'
@@ -724,9 +750,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel4: TPanel
-      Left = 505
+      Left = 584
       Top = 48
-      Width = 39
+      Width = 41
       Height = 73
       BevelOuter = bvNone
       ParentColor = True
@@ -734,7 +760,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label14: TLabel
         Left = 0
         Top = 0
-        Width = 39
+        Width = 41
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -753,7 +779,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label15: TLabel
         Left = 0
         Top = 18
-        Width = 39
+        Width = 41
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -771,9 +797,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel6: TPanel
-      Left = 550
+      Left = 631
       Top = 48
-      Width = 211
+      Width = 258
       Height = 73
       BevelOuter = bvNone
       ParentColor = True
@@ -781,7 +807,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object mailDBText: TDBText
         Left = 0
         Top = 0
-        Width = 211
+        Width = 258
         Height = 18
         Align = alTop
         DataField = 'email'
@@ -799,7 +825,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object telefaxDBText: TDBText
         Left = 0
         Top = 18
-        Width = 211
+        Width = 258
         Height = 18
         Align = alTop
         DataField = 'telefax'
@@ -816,15 +842,15 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object mailBtn: TButton
-      Left = 792
-      Top = 46
+      Left = 907
+      Top = 60
       Width = 73
       Height = 25
       Action = mailAction
       TabOrder = 8
     end
     object DBMemo2: TDBMemo
-      Left = 375
+      Left = 480
       Top = 126
       Width = 584
       Height = 51
@@ -1000,6 +1026,28 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     object StatusUpdateAction: TAction
       Caption = 'Status'
       OnExecute = StatusUpdateActionExecute
+    end
+    object TeileAnzeigeAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'TeileAnzeige'
+      OnExecute = TeileAnzeigeActionExecute
+    end
+    object ExportExcelAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'ExportExcel'
+      OnExecute = ExportExcelActionExecute
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 432
+    Top = 16
+    object TeileAnzeigeMen: TMenuItem
+      Action = TeileAnzeigeAction
+      Caption = 'Teile Anzeige'
+    end
+    object ListenExcel1: TMenuItem
+      Action = ExportExcelAction
+      Caption = 'Excel-Export'
     end
   end
 end

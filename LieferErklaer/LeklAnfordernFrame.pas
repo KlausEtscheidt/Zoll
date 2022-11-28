@@ -8,7 +8,8 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,
   LieferantenStatusDlg, Tools, Vcl.Mask, System.ImageList, Vcl.ImgList,
-  Vcl.Buttons, System.Actions, Vcl.ActnList, Vcl.ExtCtrls;
+  Vcl.Buttons, System.Actions, Vcl.ActnList, Vcl.ExtCtrls, Vcl.Menus,
+  TeileAnzeigenDlg;
 
 type
   TLieferantenErklAnfordernFrm = class(TFrame)
@@ -72,6 +73,12 @@ type
     StatusUpdateAction: TAction;
     Label11: TLabel;
     DBMemo2: TDBMemo;
+    PopupMenu1: TPopupMenu;
+    TeileAnzeigeMen: TMenuItem;
+    TeileAnzeigeAction: TAction;
+    ExportExcelAction: TAction;
+    ListenExcel1: TMenuItem;
+    Label13: TLabel;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -81,6 +88,8 @@ type
     procedure mailActionExecute(Sender: TObject);
     procedure FaxActionExecute(Sender: TObject);
     procedure UpdateAnfrageDatum;
+    procedure TeileAnzeigeActionExecute(Sender: TObject);
+    procedure ExportExcelActionExecute(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -145,7 +154,6 @@ var
   lekl,Kommentar : String;
   UpdateQry:TWQry;
   BM:TBookmark;
-
 begin
 
    // ------- Steuererlemente des Dialogs vorbesetzen
@@ -200,6 +208,13 @@ begin
 
 end;
 
+
+procedure TLieferantenErklAnfordernFrm.TeileAnzeigeActionExecute(
+  Sender: TObject);
+begin
+  TeileListeForm.IdLieferant:= LocalQry.FieldByName('IdLieferant').AsString;
+  TeileListeForm.Show;
+end;
 
 procedure TLieferantenErklAnfordernFrm.FilterUpdateActionExecute(Sender: TObject);
 var
@@ -261,12 +276,26 @@ begin
     FilterUpdateActionExecute(Sender);
 end;
 
-
 procedure TLieferantenErklAnfordernFrm.FilterAusBtnClick(Sender: TObject);
 begin
   FilterKurzname.Text := '';
   FilterName.Text := '';
   FilterUpdateActionExecute(Sender);
+end;
+
+procedure TLieferantenErklAnfordernFrm.ExportExcelActionExecute(
+  Sender: TObject);
+var
+  BM:TBookmark;
+
+begin
+  // akt. Datensatz merken
+  BM := LocalQry.GetBookmark;
+
+  LieferantenNachExcel(LocalQry);
+
+  // Gehe auf ursp�nglichen Datensatz
+  LocalQry.GotoBookmark(BM);
 end;
 
 procedure TLieferantenErklAnfordernFrm.FaxActionExecute(Sender: TObject);
@@ -277,7 +306,7 @@ end;
 procedure TLieferantenErklAnfordernFrm.mailActionExecute(Sender: TObject);
 begin
   SendeMailAn(LocalQry.FieldByName('email').AsString);
-//  UpdateAnfrageDatum;
+  UpdateAnfrageDatum;
 end;
 
 
