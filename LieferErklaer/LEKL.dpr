@@ -12,12 +12,14 @@ uses
   QryAccess in 'QryAccess.pas',
   QrySQLite in 'QrySQLite.pas',
   QryUNIPPS in 'QryUNIPPS.pas',
-  LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame},
+  LieferantenLEKL3AuswahlFrame in 'LieferantenLEKL3AuswahlFrame.pas' {LieferantenStatusFrm: TFrame},
   LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog},
   TeileFrame in 'TeileFrame.pas' {TeileFrm: TFrame},
   GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame},
-  LieferantenErklaerungenFrame in 'LieferantenErklaerungenFrame.pas' {LieferantenErklaerungenFrm: TFrame},
-  LieferantenerklAnfordernFrame in 'LieferantenerklAnfordernFrame.pas' {LieferantenErklAnfordernFrm: TFrame};
+  LeklTeileEingabeFrame in 'LeklTeileEingabeFrame.pas' {LieferantenErklaerungenFrm: TFrame},
+  LeklAnfordernFrame in 'LeklAnfordernFrame.pas' {LieferantenErklAnfordernFrm: TFrame},
+  Excel in 'Excel.pas',
+  Mailing in 'Mailing.pas';
 
 {$R *.res}
 

@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -141,7 +141,7 @@
         <DCCReference Include="QryAccess.pas"/>
         <DCCReference Include="QrySQLite.pas"/>
         <DCCReference Include="QryUNIPPS.pas"/>
-        <DCCReference Include="LieferantenStatusFrame.pas">
+        <DCCReference Include="LieferantenLEKL3AuswahlFrame.pas">
             <Form>LieferantenStatusFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
@@ -160,16 +160,18 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="LieferantenErklaerungenFrame.pas">
+        <DCCReference Include="LeklTeileEingabeFrame.pas">
             <Form>LieferantenErklaerungenFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="LieferantenerklAnfordernFrame.pas">
+        <DCCReference Include="LeklAnfordernFrame.pas">
             <Form>LieferantenErklAnfordernFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Excel.pas"/>
+        <DCCReference Include="Mailing.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

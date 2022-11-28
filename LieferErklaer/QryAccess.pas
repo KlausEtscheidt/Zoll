@@ -33,8 +33,8 @@ interface
       function UpdateTeileZaehleLieferanten():Boolean;
 
       //Nur lesen für Formulare etc
-      function HoleLieferantenMitStatusTxt():Boolean;
-      function HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String):Boolean;
+      function HoleLieferantenMitAdressen():Boolean;
+      function HoleLieferantenFuerTeileEingabe(min_guelt:string):Boolean;
       function HoleLieferantenStatusTxt():Boolean;
       function HoleLErklaerungen(IdLieferant:Integer):Boolean;
       function HoleProgrammDaten(Name: String):Boolean;
@@ -47,8 +47,10 @@ interface
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
 
       function UpdateLieferant(IdLieferant:Integer;
-                            Stand,GiltBis,lekl:String):Boolean;
+                            Stand,GiltBis,lekl,Kommentar:String):Boolean;
       function UpdateLieferantStand(IdLieferant:Integer;Stand:String):Boolean;
+      function UpdateLieferantStandTeile(IdLieferant:Integer;Stand:String):Boolean;
+      function UpdateLieferantAnfrageDatum(IdLieferant:Integer;Datum:String):Boolean;
 
       //Auswertung nach Benutzereingaben
       function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
@@ -253,36 +255,48 @@ end;
 // (Input für Formulare, etc. Keine Datenänderungen
 //
 // ---------------------------------------------------------------
-
-///<summary> Liest Tabelle Lieferanten mit Status im Klartext</summary>
-function TWQryAccess.HoleLieferantenMitStatusTxt():Boolean;
+///<summary> Liest Tabelle Lieferanten mit Adressdaten</summary>
+function TWQryAccess.HoleLieferantenMitAdressen():Boolean;
   var
-    sql: String;
+   sql: String;
 begin
-    SQL := 'select *,StatusTxt from lieferanten '
-         + 'inner join LieferantenStatusTxt '
-         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
-         + 'WHERE Lieferstatus <> "entfallen" '
-         + 'order by LKurzname;';
+  sql := 'Select Lieferanten.IdLieferant, LKurzname,Stand,gilt_bis, letzteAnfrage, '
+       + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
+       + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
+       + 'CDate(gilt_bis)-Date() as gilt_noch, '
+       + 'Date()-CDate(letzteAnfrage) as angefragt_vor_Tagen '
+       + 'from (Lieferanten '
+       + 'inner join Lieferanten_Adressen '
+       + 'on Lieferanten.IdLieferant=Lieferanten_Adressen.IdLieferant) '
+       + 'inner join LieferantenStatusTxt '
+       + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+       + 'WHERE Lieferstatus <> "entfallen" '
+       + 'order by LKurzname; ' ;
   Result:= RunSelectQuery(sql);
 end;
 
 
-///<summary> Liest Tabelle Lieferanten mit Status im Klartext,
-///jedoch nur diejenigen mit bald ablaufenden Erklärungen</summary>
-function TWQryAccess.HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String)
-                                                                 :Boolean;
+///<summary> Liest Lieferanten fuer die teilespezifische Eingabe</summary>
+/// <remarks>
+/// Liest nur Lieferanten die Pumpenteile liefern
+/// mit gültiger Erklärung (Anzahl Tage Restgültig.> min_guelt)
+/// mit Status der LEKL=3 (einige Teile)
+/// </remarks>
+function TWQryAccess.HoleLieferantenFuerTeileEingabe(min_guelt:string):Boolean;
   var
     sql: String;
 begin
-    SQL := 'select *,StatusTxt from lieferanten '
-         + 'inner join LieferantenStatusTxt '
-         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+    SQL := 'select lieferanten.*, '
+         + 'Date()-CDate(Stand) as AlterStand, '
+         + 'Date()-CDate(StandTeile) as AlterStandTeile '
+         + 'from lieferanten '
          + 'WHERE Lieferstatus <> "entfallen" '
-         + 'AND CDate(gilt_bis)-Date()<=' + delta_days
-         + ' order by LKurzname;';
+         + 'AND Pumpenteile=-1 AND lekl=3 '
+         + 'AND CDate(gilt_bis)-Date() >' + min_guelt
+         + ' ORDER by LKurzname;';
   Result:= RunSelectQuery(sql);
 end;
+
 
 ///<summary> Liest LieferantenStatus im Klartext</summary>
 function TWQryAccess.HoleLieferantenStatusTxt():Boolean;
@@ -367,16 +381,29 @@ end;
 
 ///<summary> Setzt Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
 function TWQryAccess.UpdateLieferant(IdLieferant:Integer;
-                            Stand,GiltBis,lekl:String):Boolean;
+                            Stand,GiltBis,lekl,Kommentar:String):Boolean;
   var
     sql: String;
 begin
       SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
-          +  'gilt_bis="' + GiltBis + ' " , '
-          +  'lekl="' + lekl + ' "  '
-          +  'where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+          +  'gilt_bis=' + QuotedStr(GiltBis) + ', '
+          +  'lekl=' + QuotedStr(lekl) + ', '
+          +  ' Kommentar=' + QuotedStr(Kommentar)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
+///<summary> Setzt Stand (Bearbeitungsdatum) in Tabelle Lieferanten</summary>
+function TWQryAccess.UpdateLieferantStandTeile(IdLieferant:Integer;
+                                               Stand:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set StandTeile=' +QuotedStr(Stand)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
 
 ///<summary> Setzt Stand (Bearbeitungsdatum) in Tabelle Lieferanten</summary>
 function TWQryAccess.UpdateLieferantStand(IdLieferant:Integer;
@@ -385,6 +412,17 @@ function TWQryAccess.UpdateLieferantStand(IdLieferant:Integer;
     sql: String;
 begin
       SQL := 'Update Lieferanten set stand=' +QuotedStr(Stand)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary> Setzt Datum der lezten Anfrage in Tabelle Lieferanten</summary>
+function TWQryAccess.UpdateLieferantAnfrageDatum(IdLieferant:Integer;
+                                               Datum:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set letzteAnfrage=' +QuotedStr(Datum)
           +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
 end;

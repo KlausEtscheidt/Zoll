@@ -33,7 +33,7 @@ interface
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitAdressen():Boolean;
-      function HoleLieferantenMitStatusTxt():Boolean;
+      function HoleLieferantenFuerTeileEingabe(min_guelt:string):Boolean;
       function HoleLieferantenStatusTxt():Boolean;
       function HoleLErklaerungen(IdLieferant:Integer):Boolean;
       function HoleProgrammDaten(Name: String):Boolean;
@@ -278,19 +278,24 @@ begin
   Result:= RunSelectQuery(sql);
 end;
 
-///<summary> Liest Tabelle Lieferanten mit Status im Klartext</summary>
-function TWQrySQLite.HoleLieferantenMitStatusTxt():Boolean;
+///<summary> Liest Lieferanten fuer die teilespezifische Eingabe</summary>
+/// <remarks>
+/// Liest nur Lieferanten die Pumpenteile liefern
+/// mit gültiger Erklärung (Anzahl Tage Restgültig.> min_guelt)
+/// mit Status der LEKL=3 (einige Teile)
+/// </remarks>
+function TWQrySQLite.HoleLieferantenFuerTeileEingabe(min_guelt:string):Boolean;
   var
     sql: String;
 begin
-    SQL := 'select lieferanten.*,StatusTxt,'
-         + 'Julianday(Date())-Julianday(StandTeile) as letzteEingabeVorTagen '
+    SQL := 'select lieferanten.*,'
+         + 'Julianday(Date())-Julianday(Stand) as AlterStand, '
+         + 'Julianday(Date())-Julianday(StandTeile) as AlterStandTeile '
          + 'from lieferanten '
-         + 'join LieferantenStatusTxt '
-         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
          + 'WHERE Lieferstatus !="entfallen" '
          + 'AND Pumpenteile=-1 AND lekl=3 '
-         + 'order by LKurzname;';
+         + 'AND Julianday(gilt_bis)-Julianday(Date())>' + min_guelt
+         + ' ORDER by LKurzname;';
   Result:= RunSelectQuery(sql);
 end;
 
@@ -375,18 +380,6 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-
-///<summary> Setzt Datum der lezten Anfrage in Tabelle Lieferanten</summary>
-function TWQrySQLite.UpdateLieferantAnfrageDatum(IdLieferant:Integer;
-                                               Datum:String):Boolean;
-  var
-    sql: String;
-begin
-      SQL := 'Update Lieferanten set letzteAnfrage=' +QuotedStr(Datum)
-          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
-  Result:= RunExecSQLQuery(sql);
-end;
-
 ///<summary> Setzt Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
 function TWQrySQLite.UpdateLieferant(IdLieferant:Integer;
                             Stand,GiltBis,lekl,Kommentar:String):Boolean;
@@ -423,6 +416,18 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
+///<summary> Setzt Datum der lezten Anfrage in Tabelle Lieferanten</summary>
+function TWQrySQLite.UpdateLieferantAnfrageDatum(IdLieferant:Integer;
+                                               Datum:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set letzteAnfrage=' +QuotedStr(Datum)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+
 
 // ---------------------------------------------------------------
 //
@@ -432,7 +437,7 @@ end;
 // ---------------------------------------------------------------
 
 ///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile"
-///</summary>
+///an temp Tabelle tmpLieferantTeilPfk an</summary>
 function TWQrySQLite.LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
   var
     sql: String;
@@ -447,7 +452,7 @@ begin
 end;
 
 ///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
-///</summary>
+///an temp Tabelle tmpLieferantTeilPfk an</summary>
 function TWQrySQLite.LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
   var
     sql: String;
@@ -460,7 +465,6 @@ begin
            + 'Julianday(gilt_bis)-Julianday(Date())>' + delta_days + ' ;' ;
   Result:= RunExecSQLQuery(sql);
 end;
-
 
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der gültigen Lieferanten-Erklaerungen

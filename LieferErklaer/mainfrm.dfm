@@ -1,7 +1,7 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'mainForm'
+  Caption = 'LEKL'
   ClientHeight = 612
   ClientWidth = 1094
   Color = clGradientActiveCaption
@@ -237,7 +237,7 @@ object mainForm: TmainForm
     inherited GroupBox3: TGroupBox
       Left = 10
       ExplicitLeft = 10
-      inherited Hauptdaten: TPanel
+      inherited Panel1b: TPanel
         Height = 120
         ExplicitHeight = 120
         inherited OrtDBText: TDBText
@@ -246,6 +246,7 @@ object mainForm: TmainForm
         end
         inherited StrasseDBText: TDBText
           Top = 54
+          ExplicitTop = 54
         end
       end
       inherited Panel1: TPanel
@@ -264,26 +265,27 @@ object mainForm: TmainForm
           Top = 72
           Margins.Left = 0
           AutoSize = False
-          ExplicitTop = 60
+          ExplicitTop = 64
         end
         inherited Label5: TLabel
           Top = 54
           Margins.Left = 0
           AutoSize = False
+          ExplicitTop = 46
         end
         inherited dummy: TLabel
           Margins.Left = 0
           Margins.Top = 3
           AutoSize = False
-          ExplicitWidth = 41
         end
         inherited staatlbl: TLabel
-          ExplicitTop = 88
+          ExplicitTop = 90
         end
       end
       inherited Panel2: TPanel
         inherited Label3: TLabel
           Top = 54
+          ExplicitTop = 54
         end
         inherited Label7: TLabel
           Height = 18
@@ -304,11 +306,6 @@ object mainForm: TmainForm
     TabOrder = 1
     ExplicitWidth = 1094
     ExplicitHeight = 593
-    inherited Label11: TLabel
-      Width = 341
-      Caption = 'Teilespez. Lieferantenerkl'#228'rung eingeben'
-      ExplicitWidth = 341
-    end
     inherited GroupBox1: TGroupBox
       Width = 956
       ExplicitWidth = 956
@@ -342,11 +339,19 @@ object mainForm: TmainForm
         ExplicitLeft = 438
         ExplicitTop = 18
       end
-      inherited OffeneChkBox: TCheckBox
-        Left = 641
-        Top = 19
-        ExplicitLeft = 641
-        ExplicitTop = 19
+      inherited LeklUpdatedChkBox: TCheckBox
+        Left = 514
+        Top = 18
+        ExplicitLeft = 514
+        ExplicitTop = 18
+      end
+      inherited UnbearbeiteteCheckBox: TCheckBox
+        Left = 653
+        Top = 18
+        Width = 140
+        ExplicitLeft = 653
+        ExplicitTop = 18
+        ExplicitWidth = 140
       end
     end
     inherited GroupBox2: TGroupBox
@@ -417,24 +422,24 @@ object mainForm: TmainForm
         Caption = 'Auswerten'
         OnClick = UnippsMenAuswertenClick
       end
-      object UnippsMenLAdressen: TMenuItem
-        Caption = 'LAdressen'
-        OnClick = UnippsMenLAdressenClick
-      end
     end
     object LieferantenMen: TMenuItem
       Caption = 'Lieferanten'
-      object LMenStatus: TMenuItem
-        Caption = 'Status'
-        OnClick = LMenStatusClick
+      object LieferMenErklaerAnfordern: TMenuItem
+        Caption = 'Erkl'#228'rungen anfordern'
+        OnClick = LieferMenErklaerAnfordernClick
       end
-      object Leklanfordern1: TMenuItem
-        Caption = 'Lekl anfordern'
-        OnClick = Leklanfordern1Click
+      object LieferMenAdressen: TMenuItem
+        Caption = 'Adressen neu lesen'
+        OnClick = LieferMenAdressenClick
       end
     end
     object TeileMen: TMenuItem
       Caption = 'Teile'
+      object LTeileMenStatus: TMenuItem
+        Caption = 'Status eingeben'
+        OnClick = LTeileMenStatusClick
+      end
       object TeileMenUebersicht: TMenuItem
         Caption = #220'bersicht'
         OnClick = TeileMenUebersichtClick
