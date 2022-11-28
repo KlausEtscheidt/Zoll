@@ -17,6 +17,8 @@ type
     DataSource1: TDataSource;
     StatusListBox: TDBLookupListBox;
     alterStatus: TLabel;
+    Label3: TLabel;
+    KommentarEdit: TEdit;
     procedure StatusListBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   public

@@ -3,6 +3,7 @@ unit Tools;
 interface
 
 uses
+System.SysUtils,  System.Classes, Vcl.Dialogs,
 Data.Win.ADODB,
 Settings, Logger, ADOConnector,QryAccess,QrySQLite ;
 
@@ -41,6 +42,7 @@ begin
   Log:=TLogFile.Create();
   ErrLog:=TLogFile.Create();
   DbConnector:=TWADOConnector.Create(nil);
+  try
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(SQLiteDBFileName);
    {$ELSE}
@@ -52,6 +54,15 @@ begin
       {$ENDIF}
 
   {$ENDIF}
+  except
+     on E: Exception do
+    begin
+       ShowMessage(E.Message);
+       raise;
+    end;
+
+
+  end;
 
   ProgDataTable:= GetTable('ProgrammDaten');
 end;

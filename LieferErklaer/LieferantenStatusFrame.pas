@@ -32,27 +32,23 @@ type
     DBText1: TDBText;
     LKurznameTxt: TDBText;
     IDLieferantTxt: TDBText;
-    StatusBtn: TButton;
     TeileBtn: TButton;
     Label3: TLabel;
     DBText3: TDBText;
     Label9: TLabel;
     Label10: TLabel;
-    PumpenTeileChkBox: TCheckBox;
     Label11: TLabel;
     FilterAusBtn: TButton;
     ImageList1: TImageList;
-    AbgelaufenChkBox: TCheckBox;
-    EinigeTeileChkBox: TCheckBox;
+    OffeneChkBox: TCheckBox;
     ActionList1: TActionList;
     FilterUpdateAction: TAction;
     procedure TeileBtnClick(Sender: TObject);
-    procedure StatusBtnClick(Sender: TObject);
     procedure ShowFrame();
     procedure HideFrame();
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure FilterAusBtnClick(Sender: TObject);
-    procedure AbgelaufenChkBoxClick(Sender: TObject);
+    procedure OffeneChkBoxClick(Sender: TObject);
     procedure FilterUpdateActionExecute(Sender: TObject);
 
   private
@@ -87,62 +83,6 @@ begin
   Self.Visible := False;
 end;
 
-procedure TLieferantenStatusFrm.StatusBtnClick(Sender: TObject);
-var
-  IdLieferant: Integer;
-  Stand, GiltBis: String;
-  lekl : String;
-  UpdateQry:TWQry;
-  BM:TBookmark;
-
-begin
-
-   // ------- Steuererlemente des Dialogs vorbesetzen
-   // Anzeige des Ist-Status der Lieferantenerkl�rung
-   LieferantenStatusDialog.alterStatus.Caption
-            := LocalQry.FieldByName('StatusTxt').AsString;
-   // Ist-Status der Lieferantenerkl�rung in List-Box vorausw�hlen
-   LieferantenStatusDialog.StatusListBox.KeyValue
-            := LocalQry.FieldByName('lekl').AsInteger;
-   //Zeiteingabe nur bei Status 'alle Teile' oder 'einige Teile'
-   LieferantenStatusDialog.ValidateDateTime;
-   // Datumsw�hler auf bisheriges G�ltigkeitsdatum
-   GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
-   LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
-
-   // Dialog anzeigen
-   if (LieferantenStatusDialog.ShowModal=mrOK) then
-    begin
-
-      // akt. Datensatz merken
-      BM := LocalQry.GetBookmark;
-
-      // --- Daten fuer Update-Abfrage vorbereiten
-      // Datenstand ist heute
-      Stand := FormatDateTime('YYYY-MM-DD', Date);
-      // Lekl gilt bis aus Dialog
-      GiltBis := FormatDateTime('YYYY-MM-DD',
-                        LieferantenStatusDialog.DateTimePicker1.DateTime);
-      // Gew�hlten Status aus Dialog
-      lekl := LieferantenStatusDialog.StatusListBox.KeyValue ;
-      // Id des Lieferanen aus Basis-Abfrage
-      IdLieferant := LocalQry.FieldByName('IdLieferant').AsInteger;
-
-      // --- Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
-      UpdateQry := Tools.GetQuery;
-      UpdateQry.UpdateLieferant(IdLieferant, Stand, GiltBis, lekl);
-
-      // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
-      LocalQry.Requery();
-
-      // Gehe auf ursp�nglichen Datensatz
-      LocalQry.GotoBookmark(BM);
-
-    end;
-
-
-end;
-
 procedure TLieferantenStatusFrm.TeileBtnClick(Sender: TObject);
 begin
     mainForm.LieferantenErklaerungenFrm1.IdLieferant
@@ -169,7 +109,6 @@ begin
 
 end;
 
-
 procedure TLieferantenStatusFrm.FilterUpdateActionExecute(Sender: TObject);
 var
   FilterStr : String;
@@ -179,20 +118,11 @@ begin
     filtern := False;
     FilterStr := '';
 
-    if PumpenTeileChkBox.State = cbChecked then
+    if OffeneChkBox.State = cbChecked then
     begin
       filtern := True;
-      FilterStr := 'Pumpenteile=-1';
+      FilterStr := FilterStr + 'letzteEingabeVorTagen >200' ;
     end;
-
-    if EinigeTeileChkBox.State = cbChecked then
-    begin
-      if filtern then
-        FilterStr := FilterStr + ' AND ' ;
-      filtern := True;
-      FilterStr := FilterStr + 'lekl=3';
-    end;
-
 
     if length(FilterName.Text)>0 then
     begin
@@ -217,15 +147,8 @@ begin
                    + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
 end;
 
-
-
-procedure TLieferantenStatusFrm.AbgelaufenChkBoxClick(Sender: TObject);
+procedure TLieferantenStatusFrm.OffeneChkBoxClick(Sender: TObject);
 begin
-    if AbgelaufenChkBox.State = cbChecked then
-      LocalQry.HoleLieferantenMitStatusTxtAbgelaufen(minRestGueltigkeit)
-    else
-      LocalQry.HoleLieferantenMitStatusTxt;
-    DataSource1.DataSet := LocalQry;
     FilterUpdateActionExecute(Sender);
 end;
 

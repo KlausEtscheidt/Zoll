@@ -85,23 +85,6 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       TabOrder = 1
       OnChange = FilterUpdateActionExecute
     end
-    object PumpenTeileChkBox: TCheckBox
-      Left = 527
-      Top = 14
-      Width = 162
-      Height = 25
-      Action = FilterUpdateAction
-      Caption = 'nur Lief. v. Pumpenteilen'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      State = cbChecked
-      TabOrder = 2
-    end
     object FilterAusBtn: TButton
       Left = 487
       Top = 16
@@ -113,38 +96,23 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ImageMargins.Left = 2
       ImageMargins.Top = 2
       Images = ImageList1
-      TabOrder = 3
+      TabOrder = 2
       OnClick = FilterAusBtnClick
     end
-    object AbgelaufenChkBox: TCheckBox
-      Left = 711
+    object OffeneChkBox: TCheckBox
+      Left = 543
       Top = 14
       Width = 114
       Height = 25
-      Caption = 'nur abgelaufene'
+      Caption = 'nur offene'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 4
-      OnClick = AbgelaufenChkBoxClick
-    end
-    object EinigeTeileChkBox: TCheckBox
-      Left = 849
-      Top = 14
-      Width = 114
-      Height = 25
-      Action = FilterUpdateAction
-      Caption = 'nur "einige Teile"'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
+      TabOrder = 3
+      OnClick = OffeneChkBoxClick
     end
   end
   object GroupBox2: TGroupBox
@@ -196,25 +164,17 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         end
         item
           Expanded = False
-          FieldName = 'LName2'
-          Title.Caption = 'Name2'
-          Width = 94
-          Visible = True
-        end
-        item
-          Expanded = False
           FieldName = 'gilt_bis'
           Visible = True
         end
         item
           Expanded = False
-          FieldName = 'lekl'
+          FieldName = 'Stand'
           Visible = True
         end
         item
-          Alignment = taCenter
           Expanded = False
-          FieldName = 'Pumpenteile'
+          FieldName = 'StandTeile'
           Visible = True
         end>
     end
@@ -434,15 +394,6 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = [fsBold]
       ParentFont = False
     end
-    object StatusBtn: TButton
-      Left = 600
-      Top = 43
-      Width = 73
-      Height = 25
-      Caption = 'Status'
-      TabOrder = 0
-      OnClick = StatusBtnClick
-    end
     object TeileBtn: TButton
       Left = 600
       Top = 80
@@ -450,13 +401,11 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Height = 25
       Hint = 'Pr'#228'ferenz f'#252'r einzelne Teile eingeben'
       Caption = 'Teile'
-      TabOrder = 1
-      Visible = False
+      TabOrder = 0
       OnClick = TeileBtnClick
     end
   end
   object DataSource1: TDataSource
-    OnDataChange = DataSource1DataChange
     Left = 640
     Top = 200
   end

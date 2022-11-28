@@ -16,7 +16,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   TextHeight = 13
   object Label1: TLabel
     Left = 24
-    Top = 144
+    Top = 112
     Width = 60
     Height = 18
     Caption = 'g'#252'ltig bis:'
@@ -47,6 +47,19 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Height = 13
     Caption = 'Label3'
   end
+  object Label3: TLabel
+    Left = 24
+    Top = 168
+    Width = 82
+    Height = 18
+    Caption = 'Kommnetar:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object OKBtn: TButton
     Left = 128
     Top = 240
@@ -68,7 +81,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   end
   object DateTimePicker1: TDateTimePicker
     Left = 104
-    Top = 176
+    Top = 136
     Width = 186
     Height = 21
     Date = 44858.000000000000000000
@@ -87,6 +100,13 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     ListSource = DataSource1
     TabOrder = 3
     OnClick = StatusListBoxClick
+  end
+  object KommentarEdit: TEdit
+    Left = 104
+    Top = 192
+    Width = 505
+    Height = 21
+    TabOrder = 4
   end
   object DataSource1: TDataSource
     Left = 536

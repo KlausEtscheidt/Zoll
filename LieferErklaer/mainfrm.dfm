@@ -76,10 +76,8 @@ object mainForm: TmainForm
     Align = alClient
     TabOrder = 2
     Visible = False
-    ExplicitLeft = 175
-    ExplicitTop = 398
-    ExplicitWidth = 713
-    ExplicitHeight = 564
+    ExplicitWidth = 1094
+    ExplicitHeight = 593
     inherited Label1: TLabel
       Left = 10
       Top = 7
@@ -178,6 +176,124 @@ object mainForm: TmainForm
       ExplicitTop = 100
     end
   end
+  inline LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm
+    Left = -5
+    Top = 0
+    Width = 1099
+    Height = 636
+    ParentBackground = False
+    TabOrder = 5
+    ExplicitLeft = -5
+    inherited GroupBox1: TGroupBox
+      Left = 10
+      ExplicitLeft = 10
+    end
+    inherited GroupBox2: TGroupBox
+      Left = 10
+      ExplicitLeft = 10
+      inherited DBGrid1: TDBGrid
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'LKurzname'
+            Title.Caption = 'Kurzname'
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'name1'
+            Title.Caption = 'Name'
+            Width = 220
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'gilt_bis'
+            Width = 70
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'letzteAnfrage'
+            Title.Caption = 'angefragt'
+            Width = 70
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'telefax'
+            Width = 125
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'email'
+            Width = 200
+            Visible = True
+          end>
+      end
+    end
+    inherited GroupBox3: TGroupBox
+      Left = 10
+      ExplicitLeft = 10
+      inherited Hauptdaten: TPanel
+        Height = 120
+        ExplicitHeight = 120
+        inherited OrtDBText: TDBText
+          Top = 72
+          ExplicitTop = 77
+        end
+        inherited StrasseDBText: TDBText
+          Top = 54
+        end
+      end
+      inherited Panel1: TPanel
+        Height = 120
+        ExplicitHeight = 120
+        inherited Label6: TLabel
+          Margins.Left = 0
+          Margins.Top = 3
+          AutoSize = False
+        end
+        inherited Label4: TLabel
+          Margins.Left = 0
+          AutoSize = False
+        end
+        inherited ortlabel: TLabel
+          Top = 72
+          Margins.Left = 0
+          AutoSize = False
+          ExplicitTop = 60
+        end
+        inherited Label5: TLabel
+          Top = 54
+          Margins.Left = 0
+          AutoSize = False
+        end
+        inherited dummy: TLabel
+          Margins.Left = 0
+          Margins.Top = 3
+          AutoSize = False
+          ExplicitWidth = 41
+        end
+        inherited staatlbl: TLabel
+          ExplicitTop = 88
+        end
+      end
+      inherited Panel2: TPanel
+        inherited Label3: TLabel
+          Top = 54
+        end
+        inherited Label7: TLabel
+          Height = 18
+          ExplicitLeft = 0
+          ExplicitWidth = 112
+          ExplicitHeight = 18
+        end
+      end
+    end
+  end
   inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
     Top = 0
@@ -186,7 +302,13 @@ object mainForm: TmainForm
     Align = alClient
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 854
+    ExplicitWidth = 1094
+    ExplicitHeight = 593
+    inherited Label11: TLabel
+      Width = 341
+      Caption = 'Teilespez. Lieferantenerkl'#228'rung eingeben'
+      ExplicitWidth = 341
+    end
     inherited GroupBox1: TGroupBox
       Width = 956
       ExplicitWidth = 956
@@ -214,28 +336,16 @@ object mainForm: TmainForm
         ExplicitLeft = 254
         ExplicitTop = 19
       end
-      inherited PumpenTeileChkBox: TCheckBox
-        Left = 476
-        Top = 19
-        ExplicitLeft = 476
-        ExplicitTop = 19
-      end
       inherited FilterAusBtn: TButton
         Left = 438
         Top = 18
         ExplicitLeft = 438
         ExplicitTop = 18
       end
-      inherited AbgelaufenChkBox: TCheckBox
+      inherited OffeneChkBox: TCheckBox
         Left = 641
         Top = 19
         ExplicitLeft = 641
-        ExplicitTop = 19
-      end
-      inherited EinigeTeileChkBox: TCheckBox
-        Left = 774
-        Top = 19
-        ExplicitLeft = 774
         ExplicitTop = 19
       end
     end
@@ -264,13 +374,6 @@ object mainForm: TmainForm
           end
           item
             Expanded = False
-            FieldName = 'LName2'
-            Title.Caption = 'Name2'
-            Width = 70
-            Visible = True
-          end
-          item
-            Expanded = False
             FieldName = 'gilt_bis'
             Title.Alignment = taCenter
             Width = 70
@@ -278,25 +381,14 @@ object mainForm: TmainForm
           end
           item
             Expanded = False
-            FieldName = 'lekl'
-            Title.Alignment = taCenter
-            Width = 30
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'Pumpenteile'
-            Title.Alignment = taCenter
-            Title.Caption = 'P-Teile'
-            Width = 50
-            Visible = True
-          end
-          item
-            Expanded = False
             FieldName = 'Stand'
             Title.Alignment = taCenter
             Width = 70
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'StandTeile'
             Visible = True
           end>
       end
@@ -315,13 +407,6 @@ object mainForm: TmainForm
         OnClick = FormDestroy
       end
     end
-    object LieferantenMen: TMenuItem
-      Caption = 'Lieferanten'
-      object LMenStatus: TMenuItem
-        Caption = 'Status'
-        OnClick = LMenStatusClick
-      end
-    end
     object UnippsMen: TMenuItem
       Caption = 'Unipps'
       object UnippsMenEinlesen: TMenuItem
@@ -335,6 +420,17 @@ object mainForm: TmainForm
       object UnippsMenLAdressen: TMenuItem
         Caption = 'LAdressen'
         OnClick = UnippsMenLAdressenClick
+      end
+    end
+    object LieferantenMen: TMenuItem
+      Caption = 'Lieferanten'
+      object LMenStatus: TMenuItem
+        Caption = 'Status'
+        OnClick = LMenStatusClick
+      end
+      object Leklanfordern1: TMenuItem
+        Caption = 'Lekl anfordern'
+        OnClick = Leklanfordern1Click
       end
     end
     object TeileMen: TMenuItem

@@ -404,7 +404,11 @@ end;
 
 initialization
     Tools.init;
+  // Qry fuer lokale DB anlegen
+  LocalQry := Tools.GetQuery;
+
   //mit UNIPPS verbinden
+{$IFNDEF HOME}
   dbUnippsConn:=TWADOConnector.Create(nil);
   dbUnippsConn.ConnectToUNIPPS();
 
@@ -412,8 +416,7 @@ initialization
   //Qry anlegen und mit Connector versorgen
   UnippsQry:= TWQryUNIPPS.Create(nil);
   UnippsQry.Connector:=dbUnippsConn;
+{$ENDIF}
 
-  // Qry fuer lokale DB anlegen
-  LocalQry := Tools.GetQuery;
 
 end.

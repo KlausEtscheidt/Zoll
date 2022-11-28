@@ -12,11 +12,12 @@ uses
   QryAccess in 'QryAccess.pas',
   QrySQLite in 'QrySQLite.pas',
   QryUNIPPS in 'QryUNIPPS.pas',
-  LieferantenErklaerungenFrame in 'LieferantenErklaerungenFrame.pas' {LieferantenErklaerungenFrm: TFrame},
   LieferantenStatusFrame in 'LieferantenStatusFrame.pas' {LieferantenStatusFrm: TFrame},
   LieferantenStatusDlg in 'LieferantenStatusDlg.pas' {LieferantenStatusDialog},
   TeileFrame in 'TeileFrame.pas' {TeileFrm: TFrame},
-  GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame};
+  GesamtStatusFrame in 'GesamtStatusFrame.pas' {GesamtStatusFrm: TFrame},
+  LieferantenErklaerungenFrame in 'LieferantenErklaerungenFrame.pas' {LieferantenErklaerungenFrm: TFrame},
+  LieferantenerklAnfordernFrame in 'LieferantenerklAnfordernFrame.pas' {LieferantenErklAnfordernFrm: TFrame};
 
 {$R *.res}
 

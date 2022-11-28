@@ -32,8 +32,8 @@ interface
       function UpdateTeileZaehleLieferanten():Boolean;
 
       //Nur lesen für Formulare etc
+      function HoleLieferantenMitAdressen():Boolean;
       function HoleLieferantenMitStatusTxt():Boolean;
-      function HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String):Boolean;
       function HoleLieferantenStatusTxt():Boolean;
       function HoleLErklaerungen(IdLieferant:Integer):Boolean;
       function HoleProgrammDaten(Name: String):Boolean;
@@ -45,8 +45,10 @@ interface
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
       function UpdateLieferant(IdLieferant:Integer;
-                            Stand,GiltBis,lekl:String):Boolean;
+                            Stand,GiltBis,lekl,Kommentar:String):Boolean;
       function UpdateLieferantStand(IdLieferant:Integer;Stand:String):Boolean;
+      function UpdateLieferantStandTeile(IdLieferant:Integer;Stand:String):Boolean;
+      function UpdateLieferantAnfrageDatum(IdLieferant:Integer;Datum:String):Boolean;
 
       //Auswertung nach Benutzereingaben
       function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
@@ -256,35 +258,41 @@ end;
 //
 // ---------------------------------------------------------------
 
+///<summary> Liest Tabelle Lieferanten mit Adressdaten</summary>
+function TWQrySQLite.HoleLieferantenMitAdressen():Boolean;
+  var
+   sql: String;
+begin
+  sql := 'Select Lieferanten.IdLieferant, LKurzname,Stand,gilt_bis, letzteAnfrage, '
+       + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
+       + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
+       + 'Julianday(gilt_bis)-Julianday(Date()) as gilt_noch, '
+       + 'Julianday(Date()) - Julianday(letzteAnfrage) as angefragt_vor_Tagen '
+       + 'from Lieferanten '
+       + 'join Lieferanten_Adressen '
+       + 'on Lieferanten.IdLieferant=Lieferanten_Adressen.IdLieferant '
+       + 'join LieferantenStatusTxt '
+       + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+       + 'WHERE Lieferstatus !="entfallen" '
+       + 'order by LKurzname; ' ;
+  Result:= RunSelectQuery(sql);
+end;
+
 ///<summary> Liest Tabelle Lieferanten mit Status im Klartext</summary>
 function TWQrySQLite.HoleLieferantenMitStatusTxt():Boolean;
   var
     sql: String;
 begin
-    SQL := 'select *,StatusTxt from lieferanten '
+    SQL := 'select lieferanten.*,StatusTxt,'
+         + 'Julianday(Date())-Julianday(StandTeile) as letzteEingabeVorTagen '
+         + 'from lieferanten '
          + 'join LieferantenStatusTxt '
          + 'on LieferantenStatusTxt.id=lieferanten.lekl '
          + 'WHERE Lieferstatus !="entfallen" '
+         + 'AND Pumpenteile=-1 AND lekl=3 '
          + 'order by LKurzname;';
   Result:= RunSelectQuery(sql);
 end;
-
-///<summary> Liest Tabelle Lieferanten mit Status im Klartext,
-///jedoch nur diejenigen mit bald ablaufenden Erklärungen</summary>
-function TWQrySQLite.HoleLieferantenMitStatusTxtAbgelaufen(delta_days:String)
-                                                                 :Boolean;
-  var
-    sql: String;
-begin
-    SQL := 'select *,StatusTxt from lieferanten '
-         + 'inner join LieferantenStatusTxt '
-         + 'on LieferantenStatusTxt.id=lieferanten.lekl '
-         + 'WHERE Lieferstatus <> "entfallen" AND '
-         + 'Julianday(gilt_bis)-Julianday(Date())<=' + delta_days
-         + ' order by LKurzname;';
-  Result:= RunSelectQuery(sql);
-end;
-
 
 ///<summary> Liest LieferantenStatus im Klartext</summary>
 function TWQrySQLite.HoleLieferantenStatusTxt():Boolean;
@@ -367,16 +375,40 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
+
+///<summary> Setzt Datum der lezten Anfrage in Tabelle Lieferanten</summary>
+function TWQrySQLite.UpdateLieferantAnfrageDatum(IdLieferant:Integer;
+                                               Datum:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set letzteAnfrage=' +QuotedStr(Datum)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
 ///<summary> Setzt Stand, gilt_bis und lekl in Tabelle Lieferanten</summary>
 function TWQrySQLite.UpdateLieferant(IdLieferant:Integer;
-                            Stand,GiltBis,lekl:String):Boolean;
+                            Stand,GiltBis,lekl,Kommentar:String):Boolean;
   var
     sql: String;
 begin
       SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
-          +  'gilt_bis="' + GiltBis + ' " , '
-          +  'lekl="' + lekl + ' "  '
-          +  'where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+          +  'gilt_bis=' + QuotedStr(GiltBis) + ', '
+          +  'lekl=' + QuotedStr(lekl) + ', '
+          +  ' Kommentar=' + QuotedStr(Kommentar)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary> Setzt Stand (Bearbeitungsdatum) in Tabelle Lieferanten</summary>
+function TWQrySQLite.UpdateLieferantStandTeile(IdLieferant:Integer;
+                                               Stand:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'Update Lieferanten set StandTeile=' +QuotedStr(Stand)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
   Result:= RunExecSQLQuery(sql);
 end;
 

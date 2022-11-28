@@ -90,15 +90,22 @@ begin
 end;
 
 procedure TLieferantenErklaerungenFrm.BackBtnClick(Sender: TObject);
+const
+  msg='Ist die Eingabe abgeschlossen ?'+ #13+ #13 +
+      'Nein, wenn später weiter gearbeitet werden soll.';
 
 begin
     Self.HideFrame;
     //Stand aktualisieren, wenn Flags geändert wurden
     if DatenGeaendert then
-        // Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
-        // Datenstand ist heute
-        LocalQry.UpdateLieferantStand(IdLieferant,
-                       FormatDateTime('YYYY-MM-DD', Date));
+        if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+          begin
+            // Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
+            // Datenstand ist heute
+            LocalQry.UpdateLieferantStandTeile(IdLieferant,
+                           FormatDateTime('YYYY-MM-DD', Date));
+          end;
+
     OldFrame.Visible := True;
 
 

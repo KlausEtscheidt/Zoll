@@ -8,7 +8,7 @@ uses
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
   Vcl.DBCtrls, LieferantenStatusFrame, LieferantenErklaerungenFrame, Tools,
-  GesamtStatusFrame, TeileFrame;
+  GesamtStatusFrame, TeileFrame, LieferantenerklAnfordernFrame;
 
 type
   TmainForm = class(TForm)
@@ -20,16 +20,19 @@ type
     StatusBar1: TStatusBar;
     LieferantenMen: TMenuItem;
     LMenStatus: TMenuItem;
-    LieferantenStatusFrm1: TLieferantenStatusFrm;
-    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
     UnippsMenAuswerten: TMenuItem;
     TeileMen: TMenuItem;
     TeileMenUebersicht: TMenuItem;
     StatusMen: TMenuItem;
     StatusMenAnzeigen: TMenuItem;
+    Leklanfordern1: TMenuItem;
+    UnippsMenLAdressen: TMenuItem;
+    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
+    LieferantenStatusFrm1: TLieferantenStatusFrm;
     GesamtStatusFrm1: TGesamtStatusFrm;
     TeileFrm1: TTeileFrm;
-    UnippsMenLAdressen: TMenuItem;
+    LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
+
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HideAllFrames;
@@ -41,6 +44,7 @@ type
     procedure StatusMenAnzeigenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure UnippsMenLAdressenClick(Sender: TObject);
+    procedure Leklanfordern1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -60,6 +64,7 @@ begin
     LieferantenErklaerungenFrm1.Visible:=False;
     GesamtStatusFrm1.Visible:=False;
     TeileFrm1.Visible:=False;
+    LieferantenErklAnfordernFrm1.Visible:=False;
 end;
 
 
@@ -70,16 +75,23 @@ end;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
-//    Tools.init;
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //    Import.BasisImport;
+    HideAllFrames;
+//    LieferantenErklAnfordernFrm1.ShowFrame;
     LieferantenStatusFrm1.ShowFrame;
-    LieferantenErklaerungenFrm1.HideFrame;
 end;
 
 procedure TmainForm.UnippsMenLAdressenClick(Sender: TObject);
 begin
       Import.LieferantenAdressdatenAusUnipps;
+end;
+
+procedure TmainForm.Leklanfordern1Click(Sender: TObject);
+begin
+    HideAllFrames;
+    LieferantenErklAnfordernFrm1.ShowFrame;
+
 end;
 
 procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
