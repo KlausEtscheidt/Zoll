@@ -5,7 +5,7 @@ interface
 uses
 System.SysUtils,  System.Classes, Vcl.Dialogs,
 Data.Win.ADODB,
-Settings, Logger, ADOConnector,QryAccess,QrySQLite ;
+ADOConnector,QryAccess,QrySQLite ;
 
 
 {$IFDEF HOME}
@@ -30,17 +30,35 @@ function GetQuery() : TWQry;
 function GetTable(Tablename : String) : TADOTable;
 
 var
-  Log: TLogFile;
-  ErrLog: TLogFile;
+//  Log: TLogFile;
+//  ErrLog: TLogFile;
+  IsInitialized:Boolean;
   DbConnector:TWADOConnector;
-  ProgDataTable: TADOTable;
+  ApplicationBaseDir: String;
+
+const SQLiteDBFileName: String =
+    '\db\lekl.db';
+const AccessDBFileName: String =
+    '\db\LieferErklaer.accdb';
 
 implementation
 
 procedure init();
 begin
-  Log:=TLogFile.Create();
-  ErrLog:=TLogFile.Create();
+  //Wir wollen das hier nur 1 mal ausführen
+  if IsInitialized then
+    exit;
+  IsInitialized:=True;
+
+   ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
+{$IFNDEF RELEASE}
+  //2 Ebenen hoch, wenn kein Release-Build vorliegt
+   ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
+{$ENDIF}
+
+//  Log:=TLogFile.Create();
+//  ErrLog:=TLogFile.Create();
+
   DbConnector:=TWADOConnector.Create(nil);
   try
    {$IFDEF HOME}
@@ -48,9 +66,9 @@ begin
    {$ELSE}
       {$IFDEF SQLITE}
       //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
-         DbConnector.ConnectToSQLite(SQLiteDBFileName);
+         DbConnector.ConnectToSQLite(ApplicationBaseDir+SQLiteDBFileName);
       {$ELSE}
-         DbConnector.ConnectToAccess(AccessDBFileName);
+         DbConnector.ConnectToAccess(ApplicationBaseDir+AccessDBFileName);
       {$ENDIF}
 
   {$ENDIF}
@@ -61,10 +79,8 @@ begin
        raise;
     end;
 
-
   end;
 
-  ProgDataTable:= GetTable('ProgrammDaten');
 end;
 
 function GetQuery() : TWQry;
@@ -92,5 +108,10 @@ begin
   Tab.Connection := DbConnector.Connection;
   Result:= Tab;
 end;
+
+
+initialization
+
+init();
 
 end.

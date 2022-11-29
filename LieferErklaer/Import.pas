@@ -403,7 +403,7 @@ begin
 end;
 
 initialization
-    Tools.init;
+//    Tools.init;
   // Qry fuer lokale DB anlegen
   LocalQry := Tools.GetQuery;
 
