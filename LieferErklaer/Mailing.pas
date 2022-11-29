@@ -21,11 +21,11 @@ implementation
 function ConnectToOutlook():Boolean;
 begin
    try
-      //create Excel OLE
+      //get Outlook OLE
       OLApp := GetActiveOleObject('Outlook.Application');
    except
      try
-        //create Excel OLE
+        //create Outlook OLE
         OLApp := CreateOleObject('Outlook.Application');
      except
          result:=False;
@@ -91,7 +91,10 @@ begin
   try
     MailItem := OLApp.CreateItem(olMailItem);
     MailItem.BCC := 'Dr.K.Etscheidt@wernert.de';
-    MailItem.Recipients.Add('Klaus.Etscheidt@gmail.com');    MailItem.Recipients.Add(Empfaenger);    MailItem.Subject := MailMusterItem.Subject;    MailItem.Body    := MailMusterItem.Body;
+    MailItem.Recipients.Add('Klaus.Etscheidt@gmail.com');
+    MailItem.Recipients.Add(Empfaenger);
+    MailItem.Subject := MailMusterItem.Subject;
+    MailItem.Body    := MailMusterItem.Body;
     //    MailItem.Send;
     MailItem.Display; //zeigt nur an
   finally

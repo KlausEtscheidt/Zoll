@@ -2,7 +2,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   Left = 0
   Top = 0
   Width = 1099
-  Height = 636
+  Height = 576
   ParentBackground = False
   PopupMenu = PopupMenu1
   TabOrder = 0

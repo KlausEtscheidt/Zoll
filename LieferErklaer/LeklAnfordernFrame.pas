@@ -103,7 +103,7 @@ implementation
 
 {$R *.dfm}
 
-uses mainfrm, Excel, Mailing;
+uses mainfrm, Excel, Mailing, Word;
 
 procedure TLieferantenErklAnfordernFrm.ShowFrame();
 begin
@@ -300,6 +300,7 @@ end;
 
 procedure TLieferantenErklAnfordernFrm.FaxActionExecute(Sender: TObject);
 begin
+  SendeFax();
   UpdateAnfrageDatum;
 end;
 

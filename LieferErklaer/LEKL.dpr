@@ -18,7 +18,8 @@ uses
   LeklAnfordernFrame in 'LeklAnfordernFrame.pas' {LieferantenErklAnfordernFrm: TFrame},
   Excel in 'Excel.pas',
   Mailing in 'Mailing.pas',
-  TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm};
+  TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm},
+  Word in 'Word.pas';
 
 {$R *.res}
 
