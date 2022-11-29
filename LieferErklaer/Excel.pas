@@ -1,9 +1,9 @@
 unit Excel;
 
 interface
-uses System.SysUtils, Vcl.Dialogs,ComObj;
+uses System.SysUtils, Vcl.Dialogs, Tools, ComObj;
 
-procedure FirstTest();
+procedure LieferantenNachExcel(LocalQry: TWQry);
 function StartExcel(Visible:Boolean=True):Boolean;
 
 var
@@ -31,7 +31,17 @@ begin
    result:=True;
 end;
 
-procedure FirstTest();
+procedure LieferantenNachExcel(LocalQry: TWQry);
+begin
+  ShowMessage(IntToStr(LocalQry.RecordCount));
+    while not  LocalQry.Eof do
+    begin
+        LocalQry.Next
+    end;
+
+end;
+
+procedure xxExcel();
 var
   ExcelWorkbook:OleVariant;
 

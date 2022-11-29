@@ -182,6 +182,7 @@ object mainForm: TmainForm
     Width = 1099
     Height = 636
     ParentBackground = False
+    PopupMenu = LieferantenErklAnfordernFrm1.PopupMenu1
     TabOrder = 5
     ExplicitLeft = -5
     inherited GroupBox1: TGroupBox
@@ -255,28 +256,23 @@ object mainForm: TmainForm
         inherited Label6: TLabel
           Margins.Left = 0
           Margins.Top = 3
-          AutoSize = False
         end
         inherited Label4: TLabel
           Margins.Left = 0
-          AutoSize = False
         end
         inherited ortlabel: TLabel
           Top = 72
           Margins.Left = 0
-          AutoSize = False
           ExplicitTop = 64
         end
         inherited Label5: TLabel
           Top = 54
           Margins.Left = 0
-          AutoSize = False
           ExplicitTop = 46
         end
         inherited dummy: TLabel
           Margins.Left = 0
           Margins.Top = 3
-          AutoSize = False
         end
         inherited staatlbl: TLabel
           ExplicitTop = 90

@@ -21,10 +21,7 @@ type
     FilterName: TEdit;
     Label1: TLabel;
     GroupBox3: TGroupBox;
-    DBText2: TDBText;
     Label8: TLabel;
-    Label6: TLabel;
-    DBText1: TDBText;
     LKurznameTxt: TDBText;
     IDLieferantTxt: TDBText;
     TeileBtn: TButton;
@@ -44,6 +41,10 @@ type
     DatumStatusDBText: TDBText;
     DatumTeileDBText: TDBText;
     UnbearbeiteteCheckBox: TCheckBox;
+    Panel3: TPanel;
+    Label6: TLabel;
+    DBText1: TDBText;
+    DBText2: TDBText;
     procedure TeileBtnClick(Sender: TObject);
     procedure ShowFrame();
     procedure HideFrame();

@@ -207,24 +207,10 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    object DBText2: TDBText
-      Left = 76
-      Top = 45
-      Width = 217
-      Height = 17
-      DataField = 'LName2'
-      DataSource = DataSource1
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object Label8: TLabel
-      Left = 311
+      Left = 392
       Top = 28
-      Width = 132
+      Width = 169
       Height = 14
       Caption = 'Lieferantenerkl'#228'rung:'
       Font.Charset = DEFAULT_CHARSET
@@ -234,35 +220,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Style = [fsBold]
       ParentFont = False
     end
-    object Label6: TLabel
-      Left = 13
-      Top = 26
-      Width = 35
-      Height = 14
-      Caption = 'Name:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
-    object DBText1: TDBText
-      Left = 76
-      Top = 26
-      Width = 233
-      Height = 13
-      DataField = 'LName1'
-      DataSource = DataSource1
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object Label10: TLabel
-      Left = 583
+      Left = 655
       Top = 39
       Width = 127
       Height = 14
@@ -303,7 +262,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
     end
     object TeileBtn: TButton
-      Left = 608
+      Left = 688
       Top = 59
       Width = 73
       Height = 25
@@ -313,9 +272,9 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       OnClick = TeileBtnClick
     end
     object Panel1: TPanel
-      Left = 289
+      Left = 392
       Top = 48
-      Width = 121
+      Width = 122
       Height = 89
       BevelOuter = bvNone
       ParentColor = True
@@ -323,7 +282,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object Label3: TLabel
         Left = 0
         Top = 0
-        Width = 121
+        Width = 122
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -342,7 +301,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object Label7: TLabel
         Left = 0
         Top = 18
-        Width = 121
+        Width = 122
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -361,7 +320,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object Label4: TLabel
         Left = 0
         Top = 36
-        Width = 121
+        Width = 122
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -379,9 +338,9 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       end
     end
     object Panel2: TPanel
-      Left = 416
+      Left = 520
       Top = 48
-      Width = 129
+      Width = 89
       Height = 89
       BevelOuter = bvNone
       ParentColor = True
@@ -389,7 +348,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object giltBisDBText: TDBText
         Left = 0
         Top = 0
-        Width = 129
+        Width = 89
         Height = 18
         Align = alTop
         DataField = 'gilt_bis'
@@ -407,7 +366,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object DatumStatusDBText: TDBText
         Left = 0
         Top = 18
-        Width = 129
+        Width = 89
         Height = 18
         Align = alTop
         DataField = 'Stand'
@@ -425,7 +384,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object DatumTeileDBText: TDBText
         Left = 0
         Top = 36
-        Width = 129
+        Width = 89
         Height = 18
         Align = alTop
         DataField = 'StandTeile'
@@ -439,6 +398,79 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         ExplicitLeft = 1
         ExplicitTop = 61
         ExplicitWidth = 183
+      end
+    end
+    object Panel3: TPanel
+      Left = 16
+      Top = 26
+      Width = 325
+      Height = 81
+      BevelOuter = bvNone
+      TabOrder = 3
+      object Label6: TLabel
+        AlignWithMargins = True
+        Left = 0
+        Top = 3
+        Width = 325
+        Height = 18
+        Margins.Left = 0
+        Margins.Right = 0
+        Align = alTop
+        Caption = 'Name:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 0
+        ExplicitWidth = 263
+      end
+      object DBText1: TDBText
+        AlignWithMargins = True
+        Left = 5
+        Top = 25
+        Width = 320
+        Height = 18
+        Margins.Left = 5
+        Margins.Top = 1
+        Margins.Right = 0
+        Margins.Bottom = 1
+        Align = alTop
+        DataField = 'LName1'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitLeft = -5
+        ExplicitTop = 13
+        ExplicitWidth = 271
+      end
+      object DBText2: TDBText
+        AlignWithMargins = True
+        Left = 5
+        Top = 45
+        Width = 320
+        Height = 18
+        Margins.Left = 5
+        Margins.Top = 1
+        Margins.Right = 0
+        Margins.Bottom = 1
+        Align = alTop
+        DataField = 'LName2'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitLeft = 0
+        ExplicitTop = 36
+        ExplicitWidth = 263
       end
     end
   end

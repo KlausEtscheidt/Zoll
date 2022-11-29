@@ -19,7 +19,8 @@ uses
   LeklTeileEingabeFrame in 'LeklTeileEingabeFrame.pas' {LieferantenErklaerungenFrm: TFrame},
   LeklAnfordernFrame in 'LeklAnfordernFrame.pas' {LieferantenErklAnfordernFrm: TFrame},
   Excel in 'Excel.pas',
-  Mailing in 'Mailing.pas';
+  Mailing in 'Mailing.pas',
+  TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm};
 
 {$R *.res}
 
@@ -28,5 +29,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TmainForm, mainForm);
   Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
+  Application.CreateForm(TTeileListeForm, TeileListeForm);
   Application.Run;
 end.
