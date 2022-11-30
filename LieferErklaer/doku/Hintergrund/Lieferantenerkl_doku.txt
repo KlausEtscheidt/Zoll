@@ -1,0 +1,94 @@
+Abfragen
+========
+
+1er
+---
+Abfragen 1a und 1b erstellen Tabelle "Teile_Lieferanten_letzte_Bestellung" 
+mit teilenummer, datum letzte Bestellung, Lieferant. 
+Es werden nur Bestellungen der letzten 5 Jahre berücksichtigt.
+
+Abfragen 1c und 1d erstellt Tabelle "Lieferanten" aus den Lieferanten in "Teile_Lieferanten_letzte_Bestellung"
+Die Tabelle erfasst den Status der Lieferantenerklärungen:
+99 weigert sich
+1 unbekannt, da nicht erfragt
+2 teilebezogen
+3 global, d.h. für alle Teile, die er an uns liefert.
+
+!!! Die 1'er Abfragen löschen den alten Datenbestand
+Die 1'er Abfragen werden im Hauptformular durch den Button "Neustart" gestartet.
+Es wird dabei ein Backup der tabelle lieferanten in lieferanten_bck erzeugt.
+
+2er bis 4er
+-----------
+Reine Hilfs-Abfragen, die keine Daten ändern
+
+5er
+---
+
+Abfragen, die Teile mit globaler Erklärung behandeln
+
+Abfrage 5a erstellt Tabelle "PFK_Teile"
+Dabei werden alle Teile, die nur einen Lieferanten haben, der eine globale Erklärung (Status 3) abgegeben hat,
+in die Tabelle eingetragen.
+
+Abfrage 5b fügt alle Teile an, die mehrere  Lieferanten haben, die alle eine globale Erklärung (Status 3) abgegeben haben.
+
+6er
+---
+Abfragen, die Teile mit teilebezogener Erklärung behandeln
+
+Abfrage 6a erstellt Tabelle "tmp_lekl2_f_manuelle_Klaerung"
+Dabei werden alle Teile, die nur einen Lieferanten haben, der eine teilebezogene Erklärung (Status 2) abgegeben hat,
+in die Tabelle eingetragen.
+
+Abfrage "6b_tmp_tabelle f Teile_lekl2_1_Lieferant mit Benenn" fügt Benennung an.
+
+Abfrage 7 ist nur für Ottensteiner
+Hier werden alle Teile präferenzberechtigt, deren Teilenummern nicht mit E beginnen.
+
+Abfrage 8 fügt alle Teile, die in Tabelle ""tmp_lekl2_f_manuelle_Klaerung" das Feld "pfk" wahr haben,
+an die Tabelle "PFK_Teile" ein, wenn es nur einen Lieferanten gibt.
+
+Hauptformular
+=============
+
+Button "Lieferantenstatus eingeben":
+------------------------------------
+Öffnet frm_Status_Lieferantenerklärung.
+
+
+Button "Speichere Status":
+--------------------------
+Führt Abfragen 5a,5b,6a,6b und 7 aus
+Backup von tmp_lekl2_f_manuelle_Klaerung nach tmp_lekl2_f_manuelle_Klaerung_bck
+
+Button "teilebezogene Eingabe":
+-------------------------------
+Öffnet frm_manuelle_Klaerung
+
+Button "Daten speichern":
+-------------------------
+Führt Abfrage 8 aus
+
+Formular frm_Status_Lieferantenerklärung
+========================================
+Arbeitet direkt auf der Tabelle "Lieferanten" und ändert dort das Feld l_ekl (Status 1,2,3,oder 99)
+
+Formular frm_manuelle_Klaerung
+==============================
+
+Datensatzquelle: "SELECT tmp_lekl2_f_manuelle_Klaerung.lieferant, tmp_lekl2_f_manuelle_Klaerung.kurzname, "
+                  tmp_lekl2_f_manuelle_Klaerung.l_name1, tmp_lekl2_f_manuelle_Klaerung.l_name2 
+                  FROM tmp_lekl2_f_manuelle_Klaerung GROUP BY tmp_lekl2_f_manuelle_Klaerung.lieferant, 
+                  tmp_lekl2_f_manuelle_Klaerung.kurzname, tmp_lekl2_f_manuelle_Klaerung.l_name1, 
+                  tmp_lekl2_f_manuelle_Klaerung.l_name2 ORDER BY kurzname
+
+Das heißt alle Lieferanten (unique) aus Tabelle "tmp_lekl2_f_manuelle_Klaerung", sortiert nach kurzname.
+
+Im Unterformular "manuelle_Klaerung_Unterformular" werden alle Teile des Lieferanten angezeigt.
+Datensatzquelle: "SELECT t_tg_nr, lieferant, letztes_Datum, teile_bezchng, l_best_nr, pfk FROM tmp_lekl2_f_manuelle_Klaerung;"
+
+Es kann gefiltert und sortiert werden, um die Zuordnung UNIPPS zur Lieferantenerklärung zu vereinfachen. 
+Das Flag PFK aus Tabelle "tmp_lekl2_f_manuelle_Klaerung" wird manuell gesetzt oder gelöscht.
+
+

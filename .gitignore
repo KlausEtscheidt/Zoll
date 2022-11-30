@@ -62,12 +62,18 @@ __history/
 __recovery/
 Win32/
 Win64/
+
+#Meine Dirs
 dies und das/csv/
 data/
 doku_alt/
 doku/build
 doku/xml
 doku/output
+LieferErklaer/Brief_u_Fax
+
+#Meine Files
+*.accdb
 
 *.~*
 
