@@ -180,7 +180,7 @@ object mainForm: TmainForm
     Left = -5
     Top = 0
     Width = 1099
-    Height = 636
+    Height = 576
     ParentBackground = False
     PopupMenu = LieferantenErklAnfordernFrm1.PopupMenu1
     TabOrder = 5
@@ -291,6 +291,11 @@ object mainForm: TmainForm
         end
       end
     end
+    inherited ActionList1: TActionList
+      inherited FaxAction: TAction
+        OnExecute = LieferantenErklAnfordernFrm1FaxActionExecute
+      end
+    end
   end
   inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
@@ -397,6 +402,19 @@ object mainForm: TmainForm
     inherited GroupBox3: TGroupBox
       Width = 956
       ExplicitWidth = 956
+      inherited Panel3: TPanel
+        inherited Label6: TLabel
+          Width = 325
+        end
+        inherited DBText1: TDBText
+          Top = 21
+          ExplicitTop = 21
+        end
+        inherited DBText2: TDBText
+          Top = 41
+          ExplicitTop = 41
+        end
+      end
     end
   end
   object MainMenu1: TMainMenu

@@ -46,11 +46,14 @@ type
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
+    procedure LieferantenErklAnfordernFrm1FaxActionExecute(Sender: TObject);
   private
     { Private-Deklarationen }
   public
-    { Public-Deklarationen }
   end;
+
+procedure StatusBarLeft(text:String);
+procedure StatusBar(akt,max: Integer);
 
 var
   mainForm: TmainForm;
@@ -65,6 +68,8 @@ procedure TmainForm.FormShow(Sender: TObject);
 begin
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //    Import.BasisImport;
+//  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
+    StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank);
     HideAllFrames;
     LieferantenErklAnfordernFrm1.ShowFrame;
 //    LieferantenStatusFrm1.ShowFrame;
@@ -86,6 +91,23 @@ begin
   close;
 end;
 
+/// <summary>Ausgabe in linkes panel des Statusbar </summary>
+procedure StatusBarLeft(text:String);
+begin
+  mainForm.StatusBar1.Panels[0].Text := text;
+  mainForm.StatusBar1.Panels[1].Text := '';
+  mainForm.StatusBar1.Update;
+end;
+
+/// <summary>Ausgabe in rechtes panel des Statusbar </summary>
+procedure StatusBar(akt,max: Integer);
+begin
+   mainForm.StatusBar1.Panels[1].Text :=
+          IntToStr(akt) + ' von ' + IntToStr(max);
+   mainForm.StatusBar1.Update;
+end;
+
+
 procedure TmainForm.LieferMenAdressenClick(Sender: TObject);
 begin
       Import.LieferantenAdressdatenAusUnipps;
@@ -101,6 +123,13 @@ end;
 procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
 begin
   LieferantenErklaerungenFrm1.BackBtnClick(Sender);
+
+end;
+
+procedure TmainForm.LieferantenErklAnfordernFrm1FaxActionExecute(
+  Sender: TObject);
+begin
+  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
 
 end;
 
@@ -138,22 +167,27 @@ end;
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 var
   msg:String;
+//  ImportThread:TBasisImport;
 
 begin
   msg := 'Achtung: ' + #13 + #13
-       + 'Dieser Vorgang dauert ca 10 Minuten!'
+       + 'Dieser Vorgang dauert ca 5 Minuten!'
        + #13 + #13
        + 'Er sollte und muss genau EINMAL im Jahr,' + #13
        + 'zu Beginn der Eingabe der Lieferantenerklärungen ausgeführt werden.'
        + #13 + #13 + 'Wollen Sie jetzt Daten aus UNIPPS einlesen ?';
   if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
-    Import.BasisImport;
+    TBasisImport.Create(False);
+  StatusBarLeft('ff');
+//    Import.BasisImport;
 
 end;
 
 //Setze Pfade, Verbinde zur Datenbank etc
 //!! wird sogar noch vor Application.Initialize ausgeführt
+//Hier eigentlich unnötig, da vorher die initialization der Unit Tools
+//ausgeführt wird, die auch Tools.init aufruft
 initialization
-  Tools.init;
+//  Tools.init;
 
 end.

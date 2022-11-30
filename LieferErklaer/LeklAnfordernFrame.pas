@@ -94,8 +94,8 @@ type
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:String;
-    LocalQry: TWQry;
   public
+    LocalQry: TWQry;
   end;
 
 
@@ -103,7 +103,7 @@ implementation
 
 {$R *.dfm}
 
-uses mainfrm, Excel, Mailing;
+uses mainfrm, Excel, Mailing, Word;
 
 procedure TLieferantenErklAnfordernFrm.ShowFrame();
 begin
@@ -300,13 +300,16 @@ end;
 
 procedure TLieferantenErklAnfordernFrm.FaxActionExecute(Sender: TObject);
 begin
-  UpdateAnfrageDatum;
+  //Erstelle und Drucke Fax, vermerke in DB wenn OK
+  if SendeFax(LocalQry.Fields) then
+    UpdateAnfrageDatum;
 end;
 
 procedure TLieferantenErklAnfordernFrm.mailActionExecute(Sender: TObject);
 begin
-  SendeMailAn(LocalQry.FieldByName('email').AsString);
-  UpdateAnfrageDatum;
+  //Erstelle und versende mail, vermerke in DB wenn OK
+  if SendeMailAn(LocalQry.Fields) then
+    UpdateAnfrageDatum;
 end;
 
 
