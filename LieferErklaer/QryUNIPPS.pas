@@ -63,9 +63,14 @@ function TWQryUNIPPS.HoleLieferantenAdressen():Boolean;
 var  sql: String;
 begin
 
-    sql := 'SELECT lieferant.ident_nr as IdLieferant, adresse, kurzname, name1, '
-         + 'name2, name3, name4, strasse, postfach, staat, plz_haus, '
-         + 'plz_postfach, ort, ort_postfach, telefon, telefax, email '
+    sql := 'SELECT lieferant.ident_nr as IdLieferant,adresse, '
+         + 'Trim(kurzname) as kurzname, Trim(name1) as name1, '
+         + 'Trim(name2) as name2, Trim(name3) as name3, Trim(name4) as name4,'
+         + 'Trim(strasse) as strasse, Trim(postfach) as postfach, '
+         + 'Trim(staat) as staat, Trim(plz_haus) as plz_haus, '
+         + 'Trim(plz_postfach) as plz_postfach, Trim(ort) as ort,'
+         + 'Trim(ort_postfach) as ort_postfach, Trim(telefon) as telefon,'
+         + 'trim(telefax) as telefax, Trim(email) as email '
          + 'FROM lieferant '
          + 'INNER JOIN adresse ON lieferant.adresse = adresse.ident_nr;' ;
    Result:= RunSelectQuery(sql);

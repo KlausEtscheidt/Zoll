@@ -167,7 +167,7 @@ end;
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 var
   msg:String;
-  ImportThread:TBasisImport;
+//  ImportThread:TBasisImport;
 
 begin
   msg := 'Achtung: ' + #13 + #13
@@ -177,7 +177,7 @@ begin
        + 'zu Beginn der Eingabe der Lieferantenerklärungen ausgeführt werden.'
        + #13 + #13 + 'Wollen Sie jetzt Daten aus UNIPPS einlesen ?';
   if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
-    ImportThread:=TBasisImport.Create(False);
+    TBasisImport.Create(False);
   StatusBarLeft('ff');
 //    Import.BasisImport;
 
