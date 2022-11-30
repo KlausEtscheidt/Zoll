@@ -148,8 +148,6 @@ var
 
 begin
 
-  Result:=False;
-
   //Verbinde mit Outlook
   OLApp:=ConnectToOutlook ;
 
