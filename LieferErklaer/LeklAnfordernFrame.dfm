@@ -1037,6 +1037,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Caption = 'ExportExcel'
       OnExecute = ExportExcelActionExecute
     end
+    object AnfordDatumResetAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'Anfrage-Datum Reset'
+      OnExecute = AnfordDatumResetActionExecute
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 432
@@ -1045,9 +1050,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Action = TeileAnzeigeAction
       Caption = 'Teile Anzeige'
     end
-    object ListenExcel1: TMenuItem
+    object ListenExcelMen: TMenuItem
       Action = ExportExcelAction
       Caption = 'Excel-Export'
+    end
+    object AnforderungResetMen: TMenuItem
+      Action = AnfordDatumResetAction
     end
   end
 end

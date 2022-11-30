@@ -62,7 +62,7 @@ begin
   DbConnector:=TWADOConnector.Create(nil);
   try
    {$IFDEF HOME}
-   DbConnector.ConnectToSQLite(SQLiteDBFileName);
+   DbConnector.ConnectToSQLite(ApplicationBaseDir+SQLiteDBFileName);
    {$ELSE}
       {$IFDEF SQLITE}
       //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen

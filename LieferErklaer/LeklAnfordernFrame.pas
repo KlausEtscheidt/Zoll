@@ -77,8 +77,10 @@ type
     TeileAnzeigeMen: TMenuItem;
     TeileAnzeigeAction: TAction;
     ExportExcelAction: TAction;
-    ListenExcel1: TMenuItem;
+    ListenExcelMen: TMenuItem;
     Label13: TLabel;
+    AnforderungResetMen: TMenuItem;
+    AnfordDatumResetAction: TAction;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -87,9 +89,10 @@ type
     procedure StatusUpdateActionExecute(Sender: TObject);
     procedure mailActionExecute(Sender: TObject);
     procedure FaxActionExecute(Sender: TObject);
-    procedure UpdateAnfrageDatum;
+    procedure UpdateAnfrageDatum(Reset:Boolean=False);
     procedure TeileAnzeigeActionExecute(Sender: TObject);
     procedure ExportExcelActionExecute(Sender: TObject);
+    procedure AnfordDatumResetActionExecute(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -123,15 +126,21 @@ begin
   Self.Visible := False;
 end;
 
-procedure TLieferantenErklAnfordernFrm.UpdateAnfrageDatum;
+procedure TLieferantenErklAnfordernFrm.UpdateAnfrageDatum(Reset:Boolean=False);
 var
   letzteAnfrage:string;
   IdLieferant: Integer;
   UpdateQry:TWQry;
   BM:TBookmark;
+  var Datum: TDateTime;
 begin
+    //heute
+    Datum:=Date;
+    //Datum ein Jahr zurücksetzen
+    if Reset then
+      Datum:=IncYear(Datum,-1);
     // Datenstand ist heute
-    letzteAnfrage := FormatDateTime('YYYY-MM-DD', Date);
+    letzteAnfrage := FormatDateTime('YYYY-MM-DD', Datum);
     // Id des Lieferanen aus Basis-Abfrage
     IdLieferant := LocalQry.FieldByName('IdLieferant').AsInteger;
     // --- Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
@@ -281,6 +290,12 @@ begin
   FilterKurzname.Text := '';
   FilterName.Text := '';
   FilterUpdateActionExecute(Sender);
+end;
+
+procedure TLieferantenErklAnfordernFrm.AnfordDatumResetActionExecute(
+  Sender: TObject);
+begin
+  UpdateAnfrageDatum(True);
 end;
 
 procedure TLieferantenErklAnfordernFrm.ExportExcelActionExecute(
