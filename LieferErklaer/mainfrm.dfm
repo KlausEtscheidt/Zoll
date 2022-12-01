@@ -20,160 +20,128 @@ object mainForm: TmainForm
     612)
   PixelsPerInch = 96
   TextHeight = 13
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 593
-    Width = 1094
-    Height = 19
-    Panels = <
-      item
-        Text = 'Hallo'
-        Width = 270
-      end
-      item
-        Width = 50
-      end>
-  end
-  inline GesamtStatusFrm1: TGesamtStatusFrm
-    Left = 26
-    Top = 125
-    Width = 260
-    Height = 231
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    AutoSize = True
-    TabOrder = 3
-    Visible = False
-    ExplicitLeft = 26
-    ExplicitTop = 125
-    ExplicitWidth = 260
-    ExplicitHeight = 231
-    inherited Label1: TLabel
-      Left = 0
-      Top = 0
-      ExplicitLeft = 0
-      ExplicitTop = 0
-    end
-  end
-  inline TeileFrm1: TTeileFrm
-    Left = 524
-    Top = 475
-    Width = 403
-    Height = 72
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    AutoSize = True
-    TabOrder = 4
-    Visible = False
-    ExplicitLeft = 524
-    ExplicitTop = 475
-    ExplicitWidth = 403
-    ExplicitHeight = 72
-  end
-  inline LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm
+  inline LieferantenStatusFrm1: TLieferantenStatusFrm
     Left = 0
     Top = 0
     Width = 1094
     Height = 593
     Align = alClient
-    TabOrder = 2
-    Visible = False
+    ParentBackground = False
+    TabOrder = 0
     ExplicitWidth = 1094
     ExplicitHeight = 593
-    inherited Label1: TLabel
-      Left = 10
-      Top = 7
-      ExplicitLeft = 10
-      ExplicitTop = 7
+    inherited GroupBox1: TGroupBox
+      Width = 828
+      ExplicitWidth = 828
+      inherited Label2: TLabel
+        Left = 18
+        Top = 23
+        ExplicitLeft = 18
+        ExplicitTop = 23
+      end
+      inherited Label1: TLabel
+        Left = 215
+        Top = 23
+        ExplicitLeft = 215
+        ExplicitTop = 23
+      end
+      inherited FilterKurzname: TEdit
+        Left = 87
+        Top = 19
+        ExplicitLeft = 87
+        ExplicitTop = 19
+      end
+      inherited FilterName: TEdit
+        Left = 254
+        Top = 19
+        ExplicitLeft = 254
+        ExplicitTop = 19
+      end
+      inherited FilterAusBtn: TButton
+        Left = 438
+        Top = 18
+        ExplicitLeft = 438
+        ExplicitTop = 18
+      end
+      inherited LeklUpdatedChkBox: TCheckBox
+        Left = 514
+        Top = 18
+        ExplicitLeft = 514
+        ExplicitTop = 18
+      end
+      inherited UnbearbeiteteCheckBox: TCheckBox
+        Left = 653
+        Top = 18
+        Width = 140
+        ExplicitLeft = 653
+        ExplicitTop = 18
+        ExplicitWidth = 140
+      end
     end
-    inherited LKurznameLbl: TLabel
-      Left = 90
-      Top = 12
-      ExplicitLeft = 90
-      ExplicitTop = 12
+    inherited GroupBox2: TGroupBox
+      Width = 828
+      Height = 263
+      ExplicitWidth = 828
+      ExplicitHeight = 263
+      inherited DBGrid1: TDBGrid
+        Left = 87
+        Top = 22
+        Width = 594
+        Height = 220
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'LKurzname'
+            Title.Caption = 'Kurzname'
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'LName1'
+            Title.Caption = 'Name1'
+            Width = 240
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'gilt_bis'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'Stand'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'StandTeile'
+            Width = 70
+            Visible = True
+          end>
+      end
     end
-    inherited IdLieferantLbl: TLabel
-      Left = 178
-      Top = 12
-      ExplicitLeft = 178
-      ExplicitTop = 12
-    end
-    inherited LabelSort: TLabel
-      Left = 14
-      Top = 30
-      ExplicitLeft = 14
-      ExplicitTop = 30
-    end
-    inherited LabelFiltern: TLabel
-      Left = 14
-      Top = 83
-      ExplicitLeft = 14
-      ExplicitTop = 83
-    end
-    inherited DBCtrlGrid1: TDBCtrlGrid
-      Left = 11
-      Height = 350
-      PanelHeight = 43
-      ExplicitLeft = 11
-      ExplicitHeight = 350
-    end
-    inherited BackBtn: TButton
-      Left = 270
-      Top = 535
-      Height = 29
-      OnClick = LieferantenErklaerungenFrm1Button1Click
-      ExplicitLeft = 270
-      ExplicitTop = 535
-      ExplicitHeight = 29
-    end
-    inherited SortLTeileNrBtn: TButton
-      Left = 372
-      Top = 52
-      ExplicitLeft = 372
-      ExplicitTop = 52
-    end
-    inherited SortTeilenrBtn: TButton
-      Left = 23
-      Top = 52
-      ExplicitLeft = 23
-      ExplicitTop = 52
-    end
-    inherited SortLTNameBtn: TButton
-      Left = 174
-      Top = 52
-      ExplicitLeft = 174
-      ExplicitTop = 52
-    end
-    inherited FilterTeileNr: TEdit
-      Left = 22
-      Top = 104
-      ExplicitLeft = 22
-      ExplicitTop = 104
-    end
-    inherited FilterTName1: TEdit
-      Left = 173
-      Top = 104
-      ExplicitLeft = 173
-      ExplicitTop = 104
-    end
-    inherited FilterLTeileNr: TEdit
-      Left = 372
-      Top = 104
-      Width = 106
-      ExplicitLeft = 372
-      ExplicitTop = 104
-      ExplicitWidth = 106
-    end
-    inherited FilterTName2: TEdit
-      Left = 173
-      Top = 131
-      ExplicitLeft = 173
-      ExplicitTop = 131
-    end
-    inherited FilterOffBtn: TButton
-      Left = 503
-      Top = 100
-      DisabledImages = LieferantenErklaerungenFrm1.ImageList1
-      ExplicitLeft = 503
-      ExplicitTop = 100
+    inherited GroupBox3: TGroupBox
+      Width = 828
+      ExplicitWidth = 828
+      inherited Panel3: TPanel
+        inherited Label6: TLabel
+          Width = 325
+        end
+        inherited DBText1: TDBText
+          ExplicitTop = 21
+        end
+        inherited DBText2: TDBText
+          ExplicitTop = 41
+        end
+      end
     end
   end
   inline LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm
@@ -183,11 +151,13 @@ object mainForm: TmainForm
     Height = 576
     ParentBackground = False
     PopupMenu = LieferantenErklAnfordernFrm1.PopupMenu1
-    TabOrder = 5
+    TabOrder = 4
     ExplicitLeft = -5
     inherited GroupBox1: TGroupBox
-      Left = 10
-      ExplicitLeft = 10
+      Left = 3
+      Top = 37
+      ExplicitLeft = 3
+      ExplicitTop = 37
     end
     inherited GroupBox2: TGroupBox
       Left = 10
@@ -291,131 +261,54 @@ object mainForm: TmainForm
         end
       end
     end
-    inherited ActionList1: TActionList
-      inherited FaxAction: TAction
-        OnExecute = LieferantenErklAnfordernFrm1FaxActionExecute
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 593
+    Width = 1094
+    Height = 19
+    Panels = <
+      item
+        Text = 'Hallo'
+        Width = 270
       end
+      item
+        Width = 50
+      end>
+  end
+  inline GesamtStatusFrm1: TGesamtStatusFrm
+    Left = 26
+    Top = 125
+    Width = 260
+    Height = 231
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = True
+    TabOrder = 1
+    Visible = False
+    ExplicitLeft = 26
+    ExplicitTop = 125
+    ExplicitWidth = 260
+    ExplicitHeight = 231
+    inherited Label1: TLabel
+      Left = 0
+      Top = 0
+      ExplicitLeft = 0
+      ExplicitTop = 0
     end
   end
-  inline LieferantenStatusFrm1: TLieferantenStatusFrm
-    Left = 0
-    Top = 0
-    Width = 1094
-    Height = 593
-    Align = alClient
-    ParentBackground = False
-    TabOrder = 1
-    ExplicitWidth = 1094
-    ExplicitHeight = 593
-    inherited GroupBox1: TGroupBox
-      Width = 956
-      ExplicitWidth = 956
-      inherited Label2: TLabel
-        Left = 18
-        Top = 23
-        ExplicitLeft = 18
-        ExplicitTop = 23
-      end
-      inherited Label1: TLabel
-        Left = 215
-        Top = 23
-        ExplicitLeft = 215
-        ExplicitTop = 23
-      end
-      inherited FilterKurzname: TEdit
-        Left = 87
-        Top = 19
-        ExplicitLeft = 87
-        ExplicitTop = 19
-      end
-      inherited FilterName: TEdit
-        Left = 254
-        Top = 19
-        ExplicitLeft = 254
-        ExplicitTop = 19
-      end
-      inherited FilterAusBtn: TButton
-        Left = 438
-        Top = 18
-        ExplicitLeft = 438
-        ExplicitTop = 18
-      end
-      inherited LeklUpdatedChkBox: TCheckBox
-        Left = 514
-        Top = 18
-        ExplicitLeft = 514
-        ExplicitTop = 18
-      end
-      inherited UnbearbeiteteCheckBox: TCheckBox
-        Left = 653
-        Top = 18
-        Width = 140
-        ExplicitLeft = 653
-        ExplicitTop = 18
-        ExplicitWidth = 140
-      end
-    end
-    inherited GroupBox2: TGroupBox
-      Width = 956
-      Height = 263
-      ExplicitWidth = 956
-      ExplicitHeight = 263
-      inherited DBGrid1: TDBGrid
-        Width = 691
-        Height = 220
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'LKurzname'
-            Title.Caption = 'Kurzname'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'LName1'
-            Title.Caption = 'Name1'
-            Width = 240
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'gilt_bis'
-            Title.Alignment = taCenter
-            Width = 70
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'Stand'
-            Title.Alignment = taCenter
-            Width = 70
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'StandTeile'
-            Visible = True
-          end>
-      end
-    end
-    inherited GroupBox3: TGroupBox
-      Width = 956
-      ExplicitWidth = 956
-      inherited Panel3: TPanel
-        inherited Label6: TLabel
-          Width = 325
-        end
-        inherited DBText1: TDBText
-          Top = 21
-          ExplicitTop = 21
-        end
-        inherited DBText2: TDBText
-          Top = 41
-          ExplicitTop = 41
-        end
-      end
-    end
+  inline TeileFrm1: TTeileFrm
+    Left = 524
+    Top = 475
+    Width = 403
+    Height = 72
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = True
+    TabOrder = 2
+    Visible = False
+    ExplicitLeft = 524
+    ExplicitTop = 475
+    ExplicitWidth = 403
+    ExplicitHeight = 72
   end
   object MainMenu1: TMainMenu
     Left = 488

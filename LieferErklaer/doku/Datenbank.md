@@ -6,7 +6,7 @@ Bestellungen
 
 UNIPPS-Bestellungen seit xxxx
 
-Datenbasis für alle anderen Tabellen, wird aber vom Programm ansonten nicht benutzt.
+Datenbasis für alle anderen Tabellen, wird aber vom Programm ansonsten nicht benutzt.
 
 Eindeutige Kombination aus IdLieferant, TeileNr.
 Zusatzinfo zu Lieferant: Kurzname,LName1,LName2.

@@ -76,19 +76,17 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     object PumpenTeileChkBox: TCheckBox
       Left = 527
       Top = 14
-      Width = 162
+      Width = 98
       Height = 25
-      Caption = 'nur Lief. v. Pumpenteilen'
-      Checked = True
+      Action = FilterUpdateAction
+      Caption = 'Pumpenteile'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      State = cbChecked
       TabOrder = 2
-      OnClick = FilterUpdateActionExecute
     end
     object FilterAusBtn: TButton
       Left = 487
@@ -105,10 +103,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       OnClick = FilterAusBtnClick
     end
     object AbgelaufenChkBox: TCheckBox
-      Left = 711
+      Left = 719
       Top = 14
-      Width = 114
+      Width = 90
       Height = 25
+      Action = FilterUpdateAction
       Caption = 'abgelaufene'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -117,13 +116,13 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnClick = AbgelaufenChkBoxClick
     end
     object ohneAnfrageChkBox: TCheckBox
-      Left = 849
+      Left = 815
       Top = 14
-      Width = 152
+      Width = 115
       Height = 25
+      Action = FilterUpdateAction
       Caption = 'nicht aufgefordert'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -132,7 +131,21 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Style = []
       ParentFont = False
       TabOrder = 5
-      OnClick = FilterUpdateActionExecute
+    end
+    object ErsatzTeileChkBox: TCheckBox
+      Left = 631
+      Top = 14
+      Width = 82
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'Ersatzteile'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
     end
   end
   object GroupBox2: TGroupBox
@@ -1016,14 +1029,17 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Left = 472
     Top = 240
     object mailAction: TAction
+      Category = 'Button'
       Caption = 'mail'
       OnExecute = mailActionExecute
     end
     object FaxAction: TAction
+      Category = 'Button'
       Caption = 'Fax'
       OnExecute = FaxActionExecute
     end
     object StatusUpdateAction: TAction
+      Category = 'Button'
       Caption = 'Status'
       OnExecute = StatusUpdateActionExecute
     end
@@ -1041,6 +1057,10 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Category = 'PopUpMen'
       Caption = 'Anfrage-Datum Reset'
       OnExecute = AnfordDatumResetActionExecute
+    end
+    object FilterUpdateAction: TAction
+      Caption = 'FilterUpdate'
+      OnExecute = FilterUpdateActionExecute
     end
   end
   object PopupMenu1: TPopupMenu

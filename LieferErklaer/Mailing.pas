@@ -18,6 +18,10 @@ const
   olFolderInbox = 6; //Posteingang
   olFolderDrafts = 16; //Entwürfe
   olDiscard=1; //Close ohne Save
+  WindowStateNormal = 0;
+  WindowStateMax = 1;
+  WindowStateMin = 2;
+
 
 implementation
 
@@ -166,23 +170,26 @@ begin
 //    MailItem.Recipients.Add(Empfaenger);
     MailItem.Subject := MailMusterItem.Subject;
     MailItem.Body    := MailMusterItem.Body;
-    //    MailItem.Send;
     MailItem.Display; //zeigt nur an
-  finally
-//    myAttachments := VarNull;
-    OLApp    := VarNull;
-  end;
 
   //Outlook in Vordergrund holen, Delphi klein machen
   AlteBreite:=mainfrm.mainForm.width;
   mainfrm.mainForm.width:=10;
+  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+  OLApp.ActiveWindow.WindowState:=WindowStateMin;
 
   //Nachfragen ob Mail ok
   OK:=MailingOK(MailItem);
 
+  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+  OLApp.ActiveWindow.WindowState:=WindowStateMin;
   mainfrm.mainForm.width:=AlteBreite;
 
   Result:=OK;
+
+  finally
+    OLApp    := VarNull;
+  end;
 
 end;
 

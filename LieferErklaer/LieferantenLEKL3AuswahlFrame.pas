@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.DateUtils, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
-  Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,datenmodul,
+  Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,
   LieferantenStatusDlg, Tools, Vcl.Mask, System.ImageList, Vcl.ImgList,
   Vcl.Buttons, System.Actions, Vcl.ActnList, Vcl.ExtCtrls;
 
@@ -59,6 +59,7 @@ type
     //Ab wievielen Tagen gilt ein Status als veraltet (Eingabe vom Vorjahr)
     veraltet:String;
     LocalQry: TWQry;
+    procedure FormRequery;
   public
   end;
 
@@ -67,7 +68,7 @@ implementation
 
 {$R *.dfm}
 
-uses mainfrm;
+uses mainfrm, LeklTeileEingabeDlg;
 
 procedure TLieferantenStatusFrm.ShowFrame();
 begin
@@ -91,18 +92,40 @@ begin
 end;
 
 procedure TLieferantenStatusFrm.TeileBtnClick(Sender: TObject);
+const
+  msg='Ist die Bearbeitung dieses Lieferanten abgeschlossen ?'+ #13+ #13 +
+      'Nein, wenn später weiter gearbeitet werden soll.';
+var
+  IdL:Integer   ;
+  KName :String;
 begin
-    mainForm.LieferantenErklaerungenFrm1.IdLieferant
-      :=  LocalQry.FieldByName('IdLieferant').AsInteger;
-    mainForm.LieferantenErklaerungenFrm1.IdLieferantLbl.Caption
-      := IntToStr(mainForm.LieferantenErklaerungenFrm1.IdLieferant);
-    mainForm.LieferantenErklaerungenFrm1.LKurznameLbl.Caption
-      :=  LocalQry.FieldByName('LKurzname').AsString;
+    IdL :=  LocalQry.FieldByName('IdLieferant').AsInteger;
+    KName :=  LocalQry.FieldByName('LKurzname').AsString;
 
-    mainForm.LieferantenStatusFrm1.Visible := False;
-    mainForm.LieferantenErklaerungenFrm1.ShowFrame(
-                                    mainForm.LieferantenStatusFrm1);
+    with LeklTeileEingabeDialog.LieferantenErklaerungenFrm1 do
+    begin
+      var bla:string;
+      IdLieferant :=  IdL;
+      IdLieferantLbl.Caption
+        := IntToStr(IdL);
+      LKurznameLbl.Caption :=  KName;
+     end;
 
+    //User fragen, ob Lieferant fertig bearbeitet
+    LeklTeileEingabeDialog.ShowModal;
+
+    //Stand aktualisieren, wenn Flags geändert wurden
+    if LeklTeileEingabeDialog.LieferantenErklaerungenFrm1.DatenGeaendert then
+        if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+          begin
+            // Datum 'StandTeile' erneuern
+            LocalQry.Edit;
+            LocalQry.FieldByName('StandTeile').AsString:=
+                           FormatDateTime('YYYY-MM-DD', Date);
+            LocalQry.Post;
+            //Abfrage erneuern, damit Filter wirken
+            FormRequery;
+          end;
 end;
 
 procedure TLieferantenStatusFrm.DataSource1DataChange(Sender: TObject;
@@ -161,6 +184,18 @@ begin
 
     GroupBox2.Caption:= 'gefiltert '
                    + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
+end;
+
+procedure TLieferantenStatusFrm.FormRequery;
+var
+  BM:TBookmark;
+begin
+  // akt. Datensatz merken
+  BM := LocalQry.GetBookmark;
+  // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
+  LocalQry.Requery();
+  // Gehe auf ursp�nglichen Datensatz
+  LocalQry.GotoBookmark(BM);
 end;
 
 procedure TLieferantenStatusFrm.LeklUpdatedChkBoxClick(Sender: TObject);

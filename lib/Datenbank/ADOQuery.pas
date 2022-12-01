@@ -55,8 +55,8 @@ interface
       function InsertFields(tablename: String; myFields:TFields):Boolean;
 
       function GetFieldValuesAsText(): String;
-//      function GetFieldNames(): System.TArray<String>;reintroduce;
-//      function GetFieldNamesAsText(): String;
+      function GetFieldNames(): System.TArray<String>;reintroduce;
+      function GetFieldNamesAsText(): String;
 
       /// <summary>Objekt, welches Datenbankverbindung hält.  </summary>
       property Connector:TWADOConnector write SetConnector;
@@ -280,7 +280,6 @@ begin
 end;
 
 ///<summary>Liefert alle FeldNamen einer Abfrage als CSV-String.</summary>
-{
 function TWADOQuery.GetFieldNamesAsText(): String;
 var
   Werte : System.TArray<String>;
@@ -306,7 +305,7 @@ begin
      Self.Fields.GetFieldNames(Names);
      Result:=Names.ToStringArray;
 end;
-}
+
 
 //-----------------------------------------------------------
 //Helper

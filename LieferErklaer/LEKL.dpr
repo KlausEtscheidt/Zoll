@@ -19,7 +19,8 @@ uses
   Excel in 'Excel.pas',
   Mailing in 'Mailing.pas',
   TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm},
-  Word in 'Word.pas';
+  Word in 'Word.pas',
+  LeklTeileEingabeDlg in 'LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog};
 
 {$R *.res}
 
@@ -29,5 +30,6 @@ begin
   Application.CreateForm(TmainForm, mainForm);
   Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
   Application.CreateForm(TTeileListeForm, TeileListeForm);
+  Application.CreateForm(TLeklTeileEingabeDialog, LeklTeileEingabeDialog);
   Application.Run;
 end.

@@ -19,7 +19,6 @@ type
     TName2: TDBText;
     LTeileNr: TDBText;
     DataSource1: TDataSource;
-    BackBtn: TButton;
     Label1: TLabel;
     LKurznameLbl: TLabel;
     IdLieferantLbl: TLabel;
@@ -34,7 +33,6 @@ type
     FilterTName2: TEdit;
     FilterOffBtn: TButton;
     ImageList1: TImageList;
-    procedure BackBtnClick(Sender: TObject);
     procedure SortLTeileNrBtnClick(Sender: TObject);
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
@@ -46,14 +44,13 @@ type
     procedure FilterOffBtnClick(Sender: TObject);
   private
     { Private-Deklarationen }
-    OldFrame: TFrame;
-    DatenGeaendert:Boolean;
 
   public
     LocalQry: TWQry;
     LErklaerungenTab: TADOTable;
     IdLieferant: Integer;
-    procedure ShowFrame(myOldFrame: TFrame);
+    DatenGeaendert:Boolean;
+    procedure Init;
     procedure HideFrame();
     procedure FilterUpdate();
 
@@ -63,15 +60,13 @@ implementation
 
 {$R *.dfm}
 
-procedure TLieferantenErklaerungenFrm.ShowFrame(myOldFrame: TFrame);
+procedure TLieferantenErklaerungenFrm.Init;
 
 begin
-    OldFrame := myOldFrame;
     LocalQry := Tools.GetQuery;
     LocalQry.HoleLErklaerungen(IdLieferant);
     DataSource1.DataSet := LocalQry;
     DatenGeaendert:=False;
-    Self.Visible := True;
 end;
 
 procedure TLieferantenErklaerungenFrm.SortLTeileNrBtnClick(Sender: TObject);
@@ -89,27 +84,6 @@ begin
    LocalQry.Sort := 'TName1,TName2';
 end;
 
-procedure TLieferantenErklaerungenFrm.BackBtnClick(Sender: TObject);
-const
-  msg='Ist die Eingabe abgeschlossen ?'+ #13+ #13 +
-      'Nein, wenn später weiter gearbeitet werden soll.';
-
-begin
-    Self.HideFrame;
-    //Stand aktualisieren, wenn Flags geändert wurden
-    if DatenGeaendert then
-        if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
-          begin
-            // Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
-            // Datenstand ist heute
-            LocalQry.UpdateLieferantStandTeile(IdLieferant,
-                           FormatDateTime('YYYY-MM-DD', Date));
-          end;
-
-    OldFrame.Visible := True;
-
-
-end;
 
 procedure TLieferantenErklaerungenFrm.HideFrame();
 begin

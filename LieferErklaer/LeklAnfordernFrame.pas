@@ -81,6 +81,8 @@ type
     Label13: TLabel;
     AnforderungResetMen: TMenuItem;
     AnfordDatumResetAction: TAction;
+    ErsatzTeileChkBox: TCheckBox;
+    FilterUpdateAction: TAction;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -240,6 +242,14 @@ begin
       FilterStr := 'Pumpenteile=-1';
     end;
 
+    if ErsatzTeileChkBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'Ersatzteile=-1' ;
+    end;
+
     if AbgelaufenChkBox.State = cbChecked then
     begin
       if filtern then
@@ -262,7 +272,7 @@ begin
       if filtern then
         FilterStr := FilterStr + ' AND ' ;
       filtern := True;
-      FilterStr := FilterStr + 'LName1 Like ''%' + FilterName.Text + '%''';
+      FilterStr := FilterStr + 'name1 Like ''%' + FilterName.Text + '%''';
     end;
 
     if length(FilterKurzname.Text)>0 then

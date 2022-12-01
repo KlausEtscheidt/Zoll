@@ -173,23 +173,29 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         item
           Expanded = False
           FieldName = 'LName1'
-          Title.Caption = 'Name1'
+          Title.Caption = 'Name'
           Width = 220
           Visible = True
         end
         item
+          Alignment = taCenter
           Expanded = False
           FieldName = 'gilt_bis'
+          Width = 70
           Visible = True
         end
         item
+          Alignment = taCenter
           Expanded = False
           FieldName = 'Stand'
+          Width = 70
           Visible = True
         end
         item
+          Alignment = taCenter
           Expanded = False
           FieldName = 'StandTeile'
+          Width = 70
           Visible = True
         end>
     end
@@ -210,7 +216,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     object Label8: TLabel
       Left = 392
       Top = 28
-      Width = 169
+      Width = 132
       Height = 14
       Caption = 'Lieferantenerkl'#228'rung:'
       Font.Charset = DEFAULT_CHARSET
@@ -412,7 +418,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Left = 0
         Top = 3
         Width = 325
-        Height = 18
+        Height = 14
         Margins.Left = 0
         Margins.Right = 0
         Align = alTop
@@ -423,13 +429,12 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitTop = 0
-        ExplicitWidth = 263
+        ExplicitWidth = 35
       end
       object DBText1: TDBText
         AlignWithMargins = True
         Left = 5
-        Top = 25
+        Top = 21
         Width = 320
         Height = 18
         Margins.Left = 5
@@ -452,7 +457,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       object DBText2: TDBText
         AlignWithMargins = True
         Left = 5
-        Top = 45
+        Top = 41
         Width = 320
         Height = 18
         Margins.Left = 5

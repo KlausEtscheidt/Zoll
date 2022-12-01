@@ -3,6 +3,9 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   Top = 0
   Width = 719
   Height = 535
+  Color = clBtnFace
+  ParentBackground = False
+  ParentColor = False
   TabOrder = 0
   Visible = False
   object Label1: TLabel
@@ -116,22 +119,13 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
       OnClick = PFKChkBoxClick
     end
   end
-  object BackBtn: TButton
-    Left = 272
-    Top = 507
-    Width = 105
-    Height = 25
-    Caption = 'Zur'#252'ck'
-    TabOrder = 1
-    OnClick = BackBtnClick
-  end
   object SortLTeileNrBtn: TButton
     Left = 375
     Top = 55
     Width = 65
     Height = 25
     Caption = 'LTeilenr'
-    TabOrder = 2
+    TabOrder = 1
     OnClick = SortLTeileNrBtnClick
   end
   object SortTeilenrBtn: TButton
@@ -140,7 +134,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Width = 65
     Height = 25
     Caption = 'Teilenr'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = SortTeilenrBtnClick
   end
   object SortLTNameBtn: TButton
@@ -149,7 +143,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Width = 65
     Height = 25
     Caption = 'Teil-Name1'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = SortLTNameBtnClick
   end
   object FilterTeileNr: TEdit
@@ -157,7 +151,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 110
     Width = 121
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
     OnChange = FilterTeileNrChange
   end
   object FilterTName1: TEdit
@@ -165,7 +159,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 110
     Width = 113
     Height = 21
-    TabOrder = 6
+    TabOrder = 5
     OnChange = FilterTName1Change
   end
   object FilterLTeileNr: TEdit
@@ -173,7 +167,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 110
     Width = 81
     Height = 21
-    TabOrder = 7
+    TabOrder = 6
     OnChange = FilterLTeileNrChange
   end
   object FilterTName2: TEdit
@@ -181,7 +175,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Top = 137
     Width = 113
     Height = 21
-    TabOrder = 8
+    TabOrder = 7
     OnChange = FilterTName2Change
   end
   object FilterOffBtn: TButton
@@ -195,7 +189,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     ImageMargins.Left = 2
     ImageMargins.Top = 2
     Images = ImageList1
-    TabOrder = 9
+    TabOrder = 8
     OnClick = FilterOffBtnClick
   end
   object DataSource1: TDataSource

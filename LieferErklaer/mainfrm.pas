@@ -28,7 +28,6 @@ type
     StatusMenAnzeigen: TMenuItem;
     LieferMenErklaerAnfordern: TMenuItem;
     LieferMenAdressen: TMenuItem;
-    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
     LieferantenStatusFrm1: TLieferantenStatusFrm;
     GesamtStatusFrm1: TGesamtStatusFrm;
     TeileFrm1: TTeileFrm;
@@ -39,14 +38,14 @@ type
     procedure HideAllFrames;
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LTeileMenStatusClick(Sender: TObject);
-    procedure LMenErklaerClick(Sender: TObject);
-    procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
+//    procedure LMenErklaerClick(Sender: TObject);
+//    procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
     procedure UnippsMenAuswertenClick(Sender: TObject);
     procedure StatusMenAnzeigenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
-    procedure LieferantenErklAnfordernFrm1FaxActionExecute(Sender: TObject);
+//    procedure LieferantenErklAnfordernFrm1FaxActionExecute(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -79,7 +78,6 @@ end;
 procedure TmainForm.HideAllFrames;
 begin
     LieferantenStatusFrm1.Visible:=False;
-    LieferantenErklaerungenFrm1.Visible:=False;
     GesamtStatusFrm1.Visible:=False;
     TeileFrm1.Visible:=False;
     LieferantenErklAnfordernFrm1.Visible:=False;
@@ -120,24 +118,18 @@ begin
 
 end;
 
-procedure TmainForm.LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
-begin
-  LieferantenErklaerungenFrm1.BackBtnClick(Sender);
+//procedure TmainForm.LieferantenErklAnfordernFrm1FaxActionExecute(
+//  Sender: TObject);
+//begin
+//  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
+//
+//end;
 
-end;
-
-procedure TmainForm.LieferantenErklAnfordernFrm1FaxActionExecute(
-  Sender: TObject);
-begin
-  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
-
-end;
-
-procedure TmainForm.LMenErklaerClick(Sender: TObject);
-begin
-    LieferantenStatusFrm1.HideFrame;
-    LieferantenErklaerungenFrm1.Visible := True;
-end;
+//procedure TmainForm.LMenErklaerClick(Sender: TObject);
+//begin
+//    LieferantenStatusFrm1.HideFrame;
+////    LieferantenErklaerungenFrm1.Visible := True;
+//end;
 
 procedure TmainForm.StatusMenAnzeigenClick(Sender: TObject);
 begin
@@ -156,7 +148,6 @@ procedure TmainForm.LTeileMenStatusClick(Sender: TObject);
 begin
     HideAllFrames;
     LieferantenStatusFrm1.ShowFrame;
-    LieferantenErklaerungenFrm1.HideFrame;
 end;
 
 procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);
@@ -167,7 +158,6 @@ end;
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 var
   msg:String;
-//  ImportThread:TBasisImport;
 
 begin
   msg := 'Achtung: ' + #13 + #13
@@ -178,8 +168,6 @@ begin
        + #13 + #13 + 'Wollen Sie jetzt Daten aus UNIPPS einlesen ?';
   if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
     TBasisImport.Create(False);
-  StatusBarLeft('ff');
-//    Import.BasisImport;
 
 end;
 
