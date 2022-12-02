@@ -2,7 +2,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   Left = 0
   Top = 0
   Caption = 'Lieferanten-Status'
-  ClientHeight = 299
+  ClientHeight = 343
   ClientWidth = 635
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   TextHeight = 13
   object Label1: TLabel
     Left = 24
-    Top = 112
+    Top = 128
     Width = 60
     Height = 18
     Caption = 'g'#252'ltig bis:'
@@ -49,10 +49,10 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   end
   object Label3: TLabel
     Left = 24
-    Top = 168
+    Top = 200
     Width = 82
     Height = 18
-    Caption = 'Kommnetar:'
+    Caption = 'Kommentar:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -61,8 +61,8 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     ParentFont = False
   end
   object OKBtn: TButton
-    Left = 128
-    Top = 240
+    Left = 224
+    Top = 296
     Width = 75
     Height = 25
     Caption = 'Speichern'
@@ -71,8 +71,8 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     TabOrder = 0
   end
   object ESCBtn: TButton
-    Left = 288
-    Top = 240
+    Left = 344
+    Top = 296
     Width = 75
     Height = 25
     Caption = 'Abbruch'
@@ -81,9 +81,9 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   end
   object DateTimePicker1: TDateTimePicker
     Left = 104
-    Top = 136
+    Top = 152
     Width = 186
-    Height = 21
+    Height = 25
     Date = 44858.000000000000000000
     Time = 0.733019178238464500
     ShowCheckbox = True
@@ -93,7 +93,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Left = 224
     Top = 40
     Width = 273
-    Height = 56
+    Height = 69
     KeyField = 'Id'
     ListField = 'StatusTxt'
     ListFieldIndex = 2
@@ -103,10 +103,19 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   end
   object KommentarEdit: TEdit
     Left = 104
-    Top = 192
+    Top = 224
     Width = 505
-    Height = 21
+    Height = 49
     TabOrder = 4
+  end
+  object GiltNeuBtn: TButton
+    Left = 296
+    Top = 152
+    Width = 75
+    Height = 25
+    Caption = '+ 1 Jahr'
+    TabOrder = 5
+    OnClick = GiltNeuBtnClick
   end
   object DataSource1: TDataSource
     Left = 536

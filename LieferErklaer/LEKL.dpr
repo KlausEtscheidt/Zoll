@@ -20,7 +20,8 @@ uses
   Mailing in 'Mailing.pas',
   TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm},
   Word in 'Word.pas',
-  LeklTeileEingabeDlg in 'LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog};
+  LeklTeileEingabeDlg in 'LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog},
+  ImportStatusInfoDlg in 'ImportStatusInfoDlg.pas' {ImportStatusDlg};
 
 {$R *.res}
 
@@ -31,5 +32,6 @@ begin
   Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
   Application.CreateForm(TTeileListeForm, TeileListeForm);
   Application.CreateForm(TLeklTeileEingabeDialog, LeklTeileEingabeDialog);
+  Application.CreateForm(TImportStatusDlg, ImportStatusDlg);
   Application.Run;
 end.

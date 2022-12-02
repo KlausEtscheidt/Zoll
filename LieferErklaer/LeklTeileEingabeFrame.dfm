@@ -192,14 +192,23 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     TabOrder = 8
     OnClick = FilterOffBtnClick
   end
+  object PfkResetBtn: TButton
+    Left = 572
+    Top = 133
+    Width = 75
+    Height = 25
+    Caption = 'alle PFK 0'
+    TabOrder = 9
+    OnClick = PfkResetBtnClick
+  end
   object DataSource1: TDataSource
     Left = 560
     Top = 16
   end
   object ImageList1: TImageList
     ImageType = itMask
-    Left = 608
-    Top = 96
+    Left = 632
+    Top = 24
     Bitmap = {
       494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010

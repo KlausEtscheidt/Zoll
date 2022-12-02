@@ -165,9 +165,10 @@ var
   lekl,Kommentar : String;
   UpdateQry:TWQry;
   BM:TBookmark;
+  Jahr:Integer;
 begin
 
-   // ------- Steuererlemente des Dialogs vorbesetzen
+   // ------- Steuerelemente des Dialogs vorbesetzen
    // Anzeige des Ist-Status der Lieferantenerkl�rung
    LieferantenStatusDialog.alterStatus.Caption
             := LocalQry.FieldByName('StatusTxt').AsString;
@@ -183,6 +184,12 @@ begin
    // Datumsw�hler auf bisheriges G�ltigkeitsdatum
    GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
    LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
+   //Datumsbutton auf 31.12 des aktuellen oder nächsten Jahrs
+   Jahr:=CurrentYear;
+   if MonthOfTheYear(Date)>9 then
+      Jahr:=Jahr+1;
+//   LieferantenStatusDialog.GiltNeuBtn.Caption:='31.12.'+IntToStr(Jahr);
+
 
    // Dialog anzeigen
    if (LieferantenStatusDialog.ShowModal=mrOK) then

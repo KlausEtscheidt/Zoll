@@ -33,6 +33,7 @@ type
     FilterTName2: TEdit;
     FilterOffBtn: TButton;
     ImageList1: TImageList;
+    PfkResetBtn: TButton;
     procedure SortLTeileNrBtnClick(Sender: TObject);
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
@@ -42,6 +43,7 @@ type
     procedure FilterLTeileNrChange(Sender: TObject);
     procedure FilterTName2Change(Sender: TObject);
     procedure FilterOffBtnClick(Sender: TObject);
+    procedure PfkResetBtnClick(Sender: TObject);
   private
     { Private-Deklarationen }
 
@@ -161,6 +163,16 @@ begin
 
 //    DBCtrlGrid1.PanelIndex:=0;
 
+end;
+
+procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
+var
+  UpdateQry:TWQry;
+begin
+    UpdateQry := Tools.GetQuery;
+    UpdateQry.ResetLPfkInLErklaerungen;
+    // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
+    LocalQry.Requery();
 end;
 
 procedure TLieferantenErklaerungenFrm.FilterUpdate();

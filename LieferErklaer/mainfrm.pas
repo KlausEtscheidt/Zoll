@@ -21,7 +21,6 @@ type
     StatusBar1: TStatusBar;
     LieferantenMen: TMenuItem;
     LTeileMenStatus: TMenuItem;
-    UnippsMenAuswerten: TMenuItem;
     TeileMen: TMenuItem;
     TeileMenUebersicht: TMenuItem;
     StatusMen: TMenuItem;
@@ -32,20 +31,19 @@ type
     GesamtStatusFrm1: TGesamtStatusFrm;
     TeileFrm1: TTeileFrm;
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
+    N1: TMenuItem;
+    N2: TMenuItem;
 
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HideAllFrames;
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LTeileMenStatusClick(Sender: TObject);
-//    procedure LMenErklaerClick(Sender: TObject);
-//    procedure LieferantenErklaerungenFrm1Button1Click(Sender: TObject);
     procedure UnippsMenAuswertenClick(Sender: TObject);
     procedure StatusMenAnzeigenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
-//    procedure LieferantenErklAnfordernFrm1FaxActionExecute(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -61,11 +59,12 @@ implementation
 
 {$R *.dfm}
 
-uses Excel, Mailing;
+uses Excel, Mailing, ImportStatusInfoDlg;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
+  ImportStatusDlg.Show;
 //    Import.BasisImport;
 //  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
     StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank);
@@ -118,22 +117,10 @@ begin
 
 end;
 
-//procedure TmainForm.LieferantenErklAnfordernFrm1FaxActionExecute(
-//  Sender: TObject);
-//begin
-//  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
-//
-//end;
-
-//procedure TmainForm.LMenErklaerClick(Sender: TObject);
-//begin
-//    LieferantenStatusFrm1.HideFrame;
-////    LieferantenErklaerungenFrm1.Visible := True;
-//end;
-
 procedure TmainForm.StatusMenAnzeigenClick(Sender: TObject);
 begin
     HideAllFrames;
+    Import.Auswerten;
     GesamtStatusFrm1.Visible:=True;
     GesamtStatusFrm1.InitFrame;
 end;
@@ -158,17 +145,8 @@ end;
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 var
   msg:String;
-
 begin
-  msg := 'Achtung: ' + #13 + #13
-       + 'Dieser Vorgang dauert ca 5 Minuten!'
-       + #13 + #13
-       + 'Er sollte und muss genau EINMAL im Jahr,' + #13
-       + 'zu Beginn der Eingabe der Lieferantenerklärungen ausgeführt werden.'
-       + #13 + #13 + 'Wollen Sie jetzt Daten aus UNIPPS einlesen ?';
-  if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
-    TBasisImport.Create(False);
-
+  ImportStatusDlg.Show;
 end;
 
 //Setze Pfade, Verbinde zur Datenbank etc

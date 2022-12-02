@@ -3,9 +3,11 @@ unit LieferantenStatusDlg;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.DBCtrls,
-  Vcl.Mask, Data.DB, Data.Win.ADODB, Vcl.Grids, Vcl.DBGrids, Tools;
+  Winapi.Windows, Winapi.Messages,
+  System.DateUtils,System.SysUtils, System.Variants, System.Classes,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
+  Vcl.Graphics, Vcl.DBCtrls, Vcl.Mask, Vcl.Grids, Vcl.DBGrids,
+  Data.DB, Data.Win.ADODB, Tools;
 
 type
   TLieferantenStatusDialog = class(TForm)
@@ -19,8 +21,10 @@ type
     alterStatus: TLabel;
     Label3: TLabel;
     KommentarEdit: TEdit;
+    GiltNeuBtn: TButton;
     procedure StatusListBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure GiltNeuBtnClick(Sender: TObject);
   public
     LocalQry: TWQry;
     procedure ValidateDateTime;
@@ -43,6 +47,13 @@ begin
     DataSource1.DataSet := LocalQry;
 end;
 
+procedure TLieferantenStatusDialog.GiltNeuBtnClick(Sender: TObject);
+begin
+  DateTimePicker1.DateTime := IncYear(DateTimePicker1.DateTime,1);
+  GiltNeuBtn.Enabled := False;
+  GiltNeuBtn.Visible := False;
+end;
+
 procedure TLieferantenStatusDialog.StatusListBoxClick(Sender: TObject);
 begin
   alterStatus.Caption
@@ -58,6 +69,8 @@ begin
   OK:= StatusListBox.KeyValue>1;
   DateTimePicker1.Enabled:= OK;
   DateTimePicker1.Visible:= OK;
+  GiltNeuBtn.Enabled := OK;
+  GiltNeuBtn.Visible := OK;
 end;
 
 end.

@@ -44,6 +44,8 @@ interface
 
 
       //Datenpflege nach Benutzeraktion
+
+      function ResetLPfkInLErklaerungen():Boolean;
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
       function UpdateLieferant(IdLieferant:Integer;
@@ -383,6 +385,15 @@ end;
 // Datenänderungen zur Pflege der Datenbasis nach Benutzeraktionen
 //
 // ---------------------------------------------------------------
+
+///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
+function TWQrySQLite.ResetLPfkInLErklaerungen():Boolean;
+  var
+    sql: String;
+begin
+  SQL := 'Update LErklaerungen set LPfk=0;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
 
 ///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
 function TWQrySQLite.UpdateLPfkInLErklaerungen(

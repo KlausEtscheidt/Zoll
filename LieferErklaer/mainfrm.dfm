@@ -320,24 +320,23 @@ object mainForm: TmainForm
       end
     end
     object UnippsMen: TMenuItem
-      Caption = 'Unipps'
+      Caption = 'Import'
       object UnippsMenEinlesen: TMenuItem
         Caption = 'Einlesen'
         OnClick = UnippsMenEinlesenClick
-      end
-      object UnippsMenAuswerten: TMenuItem
-        Caption = 'Auswerten'
-        OnClick = UnippsMenAuswertenClick
       end
     end
     object LieferantenMen: TMenuItem
       Caption = 'Lieferanten'
       object LieferMenErklaerAnfordern: TMenuItem
-        Caption = 'Erkl'#228'rungen anfordern'
+        Caption = 'Erkl'#228'rungen anfordern/eingeben'
         OnClick = LieferMenErklaerAnfordernClick
       end
+      object N1: TMenuItem
+        Caption = '-'
+      end
       object LieferMenAdressen: TMenuItem
-        Caption = 'Adressen neu lesen'
+        Caption = 'Adressen aktualisieren'
         OnClick = LieferMenAdressenClick
       end
     end
@@ -347,15 +346,18 @@ object mainForm: TmainForm
         Caption = 'Status eingeben'
         OnClick = LTeileMenStatusClick
       end
+      object N2: TMenuItem
+        Caption = '-'
+      end
       object TeileMenUebersicht: TMenuItem
-        Caption = #220'bersicht'
+        Caption = 'Status pr'#252'fen'
         OnClick = TeileMenUebersichtClick
       end
     end
     object StatusMen: TMenuItem
-      Caption = 'Status'
+      Caption = 'Export'
       object StatusMenAnzeigen: TMenuItem
-        Caption = 'Anzeigen'
+        Caption = 'Erzeugen'
         OnClick = StatusMenAnzeigenClick
       end
     end

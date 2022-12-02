@@ -26,7 +26,7 @@ type TBasisImport = class(TThread)
 
      public
        procedure Execute; override;
-//       procedure GetResult;
+       procedure TestRun;
        procedure SyncStatusAnzeigen;
      end;
 
@@ -72,6 +72,15 @@ begin
   Synchronize(SyncStatusAnzeigen);
 end;
 
+procedure TBasisImport.TestRun;
+var
+  Start:TDateTime;
+  Minuten:Double;
+begin
+  Minuten:=MinuteSpan(Start,Now);
+  sleep(20000);
+  InitStatusanzeige(Format('Auswertung fertig in %3.1f Minuten',[Minuten]) );
+end;
 
 /// <summary>Liest alle noetigen Daten aus UNIPPS lesen </summary>
 /// <remarks>
@@ -86,7 +95,10 @@ begin
   FreeOnTerminate:=True;
 
   Start:=Now;
-
+  {IFDEF HOME}
+  TestRun;
+  exit;
+  {ENDIF}
   // Tabelle Bestellungen leeren und neu befuellen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
   BestellungenAusUnipps;
