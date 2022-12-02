@@ -74,6 +74,7 @@ LieferErklaer/Brief_u_Fax
 
 #Meine Files
 *.accdb
+*.laccdb
 
 *.~*
 
