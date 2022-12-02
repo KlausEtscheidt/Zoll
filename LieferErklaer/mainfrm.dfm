@@ -1,7 +1,7 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'DigiLEK Digitale Lieferantenerkl'#228'rung'
+  Caption = 'DigiLek Digitale Lieferantenerkl'#228'rung'
   ClientHeight = 612
   ClientWidth = 1094
   Color = clGradientActiveCaption
@@ -291,6 +291,12 @@ object mainForm: TmainForm
       Top = 0
       ExplicitLeft = 0
       ExplicitTop = 0
+    end
+    inherited Label4: TLabel
+      Left = 162
+      Top = 26
+      ExplicitLeft = 162
+      ExplicitTop = 26
     end
   end
   inline TeileFrm1: TTeileFrm
