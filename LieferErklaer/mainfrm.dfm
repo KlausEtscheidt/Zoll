@@ -1,7 +1,7 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
-  Caption = 'LEKL'
+  Caption = 'DigiLEK Digitale Lieferantenerkl'#228'rung'
   ClientHeight = 612
   ClientWidth = 1094
   Color = clGradientActiveCaption
@@ -132,9 +132,6 @@ object mainForm: TmainForm
       Width = 828
       ExplicitWidth = 828
       inherited Panel3: TPanel
-        inherited Label6: TLabel
-          Width = 325
-        end
         inherited DBText1: TDBText
           ExplicitTop = 21
         end

@@ -44,6 +44,7 @@ interface
       function HoleTeileZumLieferanten(IdLieferant:String):Boolean;
 
       //Datenpflege nach Benutzeraktion
+      function ResetLPfkInLErklaerungen():Boolean;
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
 
@@ -367,9 +368,10 @@ begin
   var sql: String;
   sql := 'select Teile.TeileNr, TName1, TName2, '
        + 'Abs(Pumpenteil) as Pumpenteil, '
-       + 'Abs(Ersatzteil) as Ersatzteil '
+       + 'Abs(Ersatzteil) as Ersatzteil, '
+       + 'Abs(LPfk) as Pfk '
        + 'From Teile '
-       + 'JOIN LErklaerungen ON LErklaerungen.TeileNr=Teile.TeileNr '
+       + 'INNER JOIN LErklaerungen ON LErklaerungen.TeileNr=Teile.TeileNr '
        + 'where IdLieferant=' + IdLieferant;
   Result:= RunSelectQuery(sql);
 end;
@@ -381,6 +383,14 @@ end;
 // Datenänderungen zur Pflege der Datenbasis nach Benutzeraktionen
 //
 // ---------------------------------------------------------------
+///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
+function TWQryAccess.ResetLPfkInLErklaerungen():Boolean;
+  var
+    sql: String;
+begin
+  SQL := 'Update LErklaerungen set LPfk=0;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
 
 ///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
 function TWQryAccess.UpdateLPfkInLErklaerungen(

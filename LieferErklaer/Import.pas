@@ -10,10 +10,20 @@ type TBasisImport = class(TThread)
      private
         var
           StatusTxtL:String;
-          StatusaktRecord,StatusmaxRecord:Integer;
+          StatusAktRecord,StatusMaxRecord:Integer;
+          StatusSchrittNr:Integer;
+          StatusSchrittBenennung:String;
           counter:Integer;
-        procedure InitStatusanzeige(Text:String);
-        procedure RecNoStatusAnzeigen(akt:Integer);
+        //Start eines Importschrittes anzeigen
+        procedure SchrittAnfangAnzeigen(StepNr:Integer;SchrittBenennung:String);
+        procedure SyncStatusNewStep;
+        //Ende eines Importschrittes anzeigen
+        procedure SchrittEndeAnzeigen;
+        procedure SyncStatusFinishedStep;
+        // alle 100 Records x von y gelesen anzeigen (Forced zeigt immer an)
+        procedure RecNoStatusAnzeigen(akt:Integer;Forced:Boolean=False);
+        procedure SyncRecNoStatusAnzeigen;
+
         procedure BestellungenAusUnipps;
         procedure LieferantenTeilenummerAusUnipps;
         procedure TeileBenennungAusUnipps;
@@ -26,8 +36,6 @@ type TBasisImport = class(TThread)
 
      public
        procedure Execute; override;
-       procedure TestRun;
-       procedure SyncStatusAnzeigen;
      end;
 
 procedure LieferantenAdressdatenAusUnipps;
@@ -41,46 +49,67 @@ var
 
 implementation
 
-uses mainfrm;
+uses mainfrm, ImportStatusInfoDlg;
 
-procedure TBasisImport.SyncStatusAnzeigen;
-begin
-  StatusBarLeft(StatusTxtL);
-  if StatusmaxRecord>0 then
-    StatusBar(StatusaktRecord, StatusmaxRecord);
-end;
+//----------- Synchronisieren der GUI zur Anzeige des Import-Fortschrittes
+// Noetig, bei Ausführung in threads
+//------------------------------------------------------------------------
 
-//Alle x Datensaetze Statusanzeige aktualisieren
-procedure TBasisImport.RecNoStatusAnzeigen(akt:Integer);
+//Anzeige des Fortschrittes: x von y Datensaetze gelesen
+procedure TBasisImport.RecNoStatusAnzeigen(akt:Integer;Forced:Boolean=False);
+const
+  interval:Integer=50;
 begin
-   if counter=100 then
-     begin
-       StatusaktRecord:=akt;
-       SyncStatusAnzeigen;
+  if akt=1 then
+     counter:=interval; //Anzeige des ersten DS erzwingen
+  if (counter=interval) or Forced then
+    begin
+     StatusAktRecord:=akt;
+     Synchronize(SyncRecNoStatusAnzeigen);
+     if counter=interval then
        counter:=1
-     end
-   else
-      counter:=counter+1;
+    end
+  else
+    counter:=counter+1;
+  if akt=1 then
+    counter:=2;
+end;
+procedure TBasisImport.SyncRecNoStatusAnzeigen;
+begin
+  ImportStatusDlg.AnzeigeRecordsGelesen(StatusaktRecord,StatusmaxRecord);
 end;
 
-procedure TBasisImport.InitStatusanzeige(Text:String);
+
+//Anzeige des Endes eines Import-Schrittes
+procedure TBasisImport.SchrittEndeAnzeigen;
 begin
-  counter:=1;
-  StatusTxtL:=Text;
-  StatusmaxRecord:=0;
-  StatusaktRecord:=0;
-  Synchronize(SyncStatusAnzeigen);
+  Synchronize(SyncStatusFinishedStep);
 end;
 
-procedure TBasisImport.TestRun;
-var
-  Start:TDateTime;
-  Minuten:Double;
+procedure TBasisImport.SyncStatusFinishedStep;
 begin
-  Minuten:=MinuteSpan(Start,Now);
-  sleep(20000);
-  InitStatusanzeige(Format('Auswertung fertig in %3.1f Minuten',[Minuten]) );
+  ImportStatusDlg.AnzeigeEndeImportSchritt(StatusSchrittNr);
 end;
+
+//Anzeige des Anfangs eines Import-Schrittes
+procedure TBasisImport.SchrittAnfangAnzeigen(StepNr:Integer;SchrittBenennung:String);
+//var
+begin
+  counter:=1; //Fuer Recordanzeige
+  StatusSchrittNr:=StepNr;
+  StatusSchrittBenennung:=SchrittBenennung;
+  Synchronize(SyncStatusNewStep);
+end;
+
+procedure TBasisImport.SyncStatusNewStep;
+begin
+  ImportStatusDlg.AnzeigeNeuerImportSchritt(StatusSchrittNr,
+                                                    StatusSchrittBenennung);
+end;
+
+// --------------------- Import im Thread ------------------
+// ---------------------------------------------------------
+
 
 /// <summary>Liest alle noetigen Daten aus UNIPPS lesen </summary>
 /// <remarks>
@@ -88,17 +117,9 @@ end;
 /// aus UNIPPS in lokale Tabelle Bestellungen
 /// </remarks>
 procedure TBasisImport.Execute;
-var
-  Start:TDateTime;
-  Minuten:Double;
 begin
   FreeOnTerminate:=True;
 
-  Start:=Now;
-  {IFDEF HOME}
-  TestRun;
-  exit;
-  {ENDIF}
   // Tabelle Bestellungen leeren und neu befuellen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
   BestellungenAusUnipps;
@@ -130,8 +151,7 @@ begin
   // Tabelle Teile updaten: Anzahl der Lieferanten je Teil
   TeileUpdateZaehleLieferanten;
 
-  Minuten:=MinuteSpan(Start,Now);
-  InitStatusanzeige(Format('Auswertung fertig in %3.1f Minuten',[Minuten]) );
+  Synchronize(ImportStatusDlg.ImportEnde);
 
 end;
 
@@ -150,8 +170,7 @@ var
   BestellZeitraum:String;
 begin
 
-//  StatusBarLeft('Import Schritt 1: Lese Bestellungen');
-  InitStatusanzeige('Import Schritt 1: Lese Bestellungen');
+  SchrittAnfangAnzeigen(1,'Bestellungen lesen');
 
   //Lies den BestellZeitraum
   BestellZeitraum:=LocalQry.LiesProgrammDatenWert('Bestellzeitraum');
@@ -164,7 +183,7 @@ begin
   LocalQry.RunExecSQLQuery('delete from Bestellungen;');
   LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
-  StatusmaxRecord:=UnippsQry.n_records;
+  StatusMaxRecord:=UnippsQry.n_records;
   while not UnippsQry.Eof do
   begin
     RecNoStatusAnzeigen(UnippsQry.RecNo);
@@ -172,8 +191,8 @@ begin
     UnippsQry.next;
   end;
 
-  StatusaktRecord:=UnippsQry.RecNo;
-  SyncStatusAnzeigen;
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+  SchrittEndeAnzeigen;
 
   LocalQry.RunExecSQLQuery('COMMIT;');
 
@@ -194,7 +213,7 @@ var
 
 begin
 
-  InitStatusanzeige('Import Schritt 2: Lese Lieferanten-Teilenummern');
+  SchrittAnfangAnzeigen(2,'Lieferanten-Teilenummern lesen');
   Bestellungen := Tools.GetTable('Bestellungen');
 
   Bestellungen.Open;
@@ -240,8 +259,8 @@ begin
     Bestellungen.next;
   end;
 
-  StatusaktRecord:=Bestellungen.RecNo;
-  SyncStatusAnzeigen;
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+  SchrittEndeAnzeigen;
 
   LocalQry.RunExecSQLQuery('COMMIT;');
 
@@ -256,7 +275,7 @@ var
   BestellZeitraum:String;
 
 begin
-  InitStatusanzeige('Import Schritt 3: Lese Benennung zu Teilen');
+  SchrittAnfangAnzeigen(3,'Benennung zu Teilen lesen');
 
   //Lies den Bestellzeitraum
   BestellZeitraum:=LocalQry.LiesProgrammDatenWert('Bestellzeitraum');
@@ -280,8 +299,8 @@ begin
     UnippsQry.next;
   end;
 
-  StatusaktRecord:=UnippsQry.RecNo;
-  SyncStatusAnzeigen;
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+  SchrittEndeAnzeigen;
 
   LocalQry.RunExecSQLQuery('COMMIT;');
 
@@ -292,7 +311,7 @@ end;
 procedure TBasisImport.TeileBenennungInTeileTabelle();
 begin
 
-  InitStatusanzeige('Import Schritt 4: Übertrage Benennung der Teile');
+  SchrittAnfangAnzeigen(4,'Benennung der Teile übertragen');
 
   LocalQry.RunExecSQLQuery('delete from Teile;');
 
@@ -306,6 +325,7 @@ begin
   if not gefunden then
     raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
 
+  SchrittEndeAnzeigen;
 end;
 
 //Import Schritt 5: Test ob Teil Pumpenteil
@@ -316,7 +336,7 @@ procedure TBasisImport.PumpenteileAusUnipps();
 
 begin
 
-  InitStatusanzeige('Import Schritt 5: Test ob Teil Pumpenteil');
+  SchrittAnfangAnzeigen(5, 'Teste ob Teil Pumpenteil');
 
   gefunden :=LocalQry.HoleTeile;
 
@@ -350,8 +370,8 @@ begin
 
   end;
 
-  StatusaktRecord:=LocalQry.RecNo;
-  SyncStatusAnzeigen;
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+  SchrittEndeAnzeigen;
 
 end;
 
@@ -359,7 +379,7 @@ end;
 ///<summary>Pflege Tabelle Lieferanten</summary>
 procedure TBasisImport.LieferantenTabelleUpdaten();
 begin
-  InitStatusanzeige('Import Schritt 6: Erzeuge Lieferanten-Tabelle');
+  SchrittAnfangAnzeigen(6,'Lieferanten-Tabelle erzeugen');
   //Markiere Lieferanten, neu waren und die noch aktuell sind als aktuell
   LocalQry.MarkiereAktuelleLieferanten;
   //Uebertrage neue Lieferanten
@@ -372,29 +392,32 @@ begin
   LocalQry.MarkierePumpenteilLieferanten;
   // Markiere Lieferanten die mind. 1 Ersatzteil liefern
   LocalQry.MarkiereErsatzteilLieferanten;
+  SchrittEndeAnzeigen;
+
 end;
 
 // Import Schritt 7: Lief-Erklaerungen
 ///<summary>Pflege Tabelle LErklaerungen</summary>
 procedure TBasisImport.LErklaerungenUpdaten();
 begin
-  InitStatusanzeige('Import Schritt 7: Lief-Erklaerungen');
+  SchrittAnfangAnzeigen(7,'Lief.-Erkl. ergaenzen');
   LocalQry.NeueLErklaerungenInTabelle;
   LocalQry.AlteLErklaerungenLoeschen;
+  SchrittEndeAnzeigen;
 end;
 
 // Import Schritt 8
 ///<summary>Anzahl der Lieferanten je Teil in Tabelle Teile</summary>
 procedure TBasisImport.TeileUpdateZaehleLieferanten();
 begin
-  InitStatusanzeige('Import Schritt 8: Zähle Lieferanten je Teil');
+  SchrittAnfangAnzeigen(8,'Lieferanten je Teil zählen');
   // tmp Tabelle leeren
   LocalQry.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
   //Anzahl der Lieferanten je Teil in tmp Tabelle tmp_anz_xxx_je_teil
   LocalQry.UpdateTmpAnzLieferantenJeTeil;
   //Anzahl der Lieferanten je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleLieferanten;
-  InitStatusanzeige('Import abgeschlossen');
+  SchrittEndeAnzeigen;
 end;
 
 procedure Auswerten();
@@ -452,9 +475,6 @@ begin
     LocalQry.InsertFields('Lieferanten_Adressen', UnippsQry.Fields);
     UnippsQry.next;
   end;
-
-//  StatusaktRecord:=UnippsQry.RecNo;
-//  SyncStatusAnzeigen;
 
   LocalQry.RunExecSQLQuery('COMMIT;');
 

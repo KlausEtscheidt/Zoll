@@ -164,10 +164,10 @@ begin
 
   try
     MailItem := OLApp.CreateItem(olMailItem);
-    MailItem.BCC := 'Dr.K.Etscheidt@wernert.de';
-    MailItem.Recipients.Add('Klaus.Etscheidt@gmail.com');
+//    MailItem.BCC := 'Dr.K.Etscheidt@wernert.de';
+    MailItem.Recipients.Add('Dr.K.Etscheidt@wernert.de');
     Empfaenger:=DatensatzFelder.FieldByName('email').AsString;
-//    MailItem.Recipients.Add(Empfaenger);
+    MailItem.Recipients.Add(Empfaenger);
     MailItem.Subject := MailMusterItem.Subject;
     MailItem.Body    := MailMusterItem.Body;
     MailItem.Display; //zeigt nur an

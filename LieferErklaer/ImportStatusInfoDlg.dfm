@@ -46,7 +46,6 @@ object ImportStatusDlg: TImportStatusDlg
     ParentFont = False
     TabOrder = 0
     StyleElements = [seFont, seClient]
-    ExplicitLeft = 42
   end
   object GridPanel1: TGridPanel
     AlignWithMargins = True
@@ -55,6 +54,7 @@ object ImportStatusDlg: TImportStatusDlg
     Width = 430
     Height = 60
     Anchors = [akLeft]
+    BevelOuter = bvNone
     ColumnCollection = <
       item
         Value = 50.000000000000000000
@@ -84,7 +84,7 @@ object ImportStatusDlg: TImportStatusDlg
     object ImportBtn: TButton
       AlignWithMargins = True
       Left = 130
-      Top = 16
+      Top = 15
       Width = 75
       Height = 25
       Margins.Top = 15
@@ -95,13 +95,12 @@ object ImportStatusDlg: TImportStatusDlg
       Constraints.MaxWidth = 75
       TabOrder = 0
       OnClick = ImportBtnClick
-      ExplicitLeft = 273
-      ExplicitTop = 18
+      ExplicitTop = 16
     end
     object ESCButton: TButton
       AlignWithMargins = True
       Left = 225
-      Top = 16
+      Top = 15
       Width = 75
       Height = 25
       Margins.Left = 10
@@ -112,8 +111,7 @@ object ImportStatusDlg: TImportStatusDlg
       Constraints.MaxWidth = 75
       TabOrder = 1
       OnClick = ESCButtonClick
-      ExplicitLeft = 369
-      ExplicitTop = 18
+      ExplicitTop = 16
     end
   end
   object StatusPanel: TPanel
@@ -123,19 +121,9 @@ object ImportStatusDlg: TImportStatusDlg
     Height = 278
     BevelOuter = bvNone
     TabOrder = 2
-    object Label1: TLabel
-      Left = 24
-      Top = 240
-      Width = 32
-      Height = 13
-      Caption = 'Label1'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-    end
+    DesignSize = (
+      430
+      278)
     object StringGrid1: TStringGrid
       Left = 24
       Top = 13
@@ -155,6 +143,28 @@ object ImportStatusDlg: TImportStatusDlg
       ParentFont = False
       ScrollBars = ssNone
       TabOrder = 0
+    end
+    object Panel1: TPanel
+      Left = 0
+      Top = 244
+      Width = 430
+      Height = 33
+      Anchors = [akLeft, akRight, akBottom]
+      BevelOuter = bvNone
+      TabOrder = 1
+      object actRecordLbl: TLabel
+        Left = 20
+        Top = 17
+        Width = 78
+        Height = 13
+        Caption = 'Recordfortschritt'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
     end
   end
 end

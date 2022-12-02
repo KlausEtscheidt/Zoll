@@ -95,6 +95,7 @@ type
     procedure TeileAnzeigeActionExecute(Sender: TObject);
     procedure ExportExcelActionExecute(Sender: TObject);
     procedure AnfordDatumResetActionExecute(Sender: TObject);
+    procedure DataSource1DataChange(Sender: TObject; Field: TField);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -313,6 +314,13 @@ procedure TLieferantenErklAnfordernFrm.AnfordDatumResetActionExecute(
   Sender: TObject);
 begin
   UpdateAnfrageDatum(True);
+end;
+
+procedure TLieferantenErklAnfordernFrm.DataSource1DataChange(Sender: TObject;
+  Field: TField);
+begin
+    mailBtn.Enabled := (mailDBText.Caption<>'');
+    FaxBtn.Enabled := (telefaxDBText.Caption<>'');
 end;
 
 procedure TLieferantenErklAnfordernFrm.ExportExcelActionExecute(

@@ -80,12 +80,14 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Height = 25
       Action = FilterUpdateAction
       Caption = 'Pumpenteile'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      State = cbChecked
       TabOrder = 2
     end
     object FilterAusBtn: TButton
@@ -879,6 +881,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
   end
   object DataSource1: TDataSource
+    OnDataChange = DataSource1DataChange
     Left = 640
     Top = 200
   end

@@ -412,6 +412,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Width = 325
       Height = 81
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 3
       object Label6: TLabel
         AlignWithMargins = True

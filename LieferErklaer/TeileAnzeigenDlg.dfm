@@ -50,29 +50,29 @@ object TeileListeForm: TTeileListeForm
       item
         Expanded = False
         FieldName = 'TName1'
-        Width = 150
+        Width = 183
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TName2'
-        Width = 150
+        Width = 169
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'Pumpenteil'
-        Title.Font.Charset = DEFAULT_CHARSET
-        Title.Font.Color = clWindowText
-        Title.Font.Height = -15
-        Title.Font.Name = 'Tahoma'
-        Title.Font.Style = []
         Visible = True
       end
       item
         DropDownRows = 10
         Expanded = False
         FieldName = 'Ersatzteil'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'Pfk'
         Visible = True
       end>
   end
@@ -87,9 +87,6 @@ object TeileListeForm: TTeileListeForm
     Color = clGradientActiveCaption
     ParentBackground = False
     TabOrder = 1
-    ExplicitLeft = 272
-    ExplicitTop = 168
-    ExplicitWidth = 185
     DesignSize = (
       784
       41)

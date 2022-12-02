@@ -24,7 +24,7 @@
         <Projects Include="DevTools\XML2RST.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="LieferErklaer\LEKL.dproj">
+        <Projects Include="LieferErklaer\DIGILEK.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="dies und das\testsoftware\threading\ThreadTest.dproj">
@@ -101,14 +101,14 @@
     <Target Name="XML2RST:Make">
         <MSBuild Projects="DevTools\XML2RST.dproj" Targets="Make"/>
     </Target>
-    <Target Name="LEKL">
-        <MSBuild Projects="LieferErklaer\LEKL.dproj"/>
+    <Target Name="DIGILEK">
+        <MSBuild Projects="LieferErklaer\DIGILEK.dproj"/>
     </Target>
-    <Target Name="LEKL:Clean">
-        <MSBuild Projects="LieferErklaer\LEKL.dproj" Targets="Clean"/>
+    <Target Name="DIGILEK:Clean">
+        <MSBuild Projects="LieferErklaer\DIGILEK.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="LEKL:Make">
-        <MSBuild Projects="LieferErklaer\LEKL.dproj" Targets="Make"/>
+    <Target Name="DIGILEK:Make">
+        <MSBuild Projects="LieferErklaer\DIGILEK.dproj" Targets="Make"/>
     </Target>
     <Target Name="ThreadTest">
         <MSBuild Projects="dies und das\testsoftware\threading\ThreadTest.dproj"/>
@@ -120,13 +120,13 @@
         <MSBuild Projects="dies und das\testsoftware\threading\ThreadTest.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;LEKL;ThreadTest"/>
+        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;DIGILEK;ThreadTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;LEKL:Clean;ThreadTest:Clean"/>
+        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;DIGILEK:Clean;ThreadTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;LEKL:Make;ThreadTest:Make"/>
+        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;DIGILEK:Make;ThreadTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

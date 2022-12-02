@@ -64,7 +64,7 @@ uses Excel, Mailing, ImportStatusInfoDlg;
 procedure TmainForm.FormShow(Sender: TObject);
 begin
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
-  ImportStatusDlg.Show;
+//  ImportStatusDlg.Show;
 //    Import.BasisImport;
 //  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
     StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank);
