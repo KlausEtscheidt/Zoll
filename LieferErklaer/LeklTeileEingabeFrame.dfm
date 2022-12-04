@@ -1,7 +1,7 @@
 object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   Left = 0
   Top = 0
-  Width = 719
+  Width = 793
   Height = 535
   Color = clBtnFace
   ParentBackground = False
@@ -61,15 +61,41 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Font.Style = []
     ParentFont = False
   end
+  object Label2: TLabel
+    Left = 595
+    Top = 88
+    Width = 46
+    Height = 16
+    Caption = #196'ndern:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object n_gefiltert: TLabel
+    Left = 19
+    Top = 142
+    Width = 78
+    Height = 16
+    Caption = 'Anz. gefiltert:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object DBCtrlGrid1: TDBCtrlGrid
     Left = 14
-    Top = 164
+    Top = 176
     Width = 702
-    Height = 336
+    Height = 359
     AllowDelete = False
     AllowInsert = False
     DataSource = DataSource1
-    PanelHeight = 42
+    PanelHeight = 44
     PanelWidth = 685
     TabOrder = 0
     RowCount = 8
@@ -179,7 +205,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnChange = FilterTName2Change
   end
   object FilterOffBtn: TButton
-    Left = 495
+    Left = 460
     Top = 108
     Width = 25
     Height = 25
@@ -193,22 +219,49 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnClick = FilterOffBtnClick
   end
   object PfkResetBtn: TButton
-    Left = 572
-    Top = 133
-    Width = 75
+    Left = 606
+    Top = 108
+    Width = 60
     Height = 25
     Caption = 'alle PFK 0'
     TabOrder = 9
     OnClick = PfkResetBtnClick
   end
+  object PfkSetBtn: TButton
+    Left = 672
+    Top = 108
+    Width = 60
+    Height = 25
+    Caption = 'alle PFK 1'
+    TabOrder = 10
+    OnClick = PfkSetBtnClick
+  end
+  object PfkOnCheckBox: TCheckBox
+    Left = 512
+    Top = 112
+    Width = 41
+    Height = 17
+    Caption = 'Pfk 1'
+    TabOrder = 11
+    OnClick = PfkOnCheckBoxClick
+  end
+  object PfkOffCheckBox: TCheckBox
+    Left = 512
+    Top = 141
+    Width = 41
+    Height = 17
+    Caption = 'Pfk 0'
+    TabOrder = 12
+    OnClick = PfkOffCheckBoxClick
+  end
   object DataSource1: TDataSource
-    Left = 560
-    Top = 16
+    Left = 416
+    Top = 8
   end
   object ImageList1: TImageList
     ImageType = itMask
-    Left = 632
-    Top = 24
+    Left = 488
+    Top = 8
     Bitmap = {
       494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010

@@ -35,7 +35,6 @@ begin
   LocalQry := Tools.GetQuery;
   LocalQry.HoleTeileZumLieferanten(IdLieferant);
   DataSource1.DataSet := LocalQry;
-
 end;
 
 procedure TTeileListeForm.OKBtnClick(Sender: TObject);

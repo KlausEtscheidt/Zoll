@@ -9,7 +9,6 @@ uses System.SysUtils,classes, Data.DB, Data.Win.ADODB,DateUtils,
 type TBasisImport = class(TThread)
      private
         var
-          StatusTxtL:String;
           StatusAktRecord,StatusMaxRecord:Integer;
           StatusSchrittNr:Integer;
           StatusSchrittBenennung:String;
@@ -453,6 +452,10 @@ begin
 
   //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleGueltigeLErklaerungen;
+
+  // Flag PFK in Teile setzen
+  LocalQry.UpdateTeileResetPFK;
+  LocalQry.UpdateTeileSetPFK;
 
   StatusBarLeft('Auswertung fertig');
 end;

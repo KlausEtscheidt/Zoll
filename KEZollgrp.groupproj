@@ -27,9 +27,6 @@
         <Projects Include="LieferErklaer\DIGILEK.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="dies und das\testsoftware\threading\ThreadTest.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -110,23 +107,14 @@
     <Target Name="DIGILEK:Make">
         <MSBuild Projects="LieferErklaer\DIGILEK.dproj" Targets="Make"/>
     </Target>
-    <Target Name="ThreadTest">
-        <MSBuild Projects="dies und das\testsoftware\threading\ThreadTest.dproj"/>
-    </Target>
-    <Target Name="ThreadTest:Clean">
-        <MSBuild Projects="dies und das\testsoftware\threading\ThreadTest.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ThreadTest:Make">
-        <MSBuild Projects="dies und das\testsoftware\threading\ThreadTest.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;DIGILEK;ThreadTest"/>
+        <CallTarget Targets="Zoll;PumpenDatenspeicher;Batchlauf;DefiniereDataSet;NeueStueliTest;DruckTest;XML2RST;DIGILEK"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;DIGILEK:Clean;ThreadTest:Clean"/>
+        <CallTarget Targets="Zoll:Clean;PumpenDatenspeicher:Clean;Batchlauf:Clean;DefiniereDataSet:Clean;NeueStueliTest:Clean;DruckTest:Clean;XML2RST:Clean;DIGILEK:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;DIGILEK:Make;ThreadTest:Make"/>
+        <CallTarget Targets="Zoll:Make;PumpenDatenspeicher:Make;Batchlauf:Make;DefiniereDataSet:Make;NeueStueliTest:Make;DruckTest:Make;XML2RST:Make;DIGILEK:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -8,8 +8,8 @@ uses
   Vcl.DBGrids,Settings,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
   Vcl.DBCtrls, LeklTeileEingabeFrame, Tools,
-  GesamtStatusFrame, TeileFrame,
-  LieferantenLEKL3AuswahlFrame, LeklAnfordernFrame;
+  LieferantenLEKL3AuswahlFrame, LeklAnfordernFrame, TeileStatusKontrolleFrame,
+  ExportFrame;
 
 type
   TmainForm = class(TForm)
@@ -23,13 +23,13 @@ type
     LTeileMenStatus: TMenuItem;
     TeileMen: TMenuItem;
     TeileMenUebersicht: TMenuItem;
-    StatusMen: TMenuItem;
-    StatusMenAnzeigen: TMenuItem;
+    ExportMen: TMenuItem;
+    ExportMenErzeugen: TMenuItem;
     LieferMenErklaerAnfordern: TMenuItem;
     LieferMenAdressen: TMenuItem;
     LieferantenStatusFrm1: TLieferantenStatusFrm;
-    GesamtStatusFrm1: TGesamtStatusFrm;
-    TeileFrm1: TTeileFrm;
+    ExportFrm1: TGesamtStatusFrm;
+    TeileStausKontrolleFrm: TTeileStatusKontrolleFrm;
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
     N1: TMenuItem;
     N2: TMenuItem;
@@ -40,7 +40,7 @@ type
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LTeileMenStatusClick(Sender: TObject);
     procedure UnippsMenAuswertenClick(Sender: TObject);
-    procedure StatusMenAnzeigenClick(Sender: TObject);
+    procedure ExportMenErzeugenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
@@ -66,19 +66,18 @@ begin
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //  ImportStatusDlg.Show;
 //    Import.BasisImport;
-//  LieferantenErklAnfordernFrm1.FaxActionExecute(Sender);
     StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank);
     HideAllFrames;
     LieferantenErklAnfordernFrm1.ShowFrame;
+//    TeileStausKontrolleFrm.ShowFrame;
 //    LieferantenStatusFrm1.ShowFrame;
 end;
-
 
 procedure TmainForm.HideAllFrames;
 begin
     LieferantenStatusFrm1.Visible:=False;
-    GesamtStatusFrm1.Visible:=False;
-    TeileFrm1.Visible:=False;
+    ExportFrm1.Visible:=False;
+    TeileStausKontrolleFrm.Visible:=False;
     LieferantenErklAnfordernFrm1.Visible:=False;
 end;
 
@@ -117,18 +116,18 @@ begin
 
 end;
 
-procedure TmainForm.StatusMenAnzeigenClick(Sender: TObject);
+procedure TmainForm.ExportMenErzeugenClick(Sender: TObject);
 begin
     HideAllFrames;
+    ExportFrm1.Visible:=True;
+    ExportFrm1.InitFrame;
     Import.Auswerten;
-    GesamtStatusFrm1.Visible:=True;
-    GesamtStatusFrm1.InitFrame;
 end;
 
 procedure TmainForm.TeileMenUebersichtClick(Sender: TObject);
 begin
     HideAllFrames;
-    TeileFrm1.Visible:=True;
+    TeileStausKontrolleFrm.ShowFrame;
 end;
 
 procedure TmainForm.LTeileMenStatusClick(Sender: TObject);

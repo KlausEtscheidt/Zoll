@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">home</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -151,12 +151,12 @@
             <Form>LieferantenStatusDialog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="TeileFrame.pas">
-            <Form>TeileFrm</Form>
+        <DCCReference Include="TeileStatusKontrolleFrame.pas">
+            <Form>TeileStatusKontrolleFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="GesamtStatusFrame.pas">
+        <DCCReference Include="ExportFrame.pas">
             <Form>GesamtStatusFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
@@ -220,13 +220,13 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\access\DIGILEK.exe" Configuration="access" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\DIGILEK.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\DIGILEK.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\home\DIGILEK.exe" Configuration="home" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -238,7 +238,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\home\DIGILEK.exe" Configuration="home" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\access\DIGILEK.exe" Configuration="access" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>

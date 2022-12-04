@@ -34,6 +34,11 @@ type
     FilterOffBtn: TButton;
     ImageList1: TImageList;
     PfkResetBtn: TButton;
+    PfkSetBtn: TButton;
+    Label2: TLabel;
+    PfkOnCheckBox: TCheckBox;
+    PfkOffCheckBox: TCheckBox;
+    n_gefiltert: TLabel;
     procedure SortLTeileNrBtnClick(Sender: TObject);
     procedure SortLTNameBtnClick(Sender: TObject);
     procedure SortTeilenrBtnClick(Sender: TObject);
@@ -44,8 +49,10 @@ type
     procedure FilterTName2Change(Sender: TObject);
     procedure FilterOffBtnClick(Sender: TObject);
     procedure PfkResetBtnClick(Sender: TObject);
-  private
-    { Private-Deklarationen }
+    procedure PfkSetBtnClick(Sender: TObject);
+    procedure PfkSet(NeuerWert:String);
+    procedure PfkOnCheckBoxClick(Sender: TObject);
+    procedure PfkOffCheckBoxClick(Sender: TObject);
 
   public
     LocalQry: TWQry;
@@ -67,6 +74,7 @@ procedure TLieferantenErklaerungenFrm.Init;
 begin
     LocalQry := Tools.GetQuery;
     LocalQry.HoleLErklaerungen(IdLieferant);
+    FilterUpdate;
     DataSource1.DataSet := LocalQry;
     DatenGeaendert:=False;
 end;
@@ -165,15 +173,66 @@ begin
 
 end;
 
-procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
-var
-  UpdateQry:TWQry;
+procedure TLieferantenErklaerungenFrm.PfkOffCheckBoxClick(Sender: TObject);
 begin
-    UpdateQry := Tools.GetQuery;
-    UpdateQry.ResetLPfkInLErklaerungen;
-    // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
-    LocalQry.Requery();
+  if PfkOffCheckBox.Checked then
+    begin
+       PfkOnCheckBox.Checked:=False;
+       PfkResetBtn.Enabled:=False;
+       PfkSetBtn.Enabled:=False;
+    end
+  else
+    begin
+       PfkResetBtn.Enabled:=True;
+       PfkSetBtn.Enabled:=True;
+    end;
+  FilterUpdate();
 end;
+
+procedure TLieferantenErklaerungenFrm.PfkOnCheckBoxClick(Sender: TObject);
+begin
+  if PfkOnCheckBox.Checked then
+  begin
+     PfkOffCheckBox.Checked:=False;
+     PfkResetBtn.Enabled:=False;
+     PfkSetBtn.Enabled:=False;
+  end
+  else
+    begin
+       PfkResetBtn.Enabled:=True;
+       PfkSetBtn.Enabled:=True;
+    end;
+  FilterUpdate();
+end;
+
+procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
+begin
+  PfkSet('0');
+end;
+
+procedure TLieferantenErklaerungenFrm.PfkSetBtnClick(Sender: TObject);
+begin
+  PfkSet('-1');
+end;
+
+procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:String);
+var
+  LocalQry2:TWQry;
+begin
+    LocalQry2:=Tools.GetQuery;
+    LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION');
+    LocalQry.First;
+    while not LocalQry.Eof do
+    begin
+      LocalQry.Edit;
+      LocalQry.FieldByName('LPfk').AsString:=NeuerWert;
+      LocalQry.Post;
+      LocalQry.Next;
+    end;
+    LocalQry.First;
+    LocalQry2.RunExecSQLQuery('COMMIT');
+end;
+
 
 procedure TLieferantenErklaerungenFrm.FilterUpdate();
 var
@@ -214,8 +273,25 @@ begin
       FilterStr := FilterStr + 'LTeileNr Like ''%' + FilterLTeileNr.Text + '%''';
     end;
 
+    if PfkOnCheckBox.Checked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'LPfk=-1';
+    end;
+
+    if PfkOffCheckBox.Checked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'LPfk=0';
+    end;
+
     LocalQry.Filter := FilterStr;
     LocalQry.Filtered := filtern;
+    n_gefiltert.Caption := Format('Anzahl gefiltert: %d',[LocalQry.RecordCount]);
 
 end;
 

@@ -39,13 +39,14 @@ interface
       function HoleProgrammDaten(Name: String):Boolean;
       function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
-      function HoleTeile():Boolean;
+      function HoleTeile: Boolean;
+      function HoleLieferantenZuTeil(TeileNr:String):Boolean;
       function HoleTeileZumLieferanten(IdLieferant:String):Boolean;
 
 
       //Datenpflege nach Benutzeraktion
 
-      function ResetLPfkInLErklaerungen():Boolean;
+      function ResetLPfkInLErklaerungen(IdLieferant:String):Boolean;
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
       function UpdateLieferant(IdLieferant:Integer;
@@ -60,6 +61,10 @@ interface
       function UpdateTmpAnzErklaerungenJeTeil():Boolean;
       function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
 
+      //Auswertung am Ende
+      function UpdateTeileResetPFK():Boolean;
+      function UpdateTeileSetPFK():Boolean;
+
       //nur lesen mit 1 einzigen Rückgabewert
       function HoleAnzahlTabelleneintraege(tablename:String):Integer;
       function HoleAnzahlPumpenteile():Integer;
@@ -72,7 +77,8 @@ interface
       function LiesProgrammDatenWert(Name:String):String;
       function SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
 
-    end;
+  private
+  end;
 
 implementation
 
@@ -349,7 +355,7 @@ end;
 function TWQrySQLite.HoleLieferanten():Boolean;
 begin
   var sql: String;
-  sql := 'select IdLieferant from lieferanten ORDER BY IdLieferant;';
+  sql := 'select * from lieferanten ORDER BY IdLieferant;';
 
   Result:= RunSelectQuery(sql);
 end;
@@ -364,8 +370,22 @@ begin
   Result:= RunSelectQuery(sql);
 end;
 
-// Liest Teile eines Lieferanten aus Tabelle Teile
-//----------------------------------------------------------------------
+///<summary>Liest Teile mit Lieferanten-Info </summary>
+function TWQrySQLite.HoleLieferantenZuTeil(TeileNr:String): Boolean;
+begin
+  var sql: String;
+  sql := 'select LKurzname, LName1, Abs(LPfk) AS LPfk, StatusTxt '
+       + 'From Lieferanten '
+       + 'JOIN LErklaerungen '
+       + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+       + 'JOIN LieferantenStatusTxt '
+       + 'ON Lieferanten.lekl=LieferantenStatusTxt.Id '
+       + 'WHERE TeileNr=' + QuotedStr(TeileNr)
+       + 'ORDER BY LKurzname;';
+  Result:= RunSelectQuery(sql);
+end;
+
+///<summary> Liest Teile eines Lieferanten aus Tabelle Teile</summary>
 function TWQrySQLite.HoleTeileZumLieferanten(IdLieferant:String):Boolean;
 begin
   var sql: String;
@@ -387,11 +407,12 @@ end;
 // ---------------------------------------------------------------
 
 ///<summary> Set LPfk-Flag in Tabelle LErklaerungen</summary>
-function TWQrySQLite.ResetLPfkInLErklaerungen():Boolean;
+function TWQrySQLite.ResetLPfkInLErklaerungen(IdLieferant:String):Boolean;
   var
     sql: String;
 begin
-  SQL := 'Update LErklaerungen set LPfk=0;' ;
+  SQL := 'Update LErklaerungen set LPfk=0'
+       + 'where IdLieferant=' + IdLieferant;
   Result:= RunExecSQLQuery(sql);
 end;
 
@@ -510,6 +531,23 @@ end;
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
 ///                           eines Teils in Tabelle Teile</summary>
+function TWQrySQLite.UpdateTeileResetPFK: Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET Pfk=0; ';
+  Result:= RunExecSQLQuery(sql);
+end;
+
+function TWQrySQLite.UpdateTeileSetPFK: Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET Pfk=-1 '
+       + 'WHERE  n_LPfk=n_Lieferanten;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
 function TWQrySQLite.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
   var
     sql: String;
