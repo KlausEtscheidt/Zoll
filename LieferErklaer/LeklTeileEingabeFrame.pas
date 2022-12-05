@@ -50,7 +50,7 @@ type
     procedure FilterOffBtnClick(Sender: TObject);
     procedure PfkResetBtnClick(Sender: TObject);
     procedure PfkSetBtnClick(Sender: TObject);
-    procedure PfkSet(NeuerWert:String);
+    procedure PfkSet(NeuerWert:Integer);
     procedure PfkOnCheckBoxClick(Sender: TObject);
     procedure PfkOffCheckBoxClick(Sender: TObject);
 
@@ -81,17 +81,29 @@ end;
 
 procedure TLieferantenErklaerungenFrm.SortLTeileNrBtnClick(Sender: TObject);
 begin
+{$IFDEF FIREDAC}
+   LocalQry.IndexFieldNames  := 'LTeileNr';
+{$ELSE}
    LocalQry.Sort := 'LTeileNr';
+{$ENDIF}
 end;
 
 procedure TLieferantenErklaerungenFrm.SortTeilenrBtnClick(Sender: TObject);
 begin
+{$IFDEF FIREDAC}
+   LocalQry.IndexFieldNames  := 'TeileNr';
+{$ELSE}
    LocalQry.Sort := 'TeileNr';
+{$ENDIF}
 end;
 
 procedure TLieferantenErklaerungenFrm.SortLTNameBtnClick(Sender: TObject);
 begin
+{$IFDEF FIREDAC}
+   LocalQry.IndexFieldNames  := 'TName1,TName2';
+{$ELSE}
    LocalQry.Sort := 'TName1,TName2';
+{$ENDIF}
 end;
 
 
@@ -154,7 +166,11 @@ begin
     UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant, TeileNr, Pfk);
 
     // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
+{$IFNDEF FIREDAC}
     LocalQry.Requery();
+{$ENDIF}
+
+
 
     // Zurueck auf alten Datensatz
     LocalQry.GotoBookmark(BM);
@@ -207,30 +223,40 @@ end;
 
 procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
 begin
-  PfkSet('0');
+  PfkSet(0);
 end;
 
 procedure TLieferantenErklaerungenFrm.PfkSetBtnClick(Sender: TObject);
 begin
-  PfkSet('-1');
+  PfkSet(-1);
 end;
 
-procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:String);
+procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:Integer);
 var
-  LocalQry2:TWQry;
+  UpdateQry,LocalQry2:TWQry;
+//  IdLieferant:Integer;
+  TeileNr:String;
 begin
     LocalQry2:=Tools.GetQuery;
+    UpdateQry:=Tools.GetQuery;
     LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION');
     LocalQry.First;
     while not LocalQry.Eof do
     begin
-      LocalQry.Edit;
-      LocalQry.FieldByName('LPfk').AsString:=NeuerWert;
-      LocalQry.Post;
+//      IdLieferant:=LocalQry.FieldByName('IdLieferant').AsInteger;
+      TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
+      UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant,TeileNr,NeuerWert);
+//      LocalQry.Edit;
+//      LocalQry.FieldByName('LPfk').AsString:=NeuerWert;
+//      LocalQry.Post;
       LocalQry.Next;
     end;
-    LocalQry.First;
+//    LocalQry.First;
     LocalQry2.RunExecSQLQuery('COMMIT');
+{$IFNDEF FIREDAC}
+    LocalQry.Requery();
+{$ENDIF}
+
 end;
 
 

@@ -5,8 +5,8 @@ uses
   mainfrm in 'mainfrm.pas' {mainForm},
   Import in 'Import.pas',
   Tools in 'Tools.pas',
-  ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
-  ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
+  FDConnector in '..\lib\Datenbank\FDConnector.pas',
+  FDQuery in '..\lib\Datenbank\FDQuery.pas',
   QryAccess in 'QryAccess.pas',
   QrySQLite in 'QrySQLite.pas',
   QryUNIPPS in 'QryUNIPPS.pas',
@@ -21,7 +21,9 @@ uses
   TeileAnzeigenDlg in 'TeileAnzeigenDlg.pas' {TeileListeForm},
   Word in 'Word.pas',
   LeklTeileEingabeDlg in 'LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog},
-  ImportStatusInfoDlg in 'ImportStatusInfoDlg.pas' {ImportStatusDlg};
+  ImportStatusInfoDlg in 'ImportStatusInfoDlg.pas' {ImportStatusDlg},
+  ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
+  ADOQuery in '..\lib\Datenbank\ADOQuery.pas';
 
 {$R *.res}
 

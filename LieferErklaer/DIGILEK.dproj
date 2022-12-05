@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">home</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -137,8 +137,8 @@
         </DCCReference>
         <DCCReference Include="Import.pas"/>
         <DCCReference Include="Tools.pas"/>
-        <DCCReference Include="..\lib\Datenbank\ADOConnector.pas"/>
-        <DCCReference Include="..\lib\Datenbank\ADOQuery.pas"/>
+        <DCCReference Include="..\lib\Datenbank\FDConnector.pas"/>
+        <DCCReference Include="..\lib\Datenbank\FDQuery.pas"/>
         <DCCReference Include="QryAccess.pas"/>
         <DCCReference Include="QrySQLite.pas"/>
         <DCCReference Include="QryUNIPPS.pas"/>
@@ -186,6 +186,8 @@
             <Form>ImportStatusDlg</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\lib\Datenbank\ADOConnector.pas"/>
+        <DCCReference Include="..\lib\Datenbank\ADOQuery.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

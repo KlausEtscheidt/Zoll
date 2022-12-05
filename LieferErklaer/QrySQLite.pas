@@ -1,22 +1,22 @@
-﻿/// <summary>SQLite-Datenbank-Abfragen für das Programm PräFix</summary>
+﻿/// <summary>SQLite-Datenbank-Abfragen für das Programm DigiLek</summary>
 /// <remarks>
-/// Die Unit ist identisch zu BaumQryUNIPPS arbeitet jedoch mit einer
-/// SQLite-Datenbank in der geeignete Daten hinterlegt sein müssen.
-///| Die Unit ermöglicht eine Entwicklung ohne UNIPPS-Zugang.
-/// Sie wird durch Compiler-Flags anstatt BaumQryUNIPPS verwendet (s. Unit Tools)
-/// und ist für den Produktivbetrieb überflüssig.
-///| Die Daten werden im UNIPPS-Modus durch Kopieren gewonnen.
-///| Die SQL-Strings sind nicht identisch zu BaumQryUNIPPS, da SQLite teilweise
-/// eine andere Syntax hat, da die Daten aber auch in anderen Tabellen liegen.
+/// Die Unit ist identisch zu QryAccess arbeitet jedoch mit einer
+/// Access-Datenbank.
+///| Die SQL-Strings sind nicht identisch zu QryAccess, da SQLite teilweise
+/// eine andere Syntax hat.
 /// </remarks>
 unit QrySQLite;
 
 interface
 
-  uses System.SysUtils, System.Classes, ADOQuery;
+  uses System.SysUtils, System.Classes, ADOQuery, FDQuery;
 
   type
+{$IFDEF FIREDAC}
+    TWQrySQLite = class(TWFDQuery)
+{$ELSE}
     TWQrySQLite = class(TWADOQuery)
+{$ENDIF}
       //Nacharbeit des UNIPPS-Imports
       function NeueLErklaerungenInTabelle():Boolean;
       function AlteLErklaerungenLoeschen():Boolean;
@@ -36,16 +36,14 @@ interface
       function HoleLieferantenFuerTeileEingabe(min_guelt:string):Boolean;
       function HoleLieferantenStatusTxt():Boolean;
       function HoleLErklaerungen(IdLieferant:Integer):Boolean;
-      function HoleProgrammDaten(Name: String):Boolean;
+//      function HoleProgrammDaten(Name: String):Boolean;
       function HoleBestellungen():Boolean;
       function HoleLieferanten():Boolean;
       function HoleTeile: Boolean;
       function HoleLieferantenZuTeil(TeileNr:String):Boolean;
       function HoleTeileZumLieferanten(IdLieferant:String):Boolean;
 
-
       //Datenpflege nach Benutzeraktion
-
       function ResetLPfkInLErklaerungen(IdLieferant:String):Boolean;
       function UpdateLPfkInLErklaerungen(
                  IdLieferant:Integer; TeileNr:String; Pfk:Integer):Boolean;
@@ -55,13 +53,11 @@ interface
       function UpdateLieferantStandTeile(IdLieferant:Integer;Stand:String):Boolean;
       function UpdateLieferantAnfrageDatum(IdLieferant:Integer;Datum:String):Boolean;
 
-      //Auswertung nach Benutzereingaben
+      //Auswertung am Ende nach allen Benutzereingaben
       function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
       function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
       function UpdateTmpAnzErklaerungenJeTeil():Boolean;
       function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
-
-      //Auswertung am Ende
       function UpdateTeileResetPFK():Boolean;
       function UpdateTeileSetPFK():Boolean;
 
@@ -77,7 +73,6 @@ interface
       function LiesProgrammDatenWert(Name:String):String;
       function SchreibeProgrammDatenWert(Name,Wert:String):Boolean;
 
-  private
   end;
 
 implementation
@@ -330,16 +325,17 @@ begin
   Result:= RunSelectQueryWithParam(sql,[IntToSTr(IdLieferant)]);
 end;
 
+//???????????????????????????????????????
 // Liest Statuswerte aus Tabelle ProgrammDaten
 //----------------------------------------------------------------
-function TWQrySQLite.HoleProgrammDaten(Name: String):Boolean;
-  var sql: String;
-
-begin
-  sql := 'select * From ProgrammDaten where name=? ;';
-
-  Result:= RunSelectQueryWithParam(sql,[Name]);
-end;
+//function TWQrySQLite.HoleProgrammDaten(Name: String):Boolean;
+//  var sql: String;
+//
+//begin
+//  sql := 'select * From ProgrammDaten where name=? ;';
+//
+//  Result:= RunSelectQueryWithParam(sql,[Name]);
+//end;
 
 // Liest Bestellungen aus lokaler Tabelle
 //---------------------------------------------------------------------------
@@ -476,10 +472,10 @@ begin
 end;
 
 
-
 // ---------------------------------------------------------------
 //
-// Änderungs-Abfragen
+// Auswertung am Ende
+//
 // Datenänderungen zur Auswertung nach allen Benutzeraktionen
 //
 // ---------------------------------------------------------------
@@ -531,6 +527,22 @@ end;
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
 ///                           eines Teils in Tabelle Teile</summary>
+function TWQrySQLite.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
+  var
+    sql: String;
+begin
+
+  sql := 'UPDATE Teile SET n_LPfk= '
+       + '(SELECT n as n_LPfk FROM tmp_anz_xxx_je_teil'
+       + ' WHERE  Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr );' ;
+
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in Tabelle Teile</summary>
 function TWQrySQLite.UpdateTeileResetPFK: Boolean;
   var
     sql: String;
@@ -546,19 +558,6 @@ begin
   sql := 'UPDATE Teile SET Pfk=-1 '
        + 'WHERE  n_LPfk=n_Lieferanten;' ;
   Result:= RunExecSQLQuery(sql);
-end;
-
-function TWQrySQLite.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
-  var
-    sql: String;
-begin
-
-  sql := 'UPDATE Teile SET n_LPfk= '
-       + '(SELECT n as n_LPfk FROM tmp_anz_xxx_je_teil'
-       + ' WHERE  Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr );' ;
-
-  Result:= RunExecSQLQuery(sql);
-
 end;
 
 // ---------------------------------------------------------------

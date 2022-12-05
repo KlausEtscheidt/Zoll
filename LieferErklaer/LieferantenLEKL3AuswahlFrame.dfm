@@ -188,6 +188,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
           Alignment = taCenter
           Expanded = False
           FieldName = 'Stand'
+          Title.Caption = 'Stand Lekl'
           Width = 70
           Visible = True
         end
@@ -312,7 +313,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Align = alTop
         Alignment = taRightJustify
         AutoSize = False
-        Caption = 'Datum Status:'
+        Caption = 'Stand Lekl:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -331,7 +332,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Align = alTop
         Alignment = taRightJustify
         AutoSize = False
-        Caption = 'Datum Teilestatus:'
+        Caption = 'Stand Teile:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -418,7 +419,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         AlignWithMargins = True
         Left = 0
         Top = 3
-        Width = 325
+        Width = 35
         Height = 14
         Margins.Left = 0
         Margins.Right = 0
@@ -430,7 +431,6 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitWidth = 35
       end
       object DBText1: TDBText
         AlignWithMargins = True

@@ -5,35 +5,52 @@ interface
 uses
 System.SysUtils,  System.Classes, Vcl.Dialogs,
 Data.Win.ADODB,
-ADOConnector,QryAccess,QrySQLite ;
+  FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+FDConnector,ADOConnector,QryAccess,QrySQLite ;
 
-
-{$IFDEF HOME}
-type
-  TWQry = TWQrySQLite;
-
+{$IFDEF FIREDAC}
+ type
+    TWQry = TWQrySQLite;
+    TWTable = TFDTable;
 {$ELSE}
-
-  {$IFDEF SQLITE}
-  //nur fuer Tests auch im Office SQLITE statt Access nutzen
+  type
+    TWTable = TADOTable;
+  {$IFDEF HOME}
   type
     TWQry = TWQrySQLite;
-  {$ELSE}
-  type
-    TWQry = TWQryAccess;
-  {$ENDIF}
 
+  {$ELSE}
+
+    {$IFDEF SQLITE}
+    //nur fuer Tests auch im Office SQLITE statt Access nutzen
+    type
+      TWQry = TWQrySQLite;
+
+    {$ELSE}
+    type
+      TWQry = TWQryAccess;
+    {$ENDIF}
+
+  {$ENDIF}
 {$ENDIF}
 
 procedure init();
 function GetQuery() : TWQry;
-function GetTable(Tablename : String) : TADOTable;
+function GetTable(Tablename : String) : TWTable;
 
 var
 //  Log: TLogFile;
 //  ErrLog: TLogFile;
   IsInitialized:Boolean;
+{$IFDEF FIREDAC}
+  DbConnector:TWFDConnector;
+{$ELSE}
   DbConnector:TWADOConnector;
+{$ENDIF}
+
   ApplicationBaseDir: String;
 
 const SQLiteDBFileName: String =
@@ -42,6 +59,8 @@ const AccessDBFileName: String =
     '\db\LieferErklaer.accdb';
 
 implementation
+
+
 
 procedure init();
 begin
@@ -58,8 +77,11 @@ begin
 
 //  Log:=TLogFile.Create();
 //  ErrLog:=TLogFile.Create();
-
+{$IFDEF FIREDAC}
+  DbConnector:=TWFDConnector.Create(nil);
+{$ELSE}
   DbConnector:=TWADOConnector.Create(nil);
+{$ENDIF}
   try
    {$IFDEF HOME}
    DbConnector.ConnectToSQLite(ApplicationBaseDir+SQLiteDBFileName);
@@ -76,7 +98,7 @@ begin
      on E: Exception do
     begin
        ShowMessage(E.Message);
-       raise;
+//       raise;
     end;
 
   end;
@@ -95,12 +117,27 @@ begin
    Result:= Qry;
 end;
 
-function GetTable(Tablename : String) : TADOTable;
+{$IFDEF FIREDAC}
+function GetTable(Tablename : String) : TWTable;
+var
+  Tab: TFDTable;
+
+begin
+  //Tabelle erzeugen
+  Tab := TFDTable.Create(nil);
+//  Tab.TableDirect := True;
+  Tab.TableName := Tablename;
+  //Connector setzen
+  Tab.Connection := DbConnector.Connection;
+  Result:= Tab;
+end;
+{$ELSE}
+function GetTable(Tablename : String) : TWTable;
 var
   Tab: TADOTable;
 
 begin
-  //Query erzeugen
+  //Tabelle erzeugen
   Tab := TADOTable.Create(nil);
   Tab.TableDirect := True;
   Tab.TableName := Tablename;
@@ -108,6 +145,7 @@ begin
   Tab.Connection := DbConnector.Connection;
   Result:= Tab;
 end;
+{$ENDIF}
 
 
 initialization

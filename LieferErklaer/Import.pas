@@ -207,13 +207,17 @@ procedure TBasisImport.LieferantenTeilenummerAusUnipps();
 var
   IdLieferant: String;
   TeileNr, LTeileNr: String;
-  Bestellungen: TADOTable;
+//  Bestellungen: TADOTable;
+  Bestellungen: TWTable;
   ErrMsg:String;
 
 begin
 
   SchrittAnfangAnzeigen(2,'Lieferanten-Teilenummern lesen');
   Bestellungen := Tools.GetTable('Bestellungen');
+
+//  Bestellungen := Tools.GetQuery;
+//  Bestellungen.RunSelectQuery('SELECT * FROM Bestellungen');
 
   Bestellungen.Open;
   Bestellungen.First;

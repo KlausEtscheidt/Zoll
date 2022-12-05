@@ -152,7 +152,10 @@ begin
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
     // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
+{$IFNDEF FIREDAC}
     LocalQry.Requery();
+{$ENDIF}
+
     // Gehe auf ursp�nglichen Datensatz
     LocalQry.GotoBookmark(BM);
 
@@ -218,7 +221,10 @@ begin
                                                             Kommentar);
 
       // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
-      LocalQry.Requery();
+{$IFNDEF FIREDAC}
+    LocalQry.Requery();
+{$ENDIF}
+
 
       // Gehe auf ursp�nglichen Datensatz
       LocalQry.GotoBookmark(BM);

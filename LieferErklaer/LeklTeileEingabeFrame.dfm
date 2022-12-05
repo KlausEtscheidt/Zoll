@@ -29,8 +29,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Caption = 'Kurzname'
   end
   object IdLieferantLbl: TLabel
-    Left = 171
-    Top = 16
+    Left = 203
+    Top = 15
     Width = 53
     Height = 13
     Caption = 'IdLieferant'
@@ -91,7 +91,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     Left = 14
     Top = 176
     Width = 702
-    Height = 359
+    Height = 352
     AllowDelete = False
     AllowInsert = False
     DataSource = DataSource1
@@ -239,7 +239,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   object PfkOnCheckBox: TCheckBox
     Left = 512
     Top = 112
-    Width = 41
+    Width = 57
     Height = 17
     Caption = 'Pfk 1'
     TabOrder = 11
@@ -248,7 +248,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   object PfkOffCheckBox: TCheckBox
     Left = 512
     Top = 141
-    Width = 41
+    Width = 57
     Height = 17
     Caption = 'Pfk 0'
     TabOrder = 12
