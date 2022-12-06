@@ -28,14 +28,14 @@ FDConnector,ADOConnector,QryAccess,QrySQLite ;
 {$ENDIF}
 
 procedure init();
-function GetQuery() : TWQry;
+function GetConnection() : TWDBConnector;
+function GetQuery(ForThread:Boolean=False) : TWQry;
 function GetTable(Tablename : String) : TWTable;
 
 var
-//  Log: TLogFile;
-//  ErrLog: TLogFile;
   IsInitialized:Boolean;
   DbConnector:TWDBConnector;
+  DbConnector2:TWDBConnector; //Fuer Thread-Abläufe
   ApplicationBaseDir: String;
 
 const
@@ -44,7 +44,43 @@ const
 
 implementation
 
+//Liefert verbundene Connection zu einer Access- oder SQLite-Datenbank
+function GetConnection() : TWDBConnector;
+  var
+    myConnector:TWDBConnector;
+begin
+    myConnector:= nil;
+{$IFDEF FIREDAC}
+    myConnector:=TWFDConnector.Create(nil);
+    myConnector.LockingMode:='Normal'; //multiuser
+//    myConnector.Synchronous:='Normal';  //multiuser
+    myConnector.Synchronous:='Full';  //multiuser
+{$ELSE}
+    myConnector:=TWADOConnector.Create(nil);
+{$ENDIF}
+
+  try
+    {$IFDEF SQLITE}
+    //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
+       myConnector.ConnectToSQLite(ApplicationBaseDir+SQLiteDBFileName);
+    {$ELSE}
+       myConnector.ConnectToAccess(ApplicationBaseDir+AccessDBFileName);
+    {$ENDIF}
+  except
+     on E: Exception do
+    begin
+       ShowMessage(E.Message);
+//       raise;
+    end;
+
+  end;
+
+  Result:=myConnector;
+
+end;
+
 procedure init();
+
 begin
   //Wir wollen das hier nur 1 mal ausführen
   if IsInitialized then
@@ -57,43 +93,24 @@ begin
    ApplicationBaseDir:=ExtractFileDir(ExtractFileDir(ApplicationBaseDir));
 {$ENDIF}
 
-{$IFDEF FIREDAC}
-    DbConnector:=TWFDConnector.Create(nil);
-    DbConnector.LockingMode:='Normal'; //multiuser
-//    DbConnector.Synchronous:='Normal';  //multiuser
-    DbConnector.Synchronous:='Full';  //multiuser
-{$ELSE}
-    DbConnector:=TWADOConnector.Create(nil);
-{$ENDIF}
-//DbConnector.Create(nil);
-
-  try
-    {$IFDEF SQLITE}
-    //nur fuer Tests auch im Office SQLITE statt UNIPPS nutzen
-       DbConnector.ConnectToSQLite(ApplicationBaseDir+SQLiteDBFileName);
-    {$ELSE}
-       DbConnector.ConnectToAccess(ApplicationBaseDir+AccessDBFileName);
-    {$ENDIF}
-  except
-     on E: Exception do
-    begin
-       ShowMessage(E.Message);
-//       raise;
-    end;
-
-  end;
+  //Globalen Connector fuer alle "normalen" Queries setzen
+  DbConnector:=GetConnection();
+  //Globalen Connector fuer alle Queries, die in einem eigenen Thread laufen
+  DbConnector2:=GetConnection();
 
 end;
 
-function GetQuery() : TWQry;
+function GetQuery(ForThread:Boolean=False) : TWQry;
 var
   Qry: TWQry;
-
 begin
     //Query erzeugen
    Qry := TWQry.Create(nil);
    //Connector setzen
-   Qry.Connector:=DbConnector;
+   if ForThread then
+     Qry.Connector:=DbConnector2
+   else
+     Qry.Connector:=DbConnector;
    Result:= Qry;
 end;
 
