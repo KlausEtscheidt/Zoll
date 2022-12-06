@@ -20,7 +20,9 @@ unit FDQuery;
 interface
 
   uses System.SysUtils, System.Classes,
-            StrUtils,Data.DB,Data.Win.ADODB, ADOConnector;
+            StrUtils,Data.DB,Data.Win.ADODB,
+            FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+            FDConnector;
 
   /// <summary>Fehler, wenn Datenbank nicht verbunden.</summary>
   type EWQueryErr = class(Exception);
@@ -33,10 +35,10 @@ interface
     /// Vor der eigentlichen Abfrage einer neuen Instanz muss
     /// ein TWADOConnector gesetzt werden.
     ///</remarks>
-    TWFDQuery = class(TADOQuery)
+    TWFDQuery = class(TFDQuery)
     private
-      FConnector:TWADOConnector;
-      procedure SetConnector(AConnector: TWADOConnector);
+      FConnector:TWFDConnector;
+      procedure SetConnector(AConnector: TWFDConnector);
       function GetDatenbank():String;
       function GetDatenbankpfad():String;
       function GetFieldValues(): System.TArray<String>;
@@ -59,7 +61,7 @@ interface
       function GetFieldNamesAsText(): String;
 
       /// <summary>Objekt, welches Datenbankverbindung hält.  </summary>
-      property Connector:TWADOConnector write SetConnector;
+      property Connector:TWFDConnector write SetConnector;
 //      property IsConnected:Boolean read GetIsConnected;
       /// <summary>Name, der verbundenen Datenbank</summary>
       property Datenbank: String read GetDatenbank;
@@ -103,20 +105,22 @@ begin
 
   //Verbinden und SQL befuellen
   PrepareQuery(sql);
-
-  NParam:=length(paramlist) ;
-
-  if Self.Parameters.Count<>NParam then
-    raise EWQueryErr.Create(Format(
-          '>%d< Parameter übergeben; >%d< Parameter verlangt vom SQL: >%s<',
-                       [NParam,Parameters.Count,SQL]));
-
-  //Parameter in Qry-Objekt uebernehmen
-  for I := 0 to NParam-1 do
+  Params.Clear;
+  for I := 0 to length(paramlist) -1 do
   begin
-    Self.Parameters.Items[I].DataType := ftString;
-    Self.Parameters.Items[I].Value := paramlist[I];
+    with Params.Add do begin
+        DataType := ftString;
+        Value:= paramlist[I];
+    end;
+
   end;
+
+//  NParam:=length(paramlist) ;
+
+//  if Self.Params.Count<>NParam then
+//    raise EWQueryErr.Create(Format(
+//          '>%d< Parameter übergeben; >%d< Parameter verlangt vom SQL: >%s<',
+//                       [NParam,Params.Count,SQL]));
 
   //Ausfuehren per Open da Ergebnis geliefert wird
   Self.ExecuteQuery(True);
@@ -173,20 +177,23 @@ begin
   //Verbinden und SQL befuellen
   PrepareQuery(sql);
 
-    try
-
-    //Daten als Parameter in Query
-    for myField in myFields do
-    begin
-//        myparam:=Self.Parameters.CreateParameter(myField.FieldName,
-//                         myField.DataType,pdInput,20,myField.Value) ;
-//        myparam:=Self.Parameters.AddParameter;
-//        myparam.Name:=myField.FieldName;
-//        myparam.DataType:= myField.DataType; // ftString;
-//        myparam.Value:= myField.Value; // .AsString;
-        Self.Parameters.ParamByName(myField.FieldName).DataType := myField.DataType;
-        Self.Parameters.ParamByName(myField.FieldName).Value := myField.Value;
-    end;
+  try
+      Params.Clear;
+      //Daten als Parameter in Query
+      for myField in myFields do
+      begin
+  //        myparam:=Self.Parameters.CreateParameter(myField.FieldName,
+  //                         myField.DataType,pdInput,20,myField.Value) ;
+  //        myparam:=Self.Parameters.AddParameter;
+  //        myparam.Name:=myField.FieldName;
+  //        myparam.DataType:= myField.DataType; // ftString;
+  //        myparam.Value:= myField.Value; // .AsString;
+          with Params.Add do begin
+              Name:=myField.FieldName;
+              DataType := myField.DataType;
+              Value:= myField.Value;
+          end;
+      end;
 
     //Ausfuehren
     ExecuteQuery(False);
@@ -219,7 +226,6 @@ begin
   Self.SQL.Add(sql);
   Self.SQL.EndUpdate;
 
-
 end;
 
 //Fuehrt ExecSQL oder Open (bei WithResult:=True) aus
@@ -233,7 +239,7 @@ begin
     n_records:=self.GetRecordCount();
   end
   else
-    n_records:=Self.ExecSQL();
+     Self.ExecSQL;
 
   gefunden:=n_records>0;
 
@@ -331,7 +337,7 @@ end;
 
 //Besetzt die Connector-Eigenschaft, der eine Verbindung zur DB h�lt
 //-----------------------------------------------------------
-procedure TWFDQuery.SetConnector(AConnector: TWADOConnector);
+procedure TWFDQuery.SetConnector(AConnector: TWFDConnector);
 begin
   FConnector:=AConnector;
 end;

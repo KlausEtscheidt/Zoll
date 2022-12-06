@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">SQLiteFD</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -34,7 +34,35 @@
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='home' or '$(Cfg_3)'!=''">
+    <PropertyGroup Condition="'$(Config)'=='TADO' or '$(Cfg_4)'!=''">
+        <Cfg_4>true</Cfg_4>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='SQLite' or '$(Cfg_5)'!=''">
+        <Cfg_5>true</Cfg_5>
+        <CfgParent>Cfg_4</CfgParent>
+        <Cfg_4>true</Cfg_4>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_5)'=='true') or '$(Cfg_5_Win32)'!=''">
+        <Cfg_5_Win32>true</Cfg_5_Win32>
+        <CfgParent>Cfg_5</CfgParent>
+        <Cfg_5>true</Cfg_5>
+        <Cfg_4>true</Cfg_4>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Access' or '$(Cfg_6)'!=''">
+        <Cfg_6>true</Cfg_6>
+        <CfgParent>Cfg_4</CfgParent>
+        <Cfg_4>true</Cfg_4>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='FireDac' or '$(Cfg_3)'!=''">
         <Cfg_3>true</Cfg_3>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
@@ -47,9 +75,33 @@
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='access' or '$(Cfg_4)'!=''">
-        <Cfg_4>true</Cfg_4>
-        <CfgParent>Cfg_1</CfgParent>
+    <PropertyGroup Condition="'$(Config)'=='SQLiteFD' or '$(Cfg_9)'!=''">
+        <Cfg_9>true</Cfg_9>
+        <CfgParent>Cfg_3</CfgParent>
+        <Cfg_3>true</Cfg_3>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_9)'=='true') or '$(Cfg_9_Win32)'!=''">
+        <Cfg_9_Win32>true</Cfg_9_Win32>
+        <CfgParent>Cfg_9</CfgParent>
+        <Cfg_9>true</Cfg_9>
+        <Cfg_3>true</Cfg_3>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='AccessFD' or '$(Cfg_10)'!=''">
+        <Cfg_10>true</Cfg_10>
+        <CfgParent>Cfg_3</CfgParent>
+        <Cfg_3>true</Cfg_3>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_10)'=='true') or '$(Cfg_10_Win32)'!=''">
+        <Cfg_10_Win32>true</Cfg_10_Win32>
+        <CfgParent>Cfg_10</CfgParent>
+        <Cfg_10>true</Cfg_10>
+        <Cfg_3>true</Cfg_3>
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
@@ -102,14 +154,36 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_4)'!=''">
+        <VerInfo_Locale>1031</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_5_Win32)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_3)'!=''">
-        <DCC_Define>HOME;$(DCC_Define)</DCC_Define>
+        <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>
+        <VerInfo_Locale>1031</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_3_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_9_Win32)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_10_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -131,58 +205,58 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="mainfrm.pas">
+        <DCCReference Include="units\mainfrm.pas">
             <Form>mainForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Import.pas"/>
-        <DCCReference Include="Tools.pas"/>
+        <DCCReference Include="units\Import.pas"/>
+        <DCCReference Include="units\Tools.pas"/>
         <DCCReference Include="..\lib\Datenbank\FDConnector.pas"/>
         <DCCReference Include="..\lib\Datenbank\FDQuery.pas"/>
-        <DCCReference Include="QryAccess.pas"/>
-        <DCCReference Include="QrySQLite.pas"/>
-        <DCCReference Include="QryUNIPPS.pas"/>
-        <DCCReference Include="LieferantenLEKL3AuswahlFrame.pas">
+        <DCCReference Include="units\Queries\QryAccess.pas"/>
+        <DCCReference Include="units\Queries\QrySQLite.pas"/>
+        <DCCReference Include="units\Queries\QryUNIPPS.pas"/>
+        <DCCReference Include="units\Frames\LieferantenLEKL3AuswahlFrame.pas">
             <Form>LieferantenStatusFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="LieferantenStatusDlg.pas">
+        <DCCReference Include="units\Dialoge\LieferantenStatusDlg.pas">
             <Form>LieferantenStatusDialog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="TeileStatusKontrolleFrame.pas">
+        <DCCReference Include="units\Frames\TeileStatusKontrolleFrame.pas">
             <Form>TeileStatusKontrolleFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="ExportFrame.pas">
+        <DCCReference Include="units\Frames\ExportFrame.pas">
             <Form>GesamtStatusFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="LeklTeileEingabeFrame.pas">
+        <DCCReference Include="units\Frames\LeklTeileEingabeFrame.pas">
             <Form>LieferantenErklaerungenFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="LeklAnfordernFrame.pas">
+        <DCCReference Include="units\Frames\LeklAnfordernFrame.pas">
             <Form>LieferantenErklAnfordernFrm</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Excel.pas"/>
-        <DCCReference Include="Mailing.pas"/>
-        <DCCReference Include="TeileAnzeigenDlg.pas">
+        <DCCReference Include="units\Office\Excel.pas"/>
+        <DCCReference Include="units\Office\Mailing.pas"/>
+        <DCCReference Include="units\Dialoge\TeileAnzeigenDlg.pas">
             <Form>TeileListeForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Word.pas"/>
-        <DCCReference Include="LeklTeileEingabeDlg.pas">
+        <DCCReference Include="units\Office\Word.pas"/>
+        <DCCReference Include="units\Dialoge\LeklTeileEingabeDlg.pas">
             <Form>LeklTeileEingabeDialog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="ImportStatusInfoDlg.pas">
+        <DCCReference Include="units\Dialoge\ImportStatusInfoDlg.pas">
             <Form>ImportStatusDlg</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -191,21 +265,37 @@
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
-        <BuildConfiguration Include="access">
-            <Key>Cfg_4</Key>
-            <CfgParent>Cfg_1</CfgParent>
+        <BuildConfiguration Include="SQLiteFD">
+            <Key>Cfg_9</Key>
+            <CfgParent>Cfg_3</CfgParent>
         </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
-        <BuildConfiguration Include="home">
-            <Key>Cfg_3</Key>
-            <CfgParent>Cfg_1</CfgParent>
-        </BuildConfiguration>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="FireDac">
+            <Key>Cfg_3</Key>
+            <CfgParent>Cfg_1</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Access">
+            <Key>Cfg_6</Key>
+            <CfgParent>Cfg_4</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="TADO">
+            <Key>Cfg_4</Key>
+            <CfgParent>Cfg_1</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="SQLite">
+            <Key>Cfg_5</Key>
+            <CfgParent>Cfg_4</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="AccessFD">
+            <Key>Cfg_10</Key>
+            <CfgParent>Cfg_3</CfgParent>
         </BuildConfiguration>
     </ItemGroup>
     <ProjectExtensions>
@@ -217,7 +307,6 @@
                     <Source Name="MainSource">DIGILEK.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
@@ -228,7 +317,19 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Win32\FireDac\DIGILEK.exe" Configuration="FireDac" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>DIGILEK.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\home\DIGILEK.exe" Configuration="home" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>DIGILEK.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\SQLite\DIGILEK.exe" Configuration="SQLite" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>

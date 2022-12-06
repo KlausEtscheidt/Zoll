@@ -25,7 +25,7 @@ Data.Win.ADODB  ;
 type
     ///<summary>Wenn die Verbindung zur Datenbank fehlschlägt,
     ///wird der Fehler: &quot;Konnte Datenbank nicht öffen.&quot; erzeugt.</summary>
-    EDBConnecErr = class(Exception);
+    EFDConnectErr = class(Exception);
 
     ///<summary>Klasse zur einfachen Verbindung mit UNIPPS oder SQLite</summary>
     TWFDConnector = class(TComponent)
