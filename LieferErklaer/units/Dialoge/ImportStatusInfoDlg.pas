@@ -2,7 +2,8 @@
 
 interface
 
-uses WinApi.Windows, System.SysUtils, System.Classes, DateUtils,
+uses WinApi.Windows, System.SysUtils, System.Classes,
+  DateUtils,
   Vcl.Graphics, Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons,
   Vcl.Grids, Vcl.ExtCtrls,
   Import;
@@ -100,6 +101,8 @@ begin
 //      StringGrid1.Cells[2,row] := 'OK';
 //      StringGrid1.Canvas.Font.Color := clBlack;
     end;
+
+  //Unipps Daten in eigenem Thread lesen
   TBasisImport.Create(False);
 end;
 

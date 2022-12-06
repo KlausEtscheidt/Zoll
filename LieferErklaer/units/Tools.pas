@@ -59,6 +59,9 @@ begin
 
 {$IFDEF FIREDAC}
     DbConnector:=TWFDConnector.Create(nil);
+    DbConnector.LockingMode:='Normal'; //multiuser
+//    DbConnector.Synchronous:='Normal';  //multiuser
+    DbConnector.Synchronous:='Full';  //multiuser
 {$ELSE}
     DbConnector:=TWADOConnector.Create(nil);
 {$ENDIF}

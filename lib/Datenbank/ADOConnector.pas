@@ -112,6 +112,7 @@ var
   // Connection string angezeigt
   //Wie kann man prüfen ob der Treiber auf dem lokalen Rechner vorliegt ?
   Provider := 'Microsoft.ACE.OLEDB.16.0';
+  Provider := 'Microsoft.ACE.OLEDB.12.0';
   ConnString :=
         'Provider=' + Provider + ';Persist Security Info=False;' +
         'Data Source=' + PathTODBFile + ';';
@@ -150,7 +151,7 @@ var
   try
     ConnectToDB(ConnString, Provider);
   except
-    raise Exception.Create('Konnte UNIPPS nicht �ffen.' );
+    raise Exception.Create('Konnte UNIPPS nicht öffnen.' );
   end;
 
   Datenbank:='UNIPPS';   //nur Info

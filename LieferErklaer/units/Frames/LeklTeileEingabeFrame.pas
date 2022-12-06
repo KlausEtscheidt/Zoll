@@ -100,7 +100,7 @@ end;
 procedure TLieferantenErklaerungenFrm.SortLTNameBtnClick(Sender: TObject);
 begin
 {$IFDEF FIREDAC}
-   LocalQry.IndexFieldNames  := 'TName1,TName2';
+   LocalQry.IndexFieldNames  := 'TName1;TName2';
 {$ELSE}
    LocalQry.Sort := 'TName1,TName2';
 {$ENDIF}
@@ -166,11 +166,11 @@ begin
     UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant, TeileNr, Pfk);
 
     // Basis-Abfrage erneuern, um aktuelle Daten anzuzeigen
-{$IFNDEF FIREDAC}
+{$IFDEF FIREDAC}
+    LocalQry.Refresh;
+{$ELSE}
     LocalQry.Requery();
 {$ENDIF}
-
-
 
     // Zurueck auf alten Datensatz
     LocalQry.GotoBookmark(BM);
@@ -234,28 +234,28 @@ end;
 procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:Integer);
 var
   UpdateQry,LocalQry2:TWQry;
-//  IdLieferant:Integer;
   TeileNr:String;
 begin
+    //merken das Daten geaendert wurden
+    DatenGeaendert:=True;
+
     LocalQry2:=Tools.GetQuery;
     UpdateQry:=Tools.GetQuery;
     LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION');
     LocalQry.First;
     while not LocalQry.Eof do
     begin
-//      IdLieferant:=LocalQry.FieldByName('IdLieferant').AsInteger;
       TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
       UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant,TeileNr,NeuerWert);
-//      LocalQry.Edit;
-//      LocalQry.FieldByName('LPfk').AsString:=NeuerWert;
-//      LocalQry.Post;
       LocalQry.Next;
     end;
-//    LocalQry.First;
     LocalQry2.RunExecSQLQuery('COMMIT');
-{$IFNDEF FIREDAC}
+{$IFDEF FIREDAC}
+    LocalQry.Refresh;
+{$ELSE}
     LocalQry.Requery();
 {$ENDIF}
+    LocalQry.First;
 
 end;
 

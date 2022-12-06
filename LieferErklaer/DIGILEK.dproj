@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">SQLiteFD</Config>
+        <Config Condition="'$(Config)'==''">SQLiteFDR</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -116,6 +116,92 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='TADOR' or '$(Cfg_8)'!=''">
+        <Cfg_8>true</Cfg_8>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_8)'=='true') or '$(Cfg_8_Win32)'!=''">
+        <Cfg_8_Win32>true</Cfg_8_Win32>
+        <CfgParent>Cfg_8</CfgParent>
+        <Cfg_8>true</Cfg_8>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='SQLiteTADOR' or '$(Cfg_12)'!=''">
+        <Cfg_12>true</Cfg_12>
+        <CfgParent>Cfg_8</CfgParent>
+        <Cfg_8>true</Cfg_8>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_12)'=='true') or '$(Cfg_12_Win32)'!=''">
+        <Cfg_12_Win32>true</Cfg_12_Win32>
+        <CfgParent>Cfg_12</CfgParent>
+        <Cfg_12>true</Cfg_12>
+        <Cfg_8>true</Cfg_8>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='AccessTADOR' or '$(Cfg_13)'!=''">
+        <Cfg_13>true</Cfg_13>
+        <CfgParent>Cfg_8</CfgParent>
+        <Cfg_8>true</Cfg_8>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_13)'=='true') or '$(Cfg_13_Win32)'!=''">
+        <Cfg_13_Win32>true</Cfg_13_Win32>
+        <CfgParent>Cfg_13</CfgParent>
+        <Cfg_13>true</Cfg_13>
+        <Cfg_8>true</Cfg_8>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='FireDacR' or '$(Cfg_11)'!=''">
+        <Cfg_11>true</Cfg_11>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_11)'=='true') or '$(Cfg_11_Win32)'!=''">
+        <Cfg_11_Win32>true</Cfg_11_Win32>
+        <CfgParent>Cfg_11</CfgParent>
+        <Cfg_11>true</Cfg_11>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='SQLiteFDR' or '$(Cfg_14)'!=''">
+        <Cfg_14>true</Cfg_14>
+        <CfgParent>Cfg_11</CfgParent>
+        <Cfg_11>true</Cfg_11>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_14)'=='true') or '$(Cfg_14_Win32)'!=''">
+        <Cfg_14_Win32>true</Cfg_14_Win32>
+        <CfgParent>Cfg_14</CfgParent>
+        <Cfg_14>true</Cfg_14>
+        <Cfg_11>true</Cfg_11>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='AccessFDR' or '$(Cfg_15)'!=''">
+        <Cfg_15>true</Cfg_15>
+        <CfgParent>Cfg_11</CfgParent>
+        <Cfg_11>true</Cfg_11>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_15)'=='true') or '$(Cfg_15_Win32)'!=''">
+        <Cfg_15_Win32>true</Cfg_15_Win32>
+        <CfgParent>Cfg_15</CfgParent>
+        <Cfg_15>true</Cfg_15>
+        <Cfg_11>true</Cfg_11>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -201,6 +287,46 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_8)'!=''"/>
+    <PropertyGroup Condition="'$(Cfg_8_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_12)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_12_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_13_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_11)'!=''">
+        <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_11_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_14)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_14_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_15_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -265,37 +391,61 @@
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="TADOR">
+            <Key>Cfg_8</Key>
+            <CfgParent>Cfg_2</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="TADO">
+            <Key>Cfg_4</Key>
+            <CfgParent>Cfg_1</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="AccessFD">
+            <Key>Cfg_10</Key>
+            <CfgParent>Cfg_3</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="FireDacR">
+            <Key>Cfg_11</Key>
+            <CfgParent>Cfg_2</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="SQLiteTADOR">
+            <Key>Cfg_12</Key>
+            <CfgParent>Cfg_8</CfgParent>
+        </BuildConfiguration>
         <BuildConfiguration Include="SQLiteFD">
             <Key>Cfg_9</Key>
             <CfgParent>Cfg_3</CfgParent>
         </BuildConfiguration>
+        <BuildConfiguration Include="SQLiteFDR">
+            <Key>Cfg_14</Key>
+            <CfgParent>Cfg_11</CfgParent>
+        </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
-        <BuildConfiguration Include="Debug">
-            <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
         <BuildConfiguration Include="FireDac">
             <Key>Cfg_3</Key>
             <CfgParent>Cfg_1</CfgParent>
         </BuildConfiguration>
+        <BuildConfiguration Include="AccessFDR">
+            <Key>Cfg_15</Key>
+            <CfgParent>Cfg_11</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="AccessTADOR">
+            <Key>Cfg_13</Key>
+            <CfgParent>Cfg_8</CfgParent>
+        </BuildConfiguration>
         <BuildConfiguration Include="Access">
             <Key>Cfg_6</Key>
             <CfgParent>Cfg_4</CfgParent>
         </BuildConfiguration>
-        <BuildConfiguration Include="TADO">
-            <Key>Cfg_4</Key>
-            <CfgParent>Cfg_1</CfgParent>
-        </BuildConfiguration>
         <BuildConfiguration Include="SQLite">
             <Key>Cfg_5</Key>
             <CfgParent>Cfg_4</CfgParent>
-        </BuildConfiguration>
-        <BuildConfiguration Include="AccessFD">
-            <Key>Cfg_10</Key>
-            <CfgParent>Cfg_3</CfgParent>
         </BuildConfiguration>
     </ItemGroup>
     <ProjectExtensions>
@@ -307,6 +457,7 @@
                     <Source Name="MainSource">DIGILEK.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>

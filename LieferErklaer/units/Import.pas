@@ -3,12 +3,16 @@ unit Import;
 
 interface
 
-uses System.SysUtils,classes, Data.DB, Data.Win.ADODB,DateUtils,
+uses System.SysUtils,classes,Vcl.Dialogs,
+     Data.DB, Data.Win.ADODB,DateUtils,
      Tools,ADOConnector,ADOQuery,QryUNIPPS,QrySQLite;
 
 type TBasisImport = class(TThread)
      private
         var
+          //Lokale DB-Connection
+          //Lokale Query
+          //Statusanzeige
           StatusAktRecord,StatusMaxRecord:Integer;
           StatusSchrittNr:Integer;
           StatusSchrittBenennung:String;
@@ -37,12 +41,12 @@ type TBasisImport = class(TThread)
        procedure Execute; override;
      end;
 
-procedure InitDBConnect;
+procedure UNIPPSConnect;
 procedure LieferantenAdressdatenAusUnipps;
 procedure Auswerten();
 
 var
-  DBisInitialized:Boolean;
+  UNIPPSConnected:Boolean;
   LocalQry: TWQry;
   UnippsQry: TWQryUNIPPS;
   dbUnippsConn: TWADOConnector;
@@ -121,11 +125,9 @@ end;
 procedure TBasisImport.Execute;
 begin
   FreeOnTerminate:=True;
-  try
-    InitDBConnect;
-  except
+  UNIPPSConnect;
+  if not UNIPPSConnected then
     exit;
-  end;
 
   // Tabelle Bestellungen leeren und neu befuellen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
@@ -215,8 +217,8 @@ procedure TBasisImport.LieferantenTeilenummerAusUnipps();
 var
   IdLieferant: String;
   TeileNr, LTeileNr: String;
-//  Bestellungen: TADOTable;
   Bestellungen: TWTable;
+//  Bestellungen: TWQry;
   ErrMsg:String;
 
 begin
@@ -228,6 +230,9 @@ begin
 //  Bestellungen.RunSelectQuery('SELECT * FROM Bestellungen');
 
   Bestellungen.Open;
+  {$IFDEF FIREDAC}
+  Bestellungen.FetchAll;
+  {$ENDIF}
   Bestellungen.First;
   LocalQry.RunExecSQLQuery('BEGIN TRANSACTION;');
 
@@ -350,6 +355,9 @@ begin
   SchrittAnfangAnzeigen(5, 'Teste ob Teil Pumpenteil');
 
   gefunden :=LocalQry.HoleTeile;
+  {$IFDEF FIREDAC}
+  LocalQry.FetchAll;
+  {$ENDIF}
 
   StatusmaxRecord:=LocalQry.RecordCount;
   while not LocalQry.Eof do
@@ -431,12 +439,12 @@ begin
   SchrittEndeAnzeigen;
 end;
 
+/// <summary> Finale Auswertung und Erzeugen der UNIPPS-Export-Tabelle</summary>
 procedure Auswerten();
 var
   minRestGueltigkeit:String;
 
 begin
-//  InitDBConnect;
 
   StatusBarLeft('Beginne Auswertung');
   // Qry fuer lokale DB anlegen
@@ -477,7 +485,9 @@ end;
 ///<summary>Hole Adressdaten aus UNIPPS in eigene Tabelle</summary>
 procedure LieferantenAdressdatenAusUnipps();
 begin
-  InitDBConnect;
+  UNIPPSConnect;
+  if not UNIPPSConnected then
+    exit;
 //  InitStatusanzeige('Lies Adressdaten');
   gefunden := UnippsQry.HoleLieferantenAdressen;
 
@@ -498,28 +508,37 @@ begin
 
 end;
 
-procedure InitDBConnect;
+procedure UNIPPSConnect;
 begin
   //Wir wollen das hier nur 1 mal ausführen
-  if DBisInitialized then
+  if UNIPPSConnected then
     exit;
 
   // Qry fuer lokale DB anlegen
   LocalQry := Tools.GetQuery;
 
   //mit UNIPPS verbinden
-  dbUnippsConn:=TWADOConnector.Create(nil);
-  dbUnippsConn.ConnectToUNIPPS();
+  try
+    dbUnippsConn:=TWADOConnector.Create(nil);
+    dbUnippsConn.ConnectToUNIPPS();
 
-  //Query fuer UNIPPS anlegen und Verbindung setzen
-  //Qry anlegen und mit Connector versorgen
-  UnippsQry:= TWQryUNIPPS.Create(nil);
-  UnippsQry.Connector:=dbUnippsConn;
+    //Query fuer UNIPPS anlegen und Verbindung setzen
+    //Qry anlegen und mit Connector versorgen
+    UnippsQry:= TWQryUNIPPS.Create(nil);
+    UnippsQry.Connector:=dbUnippsConn;
+  except
+     on E: Exception do
+    begin
+       ShowMessage(E.Message);
+       exit;
+    end;
 
-  IsInitialized:=True;
+  end;
+  UNIPPSConnected:=True;
 
 end;
 
-
+initialization
+  UNIPPSConnect;
 
 end.

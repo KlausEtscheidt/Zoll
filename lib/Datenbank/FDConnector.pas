@@ -36,6 +36,9 @@ type
     private
       FConnection:TFDConnection;
       FTabellen: TStringList;
+      FSynchronous:String;
+      FLockingMode:String;
+
       function GetTabellen(): System.TArray<String>;
       function GetConnection(): TFDConnection;
     public
@@ -47,9 +50,13 @@ type
       Datenbankpfad: String; //nur Info
       ///<summary>Verbindung zur Datenbank</summary>
       property Connection: TFDConnection read GetConnection;
+      ///<summary>Off->max performance</summary>
+      property Synchronous: String write FSynchronous;
+      ///<summary>Default=Exclusive->max. perform. Normal->multi-user</summary>
+      property LockingMode: String write FLockingMode;
       ///<summary>Liste aller Tabellen der Datenbank</summary>
       property Tabellen: System.TArray<String> read GetTabellen;
-    end;
+   end;
 
 implementation
 
@@ -59,6 +66,8 @@ begin
   FConnection:=TFDConnection.Create(AOwner);
   //Ohne Login-Aufforderung (Kann vor Connect geändert werden)
   FConnection.LoginPrompt := False;
+  FLockingMode:='Exclusive';
+  FSynchronous:='Off';
 end;
 
 ///<summary>Mit SQLite-Datenbank verbinden.</summary>
@@ -70,7 +79,6 @@ end;
 function TWFDConnector.ConnectToSQLite(PathTODBFile: String): TFDConnection;
 var
   ConnString, Provider :String;
-
   begin
     with FConnection do begin
       Close;
@@ -79,6 +87,8 @@ var
         Clear;
         Add('DriverID=SQLite');
         Add('Database=' + PathTODBFile);
+        Add('LockingMode=' + FLockingMode);
+        Add('Synchronous=' + FSynchronous);
       end;
       Open;
     end;
@@ -92,7 +102,7 @@ var
 //      'Konnte Datenbank >>' + PathTODBFile + '<< nicht öffnen.' );
 //  end;
 
-  Datenbank:='SQLite';   //nur Info
+  Datenbank:='SQLite per FDac';   //nur Info
   Datenbankpfad:=PathTODBFile; //nur Info
 
   Result:=FConnection;
@@ -135,7 +145,7 @@ var
 //      'Konnte Datenbank >>' + PathTODBFile + '<< nicht öffnen.' );
 //  end;
 
-  Datenbank:='Access';   //nur Info
+  Datenbank:='Access per FDac';   //nur Info
   Datenbankpfad:=PathTODBFile; //nur Info
 
   Result:=FConnection;

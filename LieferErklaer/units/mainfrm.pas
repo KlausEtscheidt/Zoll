@@ -103,7 +103,6 @@ begin
    mainForm.StatusBar1.Update;
 end;
 
-
 procedure TmainForm.LieferMenAdressenClick(Sender: TObject);
 begin
       Import.LieferantenAdressdatenAusUnipps;
@@ -113,7 +112,6 @@ procedure TmainForm.LieferMenErklaerAnfordernClick(Sender: TObject);
 begin
     HideAllFrames;
     LieferantenErklAnfordernFrm1.ShowFrame;
-
 end;
 
 procedure TmainForm.ExportMenErzeugenClick(Sender: TObject);
