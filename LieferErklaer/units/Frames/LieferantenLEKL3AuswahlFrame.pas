@@ -73,6 +73,9 @@ uses mainfrm, LeklTeileEingabeDlg;
 procedure TLieferantenStatusFrm.ShowFrame();
 begin
     LocalQry := Tools.GetQuery;
+    if not LocalQry.Connected then
+        raise Exception.Create('Keine Verbindung zur Datenbank!');
+
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
     //Ab wievielen Tagen gilt ein Status als veraltet (Eingabe vom Vorjahr)

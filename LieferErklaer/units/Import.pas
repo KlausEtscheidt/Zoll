@@ -46,7 +46,7 @@ type TBasisImport = class(TThread)
 procedure Init;
 function GetUNIPPSQry():TWQryUNIPPS;
 procedure LieferantenAdressdatenAusUnipps;
-procedure Auswerten();
+
 
 var
   Initialized:Boolean;
@@ -126,8 +126,12 @@ begin
   FreeOnTerminate:=True;
   LocalQry2:=Tools.GetQuery(True);
   UnippsQry2:=GetUNIPPSQry;
-  if UnippsQry2=nil then
-    exit;
+//  if UnippsQry2=nil then
+//    exit;
+  if (not LocalQry2.Connected) or (not UnippsQry2.Connected) then
+    raise Exception.Create('Keine Verbindung zur Datenbank!');
+//     exit;
+
 
   // Tabelle Bestellungen leeren und neu befuellen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
@@ -225,7 +229,7 @@ var
 begin
 
   SchrittAnfangAnzeigen(2,'Lieferanten-Teilenummern lesen');
-  Bestellungen := Tools.GetTable('Bestellungen');
+  Bestellungen := Tools.GetTable('Bestellungen',True);
 
 //  Bestellungen := Tools.GetQuery;
 //  Bestellungen.RunSelectQuery('SELECT * FROM Bestellungen');
@@ -449,52 +453,6 @@ end;
 // --------------------- Import ausserhalb des Threads ---------------
 // ----------------------------------------------------------------------
 
-/// <summary> Finale Auswertung und Erzeugen der UNIPPS-Export-Tabelle</summary>
-procedure Auswerten();
-var
-  minRestGueltigkeit:String;
-
-begin
-
-  Init;
-  if not Initialized then
-    exit;
-
-  StatusBarLeft('Beginne Auswertung');
-  // Qry fuer lokale DB anlegen
-  LocalQry1 := Tools.GetQuery;
-
-  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
-  minRestGueltigkeit:=LocalQry1.LiesProgrammDatenWert('Gueltigkeit_Lekl');
-
-  //Leere Zwischentabelle
-  LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
-
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
-  LocalQry1.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
-
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
-  LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
-
-  //Leere Zwischentabelle
-  LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
-
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in tmp Tabelle
-  LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
-
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
-  //in Tabelle Teile auf 0 setzen
-  LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
-
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
-  LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
-
-  // Flag PFK in Teile setzen
-  LocalQry1.UpdateTeileResetPFK;
-  LocalQry1.UpdateTeileSetPFK;
-
-  StatusBarLeft('Auswertung fertig');
-end;
 
 ///<summary>Hole Adressdaten aus UNIPPS in eigene Tabelle</summary>
 procedure LieferantenAdressdatenAusUnipps();
@@ -502,9 +460,16 @@ var
   gefunden:Boolean;
 
 begin
+  //Verbinde zur DB
   Init;
+  //Wenn fehlgeschlagen
   if not Initialized then
-    exit;
+    raise Exception.Create('Keine Verbindung zur Datenbank!');
+//    exit;
+  if (not UnippsQry1.Connected) or (not LocalQry1.Connected) then
+    raise Exception.Create('Keine Verbindung zur Datenbank!');
+//         exit;
+
   gefunden := UnippsQry1.HoleLieferantenAdressen;
 
   if not gefunden then

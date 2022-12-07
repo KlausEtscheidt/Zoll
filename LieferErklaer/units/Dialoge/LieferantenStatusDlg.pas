@@ -42,6 +42,10 @@ uses mainfrm;
 procedure TLieferantenStatusDialog.FormCreate(Sender: TObject);
 begin
     LocalQry := Tools.GetQuery;
+    if not LocalQry.Connected then
+      raise Exception.Create('Keine Verbindung zur Datenbank!');
+//      exit;
+
     //Lieferanten-Status-Daten aus Datenbank in DataSource für Formular
     LocalQry.HoleLieferantenStatusTxt;
     DataSource1.DataSet := LocalQry;

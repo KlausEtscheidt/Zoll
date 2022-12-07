@@ -30,7 +30,7 @@ FDConnector,ADOConnector,QryAccess,QrySQLite ;
 procedure init();
 function GetConnection() : TWDBConnector;
 function GetQuery(ForThread:Boolean=False) : TWQry;
-function GetTable(Tablename : String) : TWTable;
+function GetTable(Tablename : String;ForThread:Boolean=False) : TWTable;
 
 var
   IsInitialized:Boolean;
@@ -70,6 +70,7 @@ begin
      on E: Exception do
     begin
        ShowMessage(E.Message);
+       myConnector:=nil;
 //       raise;
     end;
 
@@ -85,7 +86,6 @@ begin
   //Wir wollen das hier nur 1 mal ausführen
   if IsInitialized then
     exit;
-  IsInitialized:=True;
 
    ApplicationBaseDir:=ExtractFileDir(ParamStr(0));
 {$IFNDEF RELEASE}
@@ -95,8 +95,15 @@ begin
 
   //Globalen Connector fuer alle "normalen" Queries setzen
   DbConnector:=GetConnection();
+  if not assigned(DbConnector) then
+    exit;
+
   //Globalen Connector fuer alle Queries, die in einem eigenen Thread laufen
   DbConnector2:=GetConnection();
+  if not assigned(DbConnector) then
+    exit;
+
+  IsInitialized:=True;
 
 end;
 
@@ -111,10 +118,11 @@ begin
      Qry.Connector:=DbConnector2
    else
      Qry.Connector:=DbConnector;
+   Qry.GuiMode:=True;
    Result:= Qry;
 end;
 
-function GetTable(Tablename : String) : TWTable;
+function GetTable(Tablename : String;ForThread:Boolean=False) : TWTable;
 var
   Tab: TWTable;
 

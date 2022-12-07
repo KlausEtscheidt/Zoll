@@ -19,7 +19,7 @@ unit ADOQuery;
 
 interface
 
-  uses System.SysUtils, System.Classes,
+  uses System.SysUtils, System.Classes,Vcl.Dialogs,
             StrUtils,Data.DB,Data.Win.ADODB, ADOConnector;
 
   /// <summary>Fehler, wenn Datenbank nicht verbunden.</summary>
@@ -40,14 +40,22 @@ interface
       function GetDatenbank():String;
       function GetDatenbankpfad():String;
       function GetFieldValues(): System.TArray<String>;
+      //Hier mit error-raise (nur intern anwenden; Programmierfehler entdecken)
       function IsConnected():Boolean;
       procedure PrepareQuery(SQL:String);
       procedure ExecuteQuery(WithResult:Boolean);
+      procedure Meldung(Text:String);
     public
-      /// <summary>Anzahl der gefundenen Records  </summary>
-      var n_records: Integer;
-      /// <summary>True, wenn Datensaetze gefunden </summary>
-      var gefunden: Boolean;
+      var
+        /// <summary>Anzahl der gefundenen Records  </summary>
+        n_records: Integer;
+        /// <summary>True, wenn Datensaetze gefunden </summary>
+        gefunden: Boolean;
+        /// <summary>Ausgabe von Meldungen in Fenster oder Konsole</summary>
+        GuiMode: Boolean;
+
+      //Hier um fehlenden Zugriff auf Datenbank während Laufzeit zu entdecken
+      function Connected():Boolean;
 
       function RunSelectQuery(sql:string):Boolean;
       function RunSelectQueryWithParam(sql:string;paramlist:TWParamlist): Boolean;
@@ -311,6 +319,13 @@ end;
 //Helper
 //-----------------------------------------------------------
 
+//Ausgabe von Meldungen
+procedure TWADOQuery.Meldung(Text:String);
+begin
+  if GuiMode then
+    ShowMessage(Text);
+end;
+
 //Prüft of Datenbank korrekt verbunden, raises error wenn nicht
 //-----------------------------------------------------------
 function TWADOQuery.IsConnected():Boolean;
@@ -328,6 +343,24 @@ begin
   end;
   Result:=ok;
 end;
+
+//Prüft of Datenbank korrekt verbunden, Ohne raise error
+//Ermöglicht fehenden DB-Zugriff während Laufzeit zu entdecken
+//-----------------------------------------------------------
+function TWADOQuery.Connected():Boolean;
+begin
+  Result:=False;
+  //Schritt 1 wurde FConnector erzeugt
+  if not assigned(FConnector) then
+    exit;
+  //Schritt 2 ist FConnector verbunden
+  try
+    Result:=FConnector.Connection.Connected;
+  except
+    Result:=False;
+  end;
+end;
+
 
 //Besetzt die Connector-Eigenschaft, der eine Verbindung zur DB h�lt
 //-----------------------------------------------------------

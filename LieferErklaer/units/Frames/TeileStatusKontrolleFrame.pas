@@ -9,7 +9,7 @@ uses
   Vcl.DBCGrids,
 //  Data.Win.ADODB,
   Tools, Data.DB, System.ImageList, Vcl.ImgList, Vcl.ExtCtrls, System.Actions,
-  Vcl.ActnList, Import;
+  Vcl.ActnList, Import, AuswertenExport;
 
 type
   TTeileStatusKontrolleFrm = class(TFrame)
@@ -54,12 +54,12 @@ implementation
 
 {$R *.dfm}
 
-{ TTeileFrm }
+uses mainfrm;
 
 procedure TTeileStatusKontrolleFrm.TeileDataSourceDataChange(Sender: TObject;
   Field: TField);
 begin
-    if Initialized then
+//    if assigned(LocalSubQry) then
         LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
 end;
 
@@ -141,15 +141,23 @@ end;
 
 procedure TTeileStatusKontrolleFrm.ShowFrame;
 begin
-    Import.Auswerten;
-    Initialized:=False;
+    //Pfk Flag neu ermitteln
+//    SetzePfkInTeileTabelle;
+//    //Einmalig DB-Verbindung erzeugen und verbundene Qry anlegen
+//    if not Initialized then
+//      LocalQry := Tools.GetQuery;
+//    if not LocalQry.Connected then
+//      raise Exception.Create('Keine Verbindung zur Datenbank!');
+//    Initialized:=True;
     LocalQry := Tools.GetQuery;
+//    if not LocalQry.Connected then
+//      raise Exception.Create('Keine Verbindung zur Datenbank!');
     LocalQry.RunSelectQuery('SELECT TeileNr, TName1, Abs(Pfk) As Pfk FROM Teile;')  ;
     TeileDataSource.DataSet := LocalQry;
     LocalSubQry := Tools.GetQuery;
     LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
     LieferantenDataSource.DataSet := LocalSubQry;
-    Initialized:=True;
+
     Self.Visible := True;
 end;
 

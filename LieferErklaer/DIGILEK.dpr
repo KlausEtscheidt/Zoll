@@ -23,7 +23,8 @@ uses
   LeklTeileEingabeDlg in 'units\Dialoge\LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog},
   ImportStatusInfoDlg in 'units\Dialoge\ImportStatusInfoDlg.pas' {ImportStatusDlg},
   ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
-  ADOQuery in '..\lib\Datenbank\ADOQuery.pas';
+  ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
+  AuswertenExport in 'units\AuswertenExport.pas';
 
 {$R *.res}
 

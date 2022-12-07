@@ -39,7 +39,6 @@ type
     procedure HideAllFrames;
     procedure UnippsMenEinlesenClick(Sender: TObject);
     procedure LTeileMenStatusClick(Sender: TObject);
-    procedure UnippsMenAuswertenClick(Sender: TObject);
     procedure ExportMenErzeugenClick(Sender: TObject);
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
@@ -66,7 +65,10 @@ begin
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //  ImportStatusDlg.Show;
 //    Import.BasisImport;
-    StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank);
+    if assigned(Tools.DbConnector) then
+      StatusBarLeft('verbunden mit: ' + Tools.DbConnector.Datenbank)
+    else
+      StatusBarLeft('Keine Datenbank verbunden !');
     HideAllFrames;
     LieferantenErklAnfordernFrm1.ShowFrame;
 //    TeileStausKontrolleFrm.ShowFrame;
@@ -119,7 +121,6 @@ begin
     HideAllFrames;
     ExportFrm1.Visible:=True;
     ExportFrm1.InitFrame;
-    Import.Auswerten;
 end;
 
 procedure TmainForm.TeileMenUebersichtClick(Sender: TObject);
@@ -132,11 +133,6 @@ procedure TmainForm.LTeileMenStatusClick(Sender: TObject);
 begin
     HideAllFrames;
     LieferantenStatusFrm1.ShowFrame;
-end;
-
-procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);
-begin
-  Import.Auswerten;
 end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);

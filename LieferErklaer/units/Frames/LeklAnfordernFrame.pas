@@ -114,6 +114,10 @@ uses mainfrm, Excel, Mailing, Word;
 procedure TLieferantenErklAnfordernFrm.ShowFrame();
 begin
     LocalQry := Tools.GetQuery;
+    if not LocalQry.Connected then
+      raise Exception.Create('Keine Verbindung zur Datenbank!');
+//          exit;
+
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
     LocalQry.HoleLieferantenMitAdressen;

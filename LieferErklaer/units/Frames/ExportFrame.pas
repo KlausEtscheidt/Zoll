@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Tools, AuswertenExport;
 
 type
   TGesamtStatusFrm = class(TFrame)
@@ -35,7 +36,8 @@ type
     Label10: TLabel;
     nLieferPumpenteile: TLabel;
   private
-    { Private-Deklarationen }
+    LocalQry: TWQry;
+
   public
     { Public-Deklarationen }
     procedure InitFrame;
@@ -44,19 +46,26 @@ type
 implementation
 
 {$R *.dfm}
-
-uses ADOQuery, Tools;
+uses mainfrm;
 
 procedure TGesamtStatusFrm.InitFrame;
-
-var
-//  Anzahl: Integer;
-  LocalQry: TWQry;
 
 begin
   LocalQry := Tools.GetQuery;
 
- 
+  if not LocalQry.Connected then
+      raise Exception.Create('Keine Verbindung zur Datenbank!');
+//     exit;
+
+  //Vergleiche je Teil Anzahl Lieferanten mit Anzehl gültiger LEKL
+  //Setze PFK in Tabelle Teile entsprechend
+  var i:integer;
+  StatusBarLeft('Beginne Auswertung'+IntTostr(i));
+  for i := 1 to 50 do
+  begin
+    SetzePfkInTeileTabelle;
+  end;
+
   // Zaehle alle Teile
   LocalQry.HoleTeile;
   nTeile.Caption:=IntToStr(LocalQry.RecordCount);
@@ -72,15 +81,6 @@ begin
   LocalQry.Filter := 'Ersatzteil=-1 AND PFK=-1';
   nPfk.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
-
-//  Anzahl:= LocalQry.HoleAnzahlTabelleneintraege('Teile');
-//  nTeile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlPumpenteile;
-//  nPumpenteile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlErsatzteile;
-//  nErsatzteile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlErsatzteileMitPFK;
-//  nPfk.Caption:=IntToStr(Anzahl);
 
   // Zaehle alle Teile Lieferanten
   LocalQry.HoleLieferanten;
@@ -98,15 +98,7 @@ begin
   nLieferStatusUnbekannt.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
 
-//    Anzahl:= LocalQry.HoleAnzahlLieferanten;
-//    nLieferanten.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferPumpenteile;
-//    nLieferPumpenteile.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferErsatzteile;
-//    nLieferErsatzteile.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferStatusUnbekannt;
-//    nLieferStatusUnbekannt.Caption:=IntToStr(Anzahl);
-
 end;
+
 
 end.
