@@ -59,8 +59,9 @@ implementation
 procedure TTeileStatusKontrolleFrm.TeileDataSourceDataChange(Sender: TObject;
   Field: TField);
 begin
-    if Initialized then
-        LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
+    if not Initialized then
+      exit;
+    LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
 end;
 
 
@@ -145,6 +146,7 @@ begin
     Initialized:=False;
     LocalQry := Tools.GetQuery;
     LocalQry.RunSelectQuery('SELECT TeileNr, TName1, Abs(Pfk) As Pfk FROM Teile;')  ;
+    FilterUpdate();
     TeileDataSource.DataSet := LocalQry;
     LocalSubQry := Tools.GetQuery;
     LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);

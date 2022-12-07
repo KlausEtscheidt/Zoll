@@ -27,7 +27,7 @@ type
     ExportMenErzeugen: TMenuItem;
     LieferMenErklaerAnfordern: TMenuItem;
     LieferMenAdressen: TMenuItem;
-    LieferantenStatusFrm1: TLieferantenStatusFrm;
+    Lekl3LieferantAuswahlFrm: TLieferantenStatusFrm;
     ExportFrm1: TGesamtStatusFrm;
     TeileStausKontrolleFrm: TTeileStatusKontrolleFrm;
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
@@ -75,7 +75,7 @@ end;
 
 procedure TmainForm.HideAllFrames;
 begin
-    LieferantenStatusFrm1.Visible:=False;
+    Lekl3LieferantAuswahlFrm.Visible:=False;
     ExportFrm1.Visible:=False;
     TeileStausKontrolleFrm.Visible:=False;
     LieferantenErklAnfordernFrm1.Visible:=False;
@@ -131,7 +131,7 @@ end;
 procedure TmainForm.LTeileMenStatusClick(Sender: TObject);
 begin
     HideAllFrames;
-    LieferantenStatusFrm1.ShowFrame;
+    Lekl3LieferantAuswahlFrm.ShowFrame;
 end;
 
 procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);

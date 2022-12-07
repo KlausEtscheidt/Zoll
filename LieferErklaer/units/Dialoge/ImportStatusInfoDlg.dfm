@@ -75,6 +75,7 @@ object ImportStatusDlg: TImportStatusDlg
         Control = ESCButton
         Row = 0
       end>
+    ParentColor = True
     RowCollection = <
       item
         SizeStyle = ssAuto
@@ -118,6 +119,7 @@ object ImportStatusDlg: TImportStatusDlg
     Width = 430
     Height = 278
     BevelOuter = bvNone
+    ParentColor = True
     TabOrder = 2
     DesignSize = (
       430
@@ -138,6 +140,7 @@ object ImportStatusDlg: TImportStatusDlg
       Font.Style = []
       GridLineWidth = 0
       Options = [goVertLine, goHorzLine]
+      ParentColor = True
       ParentFont = False
       ScrollBars = ssNone
       TabOrder = 0
@@ -153,9 +156,9 @@ object ImportStatusDlg: TImportStatusDlg
       object actRecordLbl: TLabel
         Left = 20
         Top = 17
-        Width = 78
+        Width = 88
         Height = 13
-        Caption = 'Recordfortschritt'
+        Caption = 'Fortschrittsanzeige'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

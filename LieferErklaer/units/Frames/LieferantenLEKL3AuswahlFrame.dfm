@@ -4,6 +4,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   Width = 1099
   Height = 569
   ParentBackground = False
+  ParentShowHint = False
+  ShowHint = True
   TabOrder = 0
   object Label11: TLabel
     Left = 5
@@ -90,6 +92,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 16
       Width = 25
       Height = 25
+      Hint = 'Filter Kurz-Name und Name leeren'
       DisabledImageIndex = 0
       HotImageIndex = 0
       ImageIndex = 0
@@ -104,6 +107,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 14
       Width = 114
       Height = 25
+      Hint = #39'LEKL vor weniger als 200 Tagen erhalten (Stand)'#39
       Caption = 'nur aktuelle LEKL'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -111,6 +115,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = LeklUpdatedChkBoxClick
     end
@@ -119,6 +125,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 14
       Width = 114
       Height = 25
+      Hint = 'Letzte Teilepflege (StandTeile) vor mehr als 200 Tagen'
       Caption = 'nur unbearbeitete'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -126,6 +133,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
       OnClick = LeklUpdatedChkBoxClick
     end
@@ -419,7 +428,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         AlignWithMargins = True
         Left = 0
         Top = 3
-        Width = 35
+        Width = 325
         Height = 14
         Margins.Left = 0
         Margins.Right = 0
@@ -431,6 +440,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 35
       end
       object DBText1: TDBText
         AlignWithMargins = True

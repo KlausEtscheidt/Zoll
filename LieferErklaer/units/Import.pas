@@ -144,7 +144,7 @@ begin
 
   // Prüfe ob Teil für Pumpen verwendet wird
   // Setzt Flag Pumpenteil in Tabelle Teile
-//--------------  PumpenteileAusUnipps;
+  PumpenteileAusUnipps;
 
   // Hole Adressdaten in eigene Tabelle
   LieferantenAdressdatenAusUnipps;
@@ -344,6 +344,9 @@ begin
 
   if not gefunden then
     raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
+
+ LocalQry2.RunExecSQLQuery('delete FROM Teile WHERE TeileNr Not In ' +
+                           '(select TeileNr from Bestellungen)');
 
   SchrittEndeAnzeigen;
 end;
