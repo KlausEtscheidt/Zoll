@@ -459,8 +459,10 @@ var
 
 begin
 
-  Init;
-  if not Initialized then
+  // Qry fuer lokale DB anlegen
+  if not assigned(LocalQry1) then
+    LocalQry1 := Tools.GetQuery;
+  if not assigned(LocalQry1) then
     exit;
 
   StatusBarLeft('Beginne Auswertung');

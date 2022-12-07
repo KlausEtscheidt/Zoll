@@ -9,7 +9,7 @@ uses
 
 type
   TLeklTeileEingabeDialog = class(TForm)
-    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
+    LeklTeileEingabeFrm: TLieferantenErklaerungenFrm;
     GridPanel1: TGridPanel;
     OKBtn: TButton;
     procedure FormShow(Sender: TObject);
@@ -28,8 +28,8 @@ implementation
 
 procedure TLeklTeileEingabeDialog.FormShow(Sender: TObject);
 begin
-  LieferantenErklaerungenFrm1.Init;
-  LieferantenErklaerungenFrm1.Show;
+  LeklTeileEingabeFrm.Init;
+  LeklTeileEingabeFrm.Show;
 end;
 
 end.

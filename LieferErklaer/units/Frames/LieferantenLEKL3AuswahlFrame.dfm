@@ -95,10 +95,12 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Hint = 'Filter Kurz-Name und Name leeren'
       DisabledImageIndex = 0
       HotImageIndex = 0
+      ImageAlignment = iaCenter
       ImageIndex = 0
-      ImageMargins.Left = 2
-      ImageMargins.Top = 2
       Images = ImageList1
+      PressedImageIndex = 0
+      SelectedImageIndex = 0
+      StylusHotImageIndex = 0
       TabOrder = 2
       OnClick = FilterAusBtnClick
     end

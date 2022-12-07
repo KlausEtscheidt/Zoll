@@ -92,7 +92,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object FilterAusBtn: TButton
       Left = 487
-      Top = 16
+      Top = 14
       Width = 25
       Height = 25
       DisabledImageIndex = 0
@@ -886,6 +886,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Top = 200
   end
   object ImageList1: TImageList
+    ShareImages = True
     Left = 368
     Top = 272
     Bitmap = {

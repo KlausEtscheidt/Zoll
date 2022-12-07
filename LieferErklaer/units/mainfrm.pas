@@ -117,9 +117,9 @@ end;
 procedure TmainForm.ExportMenErzeugenClick(Sender: TObject);
 begin
     HideAllFrames;
+    Import.Auswerten;
     ExportFrm1.Visible:=True;
     ExportFrm1.InitFrame;
-    Import.Auswerten;
 end;
 
 procedure TmainForm.TeileMenUebersichtClick(Sender: TObject);

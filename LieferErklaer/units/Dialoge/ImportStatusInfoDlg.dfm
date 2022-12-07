@@ -152,6 +152,7 @@ object ImportStatusDlg: TImportStatusDlg
       Height = 33
       Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 1
       object actRecordLbl: TLabel
         Left = 20

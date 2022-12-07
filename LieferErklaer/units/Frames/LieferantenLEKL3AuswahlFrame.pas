@@ -102,7 +102,7 @@ begin
     IdL :=  LocalQry.FieldByName('IdLieferant').AsInteger;
     KName :=  LocalQry.FieldByName('LKurzname').AsString;
 
-    with LeklTeileEingabeDialog.LieferantenErklaerungenFrm1 do
+    with LeklTeileEingabeDialog.LeklTeileEingabeFrm do
     begin
       var bla:string;
       IdLieferant :=  IdL;
@@ -115,7 +115,7 @@ begin
     LeklTeileEingabeDialog.ShowModal;
 
     //Stand aktualisieren, wenn Flags geändert wurden
-    if LeklTeileEingabeDialog.LieferantenErklaerungenFrm1.DatenGeaendert then
+    if LeklTeileEingabeDialog.LeklTeileEingabeFrm.DatenGeaendert then
         if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
           begin
             // Datum 'StandTeile' erneuern

@@ -56,7 +56,6 @@ var
 begin
   LocalQry := Tools.GetQuery;
 
- 
   // Zaehle alle Teile
   LocalQry.HoleTeile;
   nTeile.Caption:=IntToStr(LocalQry.RecordCount);
@@ -72,15 +71,6 @@ begin
   LocalQry.Filter := 'Ersatzteil=-1 AND PFK=-1';
   nPfk.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
-
-//  Anzahl:= LocalQry.HoleAnzahlTabelleneintraege('Teile');
-//  nTeile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlPumpenteile;
-//  nPumpenteile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlErsatzteile;
-//  nErsatzteile.Caption:=IntToStr(Anzahl);
-//  Anzahl:= LocalQry.HoleAnzahlErsatzteileMitPFK;
-//  nPfk.Caption:=IntToStr(Anzahl);
 
   // Zaehle alle Teile Lieferanten
   LocalQry.HoleLieferanten;
@@ -98,14 +88,6 @@ begin
   nLieferStatusUnbekannt.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
 
-//    Anzahl:= LocalQry.HoleAnzahlLieferanten;
-//    nLieferanten.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferPumpenteile;
-//    nLieferPumpenteile.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferErsatzteile;
-//    nLieferErsatzteile.Caption:=IntToStr(Anzahl);
-//    Anzahl:= LocalQry.HoleAnzahlLieferStatusUnbekannt;
-//    nLieferStatusUnbekannt.Caption:=IntToStr(Anzahl);
 
 end;
 

@@ -256,6 +256,65 @@ object mainForm: TmainForm
       end
     end
   end
+  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
+    Left = 0
+    Top = 0
+    Width = 1094
+    Height = 593
+    Align = alClient
+    AutoSize = True
+    TabOrder = 2
+    Visible = False
+    ExplicitWidth = 1094
+    ExplicitHeight = 593
+    inherited Panel1: TPanel
+      Width = 1088
+      ExplicitWidth = 1088
+    end
+    inherited Panel3: TPanel
+      Width = 1088
+      Height = 329
+      ExplicitWidth = 1088
+      ExplicitHeight = 329
+      inherited DBCtrlGrid1: TDBCtrlGrid
+        Left = 22
+        Top = 7
+        ExplicitLeft = 22
+        ExplicitTop = 7
+        inherited TeileNr: TDBText
+          Left = 12
+          Top = 7
+          ExplicitLeft = 12
+          ExplicitTop = 7
+        end
+        inherited TName1: TDBText
+          Top = 7
+          ExplicitTop = 7
+        end
+        inherited Pfk: TDBText
+          Top = 7
+          ExplicitLeft = 438
+          ExplicitTop = 7
+        end
+      end
+    end
+    inherited Panel2: TPanel
+      Top = 424
+      Width = 1088
+      Height = 166
+      ExplicitTop = 424
+      ExplicitWidth = 1088
+      ExplicitHeight = 166
+      inherited DBCtrlGrid2: TDBCtrlGrid
+        Left = 23
+        Top = 33
+        Height = 91
+        ExplicitLeft = 23
+        ExplicitTop = 33
+        ExplicitHeight = 91
+      end
+    end
+  end
   inline Lekl3LieferantAuswahlFrm: TLieferantenStatusFrm
     Left = 0
     Top = 0
@@ -376,65 +435,6 @@ object mainForm: TmainForm
         inherited DBText2: TDBText
           ExplicitTop = 41
         end
-      end
-    end
-  end
-  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
-    Left = 0
-    Top = 0
-    Width = 1094
-    Height = 593
-    Align = alClient
-    AutoSize = True
-    TabOrder = 2
-    Visible = False
-    ExplicitWidth = 1094
-    ExplicitHeight = 593
-    inherited Panel1: TPanel
-      Width = 1088
-      ExplicitWidth = 1088
-    end
-    inherited Panel3: TPanel
-      Width = 1088
-      Height = 329
-      ExplicitWidth = 1088
-      ExplicitHeight = 329
-      inherited DBCtrlGrid1: TDBCtrlGrid
-        Left = 22
-        Top = 7
-        ExplicitLeft = 22
-        ExplicitTop = 7
-        inherited TeileNr: TDBText
-          Left = 12
-          Top = 7
-          ExplicitLeft = 12
-          ExplicitTop = 7
-        end
-        inherited TName1: TDBText
-          Top = 7
-          ExplicitTop = 7
-        end
-        inherited Pfk: TDBText
-          Top = 7
-          ExplicitLeft = 438
-          ExplicitTop = 7
-        end
-      end
-    end
-    inherited Panel2: TPanel
-      Top = 424
-      Width = 1088
-      Height = 166
-      ExplicitTop = 424
-      ExplicitWidth = 1088
-      ExplicitHeight = 166
-      inherited DBCtrlGrid2: TDBCtrlGrid
-        Left = 23
-        Top = 33
-        Height = 91
-        ExplicitLeft = 23
-        ExplicitTop = 33
-        ExplicitHeight = 91
       end
     end
   end

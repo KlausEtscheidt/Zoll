@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Access</Config>
+        <Config Condition="'$(Config)'==''">AccessTADOR</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -253,6 +253,9 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_6)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_3)'!=''">
         <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>
         <VerInfo_Locale>1031</VerInfo_Locale>
@@ -301,10 +304,16 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_13)'!=''">
+        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
+        <VerInfo_Locale>1031</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_13_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <DCC_ExeOutput>C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\zoll\LieferErklaer\Win32\Release\</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_11)'!=''">
         <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>
@@ -462,7 +471,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\Debug\DIGILEK.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\access\DIGILEK.exe" Configuration="access" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -492,7 +501,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\access\DIGILEK.exe" Configuration="access" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\DIGILEK.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>
