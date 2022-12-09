@@ -89,6 +89,10 @@ var
         Add('Database=' + PathTODBFile);
         Add('LockingMode=' + FLockingMode);
         Add('Synchronous=' + FSynchronous);
+        Add('SharedCache=False');
+        Add('UpdateOptions.LockWait=True');
+        Add('BusyTimeout=20000'); //ms
+
       end;
       Open;
     end;
