@@ -115,7 +115,7 @@ begin
     LeklTeileEingabeDialog.ShowModal;
 
     //Stand aktualisieren, wenn Flags geändert wurden
-    if LeklTeileEingabeDialog.LeklTeileEingabeFrm.DatenGeaendert then
+//    if LeklTeileEingabeDialog.LeklTeileEingabeFrm.DatenGeaendert then
         if MessageDlg(msg,mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
           begin
             // Datum 'StandTeile' erneuern
@@ -197,8 +197,9 @@ begin
     LocalQry.Requery();
 {$ENDIF}
 
-  // Gehe auf ursp�nglichen Datensatz
-  LocalQry.GotoBookmark(BM);
+  // Gehe auf ursp�nglichen Datensatz, wenn nicht alle weggefiltert
+  if not LocalQry.Eof then
+    LocalQry.GotoBookmark(BM);
 end;
 
 procedure TLieferantenStatusFrm.LeklUpdatedChkBoxClick(Sender: TObject);

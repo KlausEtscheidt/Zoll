@@ -8,7 +8,7 @@ object GesamtStatusFrm: TGesamtStatusFrm
     AlignWithMargins = True
     Left = 50
     Top = 30
-    Width = 47
+    Width = 728
     Height = 19
     Margins.Left = 50
     Margins.Top = 30
@@ -20,12 +20,13 @@ object GesamtStatusFrm: TGesamtStatusFrm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
+    ExplicitWidth = 47
   end
   object Label2: TLabel
     AlignWithMargins = True
     Left = 50
-    Top = 195
-    Width = 100
+    Top = 215
+    Width = 728
     Height = 19
     Margins.Left = 50
     Margins.Top = 30
@@ -37,13 +38,15 @@ object GesamtStatusFrm: TGesamtStatusFrm
     Font.Name = 'Tahoma'
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
+    ExplicitTop = 195
+    ExplicitWidth = 100
   end
   object TeilePanel: TPanel
     AlignWithMargins = True
     Left = 80
     Top = 55
     Width = 698
-    Height = 110
+    Height = 130
     Margins.Left = 80
     Margins.Bottom = 0
     Align = alTop
@@ -54,17 +57,18 @@ object GesamtStatusFrm: TGesamtStatusFrm
       Left = 0
       Top = 0
       Width = 240
-      Height = 110
+      Height = 130
       Align = alLeft
       BevelOuter = bvNone
       ShowCaption = False
       TabOrder = 0
+      ExplicitHeight = 110
       object Label3: TLabel
         AlignWithMargins = True
-        Left = 167
+        Left = 0
         Top = 3
-        Width = 70
-        Height = 19
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -79,10 +83,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object Label4: TLabel
         AlignWithMargins = True
-        Left = 96
-        Top = 25
-        Width = 141
-        Height = 19
+        Left = 0
+        Top = 29
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -94,13 +98,14 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 25
       end
       object Label5: TLabel
         AlignWithMargins = True
-        Left = 112
-        Top = 47
-        Width = 125
-        Height = 19
+        Left = 0
+        Top = 55
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -112,13 +117,14 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 47
       end
       object Label14: TLabel
         AlignWithMargins = True
-        Left = 47
-        Top = 69
-        Width = 190
-        Height = 19
+        Left = 0
+        Top = 81
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -130,23 +136,25 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 69
       end
     end
     object Panel4: TPanel
       Left = 240
       Top = 0
       Width = 62
-      Height = 110
+      Height = 130
       Align = alLeft
       BevelOuter = bvNone
       ShowCaption = False
       TabOrder = 1
+      ExplicitHeight = 110
       object nTeile: TLabel
         AlignWithMargins = True
-        Left = 43
+        Left = 3
         Top = 3
-        Width = 16
-        Height = 19
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -160,10 +168,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nPumpenteile: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 25
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 29
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -177,10 +185,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nErsatzteile: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 47
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 55
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -194,10 +202,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nPfk: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 69
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 81
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -214,29 +222,31 @@ object GesamtStatusFrm: TGesamtStatusFrm
   object LieferantenPanel: TPanel
     AlignWithMargins = True
     Left = 80
-    Top = 220
+    Top = 240
     Width = 698
-    Height = 108
+    Height = 157
     Margins.Left = 80
     Align = alTop
     BevelOuter = bvNone
     ShowCaption = False
     TabOrder = 1
+    ExplicitTop = 220
     object Panel1: TPanel
       Left = 0
       Top = 0
       Width = 240
-      Height = 108
+      Height = 157
       Align = alLeft
       BevelOuter = bvNone
       ShowCaption = False
       TabOrder = 0
+      ExplicitHeight = 108
       object Label6: TLabel
         AlignWithMargins = True
-        Left = 167
+        Left = 0
         Top = 3
-        Width = 70
-        Height = 19
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -251,10 +261,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object Label7: TLabel
         AlignWithMargins = True
-        Left = 87
-        Top = 47
-        Width = 150
-        Height = 19
+        Left = 0
+        Top = 55
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -266,13 +276,14 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 59
       end
       object Label8: TLabel
         AlignWithMargins = True
         Left = 0
-        Top = 69
-        Width = 220
-        Height = 19
+        Top = 81
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -283,13 +294,14 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 87
       end
       object Label9: TLabel
         AlignWithMargins = True
-        Left = 52
-        Top = 91
-        Width = 185
-        Height = 19
+        Left = 30
+        Top = 107
+        Width = 207
+        Height = 23
         Margins.Left = 30
         Margins.Bottom = 0
         Align = alTop
@@ -301,13 +313,14 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 115
       end
       object Label10: TLabel
         AlignWithMargins = True
-        Left = 71
-        Top = 25
-        Width = 166
-        Height = 19
+        Left = 0
+        Top = 29
+        Width = 237
+        Height = 23
         Margins.Left = 0
         Margins.Bottom = 0
         Align = alTop
@@ -319,23 +332,25 @@ object GesamtStatusFrm: TGesamtStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitTop = 31
       end
     end
     object Panel2: TPanel
       Left = 240
       Top = 0
       Width = 62
-      Height = 108
+      Height = 157
       Align = alLeft
       BevelOuter = bvNone
       ShowCaption = False
       TabOrder = 1
+      ExplicitHeight = 108
       object nLIeferanten: TLabel
         AlignWithMargins = True
-        Left = 43
+        Left = 3
         Top = 3
-        Width = 16
-        Height = 19
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -349,10 +364,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nLieferErsatzteile: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 47
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 55
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -366,10 +381,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object dummyLabel12: TLabel
         AlignWithMargins = True
-        Left = 54
-        Top = 69
-        Width = 5
-        Height = 19
+        Left = 3
+        Top = 81
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -382,10 +397,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nLieferStatusUnbekannt: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 91
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 107
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify
@@ -399,10 +414,10 @@ object GesamtStatusFrm: TGesamtStatusFrm
       end
       object nLieferPumpenteile: TLabel
         AlignWithMargins = True
-        Left = 43
-        Top = 25
-        Width = 16
-        Height = 19
+        Left = 3
+        Top = 29
+        Width = 56
+        Height = 23
         Margins.Bottom = 0
         Align = alTop
         Alignment = taRightJustify

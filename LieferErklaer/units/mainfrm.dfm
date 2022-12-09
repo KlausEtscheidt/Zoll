@@ -51,89 +51,10 @@ object mainForm: TmainForm
     inherited TeilePanel: TPanel
       Width = 1011
       ExplicitWidth = 1011
-      inherited Panel5: TPanel
-        inherited Label3: TLabel
-          Left = 0
-          Width = 237
-        end
-        inherited Label4: TLabel
-          Left = 0
-          Width = 237
-        end
-        inherited Label5: TLabel
-          Left = 0
-          Width = 237
-        end
-        inherited Label14: TLabel
-          Left = 0
-          Width = 237
-        end
-      end
-      inherited Panel4: TPanel
-        inherited nTeile: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nPumpenteile: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nErsatzteile: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nPfk: TLabel
-          Left = 3
-          Width = 56
-        end
-      end
     end
     inherited LieferantenPanel: TPanel
       Width = 1011
       ExplicitWidth = 1011
-      inherited Panel1: TPanel
-        inherited Label6: TLabel
-          Left = 0
-          Width = 237
-        end
-        inherited Label7: TLabel
-          Left = 0
-          Width = 237
-        end
-        inherited Label8: TLabel
-          Width = 237
-        end
-        inherited Label9: TLabel
-          Left = 30
-          Width = 207
-        end
-        inherited Label10: TLabel
-          Left = 0
-          Width = 237
-        end
-      end
-      inherited Panel2: TPanel
-        inherited nLIeferanten: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nLieferErsatzteile: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited dummyLabel12: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nLieferStatusUnbekannt: TLabel
-          Left = 3
-          Width = 56
-        end
-        inherited nLieferPumpenteile: TLabel
-          Left = 3
-          Width = 56
-        end
-      end
     end
   end
   inline LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm
@@ -253,65 +174,6 @@ object mainForm: TmainForm
           ExplicitWidth = 112
           ExplicitHeight = 18
         end
-      end
-    end
-  end
-  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
-    Left = 0
-    Top = 0
-    Width = 1094
-    Height = 593
-    Align = alClient
-    AutoSize = True
-    TabOrder = 2
-    Visible = False
-    ExplicitWidth = 1094
-    ExplicitHeight = 593
-    inherited Panel1: TPanel
-      Width = 1088
-      ExplicitWidth = 1088
-    end
-    inherited Panel3: TPanel
-      Width = 1088
-      Height = 329
-      ExplicitWidth = 1088
-      ExplicitHeight = 329
-      inherited DBCtrlGrid1: TDBCtrlGrid
-        Left = 22
-        Top = 7
-        ExplicitLeft = 22
-        ExplicitTop = 7
-        inherited TeileNr: TDBText
-          Left = 12
-          Top = 7
-          ExplicitLeft = 12
-          ExplicitTop = 7
-        end
-        inherited TName1: TDBText
-          Top = 7
-          ExplicitTop = 7
-        end
-        inherited Pfk: TDBText
-          Top = 7
-          ExplicitLeft = 438
-          ExplicitTop = 7
-        end
-      end
-    end
-    inherited Panel2: TPanel
-      Top = 424
-      Width = 1088
-      Height = 166
-      ExplicitTop = 424
-      ExplicitWidth = 1088
-      ExplicitHeight = 166
-      inherited DBCtrlGrid2: TDBCtrlGrid
-        Left = 23
-        Top = 33
-        Height = 91
-        ExplicitLeft = 23
-        ExplicitTop = 33
-        ExplicitHeight = 91
       end
     end
   end
@@ -438,6 +300,109 @@ object mainForm: TmainForm
       end
     end
   end
+  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
+    Left = 0
+    Top = 0
+    Width = 1094
+    Height = 593
+    Align = alClient
+    AutoSize = True
+    TabOrder = 2
+    Visible = False
+    ExplicitWidth = 1094
+    ExplicitHeight = 593
+    inherited Panel1: TPanel
+      Width = 1088
+      ExplicitWidth = 1088
+    end
+    inherited Panel3: TPanel
+      Width = 1088
+      Height = 313
+      ExplicitWidth = 1088
+      ExplicitHeight = 313
+      inherited TeileNrLabel: TLabel
+        Left = 34
+        Top = 6
+        ExplicitLeft = 34
+        ExplicitTop = 6
+      end
+      inherited BenennungLabel: TLabel
+        Left = 181
+        Top = 7
+        ExplicitLeft = 181
+        ExplicitTop = 7
+      end
+      inherited PfkLabel: TLabel
+        Left = 461
+        Top = 6
+        ExplicitLeft = 461
+        ExplicitTop = 6
+      end
+      inherited DBCtrlGrid1: TDBCtrlGrid
+        Left = 22
+        ExplicitLeft = 22
+        inherited TeileNr: TDBText
+          Left = 12
+          Top = 7
+          ExplicitLeft = 12
+          ExplicitTop = 7
+        end
+        inherited TName1: TDBText
+          Top = 7
+          ExplicitTop = 7
+        end
+        inherited Pfk: TDBText
+          Top = 7
+          ExplicitLeft = 438
+          ExplicitTop = 7
+        end
+      end
+    end
+    inherited Panel2: TPanel
+      Top = 393
+      Width = 1088
+      Height = 183
+      Align = alTop
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ExplicitTop = 393
+      ExplicitWidth = 1088
+      ExplicitHeight = 183
+      inherited LKNameLabel: TLabel
+        Left = 31
+        Top = 1
+        ExplicitLeft = 31
+        ExplicitTop = 1
+      end
+      inherited LNameLabel: TLabel
+        Left = 190
+        Top = 1
+        ExplicitLeft = 190
+        ExplicitTop = 1
+      end
+      inherited StatusLabel: TLabel
+        Left = 426
+        Top = 1
+        ExplicitLeft = 426
+        ExplicitTop = 1
+      end
+      inherited LPfkLabel: TLabel
+        Left = 518
+        Top = 1
+        ExplicitLeft = 518
+        ExplicitTop = 1
+      end
+      inherited DBCtrlGrid2: TDBCtrlGrid
+        Left = 23
+        Top = 20
+        Height = 132
+        PanelHeight = 33
+        RowCount = 4
+        ExplicitLeft = 23
+        ExplicitTop = 20
+        ExplicitHeight = 132
+      end
+    end
+  end
   object MainMenu1: TMainMenu
     Left = 488
     object DateiMen: TMenuItem
@@ -487,6 +452,17 @@ object mainForm: TmainForm
       object ExportMenErzeugen: TMenuItem
         Caption = 'Erzeugen'
         OnClick = ExportMenErzeugenClick
+      end
+    end
+    object ests1: TMenuItem
+      Caption = 'Tests'
+      object N300Tage1: TMenuItem
+        Caption = '300 Tage'
+        OnClick = N300Tage1Click
+      end
+      object N0Tage1: TMenuItem
+        Caption = '0 Tage'
+        OnClick = N0Tage1Click
       end
     end
   end

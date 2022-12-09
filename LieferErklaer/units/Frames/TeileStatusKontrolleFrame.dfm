@@ -101,10 +101,31 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 1
+    object TeileNrLabel: TLabel
+      Left = 79
+      Top = 8
+      Width = 37
+      Height = 13
+      Caption = 'Teile-Nr'
+    end
+    object BenennungLabel: TLabel
+      Left = 218
+      Top = 8
+      Width = 54
+      Height = 13
+      Caption = 'Benennung'
+    end
+    object PfkLabel: TLabel
+      Left = 497
+      Top = 8
+      Width = 15
+      Height = 13
+      Caption = 'Pfk'
+    end
     object DBCtrlGrid1: TDBCtrlGrid
       AlignWithMargins = True
       Left = 59
-      Top = 16
+      Top = 25
       Width = 518
       Height = 250
       AllowDelete = False
@@ -157,6 +178,37 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 2
+    object LKNameLabel: TLabel
+      Left = 43
+      Top = 5
+      Width = 106
+      Height = 13
+      Caption = 'Lieferanten-Kurzname'
+    end
+    object LNameLabel: TLabel
+      Left = 202
+      Top = 5
+      Width = 86
+      Height = 13
+      Caption = 'Lieferanten-Name'
+    end
+    object StatusLabel: TLabel
+      Left = 441
+      Top = 5
+      Width = 31
+      Height = 13
+      Caption = 'Status'
+    end
+    object LPfkLabel: TLabel
+      Left = 531
+      Top = 5
+      Width = 20
+      Height = 13
+      Hint = 'Lieferantenspez. Pr'#228'ferenzkennung'
+      Caption = 'LPfk'
+      ParentShowHint = False
+      ShowHint = True
+    end
     object DBCtrlGrid2: TDBCtrlGrid
       AlignWithMargins = True
       Left = 35

@@ -12,7 +12,7 @@ var
   WordApp: OleVariant;
 
 const
-  WordFileName = '\Brief_u_Fax\__Fax_Muster.docx';
+  WordFileName = '\Vorlagen\Fax_Muster.docx';
   WindowStateNormal = 0;
   WindowStateMax = 1;
   WindowStateMin = 2;

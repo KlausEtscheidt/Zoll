@@ -501,7 +501,8 @@ begin
   StatusBarLeft('Auswertung fertig');
 end;
 
-///<summary>Hole Adressdaten aus UNIPPS in eigene Tabelle</summary>
+///<summary>Hole Adressdaten und Ansprechpartner
+/// aus UNIPPS in eigene Tabellen</summary>
 procedure LieferantenAdressdatenAusUnipps();
 var
   gefunden:Boolean;
@@ -510,6 +511,8 @@ begin
   Init;
   if not Initialized then
     exit;
+
+  //------------  Erst Firmen-Daten lesen
   gefunden := UnippsQry1.HoleLieferantenAdressen;
 
   if not gefunden then
@@ -523,8 +526,25 @@ begin
     LocalQry1.InsertFields('Lieferanten_Adressen', UnippsQry1.Fields);
     UnippsQry1.next;
   end;
-
   LocalQry1.RunExecSQLQuery('COMMIT;');
+
+  //------------  Dann Ansprechpartner für LEKL falls vorhanden lesen
+  gefunden := UnippsQry1.HoleLieferantenAnspechpartner;
+
+  LocalQry1.RunExecSQLQuery('delete from Lieferanten_Ansprechpartner;');
+  LocalQry1.RunExecSQLQuery('BEGIN TRANSACTION;');
+  var text:string;
+  while not UnippsQry1.Eof do
+  begin
+//    text:=UnippsQry1.GetFieldNamesAsText;
+//    text:=UnippsQry1.GetFieldValuesAsText;
+    LocalQry1.InsertFields('Lieferanten_Ansprechpartner', UnippsQry1.Fields);
+    UnippsQry1.next;
+  end;
+  LocalQry1.RunExecSQLQuery('COMMIT;');
+
+  //------------  Zuletzt Ansprechpartner übertragen
+  LocalQry1.UpdateLieferantenAnsprechpartner;
 
 end;
 

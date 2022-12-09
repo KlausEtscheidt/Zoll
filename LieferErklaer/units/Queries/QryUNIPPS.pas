@@ -25,6 +25,7 @@ interface
     TWQryUNIPPS = class(TWADOQuery)
       function SucheBestellungen(delta_days: String): Boolean;
       function HoleLieferantenAdressen():Boolean;
+      function HoleLieferantenAnspechpartner():Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung(delta_days: String):Boolean;
@@ -59,6 +60,7 @@ interface
 
 implementation
 
+///<summary>Liest Adressdaten aller Lieferanten</summary>
 function TWQryUNIPPS.HoleLieferantenAdressen():Boolean;
 var  sql: String;
 begin
@@ -75,6 +77,21 @@ begin
          + 'INNER JOIN adresse ON lieferant.adresse = adresse.ident_nr;' ;
    Result:= RunSelectQuery(sql);
 end;
+
+function TWQryUNIPPS.HoleLieferantenAnspechpartner():Boolean;
+var  sql: String;
+begin
+
+    sql := 'SELECT ident_nr1 as IdLieferant, ident_nr2 as IdPerson, '
+         + 'Trim(Kurzname) as anrede, Trim(vorname) as vorname, '
+         + 'Trim(name) as Nachname, '
+         + 'trim(telefax) as telefax, Trim(email) as email '
+         + 'FROM adresse_anspr '
+         + 'JOIN anrede ON adresse_anspr.anrede=anrede.ident_nr '
+         + 'WHERE UPPER(klassifiz) LIKE "%LEKL%";' ;
+   Result:= RunSelectQuery(sql);
+end;
+
 
 ///<summary>Suche Bestellungen in UNIPPS bestellkopf</summary>
 /// <remarks>

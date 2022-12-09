@@ -33,6 +33,9 @@ type
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
     N1: TMenuItem;
     N2: TMenuItem;
+    ests1: TMenuItem;
+    N300Tage1: TMenuItem;
+    N0Tage1: TMenuItem;
 
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -44,6 +47,8 @@ type
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
+    procedure N300Tage1Click(Sender: TObject);
+    procedure N0Tage1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -132,6 +137,24 @@ procedure TmainForm.LTeileMenStatusClick(Sender: TObject);
 begin
     HideAllFrames;
     Lekl3LieferantAuswahlFrm.ShowFrame;
+end;
+
+procedure TmainForm.N0Tage1Click(Sender: TObject);
+var
+  LocalQry:TWQry;
+begin
+  LocalQry:=Tools.GetQuery;
+  LocalQry.RunExecSQLQuery('Update ProgrammDaten Set Wert=0 '
+                          + 'WHERE NAME = "Gueltigkeit_Lekl";');
+end;
+
+procedure TmainForm.N300Tage1Click(Sender: TObject);
+var
+  LocalQry:TWQry;
+begin
+  LocalQry:=Tools.GetQuery;
+  LocalQry.RunExecSQLQuery('Update ProgrammDaten Set Wert=300 '
+                          + 'WHERE NAME = "Gueltigkeit_Lekl";');
 end;
 
 procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);

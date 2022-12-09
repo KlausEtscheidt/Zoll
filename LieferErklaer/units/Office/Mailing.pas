@@ -4,7 +4,7 @@ interface
 
 uses Vcl.Forms, Vcl.Controls, Vcl.Dialogs,
      System.Variants, System.SysUtils,
-     ComObj,Data.DB;
+     ComObj,Data.DB, Tools;
 
 function ConnectToOutlook():OLEVariant;
 function SendeMailAn(DatensatzFelder:TFields): Boolean;
@@ -91,6 +91,21 @@ begin
 
 end;
 
+function SucheAttachmentInMail(MailItem: OLEVariant):OLEVariant;
+var
+  i:Integer;
+begin
+  Result:= Null;
+  i := MailItem.Attachments.Count;
+  if i=1 then
+    Result:= MailItem.Attachments.Item[1]
+  else
+      Result:= Null;
+//  for i := 1 to MailItem.Attachements.Count do
+//  begin
+
+end;
+
 function OutlookSucheMailOrdnerBetreff(OLFolder: OLEVariant;
                                                   Betreff:string):OLEVariant;
  var
@@ -145,7 +160,7 @@ end;
 function SendeMailAn(DatensatzFelder:TFields):Boolean;
 
 var
-  MailItem,MailMusterItem, OLFolder: OLEVariant;
+  MailItem,MailMusterItem,MusterAttachment, OLFolder: OLEVariant;
   Empfaenger:string;
   AlteBreite:Integer;
   OK:Boolean;
@@ -153,7 +168,11 @@ var
 begin
 
   //Verbinde mit Outlook
-  OLApp:=ConnectToOutlook ;
+//  if OLApp=Null then
+    OLApp:=ConnectToOutlook ;
+//  if OLApp=VarNull then
+//    raise Exception.Create('Konnte nicht zu Outlook verbinden.');
+
 
   //Suche Ordner 'Muster f Lieferantenerklärung'
   OLFolder:=OutlookSucheOrdner('Muster f Lieferantenerklärung');
@@ -162,14 +181,22 @@ begin
   MailMusterItem:=
          OutlookSucheMailOrdnerBetreff(OLFolder, 'Lieferanten-Erklärung');
 
+  //Suche das Attachement in der Mustermail
+//  MusterAttachment:=SucheAttachmentInMail(MailMusterItem);
+
   try
     MailItem := OLApp.CreateItem(olMailItem);
 //    MailItem.BCC := 'Dr.K.Etscheidt@wernert.de';
+{$IFDEF DEBUG}
     MailItem.Recipients.Add('Dr.K.Etscheidt@wernert.de');
+{$ELSE}
     Empfaenger:=DatensatzFelder.FieldByName('email').AsString;
     MailItem.Recipients.Add(Empfaenger);
+{$ENDIF}
     MailItem.Subject := MailMusterItem.Subject;
     MailItem.Body    := MailMusterItem.Body;
+    MailItem.Attachments.Add(Tools.ApplicationBaseDir
+                                    + '\Vorlagen\LLE Formular.pdf');
     MailItem.Display; //zeigt nur an
 
   //Outlook in Vordergrund holen, Delphi klein machen
@@ -188,9 +215,14 @@ begin
   Result:=OK;
 
   finally
+    sleep(300);
     OLApp    := VarNull;
   end;
 
 end;
 
 end.
+
+initialization
+ OLApp    := Null;
+

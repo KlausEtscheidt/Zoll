@@ -253,9 +253,6 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_6)'!=''">
-        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_3)'!=''">
         <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>
         <VerInfo_Locale>1031</VerInfo_Locale>
@@ -305,15 +302,15 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_13)'!=''">
-        <DCC_Define>SQLITE;$(DCC_Define)</DCC_Define>
         <VerInfo_Locale>1031</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <DCC_ExeOutput>V:\Tools\Lieferantenerklaerung\</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_13_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <DCC_ExeOutput>C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\zoll\LieferErklaer\Win32\Release\</DCC_ExeOutput>
+        <DCC_ExeOutput>.</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_11)'!=''">
         <DCC_Define>FIREDAC;$(DCC_Define)</DCC_Define>

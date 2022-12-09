@@ -109,8 +109,9 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 14
       Width = 114
       Height = 25
-      Hint = #39'LEKL vor weniger als 200 Tagen erhalten (Stand)'#39
+      Hint = 'LEKL vor weniger als 200 Tagen erhalten (Stand)'
       Caption = 'nur aktuelle LEKL'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -119,13 +120,14 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 3
       OnClick = LeklUpdatedChkBoxClick
     end
     object UnbearbeiteteCheckBox: TCheckBox
       Left = 679
       Top = 14
-      Width = 114
+      Width = 130
       Height = 25
       Hint = 'Letzte Teilepflege (StandTeile) vor mehr als 200 Tagen'
       Caption = 'nur unbearbeitete'

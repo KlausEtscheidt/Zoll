@@ -34,6 +34,13 @@ type
     PfkOnCheckBox: TCheckBox;
     PfkOffCheckBox: TCheckBox;
     Lekl: TDBText;
+    TeileNrLabel: TLabel;
+    BenennungLabel: TLabel;
+    PfkLabel: TLabel;
+    LKNameLabel: TLabel;
+    LNameLabel: TLabel;
+    StatusLabel: TLabel;
+    LPfkLabel: TLabel;
     procedure TeileDataSourceDataChange(Sender: TObject; Field: TField);
     procedure FilterTeileNrChange(Sender: TObject);
     procedure FilterTName1Change(Sender: TObject);

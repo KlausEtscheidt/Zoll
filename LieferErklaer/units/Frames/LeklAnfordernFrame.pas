@@ -83,6 +83,12 @@ type
     AnfordDatumResetAction: TAction;
     ErsatzTeileChkBox: TCheckBox;
     FilterUpdateAction: TAction;
+    Label17: TLabel;
+    NachnameDBText: TDBText;
+    Label18: TLabel;
+    AnredeDBText: TDBText;
+    VornameDBText: TDBText;
+    Label19: TLabel;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);

@@ -288,11 +288,16 @@ var
 begin
   Werte:=GetFieldNames();
   Text:='';
-  for I := 0 to length(Werte)-2 do
+  if length(Werte)>0 then
   begin
-    Text:=Text+Werte[I]+'; ' ;
-  end;
-  Text:=Text+Werte[length(Werte)-1];
+    for I := 0 to length(Werte)-2 do
+    begin
+      Text:=Text+Werte[I]+'; ' ;
+    end;
+    Text:=Text+Werte[length(Werte)-1];
+  end
+  else
+    Text:='Keine Felder in Abfrage gefunden';
   Result:=Text;
 end;
 
