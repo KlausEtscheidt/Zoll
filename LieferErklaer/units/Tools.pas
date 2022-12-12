@@ -9,7 +9,7 @@ Data.Win.ADODB,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-FDConnector,ADOConnector,QryAccess,QrySQLite ;
+FDConnector,ADOConnector,QryAccess,QrySQLite, WinApi ;
 
   type
 {$IFDEF FIREDAC}
@@ -37,6 +37,8 @@ var
   DbConnector:TWDBConnector;
   DbConnector2:TWDBConnector; //Fuer Thread-Abläufe
   ApplicationBaseDir: String;
+  Username: String;
+  Faxvorlage: String; //Userspez Vorlage
 
 const
   SQLiteDBFileName: String = '\db\lekl.db';
@@ -80,6 +82,10 @@ begin
 end;
 
 procedure init();
+var
+  SQL:String;
+  LocalQry: TWQry;
+  gefunden:Boolean;
 
 begin
   //Wir wollen das hier nur 1 mal ausführen
@@ -97,6 +103,24 @@ begin
   DbConnector:=GetConnection();
   //Globalen Connector fuer alle Queries, die in einem eigenen Thread laufen
   DbConnector2:=GetConnection();
+
+  Username:=GetWinUsername();
+  LocalQry:=GetQuery;
+  gefunden:=LocalQry.RunSelectQuery(
+              'Select * FROM Anwender WHERE WinName="' + Username + '";');
+
+  if gefunden then
+    begin
+      Faxvorlage:=LocalQry.FieldByName('Faxvorlage').AsString;
+      SQL:='UPDATE Anwender SET used = "'
+          + FormatDateTime('YYYY-MM-DD HH:MM', Now)
+          + '" WHERE WinName="' + Username + '";';
+    end
+  else
+    SQL:='Insert INTO Anwender (WinName,used) SELECT "' + Username
+               + '" AS WinName, "' + FormatDateTime('YYYY-MM-DD HH:MM', Now)
+               + '" AS used;';
+ LocalQry.RunExecSQLQuery(SQL);
 
 end;
 

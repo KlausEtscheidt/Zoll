@@ -5,8 +5,20 @@ interface
 uses System.SysUtils,  Winapi.Windows;
 
 function GetCurrentVersion(level: Integer): String;
+function GetWinUsername: String;
 
 implementation
+
+function GetWinUsername: String;
+var
+  Buffer: array[0..256] of Char; // UNLEN (= 256) +1 (definiert in Lmcons.h)
+  Size: DWord;
+begin
+  Size := length(Buffer); // length stat SizeOf, da Anzahl in TChar und nicht BufferSize in Byte
+   if not Winapi.Windows.GetUserName(Buffer, Size) then
+    RaiseLastOSError;
+  SetString(Result, Buffer, Size - 1);
+end;
 
 function GetCurrentVersion(level: Integer): String;
 var

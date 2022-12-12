@@ -293,7 +293,7 @@ begin
   sql := 'Select Lieferanten.IdLieferant, LKurzname,Stand,gilt_bis, letzteAnfrage, '
        + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
        + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
-       + 'Anrede,Vorname,Nachname, '
+       + 'hat_LEKL_Ansprechp,Anrede,Vorname,Nachname, '
        + 'Julianday(gilt_bis)-Julianday(Date()) as gilt_noch, '
        + 'Julianday(Date()) - Julianday(letzteAnfrage) as angefragt_vor_Tagen '
        + 'from Lieferanten '

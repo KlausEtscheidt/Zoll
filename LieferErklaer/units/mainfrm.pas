@@ -139,6 +139,8 @@ end;
 procedure TmainForm.LieferMenAdressenClick(Sender: TObject);
 begin
       Import.LieferantenAdressdatenAusUnipps;
+      if LieferantenErklAnfordernFrm1.Visible then
+        LieferantenErklAnfordernFrm1.RefreshLocalQuery;
 end;
 
 procedure TmainForm.LieferMenErklaerAnfordernClick(Sender: TObject);

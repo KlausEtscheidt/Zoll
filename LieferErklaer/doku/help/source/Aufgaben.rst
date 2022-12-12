@@ -170,7 +170,8 @@ Das Versenden eines Fax läuft analog zur mail.
 
 Es wird per MS-Word ein Musterfax geöffnet und mit den Kontaktdaten des Ansprechpartners ergänzt.
 
-Das Musterfax ist in **xxxxxxxxxxxxxxxxxxxxx** hinterlegt.
+Das Musterfax ist in **V:\Tools\Lieferantenerklaerung\Vorlagen** hinterlegt.
+Es heißt Fax_Muster_Kiel.docx
 
 Das Fax wird geprüft, evtl per Word korrigiert und **immer** per DigiLek-Dialog gedruckt oder gelöscht.
 Im Fall des Drucks, wird das aktuelle Datum als **angefragt** in der Datenbank eingetragen.

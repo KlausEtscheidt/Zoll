@@ -527,6 +527,9 @@ object mainForm: TmainForm
       Width = 828
       ExplicitWidth = 828
       inherited Panel3: TPanel
+        inherited Label6: TLabel
+          Width = 325
+        end
         inherited DBText1: TDBText
           ExplicitTop = 21
         end

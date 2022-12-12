@@ -1252,6 +1252,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       OnExecute = FilterUpdateActionExecute
       OnUpdate = FilterUpdateActionUpdate
     end
+    object AnfordDatumHeuteAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'Anfrage-Datum heute'
+      OnExecute = AnfordDatumHeuteActionExecute
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 432
@@ -1266,6 +1271,10 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object AnforderungResetMen: TMenuItem
       Action = AnfordDatumResetAction
+      Caption = 'Anfrage-Datum zur'#252'ck setzen'
+    end
+    object AnforderungHeuteMen: TMenuItem
+      Action = AnfordDatumHeuteAction
     end
   end
 end

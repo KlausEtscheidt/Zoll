@@ -93,6 +93,8 @@ type
     NRelevantChkBox: TCheckBox;
     NohneAnfrageChkBox: TCheckBox;
     NAbgelaufenChkBox: TCheckBox;
+    AnforderungHeuteMen: TMenuItem;
+    AnfordDatumHeuteAction: TAction;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -107,6 +109,8 @@ type
     procedure AnfordDatumResetActionExecute(Sender: TObject);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure FilterUpdateActionUpdate(Sender: TObject);
+    procedure AnfordDatumHeuteActionExecute(Sender: TObject);
+    procedure RefreshLocalQuery;
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -149,7 +153,6 @@ var
   letzteAnfrage:string;
   IdLieferant: Integer;
   UpdateQry:TWQry;
-  BM:TBookmark;
   var Datum: TDateTime;
 begin
     //heute
@@ -164,6 +167,15 @@ begin
     // --- Update-Abfrage �bernimmt Daten in Lieferanten-Tabelle
     UpdateQry := Tools.GetQuery;
     UpdateQry.UpdateLieferantAnfrageDatum(IdLieferant,letzteAnfrage);
+
+    RefreshLocalQuery;
+
+end;
+
+procedure TLieferantenErklAnfordernFrm.RefreshLocalQuery;
+var
+  BM:TBookmark;
+begin
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
     // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
@@ -393,6 +405,12 @@ begin
   FilterKurzname.Text := '';
   FilterName.Text := '';
   FilterUpdateActionExecute(Sender);
+end;
+
+procedure TLieferantenErklAnfordernFrm.AnfordDatumHeuteActionExecute(
+  Sender: TObject);
+begin
+  UpdateAnfrageDatum();
 end;
 
 procedure TLieferantenErklAnfordernFrm.AnfordDatumResetActionExecute(
