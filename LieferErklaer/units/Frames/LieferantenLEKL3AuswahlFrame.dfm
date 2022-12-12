@@ -3,6 +3,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   Top = 0
   Width = 1099
   Height = 569
+  HelpType = htKeyword
+  HelpKeyword = 'Lieferantenauswahl'
   ParentBackground = False
   ParentShowHint = False
   ShowHint = True
@@ -24,7 +26,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     Left = 5
     Top = 44
     Width = 1036
-    Height = 53
+    Height = 72
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -109,9 +111,8 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 14
       Width = 114
       Height = 25
-      Hint = 'LEKL vor weniger als 200 Tagen erhalten (Stand)'
+      Action = FilterUpdateAction
       Caption = 'nur aktuelle LEKL'
-      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -120,16 +121,15 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      State = cbChecked
       TabOrder = 3
-      OnClick = LeklUpdatedChkBoxClick
     end
     object UnbearbeiteteCheckBox: TCheckBox
-      Left = 679
+      Left = 680
       Top = 14
       Width = 130
       Height = 25
-      Hint = 'Letzte Teilepflege (StandTeile) vor mehr als 200 Tagen'
+      TabStop = False
+      Action = FilterUpdateAction
       Caption = 'nur unbearbeitete'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -140,7 +140,40 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
-      OnClick = LeklUpdatedChkBoxClick
+    end
+    object NLeklUpdatedChkBox: TCheckBox
+      Left = 543
+      Top = 38
+      Width = 114
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'nur alte LEKL'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+    end
+    object NUnbearbeiteteCheckBox: TCheckBox
+      Left = 679
+      Top = 38
+      Width = 130
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'nur bearbeitete'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
     end
   end
   object GroupBox2: TGroupBox
@@ -648,6 +681,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Category = 'Filter'
       Caption = 'FilterUpdate'
       OnExecute = FilterUpdateActionExecute
+      OnUpdate = FilterUpdateActionUpdate
     end
   end
 end

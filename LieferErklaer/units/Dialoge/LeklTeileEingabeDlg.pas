@@ -26,9 +26,12 @@ implementation
 
 {$R *.dfm}
 
+//uses mainfrm;
+
 procedure TLeklTeileEingabeDialog.FormShow(Sender: TObject);
 begin
   LeklTeileEingabeFrm.Init;
+//  mainForm.HelpKeyword:='Präferenzkenner';
   LeklTeileEingabeFrm.Show;
 end;
 

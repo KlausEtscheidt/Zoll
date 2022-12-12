@@ -89,10 +89,14 @@ type
     AnredeDBText: TDBText;
     VornameDBText: TDBText;
     Label19: TLabel;
+    RelevantChkBox: TCheckBox;
+    NRelevantChkBox: TCheckBox;
+    NohneAnfrageChkBox: TCheckBox;
+    NAbgelaufenChkBox: TCheckBox;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
-    procedure AbgelaufenChkBoxClick(Sender: TObject);
+//    procedure AbgelaufenChkBoxClick(Sender: TObject);
     procedure FilterUpdateActionExecute(Sender: TObject);
     procedure StatusUpdateActionExecute(Sender: TObject);
     procedure mailActionExecute(Sender: TObject);
@@ -102,10 +106,13 @@ type
     procedure ExportExcelActionExecute(Sender: TObject);
     procedure AnfordDatumResetActionExecute(Sender: TObject);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
+    procedure FilterUpdateActionUpdate(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:String;
+    //wann wird eine Eingabe als veraltet betrachtet
+    veraltet:String;
   public
     LocalQry: TWQry;
   end;
@@ -122,9 +129,11 @@ begin
     LocalQry := Tools.GetQuery;
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
+    veraltet:=LocalQry.LiesProgrammDatenWert('veraltet');
     LocalQry.HoleLieferantenMitAdressen;
     DataSource1.DataSet := LocalQry;
-    FilterUpdateActionExecute(nil);
+    FilterUpdateActionExecute(Self);
+    mainForm.HelpKeyword:='Anforderung';
     Self.Visible := True;
 end;
 
@@ -158,7 +167,9 @@ begin
     // akt. Datensatz merken
     BM := LocalQry.GetBookmark;
     // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
-{$IFNDEF FIREDAC}
+{$IFDEF FIREDAC}
+    LocalQry.Refresh();
+{$ELSE}
     LocalQry.Requery();
 {$ENDIF}
 
@@ -194,11 +205,6 @@ begin
    // Datumsw�hler auf bisheriges G�ltigkeitsdatum
    GiltBis := Trim(LocalQry.FieldByName('gilt_bis').AsString);
    LieferantenStatusDialog.DateTimePicker1.DateTime := ISO8601ToDate(GiltBis);
-   //Datumsbutton auf 31.12 des aktuellen oder nächsten Jahrs
-//   Jahr:=CurrentYear;
-//   if MonthOfTheYear(Date)>9 then
-//      Jahr:=Jahr+1;
-//   LieferantenStatusDialog.GiltNeuBtn.Caption:='31.12.'+IntToStr(Jahr);
 
    // Dialog anzeigen
    if (LieferantenStatusDialog.ShowModal=mrOK) then
@@ -226,13 +232,14 @@ begin
                                                             Kommentar);
 
       // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
-{$IFNDEF FIREDAC}
+{$IFDEF FIREDAC}
+    LocalQry.Refresh();
+{$ELSE}
     LocalQry.Requery();
 {$ENDIF}
-
-
       // Gehe auf ursp�nglichen Datensatz
-      LocalQry.GotoBookmark(BM);
+      if not LocalQry.Eof then
+          LocalQry.GotoBookmark(BM);
 
     end;
 
@@ -277,14 +284,45 @@ begin
       FilterStr := FilterStr + 'gilt_noch <' + minRestGueltigkeit;
     end;
 
+    if NAbgelaufenChkBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'gilt_noch >=' + minRestGueltigkeit;
+    end;
+
     if ohneAnfrageChkBox.State = cbChecked then
     begin
       if filtern then
         FilterStr := FilterStr + ' AND ' ;
       filtern := True;
-      FilterStr := FilterStr + 'angefragt_vor_Tagen > 100';
+      FilterStr := FilterStr + 'angefragt_vor_Tagen >' + veraltet;
     end;
 
+    if NohneAnfrageChkBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'angefragt_vor_Tagen <=' + veraltet;
+    end;
+
+    if RelevantChkBox.State = cbChecked then
+    begin
+      if filtern then
+         FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'lekl<4';
+    end;
+
+    if NRelevantChkBox.State = cbChecked then
+    begin
+      if filtern then
+         FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'lekl=4';
+    end;
 
     if length(FilterName.Text)>0 then
     begin
@@ -309,10 +347,46 @@ begin
                    + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
 end;
 
-procedure TLieferantenErklAnfordernFrm.AbgelaufenChkBoxClick(Sender: TObject);
+procedure TLieferantenErklAnfordernFrm.FilterUpdateActionUpdate(
+  Sender: TObject);
+var
+  SenderComp:TComponent;
 begin
-    FilterUpdateActionExecute(Sender);
+//    if assigned(Sender) then
+    SenderComp:= (Sender as TAction).ActionComponent;
+    if not assigned(SenderComp) then
+      exit;
+
+    if SenderComp.Equals(AbgelaufenChkBox) then
+      if AbgelaufenChkBox.State = cbChecked then
+        NAbgelaufenChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NAbgelaufenChkBox) then
+      if NAbgelaufenChkBox.State = cbChecked then
+        AbgelaufenChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(ohneAnfrageChkBox) then
+      if ohneAnfrageChkBox.State = cbChecked then
+        NohneAnfrageChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NohneAnfrageChkBox) then
+      if NohneAnfrageChkBox.State = cbChecked then
+        ohneAnfrageChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(RelevantChkBox) then
+      if RelevantChkBox.State = cbChecked then
+          NRelevantChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NRelevantChkBox) then
+      if NRelevantChkBox.State = cbChecked then
+          RelevantChkBox.State := cbUnchecked;
+
 end;
+
+//procedure TLieferantenErklAnfordernFrm.AbgelaufenChkBoxClick(Sender: TObject);
+//begin
+//    FilterUpdateActionExecute(Sender);
+//end;
 
 procedure TLieferantenErklAnfordernFrm.FilterAusBtnClick(Sender: TObject);
 begin

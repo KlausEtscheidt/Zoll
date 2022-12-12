@@ -8,7 +8,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,
   LieferantenStatusDlg, Tools, Vcl.Mask, System.ImageList, Vcl.ImgList,
-  Vcl.Buttons, System.Actions, Vcl.ActnList, Vcl.ExtCtrls;
+  Vcl.Buttons, System.Actions, Vcl.ActnList, Vcl.ExtCtrls, Vcl.StdActns;
 
 type
   TLieferantenStatusFrm = class(TFrame)
@@ -45,13 +45,15 @@ type
     Label6: TLabel;
     DBText1: TDBText;
     DBText2: TDBText;
+    NLeklUpdatedChkBox: TCheckBox;
+    NUnbearbeiteteCheckBox: TCheckBox;
     procedure TeileBtnClick(Sender: TObject);
     procedure ShowFrame();
     procedure HideFrame();
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure FilterAusBtnClick(Sender: TObject);
-    procedure LeklUpdatedChkBoxClick(Sender: TObject);
     procedure FilterUpdateActionExecute(Sender: TObject);
+    procedure FilterUpdateActionUpdate(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -62,7 +64,6 @@ type
     procedure FormRequery;
   public
   end;
-
 
 implementation
 
@@ -82,6 +83,7 @@ begin
     DataSource1.DataSet := LocalQry;
     FilterUpdateActionExecute(nil);
     Self.Visible := True;
+    mainForm.HelpKeyword:='Lieferantenauswahl';
 end;
 
 procedure TLieferantenStatusFrm.HideFrame();
@@ -148,10 +150,22 @@ begin
     filtern := False;
     FilterStr := '';
 
+    //Der Teile-Stand wurde vor mehr als "veraltet" Tagen eingegeben,
+    //aktuell also noch gar nicht
     if UnbearbeiteteCheckBox.State = cbChecked then
     begin
       filtern := True;
       FilterStr := FilterStr + 'AlterStandTeile >'+ veraltet ;
+    end;
+
+    //Der Teile-Stand wurde vor weniger als "veraltet" Tagen eingegeben,
+    //ist also aktuell
+    if NUnbearbeiteteCheckBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'AlterStandTeile <=' + veraltet ;
     end;
 
     //Die LEKL wurde aktuell (vor weniger als veraltet Tagen )eingelesen
@@ -161,6 +175,16 @@ begin
         FilterStr := FilterStr + ' AND ' ;
       filtern := True;
       FilterStr := FilterStr + 'AlterStand <' + veraltet ;
+    end;
+
+    //Die LEKL ist nicht aktuell
+    //Sie wurde vor mehr als "veraltet" Tagen eingelesen
+    if NLeklUpdatedChkBox.State = cbChecked then
+    begin
+      if filtern then
+        FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'AlterStand >=' + veraltet ;
     end;
 
     if length(FilterName.Text)>0 then
@@ -186,6 +210,33 @@ begin
                    + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
 end;
 
+procedure TLieferantenStatusFrm.FilterUpdateActionUpdate(Sender: TObject);
+var
+  SenderComp:TComponent;
+begin
+//    if assigned(Sender) then
+    SenderComp:= (Sender as TAction).ActionComponent;
+    if not assigned(SenderComp) then
+      exit;
+
+    if SenderComp.Equals(LeklUpdatedChkBox) then
+      if LeklUpdatedChkBox.State = cbChecked then
+        NLeklUpdatedChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NLeklUpdatedChkBox) then
+      if NLeklUpdatedChkBox.State = cbChecked then
+        LeklUpdatedChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(UnbearbeiteteCheckBox) then
+      if UnbearbeiteteCheckBox.State = cbChecked then
+        NUnbearbeiteteCheckBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NUnbearbeiteteCheckBox) then
+      if NUnbearbeiteteCheckBox.State = cbChecked then
+        UnbearbeiteteCheckBox.State := cbUnchecked;
+
+end;
+
 procedure TLieferantenStatusFrm.FormRequery;
 var
   BM:TBookmark;
@@ -193,18 +244,15 @@ begin
   // akt. Datensatz merken
   BM := LocalQry.GetBookmark;
   // Basis-Abfrage erneuern um aktuelle Daten anzuzeigen
-{$IFNDEF FIREDAC}
+{$IFDEF FIREDAC}
+    LocalQry.Refresh();
+{$ELSE}
     LocalQry.Requery();
 {$ENDIF}
 
   // Gehe auf ursp�nglichen Datensatz, wenn nicht alle weggefiltert
   if not LocalQry.Eof then
     LocalQry.GotoBookmark(BM);
-end;
-
-procedure TLieferantenStatusFrm.LeklUpdatedChkBoxClick(Sender: TObject);
-begin
-    FilterUpdateActionExecute(Sender);
 end;
 
 procedure TLieferantenStatusFrm.FilterAusBtnClick(Sender: TObject);

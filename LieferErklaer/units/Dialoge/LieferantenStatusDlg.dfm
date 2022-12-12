@@ -12,6 +12,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   Font.Style = []
   OldCreateOrder = False
   ShowHint = True
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -44,7 +45,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   object alterStatus: TLabel
     Left = 64
     Top = 48
-    Width = 113
+    Width = 41
     Height = 18
     Hint = 'bisheriger Status'
     Caption = 'Label3'
@@ -102,7 +103,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Left = 224
     Top = 40
     Width = 273
-    Height = 69
+    Height = 82
     Hint = 'neuer Status entsprechend der R'#252'ckmeldung des Lieferanten'
     KeyField = 'Id'
     ListField = 'StatusTxt'

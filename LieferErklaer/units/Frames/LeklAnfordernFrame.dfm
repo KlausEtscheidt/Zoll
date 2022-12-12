@@ -3,6 +3,8 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   Top = 0
   Width = 1099
   Height = 593
+  HelpType = htKeyword
+  HelpKeyword = 'Anforderung'
   ParentBackground = False
   PopupMenu = PopupMenu1
   TabOrder = 0
@@ -10,7 +12,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Left = 5
     Top = 44
     Width = 1076
-    Height = 53
+    Height = 72
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -111,7 +113,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       OnClick = FilterAusBtnClick
     end
     object AbgelaufenChkBox: TCheckBox
-      Left = 719
+      Left = 715
       Top = 14
       Width = 90
       Height = 25
@@ -135,7 +137,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Height = 25
       Hint = 'Letze Anfrage nach Lekl '#228'lter als 200 Tage'
       Action = FilterUpdateAction
-      Caption = 'nicht aufgefordert'
+      Caption = 'nicht angefordert'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -163,6 +165,78 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 6
+    end
+    object RelevantChkBox: TCheckBox
+      Left = 940
+      Top = 14
+      Width = 115
+      Height = 25
+      Hint = 'keine Lieferanten, die als unwichtig markiert wurden'
+      Action = FilterUpdateAction
+      Caption = 'relevante'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+    end
+    object NRelevantChkBox: TCheckBox
+      Left = 940
+      Top = 38
+      Width = 115
+      Height = 25
+      Hint = 'nur Lieferanten, die als unwichtig markiert wurden'
+      Action = FilterUpdateAction
+      Caption = 'irrelevante'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
+    end
+    object NohneAnfrageChkBox: TCheckBox
+      Left = 815
+      Top = 38
+      Width = 115
+      Height = 25
+      Hint = 'Lekl in den letzten  200 Tagen angefragt'
+      Action = FilterUpdateAction
+      Caption = 'schon angefordert'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
+    end
+    object NAbgelaufenChkBox: TCheckBox
+      Left = 715
+      Top = 38
+      Width = 90
+      Height = 25
+      Hint = 'Nur Lieferanten, mit Lekl, die mehr als 300 Tage gilt'
+      Action = FilterUpdateAction
+      Caption = 'g'#252'ltige'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
     end
   end
   object GroupBox2: TGroupBox
@@ -1176,6 +1250,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     object FilterUpdateAction: TAction
       Caption = 'FilterUpdate'
       OnExecute = FilterUpdateActionExecute
+      OnUpdate = FilterUpdateActionUpdate
     end
   end
   object PopupMenu1: TPopupMenu

@@ -1,6 +1,8 @@
 object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
   Left = 0
   Top = 0
+  HelpType = htKeyword
+  HelpKeyword = 'Pr'#228'ferenzkenner'
   Caption = 'teilebezogener Ursprungsnachweis'
   ClientHeight = 572
   ClientWidth = 744
@@ -20,6 +22,8 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
     Top = 0
     Width = 744
     Height = 531
+    HelpType = htKeyword
+    HelpKeyword = 'Anforderung'
     Align = alClient
     Color = clGradientActiveCaption
     ParentBackground = False
@@ -38,14 +42,17 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
         ShowHint = True
       end
       inherited TName1: TDBText
+        Hint = 'Teile-Benennung'
         ParentShowHint = False
         ShowHint = True
       end
       inherited LTeileNr: TDBText
+        Hint = 'Lieferanten-Teilenr'
         ParentShowHint = False
         ShowHint = True
       end
       inherited PFKChkBox: TDBCheckBox
+        Hint = 'Pr'#228'ferenzkenner'
         ParentShowHint = False
         ShowHint = True
       end

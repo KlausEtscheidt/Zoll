@@ -23,13 +23,15 @@ uses
   LeklTeileEingabeDlg in 'units\Dialoge\LeklTeileEingabeDlg.pas' {LeklTeileEingabeDialog},
   ImportStatusInfoDlg in 'units\Dialoge\ImportStatusInfoDlg.pas' {ImportStatusDlg},
   ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
-  ADOQuery in '..\lib\Datenbank\ADOQuery.pas';
+  ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
+  WinApi in '..\lib\WinApi\WinApi.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.HelpFile := 'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\zoll\LieferErklaer\doku\help\build\htmlhelp\digilekdoc.chm';
   Application.CreateForm(TmainForm, mainForm);
   Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
   Application.CreateForm(TTeileListeForm, TeileListeForm);

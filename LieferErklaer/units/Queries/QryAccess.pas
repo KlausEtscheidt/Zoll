@@ -253,7 +253,6 @@ begin
 
 end;
 
-
 //---------------------------------------------------------------------------
 ///<summary> Überträgt Ansprechpartner in Tabelle Lieferanten_Adressen</summary>
 function TWQryAccess.UpdateLieferantenAnsprechpartner():Boolean;

@@ -3,13 +3,14 @@
 interface
 
 uses
+  Vcl.HtmlHelpViewer,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
   Vcl.DBCtrls, LeklTeileEingabeFrame, Tools,
   LieferantenLEKL3AuswahlFrame, LeklAnfordernFrame, TeileStatusKontrolleFrame,
-  ExportFrame;
+  ExportFrame, WinApi, Vcl.Buttons;
 
 type
   TmainForm = class(TForm)
@@ -33,9 +34,12 @@ type
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
     N1: TMenuItem;
     N2: TMenuItem;
-    ests1: TMenuItem;
+    TestMen: TMenuItem;
     N300Tage1: TMenuItem;
     N0Tage1: TMenuItem;
+    InfoMen: TMenuItem;
+    VersMen: TMenuItem;
+    Hilfe1: TMenuItem;
 
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -49,6 +53,10 @@ type
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
     procedure N300Tage1Click(Sender: TObject);
     procedure N0Tage1Click(Sender: TObject);
+    procedure VersMenClick(Sender: TObject);
+    function FormHelp(Command: Word; Data: NativeInt;
+      var CallHelp: Boolean): Boolean;
+    procedure Hilfe1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -68,6 +76,11 @@ uses Excel, Mailing, ImportStatusInfoDlg;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
+    caption:=caption + ' V' + GetCurrentVersion(2);
+{$IFDEF RELEASE}
+    TestMen.Visible:=False;
+{$ENDIF}
+
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //  ImportStatusDlg.Show;
 //    Import.BasisImport;
@@ -87,9 +100,24 @@ begin
 end;
 
 
+procedure TmainForm.Hilfe1Click(Sender: TObject);
+begin
+  HelpFile := ExtractFilePath(Application.ExeName) + HelpFile;
+  Application.HelpShowTableOfContents();
+//  CallHelp :=  False; // True; - to execute the default OnHelp event handler
+
+end;
+
 procedure TmainForm.FormDestroy(Sender: TObject);
 begin
   close;
+end;
+
+function TmainForm.FormHelp(Command: Word; Data: NativeInt;
+  var CallHelp: Boolean): Boolean;
+begin
+  mainForm.StatusBar1.Panels[0].Text := 'f1';
+
 end;
 
 /// <summary>Ausgabe in linkes panel des Statusbar </summary>
@@ -165,6 +193,12 @@ end;
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 begin
   ImportStatusDlg.Show;
+end;
+
+procedure TmainForm.VersMenClick(Sender: TObject);
+begin
+  ShowMessage('DigiLek Digitale Lieferantenerklärung' + #13#13
+              + 'Version ' + GetCurrentVersion(4)  )
 end;
 
 //Setze Pfade, Verbinde zur Datenbank etc

@@ -161,11 +161,21 @@ function SendeMailAn(DatensatzFelder:TFields):Boolean;
 
 var
   MailItem,MailMusterItem,MusterAttachment, OLFolder: OLEVariant;
-  Empfaenger:string;
+  Anrede,Name,Empfaenger:string;
   AlteBreite:Integer;
   OK:Boolean;
 
 begin
+
+  Anrede := DatensatzFelder.FieldByName('Anrede').AsString;
+  Name := DatensatzFelder.FieldByName('Nachname').AsString;
+
+  if Anrede='Herr' then
+     Anrede := 'Sehr geehrter Herr ' + Name
+  else if Anrede='Frau' then
+     Anrede := 'Sehr geehrte Frau ' + Name
+  else if Anrede='' then
+     Anrede := 'Sehr geehrte Damen und Herren ';
 
   //Verbinde mit Outlook
 //  if OLApp=Null then
@@ -173,16 +183,12 @@ begin
 //  if OLApp=VarNull then
 //    raise Exception.Create('Konnte nicht zu Outlook verbinden.');
 
-
   //Suche Ordner 'Muster f Lieferantenerklärung'
   OLFolder:=OutlookSucheOrdner('Muster f Lieferantenerklärung');
 
   //Suche mail nach Ordner und Betreff
   MailMusterItem:=
          OutlookSucheMailOrdnerBetreff(OLFolder, 'Lieferanten-Erklärung');
-
-  //Suche das Attachement in der Mustermail
-//  MusterAttachment:=SucheAttachmentInMail(MailMusterItem);
 
   try
     MailItem := OLApp.CreateItem(olMailItem);
@@ -199,20 +205,20 @@ begin
                                     + '\Vorlagen\LLE Formular.pdf');
     MailItem.Display; //zeigt nur an
 
-  //Outlook in Vordergrund holen, Delphi klein machen
-  AlteBreite:=mainfrm.mainForm.width;
-  mainfrm.mainForm.width:=10;
-  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
-  OLApp.ActiveWindow.WindowState:=WindowStateMin;
+    //Outlook in Vordergrund holen, Delphi klein machen
+    AlteBreite:=mainfrm.mainForm.width;
+    mainfrm.mainForm.width:=10;
+    OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+    OLApp.ActiveWindow.WindowState:=WindowStateMin;
 
-  //Nachfragen ob Mail ok
-  OK:=MailingOK(MailItem);
+    //Nachfragen ob Mail ok
+    OK:=MailingOK(MailItem);
 
-  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
-  OLApp.ActiveWindow.WindowState:=WindowStateMin;
-  mainfrm.mainForm.width:=AlteBreite;
+    OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+    OLApp.ActiveWindow.WindowState:=WindowStateMin;
+    mainfrm.mainForm.width:=AlteBreite;
 
-  Result:=OK;
+    Result:=OK;
 
   finally
     sleep(300);
