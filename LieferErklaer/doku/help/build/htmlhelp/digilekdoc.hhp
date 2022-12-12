@@ -1,0 +1,30 @@
+[OPTIONS]
+Binary TOC=No
+Binary Index=No
+Compiled file=digilekdoc.chm
+Contents file=digilekdoc.hhc
+Default Window=digilekdoc
+Default topic=index.html
+Display compile progress=No
+Full text search stop list file=digilekdoc.stp
+Full-text search=Yes
+Index file=digilekdoc.hhk
+Language=0x407
+Title=DigiLek 1.0 Dokumentation
+
+[WINDOWS]
+digilekdoc="DigiLek 1.0 Dokumentation","digilekdoc.hhc","digilekdoc.hhk","index.html","index.html",,,,,0x63520,220,0x10384e,[0,0,1024,768],,,,,,,0
+
+[FILES]
+Aufgaben.html
+Menues.html
+Ziel.html
+genindex.html
+index.html
+_static\alabaster.css
+_static\basic.css
+_static\custom.css
+_static\file.png
+_static\minus.png
+_static\plus.png
+_static\pygments.css

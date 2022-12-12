@@ -1,0 +1,275 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=cp1252" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aufgaben und Formulare</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
+    <link rel="prev" title="Menues" href="Menues.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="aufgaben-und-formulare">
+<h1>Aufgaben und Formulare</h1>
+<div class="section" id="daten-einlesen">
+<h2>Daten einlesen</h2>
+<p>Das Programm dient zur digitalen Erfassung von Lieferantenerklärungen.</p>
+</div>
+<div class="section" id="lieferantenerklarungen-anfordern">
+<span id="leklannfordern"></span><span id="index-0"></span><h2>Lieferantenerklärungen anfordern</h2>
+<p>Zuerst müssen die relevanten Lieferanten aufgefordert werden, eine Langzeit-Lieferantenerklärung
+abzugeben.</p>
+<p>Dabei sind Ersatzteil-Lieferanten bevorzugt abzuarbeiten.</p>
+<p>Die Anforderung erfolgt über das Menü „Lieferanten“ Untermenü „Erklärungen anfordern/eingeben“.</p>
+<img alt="_images/LeklAnfordern.png" src="_images/LeklAnfordern.png" />
+<p>Das Formular gliedert sich in die Bereiche „Filter“, „gefiltert“ und „gewählt“.</p>
+<p>Im Bereich Filter wird definiert, welche Lieferanten im Bereich gefiltert zur Auswahl angezeigt werden.</p>
+<p>Der im Bereich „gefiltert“ angewählte Lieferant wird mit Detailangaben im Bereich „gewählt“ angezeigt.
+Auf diesen Datensatz wirken sich die im Bereich „gewählt“ möglichen Aktionen aus.</p>
+<div class="section" id="formular-bereich-filter">
+<span id="anfragefilter"></span><h3>Formular-Bereich Filter</h3>
+<p>Die Filter dienen dem leichteren Auffinden eines Lieferanten bzw. der Kontrolle,
+welche Lieferanten noch zu bearbeiten sind.</p>
+<a class="reference internal image-reference" href="_images/LeklAnfordernFilterLinks.png"><img alt="_images/LeklAnfordernFilterLinks.png" class="align-center" src="_images/LeklAnfordernFilterLinks.png" style="width: 391.5px; height: 131.0px;" /></a>
+<p>Im linken Bereich kann über den Kurznamen oder den kompletten Namen gefiltert werden.
+Dabei wird z.B. durch die Eingabe von <em>oduct</em> im Feld Name der Lieferant „B&amp;P Products BVBA“ gefunden.</p>
+<p>Die Filter wirken alle gleichzeitig.
+In der Überschrift des „gefiltert“-Bereichs wird jeweils angezeigt, wie viele Lieferanten den Kriterien entsprechen.</p>
+<p>Über die Schaltfläche mit dem durchkreutzten Filter-Symbol werden die Filter für Kurz-Name und Name gelöscht.</p>
+<a class="reference internal image-reference" href="_images/LeklAnfordernFilterRechts.png"><img alt="_images/LeklAnfordernFilterRechts.png" class="align-center" src="_images/LeklAnfordernFilterRechts.png" style="width: 569.8px; height: 80.5px;" /></a>
+<p>Wird ein Haken im Kästchen <strong>Pumpenteile</strong> gesetzt, werden nur Lieferanten angezeigt, die Pumpenteile liefern.
+Ohne diesen Haken werden alle Lieferanten angezeigt, unabhängig davon, ob sie Pumpenteile liefern oder nicht.</p>
+<p>Analog wirken alle anderen Kästchen. Bei den sechs Filtern rechts, gibt es jeweils einen Filter und
+den passenden Umkehrfilter dazu.</p>
+<p>So werden über den Filter <strong>irrelevante</strong> nur Lieferanten angezeigt, deren Status auf „irrelevant“
+gesetzt wurde. Der Filter <strong>relevante</strong> zeigt also Lieferanten deren Status nicht „irrelevant“
+ist. Dieser Filter ist nützlich, damit Lieferanten nicht mehr angezeigt werden, für die bereits entschieden wurde,
+das sie keine Lekl abgeben sollen (s.auch <span class="xref std std-ref">StatusRef</span>).</p>
+<p>Der Filter <strong>abgelaufene</strong> zeigt nur Lieferanten, deren Lekl in weniger als 300 Tagen ungültig wird.
+Die Gültigkeit der <em>alten</em> Lekl wird als „gilt_bis“ in den Bereichen „gefiltert“ und „gewählt“ angezeigt.
+Es werden jedoch zusätzliche 300 Tage gefordert, weil bei der Datenübertragung nach UNIPPS
+die zugrunde liegende Erklärung noch mindestens so lange gelten soll.
+Die als <strong>abgelaufen</strong> gefilerten Erklärungen <strong>müssen</strong> daher neu angefordert werden.
+Der mit dem Filter <strong>gültige</strong> gefilterten Erklärungen gelten noch mehr als 300 Tage und
+müssen daher nicht neu angefordert werden.</p>
+<p>Der Filter <strong>nicht angefordert</strong> zeigt nur Lieferanten,
+die zuletzt vor mehr als 200 Tagen um die Abgabe einer Lekl gebeten wurden.
+Das Datum der letzten Anfrage wird als „angefragt“ in den Bereichen „gefiltert“ und „gewählt“ angezeigt.
+Es werden jedoch zusätzliche 200 Tage gefordert, um die Anfragen aus dem Vorjahr auszuklammern.
+„Nicht angefordert“ bezieht sich also auf den aktuellen Erfassungsablauf,
+der ca. im November eines Jahres beginnt und im Januar des Folgejahres abgeschlossen sein sollte.
+Der Umkehrfilter <strong>schon angefordert</strong> zeigt entsprechend Lieferanen,
+die vor weniger als 200 Tagen um die Abgabe einer Lekl gebeten wurden.
+Diese Liefernten müssen aktuell nicht aufgefordert werden.</p>
+<p>Die Aufgabe <strong>Lieferantenerklärungen anfordern</strong> ist daher abgeschlossen,
+wenn bei gesetzten Filtern <strong>Ersatzteile</strong> (oder idealerweise <strong>Pumpenteile</strong>) und
+<strong>abgelaufene</strong> und <strong>nicht angefordert</strong> und <strong>relevante</strong> keine Lieferanten mehr angezeigt werden.</p>
+</div>
+<div class="section" id="formular-bereich-gefiltert">
+<h3>Formular-Bereich gefiltert</h3>
+<p>In diesem Bereich werden alle Lieferanten zur Auswahl angeboten, die den Filterkriterien entsprechen.</p>
+<p>In der Überschrift des Bereiches wird die Anzahl dieser Lieferanten angezeigt.</p>
+<p>Die Detailangaben des in diesem Bereich angewählten Lieferanen werden im Bereich <strong>gewählt</strong> angezeigt.</p>
+</div>
+<div class="section" id="formular-bereich-gewahlt">
+<h3>Formular-Bereich gewählt</h3>
+<p>Dieser Bereich dient zur eigentlichen Bearbeitung des Lieferanten,
+der im Bereich <strong>gefiltert</strong> ausgewählt wurde.</p>
+<p>In der Bereichsüberschrift werden die UNIPPS-Lieferanten-Id und der Kurzname angezeigt.</p>
+<p>Unter der Überschrift <strong>Adresse</strong> werden die Adressdaten der Lieferfirma aus dem Hauptformular der UNIPPS-Shell
+<strong>Lieferanten</strong> (s. <a class="reference internal" href="#ansprechpartner"><span class="std std-ref">Ansprechpartner</span></a>) angezeigt.</p>
+<p>Unter der Überschrift <strong>Liefer.-Erklärung</strong> werden angezeigt:</p>
+<ul class="simple">
+<li><strong>Status</strong>: Der grundlegende Zustand der Lekl (s.  <span class="xref std std-ref">StatusRef</span>)</li>
+<li><strong>gilt_bis</strong>: Das Gültigkeitsdatum der aktuellen Lekl</li>
+<li><strong>angefragt</strong>: Das Datum der letzten Anfrage an der Lieferanten bzgl einer Lekl</li>
+<li><strong>erfasst</strong>:  Das Datum an den der Status eingeben wurde</li>
+</ul>
+<p>Unter der Überschrift <strong>Kontakt</strong> wird der Adressat (s. <a class="reference internal" href="#ansprechpartner"><span class="std std-ref">Ansprechpartner</span></a>) einer Lekl-Anfrage angezeigt.</p>
+<p>Der angezeigte Lieferant kann mit den Aktionen
+„mail“ (s.  <a class="reference internal" href="#mail"><span class="std std-ref">mail versenden</span></a>) bzw „Fax“ (s.  <a class="reference internal" href="#fax"><span class="std std-ref">Fax versenden</span></a>) aufgefordert werden,
+eine Lekl abzugeben. Dabei sind die Aktionen nur verfügbar,
+wenn entsprechende Adressen (mail oder Fax) in UNIPPS hinterlegt sind.</p>
+<p>Das Feld <strong>Kommentar</strong> ermöglicht die Eingabe von Bemerkungen zum Lieferanten.
+Dieses Feld kann auch über den Dialog zur Statuseingabe ausgefüllt werden.</p>
+<p>Mit der Aktion „Status“ kann der Zustand des Lieferanten bezüglich einer Lekl erfasst werden.
+Dies dient hauptsächlich der Erfassung der Rückmeldungen.</p>
+<p>Es kann aber auch im Vorfeld über den Status „irrelevant“ vermerkt werden,
+dass diesem Lieferanten keine Anfrage nach einer Lekl geschickt werden soll (s. <span class="xref std std-ref">StatusRef</span>).
+Lieferanten mit diesem Status können durch einen entsprechenden Filter
+von der weiteren Bearbeitung ausgeschlossen werden.</p>
+</div>
+<div class="section" id="mail-versenden">
+<span id="mail"></span><h3>mail versenden</h3>
+<p>Bei Auswahl von mail öffnet sich ein Outlook-Fenster mit einer vorbereiteten mail an den hinterlegten
+Ansprechpartner. Die mail wird aus einer Vorlage in einem speziellen Outlook-Ordner des Digilek-Benutzers erzeugt
+und mit den Kontaktdaten des Ansprechpartners ergänzt.</p>
+<a class="reference internal image-reference" href="_images/mailBestaetigung.png"><img alt="_images/mailBestaetigung.png" class="align-center" src="_images/mailBestaetigung.png" style="width: 328.0px; height: 170.4px;" /></a>
+<p>Durch DigiLek wird ein Dialog angezeigt, der zur Kontrolle der mail auffordert.
+Ist die mail korrekt, kann sie mit dem Dialog verschickt werden.
+In diesem Fall wird das aktuelle Datum als <strong>angefragt</strong> in der Datenbank eingetragen.</p>
+<p>Ist die mail fehlerhaft, kann sie in Outlook korrigiert und über den Dialog verschickt werden.
+Alternativ kann die mail über den Dialog gelöscht werden.
+Das Datum <strong>angefragt</strong> wird dann nicht aktualisiert.</p>
+<p>Die mail <strong>muss</strong> auf jeden Fall mit dem DigiLek-Dialog und <strong>nicht</strong> mit Outlook verschickt oder gelöscht werden.</p>
+<p>Damit der geschilderte Ablauf reibungslos abläuft, sollten alle Windows-Fenster außer DigiLek und Outlook
+geschlossen oder minimiert werden.</p>
+<p>Ist ein benötigtes Outlook- oder DigiLek-Fenster nicht sichtbar, kann es über die Windows-Taskleiste
+am unteren Bildschirmrand in den Vordergrung geholt werden.</p>
+<a class="reference internal image-reference" href="_images/TaskleistemitPfeilen.png"><img alt="_images/TaskleistemitPfeilen.png" class="align-center" src="_images/TaskleistemitPfeilen.png" style="width: 328.0px; height: 112.0px;" /></a>
+</div>
+<div class="section" id="fax-versenden">
+<span id="fax"></span><h3>Fax versenden</h3>
+<p>Das Versenden eines Fax läuft analog zur mail.</p>
+<p>Es wird per MS-Word ein Musterfax geöffnet und mit den Kontaktdaten des Ansprechpartners ergänzt.</p>
+<p>Das Musterfax ist in <strong>V:ToolsLieferantenerklaerungVorlagen</strong> hinterlegt.
+Es heißt Fax_Muster_Kiel.docx</p>
+<p>Das Fax wird geprüft, evtl per Word korrigiert und <strong>immer</strong> per DigiLek-Dialog gedruckt oder gelöscht.
+Im Fall des Drucks, wird das aktuelle Datum als <strong>angefragt</strong> in der Datenbank eingetragen.</p>
+</div>
+<div class="section" id="das-anfragedatum">
+<span id="anfragedatum"></span><h3>Das Anfragedatum</h3>
+<p>Das Datum der Anfrage (Datenbank-Feld <strong>angefragt</strong>) ist wesentlich für die Kontrolle,
+ob alle nötigen Lieferanten angefragt wurden (s.  <a class="reference internal" href="#anfragefilter"><span class="std std-ref">Filter</span></a>).</p>
+<p>Sollte beim oben beschriebenen Ablauf ein Fehler enstehen, weil z.B. eine mail
+oder ein Fax nicht zustellbar waren, muss das Datum <strong>angefragt</strong> in der Datenbank zurück gesetzt werden.</p>
+<p>Dies erfolgt mit dem Rechte-Maustasten-Menü <strong>Anfrage-Datum zurück setzen</strong> (s. <a class="reference internal" href="#rmausmenueanfragen"><span class="std std-ref">Rechte-Maustasten-Menue</span></a>).
+Hiermit wird das Datum um 1 Jahr zurückgesetzt.</p>
+<p>Umgekehrt kann mit dem Menüpunkt  <strong>Anfrage-Datum heute</strong> das Datum auf den aktuellen Tag gesetzt werden.</p>
+<p>Die Befehle wirken sich jeweils auf den gewählten Lieferanten aus.</p>
+</div>
+<div class="section" id="ansprechpartner">
+<span id="id1"></span><h3>Ansprechpartner</h3>
+<p>In UNIPPS kann bei den Lieferanten ein spezieller Ansprechpartner hinterlegt werden,
+dessen Adresse für die Anfrage einer Lekl verwendet wird.
+Hierzu wird in der Lieferanten-Shell im Feld <strong>Klassifizierung</strong> des Formulars <strong>Ansprechpartner</strong>
+der Begriff <strong>LEKL</strong> eingetragen.</p>
+<a class="reference internal image-reference" href="_images/AnsprechpartnerLEKL.png"><img alt="_images/AnsprechpartnerLEKL.png" class="align-center" src="_images/AnsprechpartnerLEKL.png" style="width: 655.2px; height: 227.20000000000002px;" /></a>
+<p>Ist das Feld Klassifizierung bereits anderweitig mit Informationen belegt, kann LEKL hinzugefügt werden,
+also z.B.: „blabla;LEKL“.</p>
+<p>Ist kein spezieller Ansprechpartner markiert, so werden mail-Adresse und Fax-Nr aus dem UNIPPS-Hauptformular entnommen.</p>
+<a class="reference internal image-reference" href="_images/AnsprechpartnerFirma.png"><img alt="_images/AnsprechpartnerFirma.png" class="align-center" src="_images/AnsprechpartnerFirma.png" style="width: 731.2px; height: 241.60000000000002px;" /></a>
+</div>
+<div class="section" id="rechte-maustasten-menue">
+<span id="rmausmenueanfragen"></span><span id="index-1"></span><h3>Rechte-Maustasten-Menue</h3>
+<p>Im gesamten Formular kann mit der rechten Maustaste das folgende Menü aufgerufen werden:</p>
+<a class="reference internal image-reference" href="_images/RMausMenuAnfragen.png"><img alt="_images/RMausMenuAnfragen.png" class="align-center" src="_images/RMausMenuAnfragen.png" style="width: 240.0px; height: 99.6px;" /></a>
+<p>Es enthält die Einträge:</p>
+<ul class="simple">
+<li><strong>Teile Anzeige</strong>: Zeigt in einem neuen Formular alle Teile, die der gewählte Lieferant geliefert hat.</li>
+<li><strong>Excel-Export</strong>: Überträgt alle gefilterten Lieferanten nach Excel.</li>
+<li><strong>Anfrage-Datum zurück setzen</strong>: Setzt das Datum der Anfrage (Datenbank-Feld <strong>angefragt</strong>, s.  <a class="reference internal" href="#anfragedatum"><span class="std std-ref">Das Anfragedatum</span></a>) um 1 Jahr zurück.</li>
+<li><strong>Anfrage-Datum heute</strong>: Setzt das Datum der Anfrage auf den aktuellen Tag.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="erfassen-des-status-eines-lieferanten">
+<h2>Erfassen des Status eines Lieferanten</h2>
+<p id="statusref">Zur Erfassung des Status dient das gleiche Formular, das zum Anfordern der Lekl verwendet wird.
+Es wird über das Menü „Lieferanten“ Untermenü „Erklärungen anfordern/eingeben“ aufgerufen.</p>
+<p>Die Auswahl, des zu bearbeitenden Lieferanten erfolgt daher, wie unter <a class="reference internal" href="#leklannfordern"><span class="std std-ref">Lieferantenerklärungen anfordern</span></a> beschrieben.</p>
+<p>Mit der Schaltfläche <strong>Status</strong> kann dann der Dialog zur Eingabe aufgerufen werden.</p>
+<div class="section" id="status">
+<h3>Status</h3>
+<p>Der Lieferanten-Status erfasst den generellen Zustand des Lieferanten bzgl. einer Lekl.
+Dabei gibt es folgende Möglichkeiten:</p>
+<ol class="arabic simple">
+<li><strong>unbekannt</strong>: Der Lieferant wurde noch nie angefragt.</li>
+<li><strong>weigert sich</strong>: Der Lieferant kann keine Lekl abgeben, oder will Geld dafür und wir verzichten.</li>
+<li><strong>alle Teile</strong>: Der Lieferant bestätigt den EU-Ursprung für alle Teile, die er an uns liefert.</li>
+<li><strong>einige Teile</strong>: Der Lieferant bestätigt den EU-Ursprung für bestimmte Teile, die er an uns liefert.</li>
+<li><strong>irrelevant</strong>: Es wurde entschieden, diesen Lieferanten nicht um eine Lekl zu bitten.</li>
+</ol>
+<p>Der Status <strong>unbekannt</strong> wird bei neuen Lieferanten von DigiLek vorgegeben und sollte nie vom Anwender vergeben werden.</p>
+<p>Der Status <strong>irrelevant</strong> wird vergeben, wenn der Lieferant nicht bzgl Lekl angefragt werden soll, obwohl er Pumpen- oder Ersatzteile liefert.
+Durch Vergabe dieses Status wird diese bewusste Entscheidung dokumentiert.
+Damit kann vermieden werden, das der Lieferant immer wieder in den Auswahllisten auftaucht, obwohl er keine Anfrage bekommen soll.
+Bei Vergabe von <strong>irrelevant</strong> <strong>sollte</strong> auf jeden Fall eine Begründung im Formularfeld <strong>Kommentar</strong> abgegeben werden.</p>
+<p>Status 2 bis 4 beschreiben die Rückmeldung des Lieferanten.</p>
+<p>Sind in der abgegebenen Erklärung einzelne Teile aufgelistet, für die der Lieferant
+den EU-Ursprung garantiert, wird der Status <strong>einige Teile</strong> vergeben.</p>
+<p>Bestätigt der Lieferant den EU-Ursprung, für alle Teile, die er an uns liefert,
+wird der Status <strong>alle Teile</strong> vergeben.</p>
+<p>Nur in diesem Fall muss im weiteren Ablauf die Präferenzberechtigung für jedes einzelne Teil
+erfasst werden (<a class="reference internal" href="#erfassenteilespelekl"><span class="std std-ref">Erfassen der teilespezifischen Lieferantenerklärungen</span></a>). In allen anderen Fällen ist die Erfassung für diesen Lieferanten abgeschlossen.</p>
+<p>Die Erfassung des Status erfolgt über den folgenden Dialog:</p>
+<a class="reference internal image-reference" href="_images/StatusDialog.png"><img alt="_images/StatusDialog.png" class="align-center" src="_images/StatusDialog.png" style="width: 783.2px; height: 459.20000000000005px;" /></a>
+<p>Im oberen rechten Formularbereich kann der zukünftige Status ausgewählt werden.
+Links daneben wird der bisherige Stauts angezeigt.</p>
+<p>Im Bereich <strong>gültig bis</strong> wird die bisher in der Datenbank hinterlegte Gültigkeit der Lekl angezeigt.
+Hat der Lieferant eine neue Lekl abgegeben, <strong>muss</strong> dieses Datum aktualisiert werden.</p>
+<p>In der Regel kann die Gültigkeit um 1 Jahr verlängert werden (Schaltfläche <strong>+ 1 Jahr</strong>).
+Exakte Angaben eines anderen Datums können direkt in der Datumsanzeige erfolgen:</p>
+<a class="reference internal image-reference" href="_images/DatumEingeben.png"><img alt="_images/DatumEingeben.png" class="align-center" src="_images/DatumEingeben.png" style="width: 432.0px; height: 97.0px;" /></a>
+<p>Hierzu kann z.B. die Jahreszahl, der Tag oder Monat angeklickt und überschrieben werden.</p>
+<p>Die Datumseingabe ist bei den Status „<strong>alle Teile</strong>“ und „<strong>einige Teile</strong>“ erforderlich.
+In diesen Fällen wird beim Verlassen des Formulars geprüft, ob die die Gültigkeit mindestens 100 Tage beträgt.
+Ist dies nicht der Fall, wurde evtl vergessen, das Datum anzupassen und es erscheint eine Sicherheitsabfrage:</p>
+<a class="reference internal image-reference" href="_images/Restgueltigkeit.png"><img alt="_images/Restgueltigkeit.png" class="align-center" src="_images/Restgueltigkeit.png" style="width: 448.0px; height: 229.0px;" /></a>
+<p>Wird die Frage mit <strong>Nein</strong> beantwortet, wird das Formular nicht geschlossen und das Datum kann korrigiert werden.
+Mit <strong>Ja</strong> werden die Angaben in die Datenbank übernommen.</p>
+<p>Wird der Status <strong>weigert sich</strong> oder <strong>irrelevant</strong> gewählt, solltes die im Feld <strong>Kommentar</strong> begründet werden.
+Der Kommentar kann auch im Hauptformular eingeben werden.</p>
+</div>
+</div>
+<div class="section" id="erfassen-der-teilespezifischen-lieferantenerklarungen">
+<span id="erfassenteilespelekl"></span><h2>Erfassen der teilespezifischen Lieferantenerklärungen</h2>
+<p>Die Eingabe der teilespezifischen Lieferantenerklärungen wird über das Menü Teile/sss
+gestartet. Hierzu wird zunächst der Lieferant ausgewählt, dessen Erklärung erfasst werden soll.</p>
+<div class="section" id="auswahl-eines-lieferanten-zur-teilespezifischen-eingabe">
+<span id="index-2"></span><h3>Auswahl eines Lieferanten zur teilespezifischen Eingabe</h3>
+<img alt="_images/Lekl3LieferantenAuswahl.png" src="_images/Lekl3LieferantenAuswahl.png" />
+</div>
+<div class="section" id="setzen-der-pfk-flags">
+<span id="index-3"></span><h3>Setzen der PFK-Flags</h3>
+<img alt="_images/TeilePFKeingeben.png" src="_images/TeilePFKeingeben.png" />
+</div>
+</div>
+<div class="section" id="bereitstellung-der-daten-zum-export">
+<h2>Bereitstellung der Daten zum Export</h2>
+<p>Sind alle Erklärungen erfasst, muss abschließend über das Menü Export
+eine Auswertung gestartet werden, die auch die Daten für den Export nach UNIPPS erzeugt.</p>
+</div>
+</div>
+
+
+          </div>
+          
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Klaus Etscheidt.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Aufgaben.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

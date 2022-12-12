@@ -9,6 +9,8 @@ Das Programm dient zur digitalen Erfassung von Lieferantenerklärungen.
 .. index::
    single: Anforderung
 
+.. _LeklAnnfordern:
+
 Lieferantenerklärungen anfordern
 --------------------------------
 Zuerst müssen die relevanten Lieferanten aufgefordert werden, eine Langzeit-Lieferantenerklärung
@@ -29,8 +31,8 @@ Auf diesen Datensatz wirken sich die im Bereich "gewählt" möglichen Aktionen a
 
 .. _AnfrageFilter:
 
-Bereich Filter
-^^^^^^^^^^^^^^
+Formular-Bereich Filter
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Die Filter dienen dem leichteren Auffinden eines Lieferanten bzw. der Kontrolle,
 welche Lieferanten noch zu bearbeiten sind.
@@ -85,8 +87,8 @@ wenn bei gesetzten Filtern **Ersatzteile** (oder idealerweise **Pumpenteile**) u
 **abgelaufene** und **nicht angefordert** und **relevante** keine Lieferanten mehr angezeigt werden.
 
 
-Bereich gefiltert
-^^^^^^^^^^^^^^^^^
+Formular-Bereich gefiltert
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In diesem Bereich werden alle Lieferanten zur Auswahl angeboten, die den Filterkriterien entsprechen.
 
@@ -94,16 +96,16 @@ In der Überschrift des Bereiches wird die Anzahl dieser Lieferanten angezeigt.
 
 Die Detailangaben des in diesem Bereich angewählten Lieferanen werden im Bereich **gewählt** angezeigt.
 
-Bereich gewählt
-^^^^^^^^^^^^^^^
+Formular-Bereich gewählt
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Dieser Bereich dient zur eigentlichen Bearbeitung des Lieferanten,
 der im Bereich **gefiltert** ausgewählt wurde.
 
 In der Bereichsüberschrift werden die UNIPPS-Lieferanten-Id und der Kurzname angezeigt.
 
-Unter der Überschrift **Adresse** werden die Adressdaten der Lieferfirma aus dem UNIPPS-Formular
-**????????????????** angezeigt.
+Unter der Überschrift **Adresse** werden die Adressdaten der Lieferfirma aus dem Hauptformular der UNIPPS-Shell
+**Lieferanten** (s. :ref:`Ansprechpartner`) angezeigt.
 
 Unter der Überschrift **Liefer.-Erklärung** werden angezeigt:
 
@@ -112,7 +114,7 @@ Unter der Überschrift **Liefer.-Erklärung** werden angezeigt:
 - **angefragt**: Das Datum der letzten Anfrage an der Lieferanten bzgl einer Lekl
 - **erfasst**:  Das Datum an den der Status eingeben wurde
 
-Unter der Überschrift **Kontakt** wird der Adressat (s. :ref:`Ansprechpartner`) einer Anfrage nach einer Lekl angezeigt.
+Unter der Überschrift **Kontakt** wird der Adressat (s. :ref:`Ansprechpartner`) einer Lekl-Anfrage angezeigt.
 
 Der angezeigte Lieferant kann mit den Aktionen 
 "mail" (s.  :ref:`mail`) bzw "Fax" (s.  :ref:`fax`) aufgefordert werden,
@@ -139,13 +141,13 @@ Bei Auswahl von mail öffnet sich ein Outlook-Fenster mit einer vorbereiteten ma
 Ansprechpartner. Die mail wird aus einer Vorlage in einem speziellen Outlook-Ordner des Digilek-Benutzers erzeugt
 und mit den Kontaktdaten des Ansprechpartners ergänzt.
 
-<<<<<<<<<<<<<<<<<Bild Rückfrage>>>>>>>>>>>>>>>>>
+.. image:: pics/mailBestaetigung.png
+   :scale: 80 %
+   :align: center
 
 Durch DigiLek wird ein Dialog angezeigt, der zur Kontrolle der mail auffordert.
 Ist die mail korrekt, kann sie mit dem Dialog verschickt werden.
 In diesem Fall wird das aktuelle Datum als **angefragt** in der Datenbank eingetragen.
-
-<<<<<<<wie heißt der button>>>>>>>
 
 Ist die mail fehlerhaft, kann sie in Outlook korrigiert und über den Dialog verschickt werden.
 Alternativ kann die mail über den Dialog gelöscht werden.
@@ -156,10 +158,13 @@ Die mail **muss** auf jeden Fall mit dem DigiLek-Dialog und **nicht** mit Outloo
 Damit der geschilderte Ablauf reibungslos abläuft, sollten alle Windows-Fenster außer DigiLek und Outlook
 geschlossen oder minimiert werden.
 
-<<<<<<<<<<<<<<Bild Taskleiste>>>>>>>>>>>>>>
-
 Ist ein benötigtes Outlook- oder DigiLek-Fenster nicht sichtbar, kann es über die Windows-Taskleiste
 am unteren Bildschirmrand in den Vordergrung geholt werden.
+
+.. image:: pics/TaskleistemitPfeilen.png
+   :scale: 100 %
+   :align: center
+
 
 .. _fax:
 
@@ -176,6 +181,8 @@ Es heißt Fax_Muster_Kiel.docx
 Das Fax wird geprüft, evtl per Word korrigiert und **immer** per DigiLek-Dialog gedruckt oder gelöscht.
 Im Fall des Drucks, wird das aktuelle Datum als **angefragt** in der Datenbank eingetragen.
 
+.. _Anfragedatum:
+
 Das Anfragedatum
 ^^^^^^^^^^^^^^^^
 Das Datum der Anfrage (Datenbank-Feld **angefragt**) ist wesentlich für die Kontrolle, 
@@ -184,25 +191,67 @@ ob alle nötigen Lieferanten angefragt wurden (s.  :ref:`Filter<AnfrageFilter>`)
 Sollte beim oben beschriebenen Ablauf ein Fehler enstehen, weil z.B. eine mail 
 oder ein Fax nicht zustellbar waren, muss das Datum **angefragt** in der Datenbank zurück gesetzt werden.
 
-Dies erfolgt mit dem Rechte-Maustasten-Menue **Anfrage-Datum Reset** (s. :ref:`RMausMenueAnfragen`).
+Dies erfolgt mit dem Rechte-Maustasten-Menü **Anfrage-Datum zurück setzen** (s. :ref:`RMausMenueAnfragen`).
 Hiermit wird das Datum um 1 Jahr zurückgesetzt.
 
+Umgekehrt kann mit dem Menüpunkt  **Anfrage-Datum heute** das Datum auf den aktuellen Tag gesetzt werden.
+
+Die Befehle wirken sich jeweils auf den gewählten Lieferanten aus.
 
 .. _Ansprechpartner:
 
 Ansprechpartner
 ^^^^^^^^^^^^^^^
-In UNIPPS kann bei den Lieferanten ein spezieller Ansprechpartner hinterlegt werden.
+In UNIPPS kann bei den Lieferanten ein spezieller Ansprechpartner hinterlegt werden,
+dessen Adresse für die Anfrage einer Lekl verwendet wird. 
+Hierzu wird in der Lieferanten-Shell im Feld **Klassifizierung** des Formulars **Ansprechpartner**
+der Begriff **LEKL** eingetragen.
 
-<<<<<<<<<<<<<<Bild fehlt fehlt noch >>>>>>>>>>>>>>
+.. image:: pics/AnsprechpartnerLEKL.png
+   :scale: 80 %
+   :align: center
+
+Ist das Feld Klassifizierung bereits anderweitig mit Informationen belegt, kann LEKL hinzugefügt werden,
+also z.B.: "blabla;LEKL".
+
+Ist kein spezieller Ansprechpartner markiert, so werden mail-Adresse und Fax-Nr aus dem UNIPPS-Hauptformular entnommen.
+
+.. image:: pics/AnsprechpartnerFirma.png
+   :scale: 80 %
+   :align: center
 
 .. index::
    single: Statuseingabe
+
+.. _RMausMenueAnfragen:
+
+Rechte-Maustasten-Menue
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Im gesamten Formular kann mit der rechten Maustaste das folgende Menü aufgerufen werden:
+
+.. image:: pics/RMausMenuAnfragen.png
+   :scale: 60 %
+   :align: center
+
+Es enthält die Einträge:
+
+- **Teile Anzeige**: Zeigt in einem neuen Formular alle Teile, die der gewählte Lieferant geliefert hat.
+- **Excel-Export**: Überträgt alle gefilterten Lieferanten nach Excel.
+- **Anfrage-Datum zurück setzen**: Setzt das Datum der Anfrage (Datenbank-Feld **angefragt**, s.  :ref:`Anfragedatum`) um 1 Jahr zurück.
+- **Anfrage-Datum heute**: Setzt das Datum der Anfrage auf den aktuellen Tag.
 
 Erfassen des Status eines Lieferanten
 -------------------------------------
 
 .. _StatusRef:
+
+Zur Erfassung des Status dient das gleiche Formular, das zum Anfordern der Lekl verwendet wird.
+Es wird über das Menü "Lieferanten" Untermenü "Erklärungen anfordern/eingeben" aufgerufen.
+
+Die Auswahl, des zu bearbeitenden Lieferanten erfolgt daher, wie unter :ref:`LeklAnnfordern` beschrieben.
+
+Mit der Schaltfläche **Status** kann dann der Dialog zur Eingabe aufgerufen werden.
 
 Status
 ^^^^^^
@@ -232,22 +281,44 @@ Bestätigt der Lieferant den EU-Ursprung, für alle Teile, die er an uns liefert
 wird der Status **alle Teile** vergeben.
 
 Nur in diesem Fall muss im weiteren Ablauf die Präferenzberechtigung für jedes einzelne Teil 
-erfasst werden. In allen anderen Fällen ist die Erfassung für diesen Lieferanten abgeschlossen.
+erfasst werden (:ref:`ErfassenTeilespeLekl`). In allen anderen Fällen ist die Erfassung für diesen Lieferanten abgeschlossen.
 
-Die Erfassung des Status erfolgt über den folgenden Dialog
+Die Erfassung des Status erfolgt über den folgenden Dialog:
 
 .. image:: pics/StatusDialog.png
    :scale: 80 %
    :align: center
 
-.. _RMausMenueAnfragen:
+Im oberen rechten Formularbereich kann der zukünftige Status ausgewählt werden.
+Links daneben wird der bisherige Stauts angezeigt.
 
-Rechte-Maustasten-Menue
-^^^^^^^^^^^^^^^^^^^^^^^
+Im Bereich **gültig bis** wird die bisher in der Datenbank hinterlegte Gültigkeit der Lekl angezeigt.
+Hat der Lieferant eine neue Lekl abgegeben, **muss** dieses Datum aktualisiert werden.
 
-.. image:: pics/LeklAnfordernRMaus.png
-   :scale: 60 %
+In der Regel kann die Gültigkeit um 1 Jahr verlängert werden (Schaltfläche **+ 1 Jahr**).
+Exakte Angaben eines anderen Datums können direkt in der Datumsanzeige erfolgen:
+
+.. image:: pics/DatumEingeben.png
+   :scale: 100 %
    :align: center
+
+Hierzu kann z.B. die Jahreszahl, der Tag oder Monat angeklickt und überschrieben werden.
+
+Die Datumseingabe ist bei den Status "**alle Teile**" und "**einige Teile**" erforderlich.
+In diesen Fällen wird beim Verlassen des Formulars geprüft, ob die die Gültigkeit mindestens 100 Tage beträgt.
+Ist dies nicht der Fall, wurde evtl vergessen, das Datum anzupassen und es erscheint eine Sicherheitsabfrage:
+
+.. image:: pics/Restgueltigkeit.png
+   :scale: 100 %
+   :align: center
+
+Wird die Frage mit **Nein** beantwortet, wird das Formular nicht geschlossen und das Datum kann korrigiert werden. 
+Mit **Ja** werden die Angaben in die Datenbank übernommen.
+
+Wird der Status **weigert sich** oder **irrelevant** gewählt, solltes die im Feld **Kommentar** begründet werden.
+Der Kommentar kann auch im Hauptformular eingeben werden.
+
+.. _ErfassenTeilespeLekl:
 
 Erfassen der teilespezifischen Lieferantenerklärungen
 -----------------------------------------------------
