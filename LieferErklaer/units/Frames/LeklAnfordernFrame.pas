@@ -95,6 +95,8 @@ type
     NAbgelaufenChkBox: TCheckBox;
     AnforderungHeuteMen: TMenuItem;
     AnfordDatumHeuteAction: TAction;
+    GeantwortetChkBox: TCheckBox;
+    NGeantwortetChkBox: TCheckBox;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -336,6 +338,22 @@ begin
       FilterStr := FilterStr + 'lekl=4';
     end;
 
+    if GeantwortetChkBox.State = cbChecked then
+    begin
+      if filtern then
+         FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'Stand_minus_Anfrage>=0';
+    end;
+
+    if NGeantwortetChkBox.State = cbChecked then
+    begin
+      if filtern then
+         FilterStr := FilterStr + ' AND ' ;
+      filtern := True;
+      FilterStr := FilterStr + 'Stand_minus_Anfrage<0';
+    end;
+
     if length(FilterName.Text)>0 then
     begin
       if filtern then
@@ -392,6 +410,15 @@ begin
     if SenderComp.Equals(NRelevantChkBox) then
       if NRelevantChkBox.State = cbChecked then
           RelevantChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(GeantwortetChkBox) then
+      if GeantwortetChkBox.State = cbChecked then
+          NGeantwortetChkBox.State := cbUnchecked;
+
+    if SenderComp.Equals(NGeantwortetChkBox) then
+      if NGeantwortetChkBox.State = cbChecked then
+          GeantwortetChkBox.State := cbUnchecked;
+
 
 end;
 

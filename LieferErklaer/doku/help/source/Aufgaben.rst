@@ -244,14 +244,14 @@ Es enthält die Einträge:
 Erfassen des Status eines Lieferanten
 -------------------------------------
 
-.. _StatusRef:
-
 Zur Erfassung des Status dient das gleiche Formular, das zum Anfordern der Lekl verwendet wird.
 Es wird über das Menü "Lieferanten" Untermenü "Erklärungen anfordern/eingeben" aufgerufen.
 
 Die Auswahl, des zu bearbeitenden Lieferanten erfolgt daher, wie unter :ref:`LeklAnnfordern` beschrieben.
 
 Mit der Schaltfläche **Status** kann dann der Dialog zur Eingabe aufgerufen werden.
+
+.. _StatusRef:
 
 Status
 ^^^^^^

@@ -113,7 +113,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       OnClick = FilterAusBtnClick
     end
     object AbgelaufenChkBox: TCheckBox
-      Left = 715
+      Left = 631
       Top = 14
       Width = 90
       Height = 25
@@ -131,7 +131,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 4
     end
     object ohneAnfrageChkBox: TCheckBox
-      Left = 815
+      Left = 731
       Top = 14
       Width = 115
       Height = 25
@@ -149,8 +149,8 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 5
     end
     object ErsatzTeileChkBox: TCheckBox
-      Left = 631
-      Top = 14
+      Left = 527
+      Top = 38
       Width = 82
       Height = 25
       Hint = 'Nur Lieferanten anzeigen, die Ersatzteile liefern'
@@ -167,11 +167,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 6
     end
     object RelevantChkBox: TCheckBox
-      Left = 940
+      Left = 856
       Top = 14
-      Width = 115
+      Width = 90
       Height = 25
-      Hint = 'keine Lieferanten, die als unwichtig markiert wurden'
+      Hint = 'Keine Lieferanten, die als unwichtig markiert wurden'
       Action = FilterUpdateAction
       Caption = 'relevante'
       Font.Charset = DEFAULT_CHARSET
@@ -185,9 +185,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 7
     end
     object NRelevantChkBox: TCheckBox
-      Left = 940
+      Left = 856
       Top = 38
-      Width = 115
+      Width = 90
       Height = 25
       Hint = 'nur Lieferanten, die als unwichtig markiert wurden'
       Action = FilterUpdateAction
@@ -203,7 +203,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 8
     end
     object NohneAnfrageChkBox: TCheckBox
-      Left = 815
+      Left = 731
       Top = 38
       Width = 115
       Height = 25
@@ -221,7 +221,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 9
     end
     object NAbgelaufenChkBox: TCheckBox
-      Left = 715
+      Left = 631
       Top = 38
       Width = 90
       Height = 25
@@ -237,6 +237,42 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 10
+    end
+    object GeantwortetChkBox: TCheckBox
+      Left = 952
+      Top = 15
+      Width = 112
+      Height = 25
+      Hint = 'Lieferanten, deren Antwort schon erfasst wurde'
+      Action = FilterUpdateAction
+      Caption = 'Antwort erfasst'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 11
+    end
+    object NGeantwortetChkBox: TCheckBox
+      Left = 952
+      Top = 38
+      Width = 105
+      Height = 25
+      Hint = 'Lieferanten, deren Antwort noch nicht erfasst wurde'
+      Action = FilterUpdateAction
+      Caption = 'keine Antwort'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 12
     end
   end
   object GroupBox2: TGroupBox
@@ -306,6 +342,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         item
           Expanded = False
           FieldName = 'email'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'erfasst'
           Visible = True
         end>
     end
