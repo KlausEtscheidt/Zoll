@@ -68,6 +68,19 @@ type
     NGeantwortetChkBox: TCheckBox;
     DBMemo2: TDBMemo;
     Label11: TLabel;
+    Label8: TLabel;
+    Panel4: TPanel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Panel6: TPanel;
+    mailDBText: TDBText;
+    telefaxDBText: TDBText;
+    NachnameDBText: TDBText;
+    AnredeDBText: TDBText;
+    VornameDBText: TDBText;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -240,12 +253,18 @@ begin
       FilterStr := FilterStr + 'LKurzname Like ''' + FilterKurzname.Text + '%''';
     end;
 
-    LocalQry.Filter := FilterStr;
-    LocalQry.Filtered := filtern;
+    //Diese Filter-Update Aktion wird evtl beim Erzeugen der Frames
+    //durch Delphi aufgerufen, bevor die Qry erzeugt wurde
+    if assigned (LocalQry) then
+    begin
+      LocalQry.Filter := FilterStr;
+      LocalQry.Filtered := filtern;
+      GroupBox2.Caption:= 'gefiltert '
+                     + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
+    end;
 
-    GroupBox2.Caption:= 'gefiltert '
-                   + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
 end;
+
 
 procedure TLeklStatusFrm.FilterUpdateActionUpdate(
   Sender: TObject);

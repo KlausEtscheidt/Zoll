@@ -107,12 +107,13 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       OnClick = FilterAusBtnClick
     end
     object LeklUpdatedChkBox: TCheckBox
-      Left = 543
+      Left = 671
       Top = 14
       Width = 114
       Height = 25
       Action = FilterUpdateAction
       Caption = 'nur aktuelle LEKL'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -121,16 +122,18 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 3
     end
     object UnbearbeiteteCheckBox: TCheckBox
-      Left = 680
+      Left = 808
       Top = 14
       Width = 130
       Height = 25
       TabStop = False
       Action = FilterUpdateAction
       Caption = 'nur unbearbeitete'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -139,10 +142,11 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 4
     end
     object NLeklUpdatedChkBox: TCheckBox
-      Left = 543
+      Left = 671
       Top = 38
       Width = 114
       Height = 25
@@ -159,7 +163,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       TabOrder = 5
     end
     object NUnbearbeiteteCheckBox: TCheckBox
-      Left = 679
+      Left = 807
       Top = 38
       Width = 130
       Height = 25
@@ -174,6 +178,24 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 6
+    end
+    object StandardFilterButton: TButton
+      Left = 538
+      Top = 18
+      Width = 106
+      Height = 25
+      Hint = 'Mit diesem Filter sollten Teile gepflegt werden'
+      Caption = 'Standard Filter'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+      OnClick = StandardFilterButtonClick
     end
   end
   object GroupBox2: TGroupBox

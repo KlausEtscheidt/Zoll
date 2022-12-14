@@ -3,7 +3,7 @@ unit Tools;
 interface
 
 uses
-System.SysUtils,  System.Classes, Vcl.Dialogs,
+System.SysUtils,  System.Classes, System.IOUtils, Vcl.Dialogs,
 Data.Win.ADODB,
   FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
@@ -29,6 +29,8 @@ FDConnector,ADOConnector,QryAccess,QrySQLite, WinApi ;
 
 procedure init();
 function GetConnection() : TWDBConnector;
+procedure CheckUser;
+procedure CopyHelpToTmp;
 function GetQuery(ForThread:Boolean=False) : TWQry;
 function GetTable(Tablename : String) : TWTable;
 
@@ -43,6 +45,8 @@ var
 const
   SQLiteDBFileName: String = '\db\lekl.db';
   AccessDBFileName: String = '\db\LieferErklaer.accdb';
+  HelpDir: String = 'C:\tmp\';
+  HelpFile: String = 'digilekdoc.chm';
 
 implementation
 
@@ -82,10 +86,6 @@ begin
 end;
 
 procedure init();
-var
-  SQL:String;
-  LocalQry: TWQry;
-  gefunden:Boolean;
 
 begin
   //Wir wollen das hier nur 1 mal ausführen
@@ -104,6 +104,47 @@ begin
   //Globalen Connector fuer alle Queries, die in einem eigenen Thread laufen
   DbConnector2:=GetConnection();
 
+  //Ermittle Usernamen und Faxvorlage
+  CheckUser;
+
+  //Verschiebe Help-File auf lokale Platte.
+  //Wird von Netz-LW nicht korrekt angezeigt
+  CopyHelpToTmp;
+
+end;
+
+procedure CopyHelpToTmp;
+var
+  HelpSrcPath:String;
+begin
+  // Gibt es das Ziellaufwerk
+  if not DirectoryExists(HelpDir) then
+    showmessage(HelpDir + ' nicht gefunden.' + #13#13 +
+                'Dadurch funktioniert die Hilfe nicht.');
+//  HelpDir: String = 'C:\tmp\';
+//  HelpFile: String = 'digilekdoc.chm';
+  HelpSrcPath:= ApplicationBaseDir + '\Hilfe\' + HelpFile;
+  if not FileExists(HelpSrcPath) then
+    showmessage(HelpSrcPath + ' nicht gefunden.' + #13#13 +
+                'Dadurch funktioniert die Hilfe nicht.');
+  try
+    TFile.Copy(HelpSrcPath,HelpDir+HelpFile,True);
+  except
+    showmessage('Konnte ' + HelpFile + ' nicht nach ' + HelpDir + ' kopieren.'
+                   + #13#13 + 'Dadurch funktioniert die Hilfe nicht.');
+  end;
+
+end;
+
+//Ermittle Usernamen und Faxvorlage
+procedure CheckUser;
+var
+  SQL:String;
+  LocalQry: TWQry;
+  gefunden:Boolean;
+
+begin
+  //Ist der User schon bekannt ?
   Username:=GetWinUsername();
   LocalQry:=GetQuery;
   gefunden:=LocalQry.RunSelectQuery(
@@ -111,13 +152,15 @@ begin
 
   if gefunden then
     begin
+      //Wenn User bekannt: Faxvorlage aus Datenbank lesen
       Faxvorlage:=LocalQry.FieldByName('Faxvorlage').AsString;
       SQL:='UPDATE Anwender SET used = "'
           + FormatDateTime('YYYY-MM-DD HH:MM', Now)
           + '" WHERE WinName="' + Username + '";';
     end
   else
-    SQL:='Insert INTO Anwender (WinName,used) SELECT "' + Username
+     //Wenn User unbekannt: Erst mal nur usernamen in Datenbank
+     SQL:='Insert INTO Anwender (WinName,used) SELECT "' + Username
                + '" AS WinName, "' + FormatDateTime('YYYY-MM-DD HH:MM', Now)
                + '" AS used;';
  LocalQry.RunExecSQLQuery(SQL);

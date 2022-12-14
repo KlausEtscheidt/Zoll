@@ -118,6 +118,7 @@ object LeklStatusFrm: TLeklStatusFrm
       Hint = 'Lieferanten, deren Antwort noch nicht erfasst wurde'
       Action = FilterUpdateAction
       Caption = 'keine Antwort'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -126,6 +127,7 @@ object LeklStatusFrm: TLeklStatusFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 4
     end
   end
@@ -296,6 +298,19 @@ object LeklStatusFrm: TLeklStatusFrm
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
+      ParentFont = False
+    end
+    object Label8: TLabel
+      Left = 652
+      Top = 27
+      Width = 50
+      Height = 14
+      Caption = 'Kontakt'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object StatusBtn: TButton
@@ -710,6 +725,196 @@ object LeklStatusFrm: TLeklStatusFrm
       Font.Style = []
       ParentFont = False
       TabOrder = 5
+    end
+    object Panel4: TPanel
+      Left = 560
+      Top = 48
+      Width = 65
+      Height = 89
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 6
+      object Label14: TLabel
+        Left = 0
+        Top = 18
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'mail:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 12
+        ExplicitWidth = 41
+      end
+      object Label15: TLabel
+        Left = 0
+        Top = 0
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Fax:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 54
+        ExplicitWidth = 41
+      end
+      object Label17: TLabel
+        Left = 0
+        Top = 72
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Nachname:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 26
+        ExplicitWidth = 41
+      end
+      object Label18: TLabel
+        Left = 0
+        Top = 36
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Anrede:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 44
+        ExplicitWidth = 41
+      end
+      object Label19: TLabel
+        Left = 0
+        Top = 54
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Vorname:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 62
+        ExplicitWidth = 41
+      end
+    end
+    object Panel6: TPanel
+      Left = 631
+      Top = 48
+      Width = 258
+      Height = 89
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 7
+      object mailDBText: TDBText
+        Left = 0
+        Top = 18
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'email'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitLeft = -29
+        ExplicitTop = 43
+        ExplicitWidth = 165
+      end
+      object telefaxDBText: TDBText
+        Left = 0
+        Top = 0
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'telefax'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = -1
+      end
+      object NachnameDBText: TDBText
+        Left = 0
+        Top = 72
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Nachname'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 26
+      end
+      object AnredeDBText: TDBText
+        Left = 0
+        Top = 36
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Anrede'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 44
+      end
+      object VornameDBText: TDBText
+        Left = 0
+        Top = 54
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Vorname'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 62
+      end
     end
   end
   object DataSource1: TDataSource

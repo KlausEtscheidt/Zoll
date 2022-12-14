@@ -47,6 +47,7 @@ type
     DBText2: TDBText;
     NLeklUpdatedChkBox: TCheckBox;
     NUnbearbeiteteCheckBox: TCheckBox;
+    StandardFilterButton: TButton;
     procedure TeileBtnClick(Sender: TObject);
     procedure ShowFrame();
     procedure HideFrame();
@@ -54,6 +55,7 @@ type
     procedure FilterAusBtnClick(Sender: TObject);
     procedure FilterUpdateActionExecute(Sender: TObject);
     procedure FilterUpdateActionUpdate(Sender: TObject);
+    procedure StandardFilterButtonClick(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -84,6 +86,14 @@ begin
     FilterUpdateActionExecute(nil);
     Self.Visible := True;
     mainForm.HelpKeyword:='Lieferantenauswahl';
+end;
+
+procedure TLieferantenStatusFrm.StandardFilterButtonClick(Sender: TObject);
+begin
+    UnbearbeiteteCheckBox.State := cbChecked;
+    NUnbearbeiteteCheckBox.State := cbUnChecked;
+    LeklUpdatedChkBox.State := cbChecked;
+    NLeklUpdatedChkBox.State := cbUnChecked;
 end;
 
 procedure TLieferantenStatusFrm.HideFrame();

@@ -157,6 +157,21 @@ begin
 
 end;
 
+//Ersetze die Standard-Anrede im mail-Body mit "Anrede"
+function BodyMitAnrede(Body,Anrede:String):String;
+var
+  myPos:integer;
+begin
+   //Suche "Sehr geehrte Damen und Herren"
+   myPos:=Pos('Sehr geehrte Damen und Herren', Body);
+   if myPos=0 then
+       raise Exception.Create('Muster-Mail muss mit ' + #13
+               + '"Sehr geehrte Damen und Herren" beginnen!');
+
+   Result:=Anrede + Copy(Body,30);
+
+end;
+
 function SendeMailAn(DatensatzFelder:TFields):Boolean;
 
 var
@@ -175,7 +190,7 @@ begin
   else if Anrede='Frau' then
      Anrede := 'Sehr geehrte Frau ' + Name
   else if Anrede='' then
-     Anrede := 'Sehr geehrte Damen und Herren ';
+     Anrede := 'Sehr geehrte Damen und Herren';
 
   //Verbinde mit Outlook
 //  if OLApp=Null then
@@ -200,7 +215,8 @@ begin
     MailItem.Recipients.Add(Empfaenger);
 {$ENDIF}
     MailItem.Subject := MailMusterItem.Subject;
-    MailItem.Body    := MailMusterItem.Body;
+    //Ersetze die Standard-Anrede im mail-Body mit "Anrede"
+    MailItem.Body    := BodyMitAnrede(MailMusterItem.Body,Anrede);
     MailItem.Attachments.Add(Tools.ApplicationBaseDir
                                     + '\Vorlagen\LLE Formular.pdf');
     MailItem.Display; //zeigt nur an

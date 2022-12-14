@@ -113,13 +113,14 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       OnClick = FilterAusBtnClick
     end
     object AbgelaufenChkBox: TCheckBox
-      Left = 631
+      Left = 749
       Top = 14
       Width = 90
       Height = 25
       Hint = 'Nur Lieferanten, mit Lekl, die weniger als 300 Tage gilt'
       Action = FilterUpdateAction
       Caption = 'abgelaufene'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -128,16 +129,18 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 4
     end
     object ohneAnfrageChkBox: TCheckBox
-      Left = 731
+      Left = 849
       Top = 14
       Width = 115
       Height = 25
       Hint = 'Letze Anfrage nach Lekl '#228'lter als 200 Tage'
       Action = FilterUpdateAction
       Caption = 'nicht angefordert'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -146,11 +149,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 5
     end
     object ErsatzTeileChkBox: TCheckBox
-      Left = 527
-      Top = 38
+      Left = 631
+      Top = 14
       Width = 82
       Height = 25
       Hint = 'Nur Lieferanten anzeigen, die Ersatzteile liefern'
@@ -167,13 +171,14 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 6
     end
     object RelevantChkBox: TCheckBox
-      Left = 856
+      Left = 974
       Top = 14
       Width = 90
       Height = 25
       Hint = 'Keine Lieferanten, die als unwichtig markiert wurden'
       Action = FilterUpdateAction
       Caption = 'relevante'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -182,10 +187,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      State = cbChecked
       TabOrder = 7
     end
     object NRelevantChkBox: TCheckBox
-      Left = 856
+      Left = 974
       Top = 38
       Width = 90
       Height = 25
@@ -203,7 +209,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 8
     end
     object NohneAnfrageChkBox: TCheckBox
-      Left = 731
+      Left = 849
       Top = 38
       Width = 115
       Height = 25
@@ -221,7 +227,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TabOrder = 9
     end
     object NAbgelaufenChkBox: TCheckBox
-      Left = 631
+      Left = 749
       Top = 38
       Width = 90
       Height = 25
@@ -238,41 +244,23 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       ShowHint = True
       TabOrder = 10
     end
-    object GeantwortetChkBox: TCheckBox
-      Left = 952
-      Top = 15
-      Width = 112
+    object StandardFilterButton: TButton
+      Left = 527
+      Top = 42
+      Width = 106
       Height = 25
-      Hint = 'Lieferanten, deren Antwort schon erfasst wurde'
-      Action = FilterUpdateAction
-      Caption = 'Antwort erfasst'
+      Hint = 'Mit diesem Filter sollten Anfragen erstellt werden'
+      Caption = 'Standard Filter'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
+      Font.Height = -15
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 11
-    end
-    object NGeantwortetChkBox: TCheckBox
-      Left = 952
-      Top = 38
-      Width = 105
-      Height = 25
-      Hint = 'Lieferanten, deren Antwort noch nicht erfasst wurde'
-      Action = FilterUpdateAction
-      Caption = 'keine Antwort'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 12
+      OnClick = StandardFilterButtonClick
     end
   end
   object GroupBox2: TGroupBox

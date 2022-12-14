@@ -95,8 +95,7 @@ type
     NAbgelaufenChkBox: TCheckBox;
     AnforderungHeuteMen: TMenuItem;
     AnfordDatumHeuteAction: TAction;
-    GeantwortetChkBox: TCheckBox;
-    NGeantwortetChkBox: TCheckBox;
+    StandardFilterButton: TButton;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -113,6 +112,7 @@ type
     procedure FilterUpdateActionUpdate(Sender: TObject);
     procedure AnfordDatumHeuteActionExecute(Sender: TObject);
     procedure RefreshLocalQuery;
+    procedure StandardFilterButtonClick(Sender: TObject);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
@@ -190,6 +190,19 @@ begin
     // Gehe auf ursp�nglichen Datensatz
     LocalQry.GotoBookmark(BM);
 
+end;
+
+procedure TLieferantenErklAnfordernFrm.StandardFilterButtonClick(
+  Sender: TObject);
+begin
+  PumpenTeileChkBox.State := cbChecked;
+  ErsatzTeileChkBox.State := cbUnChecked;
+  AbgelaufenChkBox.State := cbchecked;
+  NAbgelaufenChkBox.State := cbUnchecked;
+  ohneAnfrageChkBox.State := cbchecked;
+  NohneAnfrageChkBox.State := cbUnchecked;
+  RelevantChkBox.State := cbchecked;
+  NRelevantChkBox.State := cbUnchecked;
 end;
 
 procedure TLieferantenErklAnfordernFrm.StatusUpdateActionExecute(
@@ -338,22 +351,6 @@ begin
       FilterStr := FilterStr + 'lekl=4';
     end;
 
-    if GeantwortetChkBox.State = cbChecked then
-    begin
-      if filtern then
-         FilterStr := FilterStr + ' AND ' ;
-      filtern := True;
-      FilterStr := FilterStr + 'Stand_minus_Anfrage>=0';
-    end;
-
-    if NGeantwortetChkBox.State = cbChecked then
-    begin
-      if filtern then
-         FilterStr := FilterStr + ' AND ' ;
-      filtern := True;
-      FilterStr := FilterStr + 'Stand_minus_Anfrage<0';
-    end;
-
     if length(FilterName.Text)>0 then
     begin
       if filtern then
@@ -370,11 +367,16 @@ begin
       FilterStr := FilterStr + 'LKurzname Like ''' + FilterKurzname.Text + '%''';
     end;
 
-    LocalQry.Filter := FilterStr;
-    LocalQry.Filtered := filtern;
+    //Diese Filter-Update Aktion wird beim Erzeugen der Frames
+    //durch Delphi aufgerufen, bevor die Qry erzeugt wurde
+    if assigned (LocalQry) then
+    begin
+        LocalQry.Filter := FilterStr;
+      LocalQry.Filtered := filtern;
 
-    GroupBox2.Caption:= 'gefiltert '
+      GroupBox2.Caption:= 'gefiltert '
                    + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
+    end;
 end;
 
 procedure TLieferantenErklAnfordernFrm.FilterUpdateActionUpdate(
@@ -410,14 +412,6 @@ begin
     if SenderComp.Equals(NRelevantChkBox) then
       if NRelevantChkBox.State = cbChecked then
           RelevantChkBox.State := cbUnchecked;
-
-    if SenderComp.Equals(GeantwortetChkBox) then
-      if GeantwortetChkBox.State = cbChecked then
-          NGeantwortetChkBox.State := cbUnchecked;
-
-    if SenderComp.Equals(NGeantwortetChkBox) then
-      if NGeantwortetChkBox.State = cbChecked then
-          GeantwortetChkBox.State := cbUnchecked;
 
 
 end;
