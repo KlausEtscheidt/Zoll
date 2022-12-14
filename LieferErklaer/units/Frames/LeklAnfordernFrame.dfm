@@ -1097,6 +1097,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Height = 51
       DataField = 'Kommentar'
       DataSource = DataSource1
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

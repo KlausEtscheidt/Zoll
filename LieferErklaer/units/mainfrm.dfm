@@ -33,7 +33,7 @@ object mainForm: TmainForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    ExplicitWidth = 999
+    ExplicitWidth = 1094
     ExplicitHeight = 593
     inherited GroupBox1: TGroupBox
       Width = 828
@@ -575,6 +575,48 @@ object mainForm: TmainForm
       end
     end
   end
+  inline LeklStatusEingabeFrm: TLeklStatusFrm
+    Left = -5
+    Top = 8
+    Width = 1099
+    Height = 593
+    HelpType = htKeyword
+    HelpKeyword = 'Anforderung'
+    ParentBackground = False
+    PopupMenu = LeklStatusEingabeFrm.PopupMenu1
+    TabOrder = 5
+    ExplicitLeft = -5
+    ExplicitTop = 8
+    inherited GroupBox2: TGroupBox
+      inherited DBGrid1: TDBGrid
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'LKurzname'
+            Title.Caption = 'Kurzname'
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'name1'
+            Title.Caption = 'Name'
+            Width = 220
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'letzteAnfrage'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'Stand'
+            Visible = True
+          end>
+      end
+    end
+  end
   object MainMenu1: TMainMenu
     Left = 488
     object DateiMen: TMenuItem
@@ -596,6 +638,10 @@ object mainForm: TmainForm
       object LieferMenErklaerAnfordern: TMenuItem
         Caption = 'Erkl'#228'rungen anfordern/eingeben'
         OnClick = LieferMenErklaerAnfordernClick
+      end
+      object LieferMenStatuseingeben: TMenuItem
+        Caption = 'Status eingeben'
+        OnClick = LieferMenStatuseingebenClick
       end
       object N1: TMenuItem
         Caption = '-'

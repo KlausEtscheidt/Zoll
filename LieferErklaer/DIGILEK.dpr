@@ -24,7 +24,8 @@ uses
   ImportStatusInfoDlg in 'units\Dialoge\ImportStatusInfoDlg.pas' {ImportStatusDlg},
   ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
   ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
-  WinApi in '..\lib\WinApi\WinApi.pas';
+  WinApi in '..\lib\WinApi\WinApi.pas',
+  LeklStatusEingabeFrame in 'units\Frames\LeklStatusEingabeFrame.pas' {LeklStatusFrm: TFrame};
 
 {$R *.res}
 

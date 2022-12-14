@@ -10,7 +10,7 @@ uses
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
   Vcl.DBCtrls, LeklTeileEingabeFrame, Tools,
   LieferantenLEKL3AuswahlFrame, LeklAnfordernFrame, TeileStatusKontrolleFrame,
-  ExportFrame, WinApi, Vcl.Buttons;
+  ExportFrame, WinApi, Vcl.Buttons, LeklStatusEingabeFrame;
 
 type
   TmainForm = class(TForm)
@@ -40,6 +40,8 @@ type
     InfoMen: TMenuItem;
     VersMen: TMenuItem;
     Hilfe1: TMenuItem;
+    LieferMenStatuseingeben: TMenuItem;
+    LeklStatusEingabeFrm: TLeklStatusFrm;
 
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -57,6 +59,7 @@ type
     function FormHelp(Command: Word; Data: NativeInt;
       var CallHelp: Boolean): Boolean;
     procedure Hilfe1Click(Sender: TObject);
+    procedure LieferMenStatuseingebenClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -97,6 +100,7 @@ begin
     ExportFrm1.Visible:=False;
     TeileStausKontrolleFrm.Visible:=False;
     LieferantenErklAnfordernFrm1.Visible:=False;
+    LeklStatusEingabeFrm.Visible:=False;
 end;
 
 
@@ -185,6 +189,12 @@ begin
   LocalQry:=Tools.GetQuery;
   LocalQry.RunExecSQLQuery('Update ProgrammDaten Set Wert=300 '
                           + 'WHERE NAME = "Gueltigkeit_Lekl";');
+end;
+
+procedure TmainForm.LieferMenStatuseingebenClick(Sender: TObject);
+begin
+    HideAllFrames;
+    LeklStatusEingabeFrm.ShowFrame;
 end;
 
 procedure TmainForm.UnippsMenAuswertenClick(Sender: TObject);

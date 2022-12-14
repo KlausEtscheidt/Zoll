@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">SQLite</Config>
+        <Config Condition="'$(Config)'==''">SQLiteTADOR</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -333,8 +333,8 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <DCC_ExeOutput>.</DCC_ExeOutput>
-        <VerInfo_Build>10</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.1.0.10;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>15</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.1.0.15;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_13)'!=''">
         <VerInfo_Locale>1031</VerInfo_Locale>
@@ -433,6 +433,11 @@
         <DCCReference Include="..\lib\Datenbank\ADOConnector.pas"/>
         <DCCReference Include="..\lib\Datenbank\ADOQuery.pas"/>
         <DCCReference Include="..\lib\WinApi\WinApi.pas"/>
+        <DCCReference Include="units\Frames\LeklStatusEingabeFrame.pas">
+            <Form>LeklStatusFrm</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -513,7 +518,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="DIGILEK.xxx" Configuration="SQLiteTADOR" Class="ProjectOutput">
+                <DeployFile LocalName="DIGILEK.exe" Configuration="SQLiteTADOR" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DIGILEK.exe</RemoteName>
                         <Overwrite>true</Overwrite>
