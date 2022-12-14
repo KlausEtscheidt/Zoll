@@ -4,8 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Tools, AuswertenExport;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TGesamtStatusFrm = class(TFrame)
@@ -36,8 +35,7 @@ type
     Label10: TLabel;
     nLieferPumpenteile: TLabel;
   private
-    LocalQry: TWQry;
-
+    { Private-Deklarationen }
   public
     { Public-Deklarationen }
     procedure InitFrame;
@@ -46,25 +44,17 @@ type
 implementation
 
 {$R *.dfm}
-uses mainfrm;
+
+uses ADOQuery, Tools;
 
 procedure TGesamtStatusFrm.InitFrame;
 
+var
+//  Anzahl: Integer;
+  LocalQry: TWQry;
+
 begin
   LocalQry := Tools.GetQuery;
-
-  if not LocalQry.Connected then
-      raise Exception.Create('Keine Verbindung zur Datenbank!');
-//     exit;
-
-  //Vergleiche je Teil Anzahl Lieferanten mit Anzehl gültiger LEKL
-  //Setze PFK in Tabelle Teile entsprechend
-  var i:integer;
-  StatusBarLeft('Beginne Auswertung'+IntTostr(i));
-  for i := 1 to 50 do
-  begin
-    SetzePfkInTeileTabelle;
-  end;
 
   // Zaehle alle Teile
   LocalQry.HoleTeile;
@@ -98,7 +88,7 @@ begin
   nLieferStatusUnbekannt.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
 
-end;
 
+end;
 
 end.

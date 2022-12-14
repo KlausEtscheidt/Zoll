@@ -2,7 +2,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   Left = 0
   Top = 0
   Width = 1099
-  Height = 576
+  Height = 593
+  HelpType = htKeyword
+  HelpKeyword = 'Anforderung'
   ParentBackground = False
   PopupMenu = PopupMenu1
   TabOrder = 0
@@ -10,7 +12,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Left = 5
     Top = 44
     Width = 1076
-    Height = 53
+    Height = 72
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -78,6 +80,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Top = 14
       Width = 98
       Height = 25
+      Hint = 'Nur Lieferanten anzeigen, die Pumpenteile liefern'
       Action = FilterUpdateAction
       Caption = 'Pumpenteile'
       Checked = True
@@ -87,51 +90,66 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       State = cbChecked
       TabOrder = 2
     end
     object FilterAusBtn: TButton
       Left = 487
-      Top = 16
+      Top = 14
       Width = 25
       Height = 25
+      Hint = 'Filter Kurz-Name und Name leeren'
       DisabledImageIndex = 0
       HotImageIndex = 0
       ImageIndex = 0
       ImageMargins.Left = 2
       ImageMargins.Top = 2
       Images = ImageList1
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = FilterAusBtnClick
     end
     object AbgelaufenChkBox: TCheckBox
-      Left = 719
+      Left = 749
       Top = 14
       Width = 90
       Height = 25
+      Hint = 'Nur Lieferanten, mit Lekl, die weniger als 300 Tage gilt'
       Action = FilterUpdateAction
       Caption = 'abgelaufene'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
       TabOrder = 4
     end
     object ohneAnfrageChkBox: TCheckBox
-      Left = 815
+      Left = 849
       Top = 14
       Width = 115
       Height = 25
+      Hint = 'Letze Anfrage nach Lekl '#228'lter als 200 Tage'
       Action = FilterUpdateAction
-      Caption = 'nicht aufgefordert'
+      Caption = 'nicht angefordert'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
       TabOrder = 5
     end
     object ErsatzTeileChkBox: TCheckBox
@@ -139,6 +157,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Top = 14
       Width = 82
       Height = 25
+      Hint = 'Nur Lieferanten anzeigen, die Ersatzteile liefern'
       Action = FilterUpdateAction
       Caption = 'Ersatzteile'
       Font.Charset = DEFAULT_CHARSET
@@ -147,7 +166,101 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 6
+    end
+    object RelevantChkBox: TCheckBox
+      Left = 974
+      Top = 14
+      Width = 90
+      Height = 25
+      Hint = 'Keine Lieferanten, die als unwichtig markiert wurden'
+      Action = FilterUpdateAction
+      Caption = 'relevante'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
+      TabOrder = 7
+    end
+    object NRelevantChkBox: TCheckBox
+      Left = 974
+      Top = 38
+      Width = 90
+      Height = 25
+      Hint = 'nur Lieferanten, die als unwichtig markiert wurden'
+      Action = FilterUpdateAction
+      Caption = 'irrelevante'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
+    end
+    object NohneAnfrageChkBox: TCheckBox
+      Left = 849
+      Top = 38
+      Width = 115
+      Height = 25
+      Hint = 'Lekl in den letzten  200 Tagen angefragt'
+      Action = FilterUpdateAction
+      Caption = 'schon angefordert'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
+    end
+    object NAbgelaufenChkBox: TCheckBox
+      Left = 749
+      Top = 38
+      Width = 90
+      Height = 25
+      Hint = 'Nur Lieferanten, mit Lekl, die mehr als 300 Tage gilt'
+      Action = FilterUpdateAction
+      Caption = 'g'#252'ltige'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
+    end
+    object StandardFilterButton: TButton
+      Left = 527
+      Top = 42
+      Width = 106
+      Height = 25
+      Hint = 'Mit diesem Filter sollten Anfragen erstellt werden'
+      Caption = 'Standard Filter'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 11
+      OnClick = StandardFilterButtonClick
     end
   end
   object GroupBox2: TGroupBox
@@ -218,6 +331,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
           Expanded = False
           FieldName = 'email'
           Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'erfasst'
+          Visible = True
         end>
     end
   end
@@ -225,7 +343,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Left = 5
     Top = 367
     Width = 1076
-    Height = 194
+    Height = 202
     Caption = 'gew'#228'hlt'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -301,7 +419,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object Label11: TLabel
       Left = 400
-      Top = 127
+      Top = 144
       Width = 74
       Height = 18
       Margins.Left = 15
@@ -600,9 +718,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel2: TPanel
-      Left = 400
+      Left = 376
       Top = 48
-      Width = 74
+      Width = 73
       Height = 73
       BevelOuter = bvNone
       ParentColor = True
@@ -610,7 +728,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label3: TLabel
         Left = 0
         Top = 50
-        Width = 74
+        Width = 73
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -630,7 +748,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object giltbislbl: TLabel
         Left = 0
         Top = 18
-        Width = 74
+        Width = 73
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -649,7 +767,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label9: TLabel
         Left = 0
         Top = 0
-        Width = 74
+        Width = 73
         Height = 18
         Margins.Left = 15
         Align = alTop
@@ -667,7 +785,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Label7: TLabel
         Left = 0
         Top = 36
-        Width = 74
+        Width = 73
         Height = 14
         Margins.Left = 15
         Align = alTop
@@ -685,9 +803,9 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
     end
     object Panel3: TPanel
-      Left = 480
+      Left = 455
       Top = 48
-      Width = 65
+      Width = 82
       Height = 89
       BevelOuter = bvNone
       ParentColor = True
@@ -695,7 +813,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object Status: TDBText
         Left = 0
         Top = 0
-        Width = 65
+        Width = 82
         Height = 18
         Align = alTop
         DataField = 'StatusTxt'
@@ -713,7 +831,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object giltBisDBText: TDBText
         Left = 0
         Top = 18
-        Width = 65
+        Width = 82
         Height = 18
         Align = alTop
         DataField = 'gilt_bis'
@@ -726,12 +844,11 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         ParentFont = False
         ExplicitLeft = 30
         ExplicitTop = 60
-        ExplicitWidth = 82
       end
       object letzteAbfrageDBText: TDBText
         Left = 0
         Top = 36
-        Width = 65
+        Width = 82
         Height = 18
         Align = alTop
         DataField = 'letzteAnfrage'
@@ -748,7 +865,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       object StandDBText: TDBText
         Left = 0
         Top = 54
-        Width = 65
+        Width = 82
         Height = 18
         Align = alTop
         DataField = 'Stand'
@@ -761,21 +878,20 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         ParentFont = False
         ExplicitLeft = 30
         ExplicitTop = 71
-        ExplicitWidth = 82
       end
     end
     object Panel4: TPanel
-      Left = 584
+      Left = 560
       Top = 48
-      Width = 41
-      Height = 73
+      Width = 65
+      Height = 89
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 6
       object Label14: TLabel
         Left = 0
-        Top = 0
-        Width = 41
+        Top = 18
+        Width = 65
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -787,14 +903,13 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 37
+        ExplicitTop = 12
+        ExplicitWidth = 41
       end
       object Label15: TLabel
         Left = 0
-        Top = 18
-        Width = 41
+        Top = 0
+        Width = 65
         Height = 18
         Align = alTop
         Alignment = taRightJustify
@@ -806,22 +921,75 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 1
-        ExplicitTop = 19
-        ExplicitWidth = 37
+        ExplicitTop = 54
+        ExplicitWidth = 41
+      end
+      object Label17: TLabel
+        Left = 0
+        Top = 72
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Nachname:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 26
+        ExplicitWidth = 41
+      end
+      object Label18: TLabel
+        Left = 0
+        Top = 36
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Anrede:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 44
+        ExplicitWidth = 41
+      end
+      object Label19: TLabel
+        Left = 0
+        Top = 54
+        Width = 65
+        Height = 18
+        Align = alTop
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Vorname:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 62
+        ExplicitWidth = 41
       end
     end
     object Panel6: TPanel
       Left = 631
       Top = 48
       Width = 258
-      Height = 73
+      Height = 89
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 7
       object mailDBText: TDBText
         Left = 0
-        Top = 0
+        Top = 18
         Width = 258
         Height = 18
         Align = alTop
@@ -839,7 +1007,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       end
       object telefaxDBText: TDBText
         Left = 0
-        Top = 18
+        Top = 0
         Width = 258
         Height = 18
         Align = alTop
@@ -851,9 +1019,55 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = -29
-        ExplicitTop = 55
-        ExplicitWidth = 165
+        ExplicitTop = -1
+      end
+      object NachnameDBText: TDBText
+        Left = 0
+        Top = 72
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Nachname'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 26
+      end
+      object AnredeDBText: TDBText
+        Left = 0
+        Top = 36
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Anrede'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 44
+      end
+      object VornameDBText: TDBText
+        Left = 0
+        Top = 54
+        Width = 258
+        Height = 18
+        Align = alTop
+        DataField = 'Vorname'
+        DataSource = DataSource1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ExplicitTop = 62
       end
     end
     object mailBtn: TButton
@@ -866,11 +1080,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object DBMemo2: TDBMemo
       Left = 480
-      Top = 126
+      Top = 143
       Width = 584
       Height = 51
       DataField = 'Kommentar'
       DataSource = DataSource1
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -886,6 +1101,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     Top = 200
   end
   object ImageList1: TImageList
+    ShareImages = True
     Left = 368
     Top = 272
     Bitmap = {
@@ -1064,6 +1280,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     object FilterUpdateAction: TAction
       Caption = 'FilterUpdate'
       OnExecute = FilterUpdateActionExecute
+      OnUpdate = FilterUpdateActionUpdate
+    end
+    object AnfordDatumHeuteAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'Anfrage-Datum heute'
+      OnExecute = AnfordDatumHeuteActionExecute
     end
   end
   object PopupMenu1: TPopupMenu
@@ -1079,6 +1301,10 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object AnforderungResetMen: TMenuItem
       Action = AnfordDatumResetAction
+      Caption = 'Anfrage-Datum zur'#252'ck setzen'
+    end
+    object AnforderungHeuteMen: TMenuItem
+      Action = AnfordDatumHeuteAction
     end
   end
 end

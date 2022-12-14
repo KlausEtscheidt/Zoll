@@ -3,7 +3,11 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
   Top = 0
   Width = 1099
   Height = 569
+  HelpType = htKeyword
+  HelpKeyword = 'Lieferantenauswahl'
   ParentBackground = False
+  ParentShowHint = False
+  ShowHint = True
   TabOrder = 0
   object Label11: TLabel
     Left = 5
@@ -22,7 +26,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
     Left = 5
     Top = 44
     Width = 1036
-    Height = 53
+    Height = 72
     Caption = 'Filter'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -90,44 +94,108 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Top = 16
       Width = 25
       Height = 25
+      Hint = 'Filter Kurz-Name und Name leeren'
       DisabledImageIndex = 0
       HotImageIndex = 0
+      ImageAlignment = iaCenter
       ImageIndex = 0
-      ImageMargins.Left = 2
-      ImageMargins.Top = 2
       Images = ImageList1
+      PressedImageIndex = 0
+      SelectedImageIndex = 0
+      StylusHotImageIndex = 0
       TabOrder = 2
       OnClick = FilterAusBtnClick
     end
     object LeklUpdatedChkBox: TCheckBox
-      Left = 543
+      Left = 671
       Top = 14
       Width = 114
       Height = 25
+      Action = FilterUpdateAction
       Caption = 'nur aktuelle LEKL'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
       TabOrder = 3
-      OnClick = LeklUpdatedChkBoxClick
     end
     object UnbearbeiteteCheckBox: TCheckBox
-      Left = 679
+      Left = 808
       Top = 14
-      Width = 114
+      Width = 130
       Height = 25
+      TabStop = False
+      Action = FilterUpdateAction
       Caption = 'nur unbearbeitete'
+      Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      State = cbChecked
       TabOrder = 4
-      OnClick = LeklUpdatedChkBoxClick
+    end
+    object NLeklUpdatedChkBox: TCheckBox
+      Left = 671
+      Top = 38
+      Width = 114
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'nur alte LEKL'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+    end
+    object NUnbearbeiteteCheckBox: TCheckBox
+      Left = 807
+      Top = 38
+      Width = 130
+      Height = 25
+      Action = FilterUpdateAction
+      Caption = 'nur bearbeitete'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+    end
+    object StandardFilterButton: TButton
+      Left = 538
+      Top = 18
+      Width = 106
+      Height = 25
+      Hint = 'Mit diesem Filter sollten Teile gepflegt werden'
+      Caption = 'Standard Filter'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+      OnClick = StandardFilterButtonClick
     end
   end
   object GroupBox2: TGroupBox
@@ -419,7 +487,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         AlignWithMargins = True
         Left = 0
         Top = 3
-        Width = 35
+        Width = 325
         Height = 14
         Margins.Left = 0
         Margins.Right = 0
@@ -431,6 +499,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 35
       end
       object DBText1: TDBText
         AlignWithMargins = True
@@ -634,6 +703,7 @@ object LieferantenStatusFrm: TLieferantenStatusFrm
       Category = 'Filter'
       Caption = 'FilterUpdate'
       OnExecute = FilterUpdateActionExecute
+      OnUpdate = FilterUpdateActionUpdate
     end
   end
 end

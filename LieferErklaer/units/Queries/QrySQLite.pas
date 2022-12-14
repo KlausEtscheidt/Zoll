@@ -30,6 +30,8 @@ interface
       function TeileName2InTabelle():Boolean;
       function UpdateTmpAnzLieferantenJeTeil():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
+      function UpdateLieferantenAnsprechpartner():Boolean;
+
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitAdressen():Boolean;
@@ -234,7 +236,6 @@ begin
 
 end;
 
-
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der Lieferanten eines Teils in Tabelle Teile</summary>
 function TWQrySQLite.UpdateTeileZaehleLieferanten():Boolean;
@@ -256,6 +257,27 @@ begin
 end;
 
 
+//---------------------------------------------------------------------------
+///<summary> Überträgt Ansprechpartner in Tabelle Lieferanten_Adressen</summary>
+function TWQrySQLite.UpdateLieferantenAnsprechpartner():Boolean;
+  var
+    sql: String;
+begin
+
+  sql := 'UPDATE Lieferanten_Adressen '
+       + 'INNER JOIN Lieferanten_Ansprechpartner '
+       + 'ON Lieferanten_Adressen.IdLieferant = '
+                       + 'Lieferanten_Ansprechpartner.IdLieferant '
+       + 'SET Lieferanten_Adressen.hat_LEKL_Ansprechp = True, '
+       + 'Lieferanten_Adressen.Anrede = Lieferanten_Ansprechpartner.Anrede, '
+       + 'Lieferanten_Adressen.Vorname = Lieferanten_Ansprechpartner.Vorname, '
+       + 'Lieferanten_Adressen.Nachname = Lieferanten_Ansprechpartner.Nachname, '
+       + 'Lieferanten_Adressen.email = Lieferanten_Ansprechpartner.email, '
+       + 'Lieferanten_Adressen.telefax = Lieferanten_Ansprechpartner.telefax ;' ;
+ Result:= RunExecSQLQuery(sql);
+
+end;
+
 // ---------------------------------------------------------------
 //
 // Select-Abfragen
@@ -271,8 +293,10 @@ begin
   sql := 'Select Lieferanten.IdLieferant, LKurzname,Stand,gilt_bis, letzteAnfrage, '
        + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
        + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
+       + 'hat_LEKL_Ansprechp,Anrede,Vorname,Nachname, '
        + 'Julianday(gilt_bis)-Julianday(Date()) as gilt_noch, '
-       + 'Julianday(Date()) - Julianday(letzteAnfrage) as angefragt_vor_Tagen '
+       + 'Julianday(Date()) - Julianday(letzteAnfrage) as angefragt_vor_Tagen, '
+       + 'Julianday(Stand)-Julianday(letzteAnfrage) as Stand_minus_Anfrage '
        + 'from Lieferanten '
        + 'join Lieferanten_Adressen '
        + 'on Lieferanten.IdLieferant=Lieferanten_Adressen.IdLieferant '

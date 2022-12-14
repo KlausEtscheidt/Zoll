@@ -3,13 +3,14 @@
 interface
 
 uses
+  Vcl.HtmlHelpViewer,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Data.Win.ADODB, Vcl.Grids,
   Vcl.DBGrids,Import, Vcl.Menus, Vcl.ComCtrls, Vcl.Tabs,
   Vcl.TitleBarCtrls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCGrids,
   Vcl.DBCtrls, LeklTeileEingabeFrame, Tools,
   LieferantenLEKL3AuswahlFrame, LeklAnfordernFrame, TeileStatusKontrolleFrame,
-  ExportFrame;
+  ExportFrame, WinApi, Vcl.Buttons, LeklStatusEingabeFrame;
 
 type
   TmainForm = class(TForm)
@@ -27,12 +28,20 @@ type
     ExportMenErzeugen: TMenuItem;
     LieferMenErklaerAnfordern: TMenuItem;
     LieferMenAdressen: TMenuItem;
-    LieferantenStatusFrm1: TLieferantenStatusFrm;
+    Lekl3LieferantAuswahlFrm: TLieferantenStatusFrm;
     ExportFrm1: TGesamtStatusFrm;
     TeileStausKontrolleFrm: TTeileStatusKontrolleFrm;
     LieferantenErklAnfordernFrm1: TLieferantenErklAnfordernFrm;
     N1: TMenuItem;
     N2: TMenuItem;
+    TestMen: TMenuItem;
+    N300Tage1: TMenuItem;
+    N0Tage1: TMenuItem;
+    InfoMen: TMenuItem;
+    VersMen: TMenuItem;
+    Hilfe1: TMenuItem;
+    LieferMenStatuseingeben: TMenuItem;
+    LeklStatusEingabeFrm: TLeklStatusFrm;
 
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -43,6 +52,13 @@ type
     procedure TeileMenUebersichtClick(Sender: TObject);
     procedure LieferMenAdressenClick(Sender: TObject);
     procedure LieferMenErklaerAnfordernClick(Sender: TObject);
+    procedure N300Tage1Click(Sender: TObject);
+    procedure N0Tage1Click(Sender: TObject);
+    procedure VersMenClick(Sender: TObject);
+    function FormHelp(Command: Word; Data: NativeInt;
+      var CallHelp: Boolean): Boolean;
+    procedure Hilfe1Click(Sender: TObject);
+    procedure LieferMenStatuseingebenClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -62,6 +78,11 @@ uses Excel, Mailing, ImportStatusInfoDlg;
 
 procedure TmainForm.FormShow(Sender: TObject);
 begin
+    caption:=caption + ' V' + GetCurrentVersion(2);
+{$IFDEF RELEASE}
+    TestMen.Visible:=False;
+{$ENDIF}
+
     //Aut. Start nur zu Entwicklungszwecken; Sonst über Menu starten
 //  ImportStatusDlg.Show;
 //    Import.BasisImport;
@@ -77,16 +98,32 @@ end;
 
 procedure TmainForm.HideAllFrames;
 begin
-    LieferantenStatusFrm1.Visible:=False;
+    Lekl3LieferantAuswahlFrm.Visible:=False;
     ExportFrm1.Visible:=False;
     TeileStausKontrolleFrm.Visible:=False;
     LieferantenErklAnfordernFrm1.Visible:=False;
+    LeklStatusEingabeFrm.Visible:=False;
 end;
 
+
+procedure TmainForm.Hilfe1Click(Sender: TObject);
+begin
+  HelpFile := ExtractFilePath(Application.ExeName) + HelpFile;
+  Application.HelpShowTableOfContents();
+//  CallHelp :=  False; // True; - to execute the default OnHelp event handler
+
+end;
 
 procedure TmainForm.FormDestroy(Sender: TObject);
 begin
   close;
+end;
+
+function TmainForm.FormHelp(Command: Word; Data: NativeInt;
+  var CallHelp: Boolean): Boolean;
+begin
+  mainForm.StatusBar1.Panels[0].Text := 'f1';
+
 end;
 
 /// <summary>Ausgabe in linkes panel des Statusbar </summary>
@@ -108,6 +145,8 @@ end;
 procedure TmainForm.LieferMenAdressenClick(Sender: TObject);
 begin
       Import.LieferantenAdressdatenAusUnipps;
+      if LieferantenErklAnfordernFrm1.Visible then
+        LieferantenErklAnfordernFrm1.RefreshLocalQuery;
 end;
 
 procedure TmainForm.LieferMenErklaerAnfordernClick(Sender: TObject);
@@ -119,6 +158,7 @@ end;
 procedure TmainForm.ExportMenErzeugenClick(Sender: TObject);
 begin
     HideAllFrames;
+    Import.Auswerten;
     ExportFrm1.Visible:=True;
     ExportFrm1.InitFrame;
 end;
@@ -132,12 +172,42 @@ end;
 procedure TmainForm.LTeileMenStatusClick(Sender: TObject);
 begin
     HideAllFrames;
-    LieferantenStatusFrm1.ShowFrame;
+    Lekl3LieferantAuswahlFrm.ShowFrame;
+end;
+
+procedure TmainForm.N0Tage1Click(Sender: TObject);
+var
+  LocalQry:TWQry;
+begin
+  LocalQry:=Tools.GetQuery;
+  LocalQry.RunExecSQLQuery('Update ProgrammDaten Set Wert=0 '
+                          + 'WHERE NAME = "Gueltigkeit_Lekl";');
+end;
+
+procedure TmainForm.N300Tage1Click(Sender: TObject);
+var
+  LocalQry:TWQry;
+begin
+  LocalQry:=Tools.GetQuery;
+  LocalQry.RunExecSQLQuery('Update ProgrammDaten Set Wert=300 '
+                          + 'WHERE NAME = "Gueltigkeit_Lekl";');
+end;
+
+procedure TmainForm.LieferMenStatuseingebenClick(Sender: TObject);
+begin
+    HideAllFrames;
+    LeklStatusEingabeFrm.ShowFrame;
 end;
 
 procedure TmainForm.UnippsMenEinlesenClick(Sender: TObject);
 begin
   ImportStatusDlg.Show;
+end;
+
+procedure TmainForm.VersMenClick(Sender: TObject);
+begin
+  ShowMessage('DigiLek Digitale Lieferantenerklärung' + #13#13
+              + 'Version ' + GetCurrentVersion(4)  )
 end;
 
 //Setze Pfade, Verbinde zur Datenbank etc

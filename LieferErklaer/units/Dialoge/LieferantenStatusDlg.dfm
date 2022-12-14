@@ -4,13 +4,15 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   Caption = 'Lieferanten-Status'
   ClientHeight = 343
   ClientWidth = 635
-  Color = clBtnFace
+  Color = clGradientActiveCaption
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  ShowHint = True
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -43,9 +45,16 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
   object alterStatus: TLabel
     Left = 64
     Top = 48
-    Width = 31
-    Height = 13
+    Width = 41
+    Height = 18
+    Hint = 'bisheriger Status'
     Caption = 'Label3'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
   end
   object Label3: TLabel
     Left = 24
@@ -84,6 +93,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Top = 152
     Width = 186
     Height = 25
+    Hint = 'Verfallsdatum der Lieferantenerkl'#228'rung'
     Date = 44858.000000000000000000
     Time = 0.733019178238464500
     ShowCheckbox = True
@@ -93,7 +103,8 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Left = 224
     Top = 40
     Width = 273
-    Height = 69
+    Height = 82
+    Hint = 'neuer Status entsprechend der R'#252'ckmeldung des Lieferanten'
     KeyField = 'Id'
     ListField = 'StatusTxt'
     ListFieldIndex = 2
@@ -106,6 +117,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Top = 224
     Width = 505
     Height = 21
+    Hint = 'Optional'
     TabOrder = 4
   end
   object GiltNeuBtn: TButton
@@ -113,6 +125,7 @@ object LieferantenStatusDialog: TLieferantenStatusDialog
     Top = 152
     Width = 75
     Height = 25
+    Hint = 'erh'#246'ht das links stehende Datum um 1 Jahr'
     Caption = '+ 1 Jahr'
     TabOrder = 5
     OnClick = GiltNeuBtnClick

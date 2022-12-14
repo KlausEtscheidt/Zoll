@@ -24,13 +24,19 @@ uses
   ImportStatusInfoDlg in 'units\Dialoge\ImportStatusInfoDlg.pas' {ImportStatusDlg},
   ADOConnector in '..\lib\Datenbank\ADOConnector.pas',
   ADOQuery in '..\lib\Datenbank\ADOQuery.pas',
+<<<<<<< HEAD
   AuswertenExport in 'units\AuswertenExport.pas';
+=======
+  WinApi in '..\lib\WinApi\WinApi.pas',
+  LeklStatusEingabeFrame in 'units\Frames\LeklStatusEingabeFrame.pas' {LeklStatusFrm: TFrame};
+>>>>>>> cc738f23c8d9d1b6dc0d15f8c99d29923f655cc2
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.HelpFile := 'C:\Users\Klaus Etscheidt\Documents\Embarcadero\Studio\Projekte\zoll\LieferErklaer\doku\help\build\htmlhelp\digilekdoc.chm';
   Application.CreateForm(TmainForm, mainForm);
   Application.CreateForm(TLieferantenStatusDialog, LieferantenStatusDialog);
   Application.CreateForm(TTeileListeForm, TeileListeForm);

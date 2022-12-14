@@ -9,7 +9,7 @@ uses
   Vcl.DBCGrids,
 //  Data.Win.ADODB,
   Tools, Data.DB, System.ImageList, Vcl.ImgList, Vcl.ExtCtrls, System.Actions,
-  Vcl.ActnList, Import, AuswertenExport;
+  Vcl.ActnList, Import;
 
 type
   TTeileStatusKontrolleFrm = class(TFrame)
@@ -34,6 +34,13 @@ type
     PfkOnCheckBox: TCheckBox;
     PfkOffCheckBox: TCheckBox;
     Lekl: TDBText;
+    TeileNrLabel: TLabel;
+    BenennungLabel: TLabel;
+    PfkLabel: TLabel;
+    LKNameLabel: TLabel;
+    LNameLabel: TLabel;
+    StatusLabel: TLabel;
+    LPfkLabel: TLabel;
     procedure TeileDataSourceDataChange(Sender: TObject; Field: TField);
     procedure FilterTeileNrChange(Sender: TObject);
     procedure FilterTName1Change(Sender: TObject);
@@ -54,13 +61,14 @@ implementation
 
 {$R *.dfm}
 
-uses mainfrm;
+{ TTeileFrm }
 
 procedure TTeileStatusKontrolleFrm.TeileDataSourceDataChange(Sender: TObject;
   Field: TField);
 begin
-//    if assigned(LocalSubQry) then
-        LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
+    if not Initialized then
+      exit;
+    LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
 end;
 
 
@@ -141,23 +149,16 @@ end;
 
 procedure TTeileStatusKontrolleFrm.ShowFrame;
 begin
-    //Pfk Flag neu ermitteln
-//    SetzePfkInTeileTabelle;
-//    //Einmalig DB-Verbindung erzeugen und verbundene Qry anlegen
-//    if not Initialized then
-//      LocalQry := Tools.GetQuery;
-//    if not LocalQry.Connected then
-//      raise Exception.Create('Keine Verbindung zur Datenbank!');
-//    Initialized:=True;
+    Import.Auswerten;
+    Initialized:=False;
     LocalQry := Tools.GetQuery;
-//    if not LocalQry.Connected then
-//      raise Exception.Create('Keine Verbindung zur Datenbank!');
     LocalQry.RunSelectQuery('SELECT TeileNr, TName1, Abs(Pfk) As Pfk FROM Teile;')  ;
+    FilterUpdate();
     TeileDataSource.DataSet := LocalQry;
     LocalSubQry := Tools.GetQuery;
     LocalSubQry.HoleLieferantenZuTeil(TeileNr.Caption);
     LieferantenDataSource.DataSet := LocalSubQry;
-
+    Initialized:=True;
     Self.Visible := True;
 end;
 

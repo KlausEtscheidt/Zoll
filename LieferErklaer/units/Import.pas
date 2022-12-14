@@ -46,7 +46,7 @@ type TBasisImport = class(TThread)
 procedure Init;
 function GetUNIPPSQry():TWQryUNIPPS;
 procedure LieferantenAdressdatenAusUnipps;
-
+procedure Auswerten();
 
 var
   Initialized:Boolean;
@@ -126,12 +126,8 @@ begin
   FreeOnTerminate:=True;
   LocalQry2:=Tools.GetQuery(True);
   UnippsQry2:=GetUNIPPSQry;
-//  if UnippsQry2=nil then
-//    exit;
-  if (not LocalQry2.Connected) or (not UnippsQry2.Connected) then
-    raise Exception.Create('Keine Verbindung zur Datenbank!');
-//     exit;
-
+  if UnippsQry2=nil then
+    exit;
 
   // Tabelle Bestellungen leeren und neu befuellen
   // Eindeutige Kombination aus Lieferant, TeileNr mit Zusatzinfo zu beiden
@@ -148,7 +144,7 @@ begin
 
   // Prüfe ob Teil für Pumpen verwendet wird
   // Setzt Flag Pumpenteil in Tabelle Teile
-//--------------  PumpenteileAusUnipps;
+  PumpenteileAusUnipps;
 
   // Hole Adressdaten in eigene Tabelle
   LieferantenAdressdatenAusUnipps;
@@ -229,7 +225,7 @@ var
 begin
 
   SchrittAnfangAnzeigen(2,'Lieferanten-Teilenummern lesen');
-  Bestellungen := Tools.GetTable('Bestellungen',True);
+  Bestellungen := Tools.GetTable('Bestellungen');
 
 //  Bestellungen := Tools.GetQuery;
 //  Bestellungen.RunSelectQuery('SELECT * FROM Bestellungen');
@@ -349,6 +345,9 @@ begin
   if not gefunden then
     raise Exception.Create('TeileBenennungInTabelle fehlgeschlagen.');
 
+ LocalQry2.RunExecSQLQuery('delete FROM Teile WHERE TeileNr Not In ' +
+                           '(select TeileNr from Bestellungen)');
+
   SchrittEndeAnzeigen;
 end;
 
@@ -453,23 +452,67 @@ end;
 // --------------------- Import ausserhalb des Threads ---------------
 // ----------------------------------------------------------------------
 
+/// <summary> Finale Auswertung und Erzeugen der UNIPPS-Export-Tabelle</summary>
+procedure Auswerten();
+var
+  minRestGueltigkeit:String;
 
-///<summary>Hole Adressdaten aus UNIPPS in eigene Tabelle</summary>
+begin
+
+  // Qry fuer lokale DB anlegen
+  if not assigned(LocalQry1) then
+    LocalQry1 := Tools.GetQuery;
+  if not assigned(LocalQry1) then
+    exit;
+
+  StatusBarLeft('Beginne Auswertung');
+  // Qry fuer lokale DB anlegen
+  LocalQry1 := Tools.GetQuery;
+
+  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
+  minRestGueltigkeit:=LocalQry1.LiesProgrammDatenWert('Gueltigkeit_Lekl');
+
+  //Leere Zwischentabelle
+  LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
+
+  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
+  LocalQry1.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
+
+  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
+  LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
+
+  //Leere Zwischentabelle
+  LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
+
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in tmp Tabelle
+  LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
+
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
+  //in Tabelle Teile auf 0 setzen
+  LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
+
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
+  LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
+
+  // Flag PFK in Teile setzen
+  LocalQry1.UpdateTeileResetPFK;
+  LocalQry1.UpdateTeileSetPFK;
+
+  StatusBarLeft('Auswertung fertig');
+end;
+
+///<summary>Hole Adressdaten und Ansprechpartner
+/// aus UNIPPS in eigene Tabellen</summary>
 procedure LieferantenAdressdatenAusUnipps();
 var
   gefunden:Boolean;
 
 begin
-  //Verbinde zur DB
   Init;
-  //Wenn fehlgeschlagen
   if not Initialized then
-    raise Exception.Create('Keine Verbindung zur Datenbank!');
-//    exit;
-  if (not UnippsQry1.Connected) or (not LocalQry1.Connected) then
-    raise Exception.Create('Keine Verbindung zur Datenbank!');
-//         exit;
+    exit;
 
+  //------------  Erst Firmen-Daten lesen
   gefunden := UnippsQry1.HoleLieferantenAdressen;
 
   if not gefunden then
@@ -483,8 +526,25 @@ begin
     LocalQry1.InsertFields('Lieferanten_Adressen', UnippsQry1.Fields);
     UnippsQry1.next;
   end;
-
   LocalQry1.RunExecSQLQuery('COMMIT;');
+
+  //------------  Dann Ansprechpartner für LEKL falls vorhanden lesen
+  gefunden := UnippsQry1.HoleLieferantenAnspechpartner;
+
+  LocalQry1.RunExecSQLQuery('delete from Lieferanten_Ansprechpartner;');
+  LocalQry1.RunExecSQLQuery('BEGIN TRANSACTION;');
+  var text:string;
+  while not UnippsQry1.Eof do
+  begin
+//    text:=UnippsQry1.GetFieldNamesAsText;
+//    text:=UnippsQry1.GetFieldValuesAsText;
+    LocalQry1.InsertFields('Lieferanten_Ansprechpartner', UnippsQry1.Fields);
+    UnippsQry1.next;
+  end;
+  LocalQry1.RunExecSQLQuery('COMMIT;');
+
+  //------------  Zuletzt Ansprechpartner übertragen
+  LocalQry1.UpdateLieferantenAnsprechpartner;
 
 end;
 

@@ -1,6 +1,8 @@
 object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
   Left = 0
   Top = 0
+  HelpType = htKeyword
+  HelpKeyword = 'Pr'#228'ferenzkenner'
   Caption = 'teilebezogener Ursprungsnachweis'
   ClientHeight = 572
   ClientWidth = 744
@@ -15,11 +17,13 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  inline LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm
+  inline LeklTeileEingabeFrm: TLieferantenErklaerungenFrm
     Left = 0
     Top = 0
     Width = 744
     Height = 531
+    HelpType = htKeyword
+    HelpKeyword = 'Anforderung'
     Align = alClient
     Color = clGradientActiveCaption
     ParentBackground = False
@@ -32,6 +36,53 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
       Left = 23
       Anchors = [akLeft, akTop, akBottom]
       ExplicitLeft = 23
+      inherited TeileNr: TDBText
+        Hint = 'Teilenr'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      inherited TName1: TDBText
+        Hint = 'Teile-Benennung'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      inherited LTeileNr: TDBText
+        Hint = 'Lieferanten-Teilenr'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      inherited PFKChkBox: TDBCheckBox
+        Hint = 'Pr'#228'ferenzkenner'
+        ParentShowHint = False
+        ShowHint = True
+      end
+    end
+    inherited FilterOffBtn: TButton
+      Hint = 'links stehende Filter leeren'
+      ParentShowHint = False
+      PressedImageIndex = 0
+      SelectedImageIndex = 0
+      ShowHint = True
+    end
+    inherited PfkResetBtn: TButton
+      Hint = 'PFK f'#252'r alle gefilterten Teile l'#246'schen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    inherited PfkSetBtn: TButton
+      Hint = 'PFK f'#252'r alle gefilterten Teile setzen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    inherited PfkOnCheckBox: TCheckBox
+      Hint = 'nur Teile mit Pr'#228'ferenzb.'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    inherited PfkOffCheckBox: TCheckBox
+      Hint = 'nur Teile ohne Pr'#228'ferenzb.'
+      ParentShowHint = False
+      ShowHint = True
     end
   end
   object GridPanel1: TGridPanel
@@ -40,6 +91,7 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
     Width = 744
     Height = 41
     Align = alBottom
+    BevelOuter = bvNone
     Caption = 'GridPanel1'
     ColumnCollection = <
       item
@@ -51,6 +103,7 @@ object LeklTeileEingabeDialog: TLeklTeileEingabeDialog
         Control = OKBtn
         Row = 0
       end>
+    ParentColor = True
     RowCollection = <
       item
         Value = 100.000000000000000000

@@ -3,6 +3,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   Top = 0
   Width = 793
   Height = 535
+  HelpType = htKeyword
+  HelpKeyword = 'Anforderung'
   Color = clBtnFace
   ParentBackground = False
   ParentColor = False
@@ -62,8 +64,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 595
-    Top = 88
+    Left = 656
+    Top = 82
     Width = 46
     Height = 16
     Caption = #196'ndern:'
@@ -110,7 +112,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     object TName1: TDBText
       Left = 160
       Top = 8
-      Width = 145
+      Width = 225
       Height = 17
       DataField = 'TName1'
       DataSource = DataSource1
@@ -118,15 +120,15 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     object TName2: TDBText
       Left = 160
       Top = 23
-      Width = 161
+      Width = 241
       Height = 17
       DataField = 'TName2'
       DataSource = DataSource1
     end
     object LTeileNr: TDBText
-      Left = 368
+      Left = 416
       Top = 8
-      Width = 193
+      Width = 153
       Height = 17
       DataField = 'LTeileNr'
       DataSource = DataSource1
@@ -146,8 +148,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     end
   end
   object SortLTeileNrBtn: TButton
-    Left = 375
-    Top = 55
+    Left = 421
+    Top = 57
     Width = 65
     Height = 25
     Caption = 'LTeilenr'
@@ -189,7 +191,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnChange = FilterTName1Change
   end
   object FilterLTeileNr: TEdit
-    Left = 373
+    Left = 421
     Top = 110
     Width = 81
     Height = 21
@@ -205,7 +207,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnChange = FilterTName2Change
   end
   object FilterOffBtn: TButton
-    Left = 460
+    Left = 524
     Top = 108
     Width = 25
     Height = 25
@@ -219,8 +221,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnClick = FilterOffBtnClick
   end
   object PfkResetBtn: TButton
-    Left = 606
-    Top = 108
+    Left = 656
+    Top = 104
     Width = 60
     Height = 25
     Caption = 'alle PFK 0'
@@ -228,8 +230,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnClick = PfkResetBtnClick
   end
   object PfkSetBtn: TButton
-    Left = 672
-    Top = 108
+    Left = 656
+    Top = 135
     Width = 60
     Height = 25
     Caption = 'alle PFK 1'
@@ -237,8 +239,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnClick = PfkSetBtnClick
   end
   object PfkOnCheckBox: TCheckBox
-    Left = 512
-    Top = 112
+    Left = 584
+    Top = 116
     Width = 57
     Height = 17
     Caption = 'Pfk 1'
@@ -246,8 +248,8 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
     OnClick = PfkOnCheckBoxClick
   end
   object PfkOffCheckBox: TCheckBox
-    Left = 512
-    Top = 141
+    Left = 584
+    Top = 139
     Width = 57
     Height = 17
     Caption = 'Pfk 0'

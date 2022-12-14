@@ -9,7 +9,7 @@ uses
 
 type
   TLeklTeileEingabeDialog = class(TForm)
-    LieferantenErklaerungenFrm1: TLieferantenErklaerungenFrm;
+    LeklTeileEingabeFrm: TLieferantenErklaerungenFrm;
     GridPanel1: TGridPanel;
     OKBtn: TButton;
     procedure FormShow(Sender: TObject);
@@ -26,10 +26,13 @@ implementation
 
 {$R *.dfm}
 
+//uses mainfrm;
+
 procedure TLeklTeileEingabeDialog.FormShow(Sender: TObject);
 begin
-  LieferantenErklaerungenFrm1.Init;
-  LieferantenErklaerungenFrm1.Show;
+  LeklTeileEingabeFrm.Init;
+//  mainForm.HelpKeyword:='Präferenzkenner';
+  LeklTeileEingabeFrm.Show;
 end;
 
 end.

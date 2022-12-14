@@ -31,6 +31,8 @@ interface
       function TeileName2InTabelle():Boolean;
       function UpdateTmpAnzLieferantenJeTeil():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
+      function UpdateLieferantenAnsprechpartner():Boolean;
+
 
       //Nur lesen für Formulare etc
       function HoleLieferantenMitAdressen():Boolean;
@@ -251,6 +253,26 @@ begin
 
 end;
 
+//---------------------------------------------------------------------------
+///<summary> Überträgt Ansprechpartner in Tabelle Lieferanten_Adressen</summary>
+function TWQryAccess.UpdateLieferantenAnsprechpartner():Boolean;
+  var
+    sql: String;
+begin
+
+  sql := 'UPDATE Lieferanten_Adressen '
+       + 'INNER JOIN Lieferanten_Ansprechpartner '
+       + 'ON Lieferanten_Adressen.IdLieferant = '
+                       + 'Lieferanten_Ansprechpartner.IdLieferant '
+       + 'SET Lieferanten_Adressen.hat_LEKL_Ansprechp = True, '
+       + 'Lieferanten_Adressen.Anrede = Lieferanten_Ansprechpartner.Anrede, '
+       + 'Lieferanten_Adressen.Vorname = Lieferanten_Ansprechpartner.Vorname, '
+       + 'Lieferanten_Adressen.Nachname = Lieferanten_Ansprechpartner.Nachname, '
+       + 'Lieferanten_Adressen.email = Lieferanten_Ansprechpartner.email, '
+       + 'Lieferanten_Adressen.telefax = Lieferanten_Ansprechpartner.telefax ;' ;
+ Result:= RunExecSQLQuery(sql);
+
+end;
 
 // ---------------------------------------------------------------
 //
@@ -266,8 +288,10 @@ begin
   sql := 'Select Lieferanten.IdLieferant, LKurzname,Stand,gilt_bis, letzteAnfrage, '
        + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
        + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
+       + 'hat_LEKL_Ansprechp,Anrede,Vorname,Nachname, '
        + 'CDate(gilt_bis)-Date() as gilt_noch, '
-       + 'Date()-CDate(letzteAnfrage) as angefragt_vor_Tagen '
+       + 'Date()-CDate(letzteAnfrage) as angefragt_vor_Tagen, '
+       + 'CDate(Stand)-CDate(letzteAnfrage) as Stand_minus_Anfrage '
        + 'from (Lieferanten '
        + 'inner join Lieferanten_Adressen '
        + 'on Lieferanten.IdLieferant=Lieferanten_Adressen.IdLieferant) '

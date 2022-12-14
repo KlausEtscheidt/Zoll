@@ -4,7 +4,7 @@ interface
 
 uses Vcl.Forms, Vcl.Controls, Vcl.Dialogs,
      System.Variants, System.SysUtils,
-     ComObj,Data.DB;
+     ComObj,Data.DB, Tools;
 
 function ConnectToOutlook():OLEVariant;
 function SendeMailAn(DatensatzFelder:TFields): Boolean;
@@ -91,6 +91,21 @@ begin
 
 end;
 
+function SucheAttachmentInMail(MailItem: OLEVariant):OLEVariant;
+var
+  i:Integer;
+begin
+  Result:= Null;
+  i := MailItem.Attachments.Count;
+  if i=1 then
+    Result:= MailItem.Attachments.Item[1]
+  else
+      Result:= Null;
+//  for i := 1 to MailItem.Attachements.Count do
+//  begin
+
+end;
+
 function OutlookSucheMailOrdnerBetreff(OLFolder: OLEVariant;
                                                   Betreff:string):OLEVariant;
  var
@@ -142,18 +157,46 @@ begin
 
 end;
 
+//Ersetze die Standard-Anrede im mail-Body mit "Anrede"
+function BodyMitAnrede(Body,Anrede:String):String;
+var
+  myPos:integer;
+begin
+   //Suche "Sehr geehrte Damen und Herren"
+   myPos:=Pos('Sehr geehrte Damen und Herren', Body);
+   if myPos=0 then
+       raise Exception.Create('Muster-Mail muss mit ' + #13
+               + '"Sehr geehrte Damen und Herren" beginnen!');
+
+   Result:=Anrede + Copy(Body,30);
+
+end;
+
 function SendeMailAn(DatensatzFelder:TFields):Boolean;
 
 var
-  MailItem,MailMusterItem, OLFolder: OLEVariant;
-  Empfaenger:string;
+  MailItem,MailMusterItem,MusterAttachment, OLFolder: OLEVariant;
+  Anrede,Name,Empfaenger:string;
   AlteBreite:Integer;
   OK:Boolean;
 
 begin
 
+  Anrede := DatensatzFelder.FieldByName('Anrede').AsString;
+  Name := DatensatzFelder.FieldByName('Nachname').AsString;
+
+  if Anrede='Herr' then
+     Anrede := 'Sehr geehrter Herr ' + Name
+  else if Anrede='Frau' then
+     Anrede := 'Sehr geehrte Frau ' + Name
+  else if Anrede='' then
+     Anrede := 'Sehr geehrte Damen und Herren';
+
   //Verbinde mit Outlook
-  OLApp:=ConnectToOutlook ;
+//  if OLApp=Null then
+    OLApp:=ConnectToOutlook ;
+//  if OLApp=VarNull then
+//    raise Exception.Create('Konnte nicht zu Outlook verbinden.');
 
   //Suche Ordner 'Muster f Lieferantenerklärung'
   OLFolder:=OutlookSucheOrdner('Muster f Lieferantenerklärung');
@@ -165,32 +208,43 @@ begin
   try
     MailItem := OLApp.CreateItem(olMailItem);
 //    MailItem.BCC := 'Dr.K.Etscheidt@wernert.de';
+{$IFDEF DEBUG}
     MailItem.Recipients.Add('Dr.K.Etscheidt@wernert.de');
+{$ELSE}
     Empfaenger:=DatensatzFelder.FieldByName('email').AsString;
     MailItem.Recipients.Add(Empfaenger);
+{$ENDIF}
     MailItem.Subject := MailMusterItem.Subject;
-    MailItem.Body    := MailMusterItem.Body;
+    //Ersetze die Standard-Anrede im mail-Body mit "Anrede"
+    MailItem.Body    := BodyMitAnrede(MailMusterItem.Body,Anrede);
+    MailItem.Attachments.Add(Tools.ApplicationBaseDir
+                                    + '\Vorlagen\LLE Formular.pdf');
     MailItem.Display; //zeigt nur an
 
-  //Outlook in Vordergrund holen, Delphi klein machen
-  AlteBreite:=mainfrm.mainForm.width;
-  mainfrm.mainForm.width:=10;
-  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
-  OLApp.ActiveWindow.WindowState:=WindowStateMin;
+    //Outlook in Vordergrund holen, Delphi klein machen
+    AlteBreite:=mainfrm.mainForm.width;
+    mainfrm.mainForm.width:=10;
+    OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+    OLApp.ActiveWindow.WindowState:=WindowStateMin;
 
-  //Nachfragen ob Mail ok
-  OK:=MailingOK(MailItem);
+    //Nachfragen ob Mail ok
+    OK:=MailingOK(MailItem);
 
-  OLApp.ActiveWindow.WindowState:=WindowStateNormal;
-  OLApp.ActiveWindow.WindowState:=WindowStateMin;
-  mainfrm.mainForm.width:=AlteBreite;
+    OLApp.ActiveWindow.WindowState:=WindowStateNormal;
+    OLApp.ActiveWindow.WindowState:=WindowStateMin;
+    mainfrm.mainForm.width:=AlteBreite;
 
-  Result:=OK;
+    Result:=OK;
 
   finally
+    sleep(300);
     OLApp    := VarNull;
   end;
 
 end;
 
 end.
+
+initialization
+ OLApp    := Null;
+

@@ -71,6 +71,7 @@ doku/build
 doku/xml
 doku/output
 LieferErklaer/Brief_u_Fax
+LieferErklaer/doku/help/build
 
 #Meine Files
 *.accdb

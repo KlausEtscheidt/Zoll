@@ -12,6 +12,7 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
     Height = 65
     Align = alTop
     BevelOuter = bvNone
+    ParentColor = True
     TabOrder = 0
     object LabelFiltern: TLabel
       Left = 18
@@ -31,6 +32,9 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 38
       Width = 113
       Height = 21
+      Hint = 'Filtere nach Benennung'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = FilterTName1Change
     end
@@ -39,6 +43,9 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 38
       Width = 121
       Height = 21
+      Hint = 'Filtere nach Teile-Nr'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       OnChange = FilterTeileNrChange
     end
@@ -47,12 +54,15 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 36
       Width = 25
       Height = 25
+      Hint = 'Filter leeren'
       DisabledImageIndex = 0
       HotImageIndex = 0
       ImageIndex = 0
       ImageMargins.Left = 2
       ImageMargins.Top = 2
       Images = ImageList1
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
       OnClick = FilterOffBtnClick
     end
@@ -61,7 +71,10 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 40
       Width = 49
       Height = 17
+      Hint = 'nur Teile mit Pr'#228'ferenz'
       Caption = 'Pfk 1'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = PfkOnCheckBoxClick
     end
@@ -70,7 +83,10 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 40
       Width = 97
       Height = 17
+      Hint = 'nur Teile ohne Pr'#228'ferenz'
       Caption = 'Pfk 0'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
       OnClick = PfkOffCheckBox2Click
     end
@@ -80,14 +96,36 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
     Left = 3
     Top = 74
     Width = 768
-    Height = 277
+    Height = 304
     Align = alTop
     BevelOuter = bvNone
+    ParentColor = True
     TabOrder = 1
+    object TeileNrLabel: TLabel
+      Left = 79
+      Top = 8
+      Width = 37
+      Height = 13
+      Caption = 'Teile-Nr'
+    end
+    object BenennungLabel: TLabel
+      Left = 218
+      Top = 8
+      Width = 54
+      Height = 13
+      Caption = 'Benennung'
+    end
+    object PfkLabel: TLabel
+      Left = 497
+      Top = 8
+      Width = 15
+      Height = 13
+      Caption = 'Pfk'
+    end
     object DBCtrlGrid1: TDBCtrlGrid
       AlignWithMargins = True
       Left = 59
-      Top = 16
+      Top = 25
       Width = 518
       Height = 250
       AllowDelete = False
@@ -102,9 +140,12 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
         Top = 8
         Width = 114
         Height = 17
+        Hint = 'Teile-Nr'
         Anchors = [akTop]
         DataField = 'TeileNr'
         DataSource = TeileDataSource
+        ParentShowHint = False
+        ShowHint = True
         ExplicitLeft = 0
       end
       object TName1: TDBText
@@ -130,12 +171,44 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
   object Panel2: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 357
+    Top = 384
     Width = 768
-    Height = 177
+    Height = 150
     Align = alBottom
     BevelOuter = bvNone
+    ParentColor = True
     TabOrder = 2
+    object LKNameLabel: TLabel
+      Left = 43
+      Top = 5
+      Width = 106
+      Height = 13
+      Caption = 'Lieferanten-Kurzname'
+    end
+    object LNameLabel: TLabel
+      Left = 202
+      Top = 5
+      Width = 86
+      Height = 13
+      Caption = 'Lieferanten-Name'
+    end
+    object StatusLabel: TLabel
+      Left = 441
+      Top = 5
+      Width = 31
+      Height = 13
+      Caption = 'Status'
+    end
+    object LPfkLabel: TLabel
+      Left = 531
+      Top = 5
+      Width = 20
+      Height = 13
+      Hint = 'Lieferantenspez. Pr'#228'ferenzkennung'
+      Caption = 'LPfk'
+      ParentShowHint = False
+      ShowHint = True
+    end
     object DBCtrlGrid2: TDBCtrlGrid
       AlignWithMargins = True
       Left = 35

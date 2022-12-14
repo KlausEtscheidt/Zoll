@@ -25,6 +25,7 @@ type
     procedure StatusListBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure GiltNeuBtnClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   public
     LocalQry: TWQry;
     procedure ValidateDateTime;
@@ -38,6 +39,34 @@ implementation
 {$R *.dfm}
 
 uses mainfrm;
+
+procedure TLieferantenStatusDialog.FormCloseQuery(Sender: TObject;
+                             var CanClose: Boolean);
+var
+  RestTage:Integer;
+  SenderComp:TComponent;
+
+const
+  msg = 'Die Restgültigkeit beträgt weniger als 100 Tage.' + #13
+      + 'Soll das wirklich so übernommen werden ?';
+begin
+
+  if ModalResult=mrCancel then begin
+    CanClose := true;
+    exit;
+  end;
+
+  //Wenn Lekl abgegeben, Restgültigkeit prüfen
+  if (StatusListBox.KeyValue=2) or (StatusListBox.KeyValue=3) then
+  begin
+    RestTage:=DaysBetween(Now, DateTimePicker1.DateTime);
+    if RestTage<100 then
+      if Application.MessageBox(msg,'Frage',MB_YESNO)=IDNO then
+        CanClose:=False;
+  end
+  else
+    CanClose:=True;
+end;
 
 procedure TLieferantenStatusDialog.FormCreate(Sender: TObject);
 begin
@@ -70,7 +99,7 @@ procedure TLieferantenStatusDialog.ValidateDateTime;
 var
   OK:Boolean;
 begin
-  OK:= StatusListBox.KeyValue>1;
+  OK:= (StatusListBox.KeyValue=2) or (StatusListBox.KeyValue=3);
   DateTimePicker1.Enabled:= OK;
   DateTimePicker1.Visible:= OK;
   GiltNeuBtn.Enabled := OK;
