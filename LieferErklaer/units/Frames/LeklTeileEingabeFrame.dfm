@@ -12,7 +12,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   Visible = False
   object Label1: TLabel
     Left = 3
-    Top = 11
+    Top = 10
     Width = 61
     Height = 18
     Caption = 'Lieferant:'
@@ -25,14 +25,14 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   end
   object LKurznameLbl: TLabel
     Left = 83
-    Top = 16
+    Top = 14
     Width = 47
     Height = 13
     Caption = 'Kurzname'
   end
   object IdLieferantLbl: TLabel
     Left = 203
-    Top = 15
+    Top = 14
     Width = 53
     Height = 13
     Caption = 'IdLieferant'
@@ -222,7 +222,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   end
   object PfkResetBtn: TButton
     Left = 656
-    Top = 104
+    Top = 106
     Width = 60
     Height = 25
     Caption = 'alle PFK 0'
@@ -231,7 +231,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   end
   object PfkSetBtn: TButton
     Left = 656
-    Top = 135
+    Top = 136
     Width = 60
     Height = 25
     Caption = 'alle PFK 1'
@@ -240,7 +240,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   end
   object PfkOnCheckBox: TCheckBox
     Left = 584
-    Top = 116
+    Top = 111
     Width = 57
     Height = 17
     Caption = 'Pfk 1'
@@ -249,7 +249,7 @@ object LieferantenErklaerungenFrm: TLieferantenErklaerungenFrm
   end
   object PfkOffCheckBox: TCheckBox
     Left = 584
-    Top = 139
+    Top = 141
     Width = 57
     Height = 17
     Caption = 'Pfk 0'

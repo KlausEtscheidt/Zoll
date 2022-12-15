@@ -5,7 +5,7 @@ object mainForm: TmainForm
   HelpKeyword = 'Ablauf'
   Caption = 'DigiLek Digitale Lieferantenerkl'#228'rung'
   ClientHeight = 629
-  ClientWidth = 1094
+  ClientWidth = 1103
   Color = clGradientActiveCaption
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,25 +21,175 @@ object mainForm: TmainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  inline Lekl3LieferantAuswahlFrm: TLieferantenStatusFrm
+    Left = 0
+    Top = 0
+    Width = 1103
+    Height = 610
+    HelpType = htKeyword
+    HelpKeyword = 'Lieferantenauswahl'
+    Align = alClient
+    ParentBackground = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    ExplicitWidth = 1094
+    ExplicitHeight = 610
+    inherited GroupBox1: TGroupBox
+      Width = 889
+      ExplicitWidth = 889
+      inherited Label2: TLabel
+        Left = 18
+        Top = 23
+        ExplicitLeft = 18
+        ExplicitTop = 23
+      end
+      inherited Label1: TLabel
+        Left = 215
+        Top = 23
+        ExplicitLeft = 215
+        ExplicitTop = 23
+      end
+      inherited FilterKurzname: TEdit
+        Left = 87
+        Top = 19
+        ExplicitLeft = 87
+        ExplicitTop = 19
+      end
+      inherited FilterName: TEdit
+        Left = 254
+        Top = 19
+        ExplicitLeft = 254
+        ExplicitTop = 19
+      end
+      inherited FilterAusBtn: TButton
+        Left = 438
+        Top = 18
+        ExplicitLeft = 438
+        ExplicitTop = 18
+      end
+      inherited LeklUpdatedChkBox: TCheckBox
+        Left = 605
+        Top = 10
+        Hint = 'Zeige nur Lekl, die in den letzten 200 Tagen abgegeben wurden'
+        ExplicitLeft = 605
+        ExplicitTop = 10
+      end
+      inherited UnbearbeiteteCheckBox: TCheckBox
+        Left = 741
+        Top = 10
+        Width = 140
+        Hint = 'zeige nur Lekl, f'#252'r die noch keine Teile erfasst wurden'
+        ExplicitLeft = 741
+        ExplicitTop = 10
+        ExplicitWidth = 140
+      end
+      inherited NLeklUpdatedChkBox: TCheckBox
+        Left = 605
+        Top = 30
+        Hint = 'Zeige nur Lekl, die vor mehr als 200 Tagen abgegeben wurden'
+        ExplicitLeft = 605
+        ExplicitTop = 30
+      end
+      inherited NUnbearbeiteteCheckBox: TCheckBox
+        Left = 741
+        Top = 30
+        Hint = 'zeige nur Lekl, f'#252'r die aktuell schon Teile erfasst wurden'
+        ExplicitLeft = 741
+        ExplicitTop = 30
+      end
+      inherited StandardFilterButton: TButton
+        Left = 480
+        Top = 20
+        ExplicitLeft = 480
+        ExplicitTop = 20
+      end
+    end
+    inherited GroupBox2: TGroupBox
+      Width = 889
+      Height = 263
+      ExplicitWidth = 889
+      ExplicitHeight = 263
+      inherited DBGrid1: TDBGrid
+        Left = 87
+        Top = 22
+        Width = 594
+        Height = 220
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'LKurzname'
+            Title.Caption = 'Kurzname'
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'LName1'
+            Title.Caption = 'Name1'
+            Width = 240
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'gilt_bis'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'Stand'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'StandTeile'
+            Width = 70
+            Visible = True
+          end>
+      end
+    end
+    inherited GroupBox3: TGroupBox
+      Width = 890
+      ExplicitWidth = 890
+      inherited Panel3: TPanel
+        inherited Label6: TLabel
+          Width = 325
+        end
+        inherited DBText1: TDBText
+          ExplicitTop = 21
+        end
+        inherited DBText2: TDBText
+          ExplicitTop = 41
+        end
+      end
+    end
+  end
   inline ExportFrm1: TGesamtStatusFrm
     Left = 0
     Top = 0
-    Width = 1094
+    Width = 1103
     Height = 610
     Align = alClient
     AutoSize = True
     TabOrder = 1
     Visible = False
     ExplicitWidth = 1094
-    ExplicitHeight = 593
+    ExplicitHeight = 610
     inherited Label1: TLabel
-      Width = 1041
+      Width = 1050
     end
     inherited Label2: TLabel
-      Width = 1041
+      Width = 1050
     end
     inherited TeilePanel: TPanel
-      Width = 1011
+      Width = 1020
       ExplicitWidth = 1011
       inherited Panel5: TPanel
         ExplicitHeight = 130
@@ -93,7 +243,7 @@ object mainForm: TmainForm
       end
     end
     inherited LieferantenPanel: TPanel
-      Width = 1011
+      Width = 1020
       ExplicitTop = 240
       ExplicitWidth = 1011
       inherited Panel1: TPanel
@@ -162,20 +312,20 @@ object mainForm: TmainForm
   inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
     Left = 0
     Top = 0
-    Width = 1094
+    Width = 1103
     Height = 610
     Align = alClient
     AutoSize = True
     TabOrder = 2
     Visible = False
     ExplicitWidth = 1094
-    ExplicitHeight = 593
+    ExplicitHeight = 610
     inherited Panel1: TPanel
-      Width = 1088
+      Width = 1097
       ExplicitWidth = 1088
     end
     inherited Panel3: TPanel
-      Width = 1088
+      Width = 1097
       Height = 313
       ExplicitWidth = 1088
       ExplicitHeight = 313
@@ -219,13 +369,13 @@ object mainForm: TmainForm
     end
     inherited Panel2: TPanel
       Top = 393
-      Width = 1088
+      Width = 1097
       Height = 200
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       ExplicitTop = 393
       ExplicitWidth = 1088
-      ExplicitHeight = 183
+      ExplicitHeight = 200
       inherited LKNameLabel: TLabel
         Left = 31
         Top = 1
@@ -273,13 +423,19 @@ object mainForm: TmainForm
     ParentShowHint = False
     PopupMenu = LieferantenErklAnfordernFrm1.PopupMenu1
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
     ExplicitLeft = -5
     ExplicitHeight = 576
+    inherited Label20: TLabel
+      Left = 15
+      HelpType = htKeyword
+      HelpKeyword = 'LieferantenStatus'
+      ExplicitLeft = 15
+    end
     inherited GroupBox1: TGroupBox
-      Left = 3
+      Left = 10
       Top = 37
-      ExplicitLeft = 3
+      ExplicitLeft = 10
       ExplicitTop = 37
       inherited AbgelaufenChkBox: TCheckBox
         Left = 748
@@ -431,19 +587,42 @@ object mainForm: TmainForm
       end
     end
   end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 610
+    Width = 1103
+    Height = 19
+    Panels = <
+      item
+        Text = 'Hallo'
+        Width = 270
+      end
+      item
+        Width = 50
+      end>
+    ExplicitWidth = 1094
+  end
   inline LeklStatusEingabeFrm: TLeklStatusFrm
     Left = -5
     Top = 8
     Width = 1099
     Height = 593
     HelpType = htKeyword
-    HelpKeyword = 'Anforderung'
+    HelpKeyword = 'LieferantenStatus'
     ParentBackground = False
     PopupMenu = LeklStatusEingabeFrm.PopupMenu1
     TabOrder = 5
     ExplicitLeft = -5
     ExplicitTop = 8
+    inherited Label20: TLabel
+      Left = 25
+      Top = 11
+      ExplicitLeft = 25
+      ExplicitTop = 11
+    end
     inherited GroupBox1: TGroupBox
+      Left = 20
+      ExplicitLeft = 20
       inherited NGeantwortetChkBox: TCheckBox
         Left = 661
         Width = 188
@@ -453,6 +632,8 @@ object mainForm: TmainForm
       end
     end
     inherited GroupBox2: TGroupBox
+      Left = 20
+      ExplicitLeft = 20
       inherited DBGrid1: TDBGrid
         Columns = <
           item
@@ -472,181 +653,33 @@ object mainForm: TmainForm
           item
             Expanded = False
             FieldName = 'letzteAnfrage'
+            Title.Alignment = taCenter
+            Title.Caption = 'angefragt'
+            Width = 75
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'Stand'
+            Title.Alignment = taCenter
+            Width = 75
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'StatusTxt'
+            Title.Caption = 'Status'
+            Width = 160
             Visible = True
           end>
       end
     end
     inherited GroupBox3: TGroupBox
+      Left = 20
       Top = 385
+      ExplicitLeft = 20
       ExplicitTop = 385
     end
-  end
-  inline Lekl3LieferantAuswahlFrm: TLieferantenStatusFrm
-    Left = 0
-    Top = 0
-    Width = 1094
-    Height = 610
-    HelpType = htKeyword
-    HelpKeyword = 'Lieferantenauswahl'
-    Align = alClient
-    ParentBackground = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 0
-    ExplicitWidth = 1094
-    ExplicitHeight = 593
-    inherited GroupBox1: TGroupBox
-      Width = 889
-      ExplicitWidth = 889
-      inherited Label2: TLabel
-        Left = 18
-        Top = 23
-        ExplicitLeft = 18
-        ExplicitTop = 23
-      end
-      inherited Label1: TLabel
-        Left = 215
-        Top = 23
-        ExplicitLeft = 215
-        ExplicitTop = 23
-      end
-      inherited FilterKurzname: TEdit
-        Left = 87
-        Top = 19
-        ExplicitLeft = 87
-        ExplicitTop = 19
-      end
-      inherited FilterName: TEdit
-        Left = 254
-        Top = 19
-        ExplicitLeft = 254
-        ExplicitTop = 19
-      end
-      inherited FilterAusBtn: TButton
-        Left = 438
-        Top = 18
-        ExplicitLeft = 438
-        ExplicitTop = 18
-      end
-      inherited LeklUpdatedChkBox: TCheckBox
-        Left = 605
-        Top = 10
-        Hint = 'Zeige nur Lekl, die in den letzten 200 Tagen abgegeben wurden'
-        ExplicitLeft = 605
-        ExplicitTop = 10
-      end
-      inherited UnbearbeiteteCheckBox: TCheckBox
-        Left = 741
-        Top = 10
-        Width = 140
-        Hint = 'zeige nur Lekl, f'#252'r die noch keine Teile erfasst wurden'
-        ExplicitLeft = 741
-        ExplicitTop = 10
-        ExplicitWidth = 140
-      end
-      inherited NLeklUpdatedChkBox: TCheckBox
-        Left = 605
-        Top = 30
-        Hint = 'Zeige nur Lekl, die vor mehr als 200 Tagen abgegeben wurden'
-        ExplicitLeft = 605
-        ExplicitTop = 30
-      end
-      inherited NUnbearbeiteteCheckBox: TCheckBox
-        Left = 741
-        Top = 30
-        Hint = 'zeige nur Lekl, f'#252'r die aktuell schon Teile erfasst wurden'
-        ExplicitLeft = 741
-        ExplicitTop = 30
-      end
-      inherited StandardFilterButton: TButton
-        Left = 480
-        Top = 20
-        ExplicitLeft = 480
-        ExplicitTop = 20
-      end
-    end
-    inherited GroupBox2: TGroupBox
-      Width = 889
-      Height = 263
-      ExplicitWidth = 889
-      ExplicitHeight = 263
-      inherited DBGrid1: TDBGrid
-        Left = 87
-        Top = 22
-        Width = 594
-        Height = 220
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'LKurzname'
-            Title.Caption = 'Kurzname'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'LName1'
-            Title.Caption = 'Name1'
-            Width = 240
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'gilt_bis'
-            Title.Alignment = taCenter
-            Width = 70
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'Stand'
-            Title.Alignment = taCenter
-            Width = 70
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'StandTeile'
-            Width = 70
-            Visible = True
-          end>
-      end
-    end
-    inherited GroupBox3: TGroupBox
-      Width = 890
-      ExplicitWidth = 890
-      inherited Panel3: TPanel
-        inherited DBText1: TDBText
-          ExplicitTop = 21
-        end
-        inherited DBText2: TDBText
-          ExplicitTop = 41
-        end
-      end
-    end
-  end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Top = 610
-    Width = 1094
-    Height = 19
-    Panels = <
-      item
-        Text = 'Hallo'
-        Width = 270
-      end
-      item
-        Width = 50
-      end>
-    ExplicitTop = 593
   end
   object MainMenu1: TMainMenu
     Left = 488

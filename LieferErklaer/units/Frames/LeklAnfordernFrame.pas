@@ -96,6 +96,7 @@ type
     AnforderungHeuteMen: TMenuItem;
     AnfordDatumHeuteAction: TAction;
     StandardFilterButton: TButton;
+    Label20: TLabel;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -276,7 +277,6 @@ begin
 
 end;
 
-
 procedure TLieferantenErklAnfordernFrm.TeileAnzeigeActionExecute(
   Sender: TObject);
 begin
@@ -419,11 +419,6 @@ begin
 
 
 end;
-
-//procedure TLieferantenErklAnfordernFrm.AbgelaufenChkBoxClick(Sender: TObject);
-//begin
-//    FilterUpdateActionExecute(Sender);
-//end;
 
 procedure TLieferantenErklAnfordernFrm.FilterAusBtnClick(Sender: TObject);
 begin

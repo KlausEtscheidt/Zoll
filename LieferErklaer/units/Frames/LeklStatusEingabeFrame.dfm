@@ -4,10 +4,25 @@ object LeklStatusFrm: TLeklStatusFrm
   Width = 1099
   Height = 593
   HelpType = htKeyword
-  HelpKeyword = 'Anforderung'
+  HelpKeyword = 'LieferantenStatus'
   ParentBackground = False
   PopupMenu = PopupMenu1
   TabOrder = 0
+  object Label20: TLabel
+    Left = 6
+    Top = 12
+    Width = 224
+    Height = 19
+    HelpType = htKeyword
+    HelpKeyword = 'Lieferanten-Status'
+    Caption = 'Lieferantenstatus eingeben'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object GroupBox1: TGroupBox
     Left = 5
     Top = 44
@@ -136,6 +151,8 @@ object LeklStatusFrm: TLeklStatusFrm
     Top = 122
     Width = 1076
     Height = 231
+    HelpType = htKeyword
+    HelpKeyword = 'LieferantenStatus'
     Caption = 'gefiltert'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -182,11 +199,20 @@ object LeklStatusFrm: TLeklStatusFrm
         item
           Expanded = False
           FieldName = 'letzteAnfrage'
+          Width = 60
           Visible = True
         end
         item
           Expanded = False
-          FieldName = 'Status'
+          FieldName = 'Stand'
+          Width = 60
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'StatusTxt'
+          Title.Caption = 'Status'
+          Width = 160
           Visible = True
         end>
     end

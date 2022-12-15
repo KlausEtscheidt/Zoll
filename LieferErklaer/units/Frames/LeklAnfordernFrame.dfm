@@ -8,6 +8,19 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
   ParentBackground = False
   PopupMenu = PopupMenu1
   TabOrder = 0
+  object Label20: TLabel
+    Left = 6
+    Top = 12
+    Width = 258
+    Height = 19
+    Caption = 'Lieferantenerkl'#228'rung anfordern'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object GroupBox1: TGroupBox
     Left = 5
     Top = 44

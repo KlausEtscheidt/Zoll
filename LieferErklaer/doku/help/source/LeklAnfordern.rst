@@ -1,12 +1,10 @@
-.. _LeklAnfordern:
-
-Lieferantenerklärungen anfordern
-================================
-
-
 .. index::
    single: Anforderung
 
+.. _LeklAnfordernRef:
+
+Lieferantenerklärungen anfordern
+================================
 
 Zuerst müssen die relevanten Lieferanten aufgefordert werden, eine Langzeit-Lieferantenerklärung
 abzugeben.
@@ -81,6 +79,14 @@ Die Aufgabe **Lieferantenerklärungen anfordern** ist daher abgeschlossen,
 wenn bei gesetzten Filtern **Ersatzteile** (oder idealerweise **Pumpenteile**) und 
 **abgelaufene** und **nicht angefordert** und **relevante** keine Lieferanten mehr angezeigt werden.
 
+Diese Filterkombination kann über die Schaltfläche **"Standardfilter"** eingestellt werden.
+
+.. image:: pics/LeklAnfordernFilterReset.png
+   :scale: 80 %
+   :align: center
+
+Die Filterkombination **sollte** auf jeden Fall zum Anfordern der Lekl eingestellt werden.
+Die anderen Kombinationen sind zu Kontrollzwecken bzw um Informationen über LIeferanten zu suchen.
 
 Formular-Bereich gefiltert
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -235,81 +241,3 @@ Es enthält die Einträge:
 - **Excel-Export**: Überträgt alle gefilterten Lieferanten nach Excel.
 - **Anfrage-Datum zurück setzen**: Setzt das Datum der Anfrage (Datenbank-Feld **angefragt**, s.  :ref:`Anfragedatum`) um 1 Jahr zurück.
 - **Anfrage-Datum heute**: Setzt das Datum der Anfrage auf den aktuellen Tag.
-
-Erfassen des Status eines Lieferanten
--------------------------------------
-
-Zur Erfassung des Status dient das gleiche Formular, das zum Anfordern der Lekl verwendet wird.
-Es wird über das Menü "Lieferanten" Untermenü "Erklärungen anfordern/eingeben" aufgerufen.
-
-Die Auswahl, des zu bearbeitenden Lieferanten erfolgt daher, wie unter :ref:`LeklAnfordern` beschrieben.
-
-Mit der Schaltfläche **Status** kann dann der Dialog zur Eingabe aufgerufen werden.
-
-.. _StatusRef:
-
-Status
-^^^^^^
-
-Der Lieferanten-Status erfasst den generellen Zustand des Lieferanten bzgl. einer Lekl.
-Dabei gibt es folgende Möglichkeiten:
-
-#. **unbekannt**: Der Lieferant wurde noch nie angefragt.
-#. **weigert sich**: Der Lieferant kann keine Lekl abgeben, oder will Geld dafür und wir verzichten. 
-#. **alle Teile**: Der Lieferant bestätigt den EU-Ursprung für alle Teile, die er an uns liefert.
-#. **einige Teile**: Der Lieferant bestätigt den EU-Ursprung für bestimmte Teile, die er an uns liefert.
-#. **irrelevant**: Es wurde entschieden, diesen Lieferanten nicht um eine Lekl zu bitten.
-
-Der Status **unbekannt** wird bei neuen Lieferanten von DigiLek vorgegeben und sollte nie vom Anwender vergeben werden.
-
-Der Status **irrelevant** wird vergeben, wenn der Lieferant nicht bzgl Lekl angefragt werden soll, obwohl er Pumpen- oder Ersatzteile liefert.
-Durch Vergabe dieses Status wird diese bewusste Entscheidung dokumentiert.
-Damit kann vermieden werden, das der Lieferant immer wieder in den Auswahllisten auftaucht, obwohl er keine Anfrage bekommen soll.
-Bei Vergabe von **irrelevant** **sollte** auf jeden Fall eine Begründung im Formularfeld **Kommentar** abgegeben werden.
-
-Status 2 bis 4 beschreiben die Rückmeldung des Lieferanten.
-
-Sind in der abgegebenen Erklärung einzelne Teile aufgelistet, für die der Lieferant 
-den EU-Ursprung garantiert, wird der Status **einige Teile** vergeben.
-
-Bestätigt der Lieferant den EU-Ursprung, für alle Teile, die er an uns liefert, 
-wird der Status **alle Teile** vergeben.
-
-Nur in diesem Fall muss im weiteren Ablauf die Präferenzberechtigung für jedes einzelne Teil 
-erfasst werden (:ref:`ErfassenTeilespezLekl`). In allen anderen Fällen ist die Erfassung für diesen Lieferanten abgeschlossen.
-
-Die Erfassung des Status erfolgt über den folgenden Dialog:
-
-.. image:: pics/StatusDialog.png
-   :scale: 80 %
-   :align: center
-
-Im oberen rechten Formularbereich kann der zukünftige Status ausgewählt werden.
-Links daneben wird der bisherige Stauts angezeigt.
-
-Im Bereich **gültig bis** wird die bisher in der Datenbank hinterlegte Gültigkeit der Lekl angezeigt.
-Hat der Lieferant eine neue Lekl abgegeben, **muss** dieses Datum aktualisiert werden.
-
-In der Regel kann die Gültigkeit um 1 Jahr verlängert werden (Schaltfläche **+ 1 Jahr**).
-Exakte Angaben eines anderen Datums können direkt in der Datumsanzeige erfolgen:
-
-.. image:: pics/DatumEingeben.png
-   :scale: 100 %
-   :align: center
-
-Hierzu kann z.B. die Jahreszahl, der Tag oder Monat angeklickt und überschrieben werden.
-
-Die Datumseingabe ist bei den Status "**alle Teile**" und "**einige Teile**" erforderlich.
-In diesen Fällen wird beim Verlassen des Formulars geprüft, ob die die Gültigkeit mindestens 100 Tage beträgt.
-Ist dies nicht der Fall, wurde evtl vergessen, das Datum anzupassen und es erscheint eine Sicherheitsabfrage:
-
-.. image:: pics/Restgueltigkeit.png
-   :scale: 100 %
-   :align: center
-
-Wird die Frage mit **Nein** beantwortet, wird das Formular nicht geschlossen und das Datum kann korrigiert werden. 
-Mit **Ja** werden die Angaben in die Datenbank übernommen.
-
-Wird der Status **weigert sich** oder **irrelevant** gewählt, solltes die im Feld **Kommentar** begründet werden.
-Der Kommentar kann auch im Hauptformular eingeben werden.
-

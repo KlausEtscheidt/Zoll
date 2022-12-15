@@ -81,6 +81,7 @@ type
     NachnameDBText: TDBText;
     AnredeDBText: TDBText;
     VornameDBText: TDBText;
+    Label20: TLabel;
     procedure ShowFrame();
     procedure HideFrame();
     procedure FilterAusBtnClick(Sender: TObject);
@@ -115,7 +116,7 @@ begin
     LocalQry.HoleLieferantenMitAdressen;
     DataSource1.DataSet := LocalQry;
     FilterUpdateActionExecute(Self);
-    mainForm.HelpKeyword:='Anforderung';
+    mainForm.HelpKeyword:='LieferantenStatus';
     Self.Visible := True;
 end;
 
