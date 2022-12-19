@@ -16,6 +16,7 @@ Hilfe zum Programm DigiLek
    Überblick<Ziel>
    Menues<Menues>
    Aufgaben<Aufgaben>
+   Installation
 
 Indices and tables
 ==================
