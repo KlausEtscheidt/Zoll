@@ -33,6 +33,7 @@ interface
       function SucheTeileInFAKopf(TeileNr: String):Boolean;
       function SucheTeileInKA(TeileNr: String):Boolean;
       function SucheTeileInSTU(TeileNr: String):Boolean;
+      function HoleWareneingaenge(): Boolean;
 
     end;
 
@@ -206,6 +207,30 @@ var  sql: String;
 begin
   sql := 'SELECT t_tg_nr FROM f_auftragkopf where t_tg_nr=?;' ;
   Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+end;
+
+///<summary>Sucht Wareneingaenge seit Beginn des aktuellen Jahres</summary>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.HoleWareneingaenge(): Boolean;
+  var
+    sql_sub,sql: String;
+begin
+  sql_sub := 'SELECT DISTINCT t_tg_nr, lieferant '
+       + 'FROM wareneingang '
+       + 'JOIN wepos '
+       + 'ON wareneingang.ident_nr = wepos.ident_nr1 '
+       + 'WHERE wareneingang.status>0 AND wareneingang.art=1 '
+       + 'AND wareneingang.we_art=1 '
+       + 'AND wareneingang.we_datum>=MDY(1,1,YEAR(TODAY))' ;
+//       + 'AND wareneingang.we_datum>=TO_DATE("2022.01.01","%Y.%m.%d")' ;
+
+  sql := 'SELECT t_tg_nr, lieferant '
+       + 'FROM Teil '
+       + 'JOIN ( ' + sql_sub + ') '
+       + 'ON Teil.ident_nr = t_tg_nr '
+       + 'WHERE praeferenzkennung=1;' ;
+
+  Result:= RunSelectQuery(sql);
 end;
 
 

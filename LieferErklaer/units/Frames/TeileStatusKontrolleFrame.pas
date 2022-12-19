@@ -41,6 +41,8 @@ type
     LNameLabel: TLabel;
     StatusLabel: TLabel;
     LPfkLabel: TLabel;
+    giltDBText: TDBText;
+    Label1: TLabel;
     procedure TeileDataSourceDataChange(Sender: TObject; Field: TField);
     procedure FilterTeileNrChange(Sender: TObject);
     procedure FilterTName1Change(Sender: TObject);

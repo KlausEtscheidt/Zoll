@@ -17,7 +17,6 @@ object mainForm: TmainForm
   OldCreateOrder = False
   Position = poDesigned
   OnDestroy = FormDestroy
-  OnHelp = FormHelp
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -33,7 +32,7 @@ object mainForm: TmainForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    ExplicitWidth = 1094
+    ExplicitWidth = 1103
     ExplicitHeight = 610
     inherited GroupBox1: TGroupBox
       Width = 889
@@ -180,7 +179,7 @@ object mainForm: TmainForm
     AutoSize = True
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 1094
+    ExplicitWidth = 1103
     ExplicitHeight = 610
     inherited Label1: TLabel
       Width = 1050
@@ -190,7 +189,7 @@ object mainForm: TmainForm
     end
     inherited TeilePanel: TPanel
       Width = 1020
-      ExplicitWidth = 1011
+      ExplicitWidth = 1020
       inherited Panel5: TPanel
         ExplicitHeight = 130
         inherited Label3: TLabel
@@ -245,7 +244,7 @@ object mainForm: TmainForm
     inherited LieferantenPanel: TPanel
       Width = 1020
       ExplicitTop = 240
-      ExplicitWidth = 1011
+      ExplicitWidth = 1020
       inherited Panel1: TPanel
         ExplicitHeight = 157
         inherited Label6: TLabel
@@ -306,109 +305,6 @@ object mainForm: TmainForm
           Width = 56
           ExplicitTop = 25
         end
-      end
-    end
-  end
-  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
-    Left = 0
-    Top = 0
-    Width = 1103
-    Height = 610
-    Align = alClient
-    AutoSize = True
-    TabOrder = 2
-    Visible = False
-    ExplicitWidth = 1094
-    ExplicitHeight = 610
-    inherited Panel1: TPanel
-      Width = 1097
-      ExplicitWidth = 1088
-    end
-    inherited Panel3: TPanel
-      Width = 1097
-      Height = 313
-      ExplicitWidth = 1088
-      ExplicitHeight = 313
-      inherited TeileNrLabel: TLabel
-        Left = 34
-        Top = 6
-        ExplicitLeft = 34
-        ExplicitTop = 6
-      end
-      inherited BenennungLabel: TLabel
-        Left = 181
-        Top = 7
-        ExplicitLeft = 181
-        ExplicitTop = 7
-      end
-      inherited PfkLabel: TLabel
-        Left = 461
-        Top = 6
-        ExplicitLeft = 461
-        ExplicitTop = 6
-      end
-      inherited DBCtrlGrid1: TDBCtrlGrid
-        Left = 22
-        ExplicitLeft = 22
-        inherited TeileNr: TDBText
-          Left = 12
-          Top = 7
-          ExplicitLeft = 12
-          ExplicitTop = 7
-        end
-        inherited TName1: TDBText
-          Top = 7
-          ExplicitTop = 7
-        end
-        inherited Pfk: TDBText
-          Top = 7
-          ExplicitLeft = 438
-          ExplicitTop = 7
-        end
-      end
-    end
-    inherited Panel2: TPanel
-      Top = 393
-      Width = 1097
-      Height = 200
-      Align = alTop
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      ExplicitTop = 393
-      ExplicitWidth = 1088
-      ExplicitHeight = 200
-      inherited LKNameLabel: TLabel
-        Left = 31
-        Top = 1
-        ExplicitLeft = 31
-        ExplicitTop = 1
-      end
-      inherited LNameLabel: TLabel
-        Left = 190
-        Top = 1
-        ExplicitLeft = 190
-        ExplicitTop = 1
-      end
-      inherited StatusLabel: TLabel
-        Left = 426
-        Top = 1
-        ExplicitLeft = 426
-        ExplicitTop = 1
-      end
-      inherited LPfkLabel: TLabel
-        Left = 518
-        Top = 1
-        ExplicitLeft = 518
-        ExplicitTop = 1
-      end
-      inherited DBCtrlGrid2: TDBCtrlGrid
-        Left = 23
-        Top = 20
-        Height = 132
-        PanelHeight = 33
-        RowCount = 4
-        ExplicitLeft = 23
-        ExplicitTop = 20
-        ExplicitHeight = 132
       end
     end
   end
@@ -600,7 +496,6 @@ object mainForm: TmainForm
       item
         Width = 50
       end>
-    ExplicitWidth = 1094
   end
   inline LeklStatusEingabeFrm: TLeklStatusFrm
     Left = -5
@@ -679,6 +574,116 @@ object mainForm: TmainForm
       Top = 385
       ExplicitLeft = 20
       ExplicitTop = 385
+    end
+  end
+  inline TeileStausKontrolleFrm: TTeileStatusKontrolleFrm
+    Left = 0
+    Top = 0
+    Width = 1103
+    Height = 610
+    Align = alClient
+    AutoSize = True
+    TabOrder = 2
+    Visible = False
+    ExplicitTop = 7
+    ExplicitWidth = 1103
+    ExplicitHeight = 610
+    inherited Panel1: TPanel
+      Width = 1097
+      ExplicitWidth = 1097
+    end
+    inherited Panel3: TPanel
+      Width = 1097
+      Height = 313
+      ExplicitWidth = 1097
+      ExplicitHeight = 313
+      inherited TeileNrLabel: TLabel
+        Left = 34
+        Top = 6
+        ExplicitLeft = 34
+        ExplicitTop = 6
+      end
+      inherited BenennungLabel: TLabel
+        Left = 181
+        Top = 7
+        ExplicitLeft = 181
+        ExplicitTop = 7
+      end
+      inherited PfkLabel: TLabel
+        Left = 461
+        Top = 6
+        ExplicitLeft = 461
+        ExplicitTop = 6
+      end
+      inherited DBCtrlGrid1: TDBCtrlGrid
+        Left = 22
+        ExplicitLeft = 22
+        inherited TeileNr: TDBText
+          Left = 12
+          Top = 7
+          ExplicitLeft = 12
+          ExplicitTop = 7
+        end
+        inherited TName1: TDBText
+          Top = 7
+          ExplicitTop = 7
+        end
+        inherited Pfk: TDBText
+          Top = 7
+          ExplicitLeft = 438
+          ExplicitTop = 7
+        end
+      end
+    end
+    inherited Panel2: TPanel
+      Top = 393
+      Width = 1097
+      Height = 200
+      Align = alTop
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ExplicitTop = 393
+      ExplicitWidth = 1097
+      ExplicitHeight = 200
+      inherited LKNameLabel: TLabel
+        Left = 31
+        Top = 2
+        ExplicitLeft = 31
+        ExplicitTop = 2
+      end
+      inherited LNameLabel: TLabel
+        Left = 190
+        Top = 2
+        ExplicitLeft = 190
+        ExplicitTop = 2
+      end
+      inherited StatusLabel: TLabel
+        Left = 376
+        Top = 2
+        ExplicitLeft = 376
+        ExplicitTop = 2
+      end
+      inherited LPfkLabel: TLabel
+        Left = 472
+        Top = 2
+        ExplicitLeft = 472
+        ExplicitTop = 2
+      end
+      inherited Label1: TLabel
+        Left = 576
+        Top = 2
+        ExplicitLeft = 576
+        ExplicitTop = 2
+      end
+      inherited DBCtrlGrid2: TDBCtrlGrid
+        Left = 23
+        Top = 20
+        Height = 132
+        PanelHeight = 33
+        RowCount = 4
+        ExplicitLeft = 23
+        ExplicitTop = 20
+        ExplicitHeight = 132
+      end
     end
   end
   object MainMenu1: TMainMenu

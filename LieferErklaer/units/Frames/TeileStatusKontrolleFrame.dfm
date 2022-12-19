@@ -193,14 +193,14 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Caption = 'Lieferanten-Name'
     end
     object StatusLabel: TLabel
-      Left = 441
+      Left = 388
       Top = 5
       Width = 31
       Height = 13
       Caption = 'Status'
     end
     object LPfkLabel: TLabel
-      Left = 531
+      Left = 484
       Top = 5
       Width = 20
       Height = 13
@@ -209,17 +209,27 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       ParentShowHint = False
       ShowHint = True
     end
+    object Label1: TLabel
+      Left = 588
+      Top = 5
+      Width = 40
+      Height = 13
+      Hint = 'Lieferantenspez. Pr'#228'ferenzkennung'
+      Caption = 'gilt noch'
+      ParentShowHint = False
+      ShowHint = True
+    end
     object DBCtrlGrid2: TDBCtrlGrid
       AlignWithMargins = True
       Left = 35
       Top = 24
-      Width = 582
+      Width = 654
       Height = 90
       AllowDelete = False
       AllowInsert = False
       DataSource = LieferantenDataSource
       PanelHeight = 30
-      PanelWidth = 565
+      PanelWidth = 637
       TabOrder = 0
       object LKurznameDBText: TDBText
         Left = 8
@@ -232,13 +242,13 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       object LName1DBText: TDBText
         Left = 167
         Top = 7
-        Width = 145
+        Width = 162
         Height = 17
         DataField = 'LName1'
         DataSource = LieferantenDataSource
       end
       object LPfkDBText: TDBText
-        Left = 496
+        Left = 449
         Top = 7
         Width = 49
         Height = 17
@@ -246,12 +256,20 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
         DataSource = LieferantenDataSource
       end
       object Lekl: TDBText
-        Left = 406
+        Left = 353
         Top = 8
         Width = 84
         Height = 17
         Anchors = [akTop]
         DataField = 'StatusTxt'
+        DataSource = LieferantenDataSource
+      end
+      object giltDBText: TDBText
+        Left = 553
+        Top = 7
+        Width = 49
+        Height = 17
+        DataField = 'gilt_noch'
         DataSource = LieferantenDataSource
       end
     end

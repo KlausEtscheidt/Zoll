@@ -64,6 +64,8 @@ interface
       function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
       function UpdateTeileResetPFK():Boolean;
       function UpdateTeileSetPFK():Boolean;
+      function UpdatePFKTabellePFK0():Boolean;
+      function UpdatePFKTabellePFK1():Boolean;
 
       //nur lesen mit 1 einzigen Rückgabewert
       function HoleAnzahlTabelleneintraege(tablename:String):Integer;
@@ -226,7 +228,7 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der Lieferanten eines Teils in tmp Tabelle
-/// tmp_anz_lieferanten_je_teil </summary>
+/// tmp_anz_xxx_je_teil </summary>
 function TWQryAccess.UpdateTmpAnzLieferantenJeTeil():Boolean;
   var
     sql: String;
@@ -391,7 +393,8 @@ end;
 function TWQryAccess.HoleLieferantenZuTeil(TeileNr:String): Boolean;
 begin
   var sql: String;
-  sql := 'select LKurzname, LName1, Abs(LPfk) AS LPfk, StatusTxt '
+  sql := 'select LKurzname, LName1, Abs(LPfk) AS LPfk, StatusTxt, '
+       + 'CDate(gilt_bis)-Date() as gilt_noch '
        + 'From (Lieferanten '
        + 'INNER JOIN LErklaerungen '
        + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant) '
@@ -565,8 +568,7 @@ begin
 
 end;
 
-///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
-///                           eines Teils in Tabelle Teile</summary>
+///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf 0</summary>
 function TWQryAccess.UpdateTeileResetPFK: Boolean;
   var
     sql: String;
@@ -575,6 +577,7 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
+///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf -1</summary>
 function TWQryAccess.UpdateTeileSetPFK: Boolean;
   var
     sql: String;
@@ -583,6 +586,39 @@ begin
        + 'WHERE  n_LPfk=n_Lieferanten;' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
+///<summary> Überträge Teile mit in UNIPPS zu loeschenden PFK-Flags
+/// Tabelle PFK_Teile</summary>
+function TWQryAccess.UpdatePFKTabellePFK0: Boolean;
+  var
+    sql: String;
+begin
+  sql := 'INSERT INTO Export_PFK ( t_tg_nr, PFK ) '
+       + 'SELECT tmp_wareneingang_mit_PFK.t_tg_nr, 0 AS Pfk '
+       + 'FROM tmp_wareneingang_mit_PFK '
+       + 'INNER JOIN LErklaerungen '
+       + 'ON tmp_wareneingang_mit_PFK.lieferant = LErklaerungen.IdLieferant '
+       + 'AND tmp_wareneingang_mit_PFK.t_tg_nr = LErklaerungen.TeileNr '
+       + 'WHERE LErklaerungen.LPfk=0 '
+       + 'ORDER BY t_tg_nr;';
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary> Überträge Teile mit in UNIPPS zu setzenden PFK-Flags
+/// Tabelle PFK_Teile</summary>
+function TWQryAccess.UpdatePFKTabellePFK1: Boolean;
+  var
+    sql: String;
+begin
+  sql := 'INSERT INTO Export_PFK ( t_tg_nr, PFK ) '
+       + 'SELECT Teile.TeileNr, Teile.PFK '
+       + 'FROM Teile '
+       + 'WHERE Teile.PFK=-1;' ;
+
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
 
 // ---------------------------------------------------------------
 //

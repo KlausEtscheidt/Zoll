@@ -223,7 +223,7 @@ end;
 
 //---------------------------------------------------------------------------
 ///<summary> Anzahl der Lieferanten eines Teils in tmp Tabelle
-/// tmp_anz_lieferanten_je_teil </summary>
+/// tmp_anz_xxx_je_teil </summary>
 function TWQrySQLite.UpdateTmpAnzLieferantenJeTeil():Boolean;
   var
     sql: String;

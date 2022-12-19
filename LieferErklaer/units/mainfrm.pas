@@ -55,8 +55,6 @@ type
     procedure N300Tage1Click(Sender: TObject);
     procedure N0Tage1Click(Sender: TObject);
     procedure VersMenClick(Sender: TObject);
-    function FormHelp(Command: Word; Data: NativeInt;
-      var CallHelp: Boolean): Boolean;
     procedure Hilfe1Click(Sender: TObject);
     procedure LieferMenStatuseingebenClick(Sender: TObject);
   private
@@ -108,7 +106,7 @@ end;
 
 procedure TmainForm.Hilfe1Click(Sender: TObject);
 begin
-  HelpFile := ExtractFilePath(Application.ExeName) + HelpFile;
+//  HelpFile := ExtractFilePath(Application.ExeName) + HelpFile;
   Application.HelpShowTableOfContents();
 //  CallHelp :=  False; // True; - to execute the default OnHelp event handler
 
@@ -117,13 +115,6 @@ end;
 procedure TmainForm.FormDestroy(Sender: TObject);
 begin
   close;
-end;
-
-function TmainForm.FormHelp(Command: Word; Data: NativeInt;
-  var CallHelp: Boolean): Boolean;
-begin
-  mainForm.StatusBar1.Panels[0].Text := 'f1';
-
 end;
 
 /// <summary>Ausgabe in linkes panel des Statusbar </summary>

@@ -47,6 +47,7 @@ procedure Init;
 function GetUNIPPSQry():TWQryUNIPPS;
 procedure LieferantenAdressdatenAusUnipps;
 procedure Auswerten();
+procedure HoleWareneingänge;
 
 var
   Initialized:Boolean;
@@ -472,7 +473,9 @@ begin
   //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
   minRestGueltigkeit:=LocalQry1.LiesProgrammDatenWert('Gueltigkeit_Lekl');
 
-  //Leere Zwischentabelle
+  // --------- Zwischentabelle tmpLieferantTeilPfk --------
+
+  //Leere Zwischentabelle  tmpLieferantTeilPfk
   LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
 
   //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
@@ -481,26 +484,57 @@ begin
   //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
   LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
 
+  // --------- Zwischentabelle tmp_anz_xxx_je_teil --------
+
   //Leere Zwischentabelle
   LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in tmp Tabelle
+  //Anzahl der Lieferanten je Teil (mit gültiger Erklaerung) in tmp Tabelle
   LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
+  //Anzahl der Lieferanten  je Teil (mit gültiger Erklaerung)
   //in Tabelle Teile auf 0 setzen
   LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
+  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
+  // in Tabelle Teile setzen
   LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
 
   // Flag PFK in Teile setzen
   LocalQry1.UpdateTeileResetPFK;
   LocalQry1.UpdateTeileSetPFK;
 
+  HoleWareneingänge;
   StatusBarLeft('Auswertung fertig');
+
 end;
 
+//Hole Wareneingaenge in tmp Tabelle
+procedure HoleWareneingänge;
+var
+  gefunden:Boolean;
+begin
+  LocalQry1.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+  LocalQry1.RunExecSQLQuery('delete from tmp_wareneingang_mit_PFK;');
+
+  gefunden := UnippsQry1.HoleWareneingaenge;
+
+  while not UnippsQry1.Eof do
+  begin
+//    INSERT INTO tmpTeileBenennung ( TeileNr, Zeile, [Text] )
+    LocalQry1.InsertFields('tmp_wareneingang_mit_PFK', UnippsQry1.Fields);
+    UnippsQry1.next;
+  end;
+
+
+  LocalQry1.RunExecSQLQuery('delete from Export_PFK;');
+  LocalQry1.UpdatePFKTabellePFK0;
+  LocalQry1.UpdatePFKTabellePFK1;
+
+  LocalQry1.RunExecSQLQuery('COMMIT;');
+
+end;
 ///<summary>Hole Adressdaten und Ansprechpartner
 /// aus UNIPPS in eigene Tabellen</summary>
 procedure LieferantenAdressdatenAusUnipps();
