@@ -20,7 +20,9 @@ Der Name Fax_Muster_*username*.pdf beinhaltet den Windows-Usernamen des Benutzer
 
 Das Dokument muss diverse Textmarken enthalten, deren Texte von DigiLek ersetzt werden.
 
-<<<<<<<<<<<<<<Bild word mit Textmarken>>>>>>>>>>>>>>
+.. image:: pics/MusterFax.png
+   :scale: 70 %
+   :align: center
 
 Outlook
 -------
@@ -34,7 +36,9 @@ der direkt auf der obersten Ebene des Benutzer-Postfachs liegen muss.
 Der mail body muss mit "Sehr geehrte Damen und Herren," beginnen,
 da dieser Text von DigiLek ersetzt wird.
 
-<<<<<<<<<<Bild>>>>>>>>>> 
+.. image:: pics/Outlook.png
+   :scale: 70 %
+   :align: center
 
 Hilfe
 -----
