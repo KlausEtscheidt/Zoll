@@ -476,34 +476,49 @@ begin
   // --------- Zwischentabelle tmpLieferantTeilPfk --------
 
   //Leere Zwischentabelle  tmpLieferantTeilPfk
-  LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
+//  LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
+//
+//  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
+//  LocalQry1.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
+//
+//  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
+//  LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
 
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
-  LocalQry1.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
+  // ---------Markiere Teile von Lieferanten mit gültiger Lekl in LErklaerungen
 
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
-  LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
+  //Loesche Markierung in LErklaerungen
+  LocalQry1.RunExecSQLQuery('UPDATE LErklaerungen SET LPfk_berechnet= 0');
+
+  //Markiere Teile mit gültiger Lekl "alle Teile"
+  LocalQry1.LeklMarkiereAlleTeile(minRestGueltigkeit);
+
+  //Markiere Teile mit gültiger Lekl "einige Teile"
+  LocalQry1.LeklMarkiereEinigeTeile(minRestGueltigkeit);
 
   // --------- Zwischentabelle tmp_anz_xxx_je_teil --------
 
   //Leere Zwischentabelle
-  LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
+//  LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
 
   //Anzahl der Lieferanten je Teil (mit gültiger Erklaerung) in tmp Tabelle
-  LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
+//  LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
 
   //Anzahl der Lieferanten  je Teil (mit gültiger Erklaerung)
   //in Tabelle Teile auf 0 setzen
-  LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
+//  LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
 
   //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
   // in Tabelle Teile setzen
-  LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
+//  LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
 
-  // Flag PFK in Teile setzen
-  LocalQry1.UpdateTeileResetPFK;
-  LocalQry1.UpdateTeileSetPFK;
+  // ------ Flag PFK in Tabelle Teile setzen
+//  LocalQry1.UpdateTeileResetPFK;
+  //Erst alle true
+  LocalQry1.RunExecSQLQuery('UPDATE Teile SET Pfk=-1;');
+  //Wenn ein Lieferant des Teils ohne positive Lekl, dann False
+  LocalQry1.UpdateTeileDeletePFK;
 
+  //Ermittle anhand der Wareneingänge, zu löschende PFK-Flags im UNIPPS
   HoleWareneingänge;
   StatusBarLeft('Auswertung fertig');
 

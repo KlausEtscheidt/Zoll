@@ -90,6 +90,18 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       TabOrder = 4
       OnClick = PfkOffCheckBox2Click
     end
+    object AuswertenBtn: TButton
+      Left = 484
+      Top = 36
+      Width = 73
+      Height = 25
+      Hint = 'Nach Dateneingabe PFK evtl neu ermitteln'
+      Caption = 'Auswerten'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+      OnClick = AuswertenBtnClick
+    end
   end
   object Panel3: TPanel
     AlignWithMargins = True
@@ -120,6 +132,7 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 8
       Width = 15
       Height = 13
+      Hint = 'resultierende Pr'#228'fenzberechtigung des Teils'
       Caption = 'Pfk'
     end
     object DBCtrlGrid1: TDBCtrlGrid
@@ -197,25 +210,36 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
       Top = 5
       Width = 31
       Height = 13
+      Hint = 'Art der vorliegenden Lieferantenerkl'#228'rung'
       Caption = 'Status'
     end
     object LPfkLabel: TLabel
-      Left = 484
+      Left = 455
       Top = 5
-      Width = 20
+      Width = 41
       Height = 13
       Hint = 'Lieferantenspez. Pr'#228'ferenzkennung'
-      Caption = 'LPfk'
+      Caption = 'LPfk neu'
       ParentShowHint = False
       ShowHint = True
     end
     object Label1: TLabel
-      Left = 588
+      Left = 532
       Top = 5
       Width = 40
       Height = 13
-      Hint = 'Lieferantenspez. Pr'#228'ferenzkennung'
+      Hint = 'Restg'#252'ltigkeit der Lekl'
       Caption = 'gilt noch'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object Label2: TLabel
+      Left = 596
+      Top = 5
+      Width = 60
+      Height = 13
+      Hint = 'Restg'#252'ltigkeit der Lekl'
+      Caption = 'Teileeingabe'
       ParentShowHint = False
       ShowHint = True
     end
@@ -248,11 +272,11 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
         DataSource = LieferantenDataSource
       end
       object LPfkDBText: TDBText
-        Left = 449
+        Left = 420
         Top = 7
         Width = 49
         Height = 17
-        DataField = 'LPfk'
+        DataField = 'LPfk_ber'
         DataSource = LieferantenDataSource
       end
       object Lekl: TDBText
@@ -265,11 +289,19 @@ object TeileStatusKontrolleFrm: TTeileStatusKontrolleFrm
         DataSource = LieferantenDataSource
       end
       object giltDBText: TDBText
-        Left = 553
+        Left = 497
         Top = 7
         Width = 49
         Height = 17
         DataField = 'gilt_noch'
+        DataSource = LieferantenDataSource
+      end
+      object StandTeileDBText: TDBText
+        Left = 561
+        Top = 7
+        Width = 49
+        Height = 17
+        DataField = 'StandTeile'
         DataSource = LieferantenDataSource
       end
     end

@@ -43,12 +43,16 @@ type
     LPfkLabel: TLabel;
     giltDBText: TDBText;
     Label1: TLabel;
+    AuswertenBtn: TButton;
+    Label2: TLabel;
+    StandTeileDBText: TDBText;
     procedure TeileDataSourceDataChange(Sender: TObject; Field: TField);
     procedure FilterTeileNrChange(Sender: TObject);
     procedure FilterTName1Change(Sender: TObject);
     procedure FilterOffBtnClick(Sender: TObject);
     procedure PfkOnCheckBoxClick(Sender: TObject);
     procedure PfkOffCheckBox2Click(Sender: TObject);
+    procedure AuswertenBtnClick(Sender: TObject);
   private
     LocalQry: TWQry;
     LocalSubQry: TWQry;
@@ -132,6 +136,12 @@ begin
   FilterUpdate();
 end;
 
+procedure TTeileStatusKontrolleFrm.AuswertenBtnClick(Sender: TObject);
+begin
+    Import.Auswerten;
+    LocalQry.Requery();
+end;
+
 procedure TTeileStatusKontrolleFrm.FilterOffBtnClick(Sender: TObject);
 begin
  FilterTeileNr.Text := '';
@@ -151,7 +161,6 @@ end;
 
 procedure TTeileStatusKontrolleFrm.ShowFrame;
 begin
-    Import.Auswerten;
     Initialized:=False;
     LocalQry := Tools.GetQuery;
     LocalQry.RunSelectQuery('SELECT TeileNr, TName1, Abs(Pfk) As Pfk FROM Teile;')  ;

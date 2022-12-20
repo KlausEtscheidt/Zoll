@@ -58,12 +58,15 @@ interface
       function UpdateLieferantAnfrageDatum(IdLieferant:Integer;Datum:String):Boolean;
 
       //Auswertung am Ende nach allen Benutzereingaben
-      function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
-      function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
+      function LeklMarkiereAlleTeile(delta_days:String):Boolean;
+      function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
+      function LeklMarkiereEinigeTeile(delta_days:String):Boolean;
+      function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
       function UpdateTmpAnzErklaerungenJeTeil():Boolean;
       function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
       function UpdateTeileResetPFK():Boolean;
       function UpdateTeileSetPFK():Boolean;
+      function UpdateTeileDeletePFK: Boolean;
       function UpdatePFKTabellePFK0():Boolean;
       function UpdatePFKTabellePFK1():Boolean;
 
@@ -393,8 +396,9 @@ end;
 function TWQryAccess.HoleLieferantenZuTeil(TeileNr:String): Boolean;
 begin
   var sql: String;
-  sql := 'select LKurzname, LName1, Abs(LPfk) AS LPfk, StatusTxt, '
-       + 'CDate(gilt_bis)-Date() as gilt_noch '
+  sql := 'select LKurzname, LName1, Abs(LPfk_berechnet) AS LPfk_ber, StatusTxt, '
+       + 'CDate(gilt_bis)-Date() as gilt_noch, '
+       + 'StandTeile '
        + 'From (Lieferanten '
        + 'INNER JOIN LErklaerungen '
        + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant) '
@@ -507,6 +511,22 @@ end;
 //
 // ---------------------------------------------------------------
 
+///<summary>markiere Teile von Lieferanten mit gültiger Erklärung "alle Teile"
+///in Tabelle LErklaerungen</summary>
+function TWQryAccess.LeklMarkiereAlleTeile(delta_days:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'UPDATE LErklaerungen SET LPfk_berechnet=-1 '
+           + 'WHERE IdLieferant IN '
+           + '( SELECT IdLieferant FROM Lieferanten '
+           + 'WHERE lekl=2 and Lieferstatus <> "entfallen" and '
+           //Lekl gilt noch mindestens
+           + 'CDate(gilt_bis)-Date()>' + delta_days + ' );' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+
 ///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile"
 ///an temp Tabelle tmpLieferantTeilPfk an</summary>
 function TWQryAccess.LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
@@ -521,6 +541,25 @@ begin
            + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
+///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
+///an temp Tabelle tmpLieferantTeilPfk an</summary>
+function TWQryAccess.LeklMarkiereEinigeTeile(delta_days:String):Boolean;
+  var
+    sql: String;
+begin
+      SQL := 'UPDATE LErklaerungen '
+           + 'INNER JOIN Lieferanten '
+           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+           + 'SET LPfk_berechnet=-1 '
+           + 'WHERE lekl=3 and Lieferstatus <> "entfallen" and LPfk=-1 and '
+           //Eingabe der teilspez. Lekl nach Eingabe allgem. Status
+           + 'CDate(StandTeile)>CDate(Stand) and '
+           //Lekl gilt noch mindestens
+           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
 
 ///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
 ///an temp Tabelle tmpLieferantTeilPfk an</summary>
@@ -587,7 +626,21 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-///<summary> Überträge Teile mit in UNIPPS zu loeschenden PFK-Flags
+
+///<summary> Loesche PFK-Flag eines Teils in Tabelle Teile,
+/// wenn ein Lieferant EU-Herkunft nicht bestätigt</summary>
+function TWQryAccess.UpdateTeileDeletePFK: Boolean;
+  var
+    sql: String;
+begin
+  sql := 'UPDATE Teile SET Pfk=0 '
+       + 'WHERE TeileNr IN '
+       + '(SELECT TeileNr FROM LErklaerungen '
+       + 'WHERE LPfk_berechnet=0);' ;
+  Result:= RunExecSQLQuery(sql);
+end;
+
+///<summary> Übertrage Teile mit in UNIPPS zu loeschenden PFK-Flags in
 /// Tabelle PFK_Teile</summary>
 function TWQryAccess.UpdatePFKTabellePFK0: Boolean;
   var
@@ -599,12 +652,12 @@ begin
        + 'INNER JOIN LErklaerungen '
        + 'ON tmp_wareneingang_mit_PFK.lieferant = LErklaerungen.IdLieferant '
        + 'AND tmp_wareneingang_mit_PFK.t_tg_nr = LErklaerungen.TeileNr '
-       + 'WHERE LErklaerungen.LPfk=0 '
+       + 'WHERE LErklaerungen.LPfk_berechnet=0 '
        + 'ORDER BY t_tg_nr;';
   Result:= RunExecSQLQuery(sql);
 end;
 
-///<summary> Überträge Teile mit in UNIPPS zu setzenden PFK-Flags
+///<summary> Übertrage Teile mit in UNIPPS zu setzenden PFK-Flags in
 /// Tabelle PFK_Teile</summary>
 function TWQryAccess.UpdatePFKTabellePFK1: Boolean;
   var

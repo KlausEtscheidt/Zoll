@@ -1,6 +1,7 @@
 object mainForm: TmainForm
   Left = 0
   Top = 0
+  Hint = 'resultierende Pr'#228'fenzberechtigung des Teils'
   HelpType = htKeyword
   HelpKeyword = 'Ablauf'
   Caption = 'DigiLek Digitale Lieferantenerkl'#228'rung'
@@ -585,7 +586,6 @@ object mainForm: TmainForm
     AutoSize = True
     TabOrder = 2
     Visible = False
-    ExplicitTop = 7
     ExplicitWidth = 1103
     ExplicitHeight = 610
     inherited Panel1: TPanel
@@ -612,6 +612,8 @@ object mainForm: TmainForm
       inherited PfkLabel: TLabel
         Left = 461
         Top = 6
+        ParentShowHint = False
+        ShowHint = True
         ExplicitLeft = 461
         ExplicitTop = 6
       end
@@ -659,20 +661,29 @@ object mainForm: TmainForm
       inherited StatusLabel: TLabel
         Left = 376
         Top = 2
+        ParentShowHint = False
+        ShowHint = True
         ExplicitLeft = 376
         ExplicitTop = 2
       end
       inherited LPfkLabel: TLabel
-        Left = 472
-        Top = 2
-        ExplicitLeft = 472
-        ExplicitTop = 2
+        Left = 445
+        Top = 3
+        ExplicitLeft = 445
+        ExplicitTop = 3
       end
       inherited Label1: TLabel
-        Left = 576
-        Top = 2
-        ExplicitLeft = 576
-        ExplicitTop = 2
+        Left = 520
+        Top = 3
+        ExplicitLeft = 520
+        ExplicitTop = 3
+      end
+      inherited Label2: TLabel
+        Left = 577
+        Top = 3
+        Hint = 'Wann wurde die Teilespez Lekl erfasst ?'
+        ExplicitLeft = 577
+        ExplicitTop = 3
       end
       inherited DBCtrlGrid2: TDBCtrlGrid
         Left = 23
