@@ -148,14 +148,12 @@ function TWQryUNIPPS.SucheTeileBenennung(delta_days: String):Boolean;
 var  sql: String;
 begin
 
-      //Eindeutige TeileNr aus Bestellungen der letzten 5 Jahre
-      //siehe Access Abfrage "3a_Teile_aus_Bestellungen_unique"
+      //Eindeutige TeileNr aus Bestellungen
       sql := 'SELECT TeileNr '
            + 'FROM (' + sql_suche_Bestellungen + ') '
            + 'group by TeileNr ';
 
        // Zeilen 1 und 2 der deutschen Benennung dazu
-       //siehe Access Abfrage "xxxxxxx"
        sql := 'SELECT trim(ident_nr1) as TeileNr, art as Zeile, trim(Text) as Benennung '
            + 'FROM teil_bez  '
            + 'where (art=1 or art=2) '

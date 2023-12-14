@@ -1,0 +1,136 @@
+
+Tabelle: Anwender
+   Feld : WinName        Text   
+   Feld : Vorname        Text   
+   Feld : Nachname       Text   
+   Feld : used           Text   
+   Feld : Faxvorlage     Text   
+   Index: PrimaryKey(WinName)  Primary
+
+Tabelle: Bestellungen
+   Feld : IdLieferant  0   Zahl   
+   Feld : TeileNr          Text   
+   Feld : BestDatum        Datum  
+   Feld : eingelesen       Datum  
+   Feld : LKurzname        Text   
+   Feld : LName1           Text   
+   Feld : LName2           Text   
+   Feld : LAdressId    0   Zahl   
+   Feld : LTeileNr         Text   
+   Index: id_teil_lief(TeileNr,IdLieferant)  Primary
+   Index: LAdressId(LAdressId)
+
+Tabelle: Export_PFK
+   Feld : t_tg_nr       Text   
+   Feld : PFK      No   Bool   
+
+Tabelle: LErklaerungen
+   Feld : IdLieferant                    Zahl   
+   Feld : TeileNr                        Text   
+   Feld : LTeileNr                       Text   
+   Feld : LPfk            0              Zahl   
+   Feld : BestDatum       "1900-01-01"   Text   
+   Feld : Id                             Zahl   
+   Feld : LPfk_berechnet  0              Zahl   
+   Index: PrimaryKey(Id)  Primary
+
+Tabelle: Lieferanten
+   Feld : IdLieferant                   Zahl   
+   Feld : LKurzname                     Text   
+   Feld : LName1                        Text   
+   Feld : LName2                        Text   
+   Feld : lekl           0              Zahl   
+   Feld : Stand          "1900-01-01"   Text   
+   Feld : gilt_bis       "1900-01-01"   Text   
+   Feld : Pumpenteile    0              Zahl   
+   Feld : Lieferstatus   "neu"          Text   
+   Feld : Ersatzteile    0              Zahl   
+   Feld : StandTeile     "1900-01-01"   Text   
+   Feld : letzteAnfrage  "1900-01-01"   Text   
+   Feld : Kommentar                     Text   
+   Index: sqlite_autoindex_0(IdLieferant)  Primary
+
+Tabelle: Lieferanten_Adressen
+   Feld : IdLieferant             Zahl   
+   Feld : adresse                 Zahl   
+   Feld : kurzname                Text   
+   Feld : name1                   Text   
+   Feld : name2                   Text   
+   Feld : name3                   Text   
+   Feld : name4                   Text   
+   Feld : strasse                 Text   
+   Feld : postfach                Text   
+   Feld : staat                   Text   
+   Feld : plz_haus                Text   
+   Feld : plz_postfach            Text   
+   Feld : ort                     Text   
+   Feld : ort_postfach            Text   
+   Feld : telefon                 Text   
+   Feld : telefax                 Text   
+   Feld : email                   Text   
+   Feld : hat_LEKL_Ansprechp  0   Text   
+   Feld : Anrede                  Text   
+   Feld : Vorname                 Text   
+   Feld : Nachname                Text   
+   Index: PrimaryKey(IdLieferant)  Primary
+
+Tabelle: Lieferanten_Ansprechpartner
+   Feld : ID               Zahl   
+   Feld : IdLieferant  0   Zahl32 
+   Feld : IdPerson     0   Zahl   
+   Feld : Anrede           Text   
+   Feld : Vorname          Text   
+   Feld : Nachname         Text   
+   Feld : email            Text   
+   Feld : telefax          Text   
+   Index: ID(IdLieferant)
+   Index: Id_Person(IdPerson)
+   Index: PrimaryKey(ID)  Primary
+
+Tabelle: LieferantenStatusTxt
+   Feld : Id            Zahl   
+   Feld : StatusTxt     Text   
+   Index: __uniqueindex(Id)  Primary
+
+Tabelle: ProgrammDaten
+   Feld : Name          Text   
+   Feld : Wert          Text   
+   Feld : Kommentar    
+   Index: __uniqueindex(Name)  Primary
+
+Tabelle: Teile
+   Feld : TeileNr            Text   
+   Feld : TName1             Text   
+   Feld : TName2             Text   
+   Feld : Pumpenteil     0   Zahl   
+   Feld : PFK            0   Zahl   
+   Feld : Ersatzteil     0   Zahl   
+   Feld : n_Lieferanten  0   Zahl   
+   Feld : n_LPfk         0   Zahl   
+   Index: sqlite_autoindex_Teile_1(TeileNr)  Primary
+
+Tabelle: tmp_anz_xxx_je_teil
+   Feld : n           Zahl   
+   Feld : TeileNr     Text   
+
+Tabelle: tmp_wareneingang_mit_PFK
+   Feld : t_tg_nr       Text   
+   Feld : lieferant     Zahl   
+
+Tabelle: tmpLieferantTeilPfk
+   Feld : TeileNr         Text   
+   Feld : IdLieferant     Zahl   
+   Feld : lekl            Zahl   
+   Feld : Id              Zahl   
+   Index: sqlite_autoindex_0(Id)  Primary
+
+Tabelle: tmpTeileBenennung
+   Feld : Zeile         Zahl   
+   Feld : Benennung     Text   
+   Feld : TeileNr       Text   
+   Index: pkey(Zeile,TeileNr)  Primary
+
+Tabelle: tmpTeileVerwendung
+   Feld : t_tg_nr     Text   
+   Index: t_tg_nr(t_tg_nr)
+

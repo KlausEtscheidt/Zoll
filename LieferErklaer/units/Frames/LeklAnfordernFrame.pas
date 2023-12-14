@@ -111,15 +111,19 @@ type
     procedure AnfordDatumResetActionExecute(Sender: TObject);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure FilterUpdateActionUpdate(Sender: TObject);
+    procedure ZeigeAnzahlGefilterteLieferanten;
     procedure AnfordDatumHeuteActionExecute(Sender: TObject);
     procedure RefreshLocalQuery;
     procedure StandardFilterButtonClick(Sender: TObject);
+    procedure DBGrid1TitleClick(Column: TColumn);
 
   private
     //Wieviele Tage muss die Lieferantenerklärung mindestens noch gelten
     minRestGueltigkeit:String;
     //wann wird eine Eingabe als veraltet betrachtet
     veraltet:String;
+    //nach welcher Spalte wurde zuletzt sortiert
+    lastSortCol: TColumn;
   public
     LocalQry: TWQry;
   end;
@@ -132,6 +136,9 @@ implementation
 uses mainfrm, Excel, Mailing, Word;
 
 procedure TLieferantenErklAnfordernFrm.ShowFrame();
+var
+  ColName,letztesZeichen:String;
+
 begin
     LocalQry := Tools.GetQuery;
     if not LocalQry.Connected then
@@ -145,6 +152,15 @@ begin
     DataSource1.DataSet := LocalQry;
     FilterUpdateActionExecute(Self);
     mainForm.HelpKeyword:='Anforderung';
+    //Falls schon mal sortiert wurde, Titel der alten Spalte zurück setzen
+    if assigned(lastSortCol) then
+      begin
+        ColName:= lastSortCol.Title.Caption;
+        letztesZeichen:=ColName[length(ColName)];
+        if (letztesZeichen = #8593) or (letztesZeichen = #8595) then
+          lastSortCol.Title.Caption := Copy(ColName, 1, length(ColName)-2)
+      end;
+
     Self.Visible := True;
 end;
 
@@ -191,6 +207,8 @@ begin
 {$ELSE}
     LocalQry.Requery();
 {$ENDIF}
+
+    ZeigeAnzahlGefilterteLieferanten;
 
     // Gehe auf ursp�nglichen Datensatz
     LocalQry.GotoBookmark(BM);
@@ -269,6 +287,10 @@ begin
 {$ELSE}
     LocalQry.Requery();
 {$ENDIF}
+
+//      FilterUpdateActionExecute(self);
+      ZeigeAnzahlGefilterteLieferanten;
+
       // Gehe auf ursp�nglichen Datensatz
       if not LocalQry.Eof then
           LocalQry.GotoBookmark(BM);
@@ -277,6 +299,7 @@ begin
 
 end;
 
+//Zeigt Teile zum Lieferanten (r. Mausmenue)
 procedure TLieferantenErklAnfordernFrm.TeileAnzeigeActionExecute(
   Sender: TObject);
 begin
@@ -375,14 +398,19 @@ begin
     //durch Delphi aufgerufen, bevor die Qry erzeugt wurde
     if assigned (LocalQry) then
     begin
-        LocalQry.Filter := FilterStr;
+      LocalQry.Filter := FilterStr;
       LocalQry.Filtered := filtern;
-
-      GroupBox2.Caption:= 'gefiltert '
-                   + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
+      ZeigeAnzahlGefilterteLieferanten;
     end;
 end;
 
+procedure TLieferantenErklAnfordernFrm.ZeigeAnzahlGefilterteLieferanten;
+begin
+  GroupBox2.Caption:= 'gefiltert '
+                + IntToStr(LocalQry.RecordCount) + ' Lieferanten';
+end;
+
+//Gegensätzliche Filter umschalten
 procedure TLieferantenErklAnfordernFrm.FilterUpdateActionUpdate(
   Sender: TObject);
 var
@@ -444,6 +472,56 @@ procedure TLieferantenErklAnfordernFrm.DataSource1DataChange(Sender: TObject;
 begin
     mailBtn.Enabled := (mailDBText.Caption<>'');
     FaxBtn.Enabled := (telefaxDBText.Caption<>'');
+end;
+
+procedure TLieferantenErklAnfordernFrm.DBGrid1TitleClick(Column: TColumn);
+var
+  ColName,FeldName:String;
+  letztesZeichen:String;
+
+begin
+  //Spaltentitel aendern und sortieren, jeweils abhängig von einer alten Sortierung
+  FeldName:= Column.Fieldname;
+  ColName:= Column.Title.Caption;
+  letztesZeichen:=ColName[length(ColName)];
+  if letztesZeichen = #8595 then
+    begin
+      //War ASC wird DESC
+      FeldName:= FeldName + ' DESC';
+      Column.Title.Caption:= Copy(ColName, 1, length(ColName)-2) + ' ' + #8593
+    end
+  else if letztesZeichen = #8593 then
+    begin
+      //War DESC wird unsortiert
+      FeldName:='';
+      Column.Title.Caption:= Copy(ColName, 1, length(ColName)-2);
+    end
+  else
+    begin
+      //War unsortiert wird ASC
+      FeldName:= FeldName + ' ASC';
+      Column.Title.Caption:= ColName + ' ' + #8595
+    end;
+
+{$IFDEF FIREDAC}
+   LocalQry.IndexFieldNames  := FeldName;
+{$ELSE}
+   LocalQry.Sort := FeldName;
+{$ENDIF}
+
+  //Falls schon mal sortiert wurde, Titel der alten Spalte zurück setzen
+  if assigned(lastSortCol) then
+    if not lastSortCol.Equals(Column) then
+      begin
+        ColName:= lastSortCol.Title.Caption;
+        letztesZeichen:=ColName[length(ColName)];
+        if (letztesZeichen = #8593) or (letztesZeichen = #8595) then
+          lastSortCol.Title.Caption := Copy(ColName, 1, length(ColName)-2)
+      end;
+
+  //neue Spalte merken
+  lastSortCol:= Column;
+
 end;
 
 procedure TLieferantenErklAnfordernFrm.ExportExcelActionExecute(

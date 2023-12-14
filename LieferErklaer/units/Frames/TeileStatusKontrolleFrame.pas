@@ -139,7 +139,11 @@ end;
 procedure TTeileStatusKontrolleFrm.AuswertenBtnClick(Sender: TObject);
 begin
     Import.Auswerten;
+{$IFDEF FIREDAC}
+    LocalQry.Refresh();
+{$ELSE}
     LocalQry.Requery();
+{$ENDIF}
 end;
 
 procedure TTeileStatusKontrolleFrm.FilterOffBtnClick(Sender: TObject);

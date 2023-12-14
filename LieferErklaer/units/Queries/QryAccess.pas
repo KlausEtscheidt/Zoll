@@ -57,15 +57,16 @@ interface
       function UpdateLieferantStandTeile(IdLieferant:Integer;Stand:String):Boolean;
       function UpdateLieferantAnfrageDatum(IdLieferant:Integer;Datum:String):Boolean;
 
+
       //Auswertung am Ende nach allen Benutzereingaben
       function LeklMarkiereAlleTeile(delta_days:String):Boolean;
-      function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
       function LeklMarkiereEinigeTeile(delta_days:String):Boolean;
-      function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
-      function UpdateTmpAnzErklaerungenJeTeil():Boolean;
-      function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
-      function UpdateTeileResetPFK():Boolean;
-      function UpdateTeileSetPFK():Boolean;
+//      function LeklAlleTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
+//      function LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean; //obsolet
+//      function UpdateTmpAnzErklaerungenJeTeil():Boolean;
+//      function UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
+//      function UpdateTeileResetPFK():Boolean;
+//      function UpdateTeileSetPFK():Boolean;
       function UpdateTeileDeletePFK: Boolean;
       function UpdatePFKTabellePFK0():Boolean;
       function UpdatePFKTabellePFK1():Boolean;
@@ -100,7 +101,7 @@ function TWQryAccess.NeueLErklaerungenInTabelle():Boolean;
    sql: String;
 begin
   sql := 'Insert Into LErklaerungen '
-       + '(TeileNr, IdLieferant, LTeileNr, BestDatum, LPfk)'
+       + '(TeileNr, IdLieferant, LTeileNr, BestDatum, LPfk) '
        + 'SELECT Bestellungen.TeileNr, Bestellungen.IdLieferant, '
        + 'Bestellungen.LTeileNr, Bestellungen.BestDatum, 0 as LPfk '
        + 'from Bestellungen '
@@ -126,7 +127,8 @@ begin
 end;
 
 //-----------------------------------------------------------
-///<summary> Neue Lieferanten in Tabelle lieferanten</summary>
+///<summary> Neue Lieferanten in Tabelle lieferanten.
+///Lieferstatus "neu" ist default in "Lieferanten"</summary>
 function TWQryAccess.NeueLieferantenInTabelle():Boolean;
   var sql: String;
 begin
@@ -139,8 +141,8 @@ begin
 end;
 
 //-----------------------------------------------
-///<summary>Markiere Lieferanten, die neu waren
-/// und die noch aktuell sind, als aktuell.</summary>
+///<summary>Markiere Lieferanten, die in Bestellungen stehen,
+/// als aktuell.</summary>
 function TWQryAccess.MarkiereAktuelleLieferanten():Boolean;
   var sql: String;
 begin
@@ -526,22 +528,6 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-
-///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile"
-///an temp Tabelle tmpLieferantTeilPfk an</summary>
-function TWQryAccess.LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
-  var
-    sql: String;
-begin
-      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
-           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
-           + 'FROM Lieferanten INNER JOIN LErklaerungen '
-           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
-           + 'WHERE lekl=2 and Lieferstatus <> "entfallen" and '
-           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
-  Result:= RunExecSQLQuery(sql);
-end;
-
 ///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
 ///an temp Tabelle tmpLieferantTeilPfk an</summary>
 function TWQryAccess.LeklMarkiereEinigeTeile(delta_days:String):Boolean;
@@ -560,73 +546,6 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-
-///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
-///an temp Tabelle tmpLieferantTeilPfk an</summary>
-function TWQryAccess.LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
-  var
-    sql: String;
-begin
-      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
-           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
-           + 'FROM Lieferanten INNER JOIN LErklaerungen '
-           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
-           + 'WHERE lekl=3 and Lieferstatus <> "entfallen" and LPfk=-1 and '
-           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
-  Result:= RunExecSQLQuery(sql);
-end;
-
-
-//---------------------------------------------------------------------------
-///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
-///                           eines Teils in tmp Tabelle </summary>
-function TWQryAccess.UpdateTmpAnzErklaerungenJeTeil():Boolean;
-  var
-    sql: String;
-begin
-  sql := 'INSERT INTO tmp_anz_xxx_je_teil ( TeileNr, n ) '
-       + 'SELECT TeileNr, Count(TeileNr) AS n FROM tmpLieferantTeilPfk '
-       + 'GROUP BY TeileNr; ' ;
-
-  Result:= RunExecSQLQuery(sql);
-
-end;
-
-//---------------------------------------------------------------------------
-///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
-///                           eines Teils in Tabelle Teile</summary>
-function TWQryAccess.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
-  var
-    sql: String;
-begin
-  sql := 'UPDATE Teile INNER JOIN tmp_anz_xxx_je_teil '
-       + 'ON Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr '
-       + 'SET Teile.n_LPfk = tmp_anz_xxx_je_teil.n ;' ;
-
-  Result:= RunExecSQLQuery(sql);
-
-end;
-
-///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf 0</summary>
-function TWQryAccess.UpdateTeileResetPFK: Boolean;
-  var
-    sql: String;
-begin
-  sql := 'UPDATE Teile SET Pfk=0; ';
-  Result:= RunExecSQLQuery(sql);
-end;
-
-///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf -1</summary>
-function TWQryAccess.UpdateTeileSetPFK: Boolean;
-  var
-    sql: String;
-begin
-  sql := 'UPDATE Teile SET Pfk=-1 '
-       + 'WHERE  n_LPfk=n_Lieferanten;' ;
-  Result:= RunExecSQLQuery(sql);
-end;
-
-
 ///<summary> Loesche PFK-Flag eines Teils in Tabelle Teile,
 /// wenn ein Lieferant EU-Herkunft nicht bestätigt</summary>
 function TWQryAccess.UpdateTeileDeletePFK: Boolean;
@@ -639,6 +558,89 @@ begin
        + 'WHERE LPfk_berechnet=0);' ;
   Result:= RunExecSQLQuery(sql);
 end;
+
+
+///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile"
+///an temp Tabelle tmpLieferantTeilPfk an</summary>
+//function TWQryAccess.LeklAlleTeileInTmpTabelle(delta_days:String):Boolean;
+//  var
+//    sql: String;
+//begin
+//      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
+//           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
+//           + 'FROM Lieferanten INNER JOIN LErklaerungen '
+//           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+//           + 'WHERE lekl=2 and Lieferstatus <> "entfallen" and '
+//           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
+//  Result:= RunExecSQLQuery(sql);
+//end;
+
+
+///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
+///an temp Tabelle tmpLieferantTeilPfk an</summary>
+//function TWQryAccess.LeklEinigeTeileInTmpTabelle(delta_days:String):Boolean;
+//  var
+//    sql: String;
+//begin
+//      SQL := 'INSERT INTO tmpLieferantTeilPfk (TeileNr, IdLieferant, lekl) '
+//           + 'SELECT Teilenr, Lieferanten.IdLieferant, lekl '
+//           + 'FROM Lieferanten INNER JOIN LErklaerungen '
+//           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+//           + 'WHERE lekl=3 and Lieferstatus <> "entfallen" and LPfk=-1 and '
+//           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
+//  Result:= RunExecSQLQuery(sql);
+//end;
+
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in tmp Tabelle </summary>
+//function TWQryAccess.UpdateTmpAnzErklaerungenJeTeil():Boolean;
+//  var
+//    sql: String;
+//begin
+//  sql := 'INSERT INTO tmp_anz_xxx_je_teil ( TeileNr, n ) '
+//       + 'SELECT TeileNr, Count(TeileNr) AS n FROM tmpLieferantTeilPfk '
+//       + 'GROUP BY TeileNr; ' ;
+//
+//  Result:= RunExecSQLQuery(sql);
+//
+//end;
+
+//---------------------------------------------------------------------------
+///<summary> Anzahl der gültigen Lieferanten-Erklaerungen
+///                           eines Teils in Tabelle Teile</summary>
+//function TWQryAccess.UpdateTeileZaehleGueltigeLErklaerungen():Boolean;
+//  var
+//    sql: String;
+//begin
+//  sql := 'UPDATE Teile INNER JOIN tmp_anz_xxx_je_teil '
+//       + 'ON Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr '
+//       + 'SET Teile.n_LPfk = tmp_anz_xxx_je_teil.n ;' ;
+//
+//  Result:= RunExecSQLQuery(sql);
+//
+//end;
+
+///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf 0</summary>
+//function TWQryAccess.UpdateTeileResetPFK: Boolean;
+//  var
+//    sql: String;
+//begin
+//  sql := 'UPDATE Teile SET Pfk=0; ';
+//  Result:= RunExecSQLQuery(sql);
+//end;
+
+///<summary> Setze PFK-Flag eines Teils in Tabelle Teile auf -1</summary>
+//function TWQryAccess.UpdateTeileSetPFK: Boolean;
+//  var
+//    sql: String;
+//begin
+//  sql := 'UPDATE Teile SET Pfk=-1 '
+//       + 'WHERE  n_LPfk=n_Lieferanten;' ;
+//  Result:= RunExecSQLQuery(sql);
+//end;
+
 
 ///<summary> Übertrage Teile mit in UNIPPS zu loeschenden PFK-Flags in
 /// Tabelle PFK_Teile</summary>
@@ -704,7 +706,7 @@ var
   SQL:string;
 begin
   SQL := 'Select count(*) as n from Teile where Pumpenteil=-1 ' +
-          'AND n_Lieferanten=n_LPfk;';
+          'AND Pfk=-1;';
   RunSelectQuery(SQL);
   result:= FieldByName('n').AsInteger;
 end;

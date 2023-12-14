@@ -112,7 +112,7 @@ object LeklStatusFrm: TLeklStatusFrm
       Top = 14
       Width = 112
       Height = 25
-      Hint = 'Lieferanten, deren Antwort schon erfasst wurde'
+      Hint = 'zeigt nur Lieferanten, deren Antwort schon erfasst wurde'
       Action = FilterUpdateAction
       Caption = 'Antwort erfasst'
       Font.Charset = DEFAULT_CHARSET
@@ -130,7 +130,7 @@ object LeklStatusFrm: TLeklStatusFrm
       Top = 14
       Width = 105
       Height = 25
-      Hint = 'Lieferanten, deren Antwort noch nicht erfasst wurde'
+      Hint = 'zeigt nur Lieferanten, deren Antwort noch nicht erfasst wurde'
       Action = FilterUpdateAction
       Caption = 'keine Antwort'
       Checked = True
@@ -181,6 +181,7 @@ object LeklStatusFrm: TLeklStatusFrm
       TitleFont.Height = -15
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      OnTitleClick = DBGrid1TitleClick
       Columns = <
         item
           Expanded = False
@@ -344,7 +345,10 @@ object LeklStatusFrm: TLeklStatusFrm
       Top = 78
       Width = 64
       Height = 25
+      Hint = 'Status (R'#252'ckmeldung) der Lekl eingeben'
       Action = StatusUpdateAction
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
     object Panel1b: TPanel
@@ -1109,22 +1113,29 @@ object LeklStatusFrm: TLeklStatusFrm
       OnExecute = FilterUpdateActionExecute
       OnUpdate = FilterUpdateActionUpdate
     end
+    object TeileAnzeigeAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'Teile anzeigen'
+      OnExecute = TeileAnzeigeActionExecute
+    end
+    object StandDatumResetAction: TAction
+      Category = 'PopUpMen'
+      Caption = 'Stand (Datum) 1 Jahr zur'#252'ck setzen'
+      OnExecute = StandDatumResetActionExecute
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 432
     Top = 16
     object TeileAnzeigeMen: TMenuItem
-      Caption = 'Teile Anzeige'
+      Action = TeileAnzeigeAction
     end
     object ListenExcelMen: TMenuItem
       Action = ExportExcelAction
       Caption = 'Excel-Export'
     end
     object AnforderungResetMen: TMenuItem
-      Caption = 'Anfrage-Datum zur'#252'ck setzen'
-    end
-    object AnforderungHeuteMen: TMenuItem
-      Caption = 'Anfrage-Datum heute'
+      Action = StandDatumResetAction
     end
   end
 end

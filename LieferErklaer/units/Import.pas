@@ -402,14 +402,14 @@ begin
   RecNoStatusAnzeigen(StatusmaxRecord,True);
   SchrittEndeAnzeigen;
 
-end;
+ end;
 
 //Import Schritt 6: Lieferanten-Tabelle
 ///<summary>Pflege Tabelle Lieferanten</summary>
 procedure TBasisImport.LieferantenTabelleUpdaten();
 begin
   SchrittAnfangAnzeigen(6,'Lieferanten-Tabelle erzeugen');
-  //Markiere Lieferanten, neu waren und die noch aktuell sind als aktuell
+  //Markiere alle Lieferanten als aktuell
   LocalQry2.MarkiereAktuelleLieferanten;
   //Uebertrage neue Lieferanten
   LocalQry2.NeueLieferantenInTabelle;
@@ -454,6 +454,37 @@ end;
 // ----------------------------------------------------------------------
 
 /// <summary> Finale Auswertung und Erzeugen der UNIPPS-Export-Tabelle</summary>
+/// <remarks> Ablauf
+/// 1. Tabelle LErklaerungen
+/// 1.1 Das Flag LPfk_berechnet wird generell False gesetzt
+/// 1.2 es wird True bei Lieferanten mit einer gültigen Lekl und
+/// 1.2.1 Status "alle Teile" fuer alle Teile dieses Lieferanten
+/// 1.2.2 Status "einige Teile" fuer alle Teile dieses Lieferanten, deren
+///        Flag LPfk zuvor vom Benutzer für die aktuelle Periode gesetzt wurde
+/// 2. Tabelle Teile
+/// 2.1 Setze das Flag Pfk generell True
+/// 2.2 Loesche Flag bei Teilen mit mind. 1 Lieferanten in LErklaerungen mit
+///     LPfk_berechnet = False. Es bleiben nur Teile, bei denen alle Liefer.
+///     eine positive Lekl für dieses Teil abgaben.
+/// 3. Tabelle Export_PFK
+///    Diese Tabelle erhält alle Teile, deren Präferenzkennzeichen in UNIPPS
+///    geändert werden muss
+/// 3.1 zu löschende Kennungen
+/// 3.1.1 Lese Wareneingänge seit Beginn des akt. Jahres aus UNIPPS und
+///       speichere Teile / Lieferanten in der Tabelle tmp_wareneingang_mit_PFK,
+///       wenn sie in UNIPPS ein Präferenzkennzeichen haben.
+/// 3.1.2 Übertrage die Teile/Lieferanten-Kombi aus tmp_wareneingang_mit_PFK,
+///       die in LErklaerungen LPfk_berechnet = False haben, nach Export_PFK.
+///       Setze das Flag Pfk dieser Teile auf False.
+///       Die Präferenzkennzeichen dieser Teile sind in UNIPPS zu löschen,
+///       da sie neu geliefert wurden, für das neue Jahr und den konkreten
+///       Lieferanten, aber in Digilek noch keine gültige Lekl erfasst wurde.
+/// 3.2 zu setzende Kennungen
+///     Übertrage alle Teile aus Tabelle Teile mit Flag Pfk=True nach
+///     Export_PFK und setze dort deren Flag Pfk=True.
+///     Die Präferenzkennzeichen dieser Teile sind in UNIPPS zu setzen,
+///     da für das aktuelle Jahr alle Lieferanten eine positive Lekl abgaben.
+
 procedure Auswerten();
 var
   minRestGueltigkeit:String;
@@ -473,17 +504,6 @@ begin
   //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
   minRestGueltigkeit:=LocalQry1.LiesProgrammDatenWert('Gueltigkeit_Lekl');
 
-  // --------- Zwischentabelle tmpLieferantTeilPfk --------
-
-  //Leere Zwischentabelle  tmpLieferantTeilPfk
-//  LocalQry1.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
-//
-//  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
-//  LocalQry1.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
-//
-//  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
-//  LocalQry1.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
-
   // ---------Markiere Teile von Lieferanten mit gültiger Lekl in LErklaerungen
 
   //Loesche Markierung in LErklaerungen
@@ -493,33 +513,31 @@ begin
   LocalQry1.LeklMarkiereAlleTeile(minRestGueltigkeit);
 
   //Markiere Teile mit gültiger Lekl "einige Teile"
+  //Es werden nur Teile berücksichtigt,
+  // deren Status "aktuell" (nicht im Vorjahr) erfasst wurde
   LocalQry1.LeklMarkiereEinigeTeile(minRestGueltigkeit);
 
-  // --------- Zwischentabelle tmp_anz_xxx_je_teil --------
-
-  //Leere Zwischentabelle
-//  LocalQry1.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
-
-  //Anzahl der Lieferanten je Teil (mit gültiger Erklaerung) in tmp Tabelle
-//  LocalQry1.UpdateTmpAnzErklaerungenJeTeil;
-
-  //Anzahl der Lieferanten  je Teil (mit gültiger Erklaerung)
-  //in Tabelle Teile auf 0 setzen
-//  LocalQry1.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
-
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
-  // in Tabelle Teile setzen
-//  LocalQry1.UpdateTeileZaehleGueltigeLErklaerungen;
-
   // ------ Flag PFK in Tabelle Teile setzen
-//  LocalQry1.UpdateTeileResetPFK;
   //Erst alle true
   LocalQry1.RunExecSQLQuery('UPDATE Teile SET Pfk=-1;');
   //Wenn ein Lieferant des Teils ohne positive Lekl, dann False
   LocalQry1.UpdateTeileDeletePFK;
 
-  //Ermittle anhand der Wareneingänge, zu löschende PFK-Flags im UNIPPS
+  // ------ in UNIPPS zu aendernden Teile in Tabelle Export_PFK
+
+  //Ermittle Wareneingänge seit Jahresbeginn
   HoleWareneingänge;
+
+  LocalQry1.RunExecSQLQuery('BEGIN TRANSACTION;');
+  // Leere Tabelle
+  LocalQry1.RunExecSQLQuery('DELETE from Export_PFK;');
+  //zu löschende PFK-Flags im UNIPPS in Tabelle
+  LocalQry1.UpdatePFKTabellePFK0;
+  //zu setzende PFK-Flags im UNIPPS in Tabelle
+  LocalQry1.UpdatePFKTabellePFK1;
+
+  LocalQry1.RunExecSQLQuery('COMMIT;');
+
   StatusBarLeft('Auswertung fertig');
 
 end;
@@ -537,19 +555,14 @@ begin
 
   while not UnippsQry1.Eof do
   begin
-//    INSERT INTO tmpTeileBenennung ( TeileNr, Zeile, [Text] )
     LocalQry1.InsertFields('tmp_wareneingang_mit_PFK', UnippsQry1.Fields);
     UnippsQry1.next;
   end;
 
-
-  LocalQry1.RunExecSQLQuery('delete from Export_PFK;');
-  LocalQry1.UpdatePFKTabellePFK0;
-  LocalQry1.UpdatePFKTabellePFK1;
-
   LocalQry1.RunExecSQLQuery('COMMIT;');
 
 end;
+
 ///<summary>Hole Adressdaten und Ansprechpartner
 /// aus UNIPPS in eigene Tabellen</summary>
 procedure LieferantenAdressdatenAusUnipps();

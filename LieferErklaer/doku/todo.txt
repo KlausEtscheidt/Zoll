@@ -1,0 +1,7 @@
+Inkosistenzen prüfen
+
+Status unbekannt 
+----------------
+nur wenn noch nicht angefragt wurde
+
+Datum Stand darf nicht aus aktueller Periode sein

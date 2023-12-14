@@ -5,18 +5,20 @@
 
    :ref:`here <Anforderung>`
 
-==================================================
-Programm- und Datenbank-Logik zum Programm DigiLek
-==================================================
+=====================
+Programmlogik DigiLek
+=====================
 
 .. toctree::
    :maxdepth: 2
    :caption: Inhalt:
 
-   Import<Ziel>
-   Menues<Menues>
-   Aufgaben<Aufgaben>
-   Installation
+   Datenbank-Tabellen<Datenbank-Tabellen>
+   Datenbank-Abläufe<Datenbank-Ablaeufe>
+   SQL-Strings<Datenbank-SQL>
+   Delphi<Delphi>
+   
+
 
 Indices and tables
 ==================

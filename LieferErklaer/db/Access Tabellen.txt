@@ -1,0 +1,141 @@
+
+Tabelle: ~TMPCLP508871
+   Feld: n_Lieferanten Default <> erf Falsch Typ 4 Size 4
+   Feld: TeileNr Default <> erf Wahr Typ 10 Size 255
+   Index: __uniqueindex(TeileNr) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Anwender
+   Feld: WinName Default <> erf Wahr Typ 10 Size 255
+   Feld: Vorname Default <> erf Falsch Typ 10 Size 255
+   Feld: Nachname Default <> erf Falsch Typ 10 Size 255
+   Feld: used Default <> erf Falsch Typ 10 Size 255
+   Feld: Faxvorlage Default <> erf Falsch Typ 10 Size 255
+   Index: PrimaryKey(WinName) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Bestellungen
+   Feld: IdLieferant Default <0> erf Wahr Typ 4 Size 4
+   Feld: TeileNr Default <> erf Wahr Typ 10 Size 255
+   Feld: BestDatum Default <> erf Falsch Typ 8 Size 8
+   Feld: eingelesen Default <> erf Falsch Typ 8 Size 8
+   Feld: LKurzname Default <> erf Falsch Typ 10 Size 255
+   Feld: LName1 Default <> erf Falsch Typ 10 Size 255
+   Feld: LName2 Default <> erf Falsch Typ 10 Size 255
+   Feld: LAdressId Default <0> erf Falsch Typ 4 Size 4
+   Feld: LTeileNr Default <> erf Falsch Typ 10 Size 255
+   Index: id_teil_lief(TeileNr,IdLieferant) Prim Wahr Req Wahr Uni Wahr
+   Index: LAdressId(LAdressId) Prim Falsch Req Falsch Uni Falsch
+
+Tabelle: Export_PFK
+   Feld: t_tg_nr Default <> erf Falsch Typ 10 Size 40
+   Feld: PFK Default <No> erf Falsch Typ 1 Size 1
+
+Tabelle: LErklaerungen
+   Feld: IdLieferant Default <> erf Wahr Typ 4 Size 4
+   Feld: TeileNr Default <> erf Wahr Typ 10 Size 255
+   Feld: LTeileNr Default <> erf Falsch Typ 10 Size 255
+   Feld: LPfk Default <0> erf Falsch Typ 4 Size 4
+   Feld: BestDatum Default <"1900-01-01"> erf Falsch Typ 10 Size 50
+   Feld: Id Default <> erf Falsch Typ 4 Size 4
+   Feld: LPfk_berechnet Default <0> erf Falsch Typ 4 Size 4
+   Index: PrimaryKey(Id) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Lieferanten
+   Feld: IdLieferant Default <> erf Wahr Typ 4 Size 4
+   Feld: LKurzname Default <> erf Falsch Typ 10 Size 200
+   Feld: LName1 Default <> erf Falsch Typ 10 Size 200
+   Feld: LName2 Default <> erf Falsch Typ 10 Size 200
+   Feld: lekl Default <0> erf Falsch Typ 4 Size 4
+   Feld: Stand Default <"1900-01-01"> erf Falsch Typ 10 Size 50
+   Feld: gilt_bis Default <"1900-01-01"> erf Falsch Typ 10 Size 50
+   Feld: Pumpenteile Default <0> erf Falsch Typ 4 Size 4
+   Feld: Lieferstatus Default <"neu"> erf Falsch Typ 10 Size 10
+   Feld: Ersatzteile Default <0> erf Falsch Typ 4 Size 4
+   Feld: StandTeile Default <"1900-01-01"> erf Falsch Typ 10 Size 50
+   Feld: letzteAnfrage Default <"1900-01-01"> erf Falsch Typ 10 Size 50
+   Feld: Kommentar Default <> erf Falsch Typ 10 Size 255
+   Index: sqlite_autoindex_0(IdLieferant) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Lieferanten_Adressen
+   Feld: IdLieferant Default <> erf Wahr Typ 4 Size 4
+   Feld: adresse Default <> erf Falsch Typ 4 Size 4
+   Feld: kurzname Default <> erf Falsch Typ 10 Size 30
+   Feld: name1 Default <> erf Falsch Typ 10 Size 100
+   Feld: name2 Default <> erf Falsch Typ 10 Size 100
+   Feld: name3 Default <> erf Falsch Typ 10 Size 100
+   Feld: name4 Default <> erf Falsch Typ 10 Size 100
+   Feld: strasse Default <> erf Falsch Typ 10 Size 100
+   Feld: postfach Default <> erf Falsch Typ 10 Size 40
+   Feld: staat Default <> erf Falsch Typ 10 Size 8
+   Feld: plz_haus Default <> erf Falsch Typ 10 Size 24
+   Feld: plz_postfach Default <> erf Falsch Typ 10 Size 24
+   Feld: ort Default <> erf Falsch Typ 10 Size 100
+   Feld: ort_postfach Default <> erf Falsch Typ 10 Size 100
+   Feld: telefon Default <> erf Falsch Typ 10 Size 50
+   Feld: telefax Default <> erf Falsch Typ 10 Size 50
+   Feld: email Default <> erf Falsch Typ 10 Size 100
+   Feld: hat_LEKL_Ansprechp Default <0> erf Falsch Typ 10 Size 255
+   Feld: Anrede Default <> erf Falsch Typ 10 Size 255
+   Feld: Vorname Default <> erf Falsch Typ 10 Size 255
+   Feld: Nachname Default <> erf Falsch Typ 10 Size 255
+   Index: PrimaryKey(IdLieferant) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Lieferanten_Ansprechpartner
+   Feld: ID Default <> erf Falsch Typ 4 Size 4
+   Feld: IdLieferant Default <0> erf Falsch Typ 16 Size 8
+   Feld: IdPerson Default <0> erf Falsch Typ 4 Size 4
+   Feld: Anrede Default <> erf Falsch Typ 10 Size 255
+   Feld: Vorname Default <> erf Falsch Typ 10 Size 255
+   Feld: Nachname Default <> erf Falsch Typ 10 Size 255
+   Feld: email Default <> erf Falsch Typ 10 Size 255
+   Feld: telefax Default <> erf Falsch Typ 10 Size 255
+   Index: ID(IdLieferant) Prim Falsch Req Falsch Uni Falsch
+   Index: Id_Person(IdPerson) Prim Falsch Req Falsch Uni Falsch
+   Index: PrimaryKey(ID) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: LieferantenStatusTxt
+   Feld: Id Default <> erf Wahr Typ 4 Size 4
+   Feld: StatusTxt Default <> erf Wahr Typ 10 Size 50
+   Index: __uniqueindex(Id) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: ProgrammDaten
+   Feld: Name Default <> erf Wahr Typ 10 Size 50
+   Feld: Wert Default <> erf Falsch Typ 10 Size 255
+   Feld: Kommentar Default <> erf Falsch Typ 12 Size 0
+   Index: __uniqueindex(Name) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: Teile
+   Feld: TeileNr Default <> erf Wahr Typ 10 Size 255
+   Feld: TName1 Default <> erf Falsch Typ 10 Size 255
+   Feld: TName2 Default <> erf Falsch Typ 10 Size 255
+   Feld: Pumpenteil Default <0> erf Falsch Typ 4 Size 4
+   Feld: PFK Default <0> erf Falsch Typ 4 Size 4
+   Feld: Ersatzteil Default <0> erf Falsch Typ 4 Size 4
+   Feld: n_Lieferanten Default <0> erf Falsch Typ 4 Size 4
+   Feld: n_LPfk Default <0> erf Falsch Typ 4 Size 4
+   Index: sqlite_autoindex_Teile_1(TeileNr) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: tmp_anz_xxx_je_teil
+   Feld: n Default <> erf Falsch Typ 4 Size 4
+   Feld: TeileNr Default <> erf Falsch Typ 10 Size 255
+
+Tabelle: tmp_wareneingang_mit_PFK
+   Feld: t_tg_nr Default <> erf Falsch Typ 10 Size 40
+   Feld: lieferant Default <> erf Falsch Typ 4 Size 4
+
+Tabelle: tmpLieferantTeilPfk
+   Feld: TeileNr Default <> erf Falsch Typ 10 Size 255
+   Feld: IdLieferant Default <> erf Falsch Typ 4 Size 4
+   Feld: lekl Default <> erf Falsch Typ 4 Size 4
+   Feld: Id Default <> erf Falsch Typ 4 Size 4
+   Index: sqlite_autoindex_0(Id) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: tmpTeileBenennung
+   Feld: Zeile Default <> erf Wahr Typ 4 Size 4
+   Feld: Benennung Default <> erf Falsch Typ 10 Size 255
+   Feld: TeileNr Default <> erf Wahr Typ 10 Size 255
+   Index: pkey(Zeile,TeileNr) Prim Wahr Req Wahr Uni Wahr
+
+Tabelle: tmpTeileVerwendung
+   Feld: t_tg_nr Default <> erf Falsch Typ 10 Size 40
+   Index: t_tg_nr(t_tg_nr) Prim Falsch Req Falsch Uni Wahr
+

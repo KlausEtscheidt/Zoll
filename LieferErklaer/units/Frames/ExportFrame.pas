@@ -13,14 +13,11 @@ type
     TeilePanel: TPanel;
     Panel5: TPanel;
     Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
     Label14: TLabel;
     Panel4: TPanel;
     nTeile: TLabel;
     nPumpenteile: TLabel;
     nErsatzteile: TLabel;
-    nPfk: TLabel;
     LieferantenPanel: TPanel;
     Panel1: TPanel;
     Label6: TLabel;
@@ -34,6 +31,15 @@ type
     nLieferStatusUnbekannt: TLabel;
     Label10: TLabel;
     nLieferPumpenteile: TLabel;
+    Panel3: TPanel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label5: TLabel;
+    Panel6: TPanel;
+    Label4: TLabel;
+    nPumpePfk: TLabel;
+    nErsatzPfk: TLabel;
   private
     { Private-Deklarationen }
   public
@@ -65,11 +71,14 @@ begin
   LocalQry.Filtered := True;
   nPumpenteile.Caption:=IntToStr(LocalQry.RecordCount);
 
+  LocalQry.Filter := 'Pumpenteil=-1 AND PFK=-1';
+  nPumpePfk.Caption:=IntToStr(LocalQry.RecordCount);
+
   LocalQry.Filter := 'Ersatzteil=-1';
   nErsatzteile.Caption:=IntToStr(LocalQry.RecordCount);
 
   LocalQry.Filter := 'Ersatzteil=-1 AND PFK=-1';
-  nPfk.Caption:=IntToStr(LocalQry.RecordCount);
+  nErsatzPfk.Caption:=IntToStr(LocalQry.RecordCount);
   LocalQry.Filtered := False;
 
   // Zaehle alle Teile Lieferanten

@@ -309,6 +309,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       TitleFont.Height = -15
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      OnTitleClick = DBGrid1TitleClick
       Columns = <
         item
           Expanded = False
@@ -333,6 +334,7 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
         item
           Expanded = False
           FieldName = 'letzteAnfrage'
+          Width = 68
           Visible = True
         end
         item
@@ -492,7 +494,12 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Top = 62
       Width = 64
       Height = 25
+      Hint = 
+        'Status (R'#252'ckmeldung) der Lekl eingeben oder Liefer. als irreleva' +
+        'nt markieren'
       Action = StatusUpdateAction
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
     object FaxBtn: TButton
@@ -500,7 +507,10 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Top = 91
       Width = 73
       Height = 25
+      Hint = 'Lekl per Fax anfragen'
       Action = FaxAction
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
     object Panel1b: TPanel
@@ -1088,7 +1098,10 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
       Top = 60
       Width = 73
       Height = 25
+      Hint = 'Lekl per mail anfragen'
       Action = mailAction
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 8
     end
     object DBMemo2: TDBMemo
@@ -1277,7 +1290,8 @@ object LieferantenErklAnfordernFrm: TLieferantenErklAnfordernFrm
     end
     object TeileAnzeigeAction: TAction
       Category = 'PopUpMen'
-      Caption = 'TeileAnzeige'
+      Caption = 'Teile anzeigen'
+      Hint = 'zeigt die vom Lieferanten bezogenen Teile an'
       OnExecute = TeileAnzeigeActionExecute
     end
     object ExportExcelAction: TAction
