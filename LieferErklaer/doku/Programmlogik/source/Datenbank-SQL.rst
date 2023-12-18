@@ -527,6 +527,33 @@ Delphi: TWQryAccess.UpdateLieferant
           +  ' Kommentar=' + QuotedStr(Kommentar)
           +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
 
+
+.. #################################################################################
+
+.. _SQLHoleLieferantenFuerTeileEingabe:
+
+Hole Lieferanten für teilespez. Eingabe
+---------------------------------------
+
+Liest Lieferanten fuer die teilespezifische Eingabe
+
+Liest nur Lieferanten die Pumpenteile liefern mit gültiger Erklärung (Anzahl Tage Restgültig.> min_guelt)
+mit Status der LEKL=3 (einige Teile)
+
+Delphi: TWQryAccess.HoleLieferantenFuerTeileEingabe
+
+::
+
+    SQL := 'select lieferanten.*, '
+         + 'Date()-CDate(Stand) as AlterStand, '
+         + 'Date()-CDate(StandTeile) as AlterStandTeile '
+         + 'from lieferanten '
+         + 'WHERE Lieferstatus <> "entfallen" '
+         + 'AND Pumpenteile=-1 AND lekl=3 '
+         + 'AND CDate(gilt_bis)-Date() >' + min_guelt
+         + ' ORDER by LKurzname;';
+
+
 .. #################################################################################
 
 Auswertung

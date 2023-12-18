@@ -42,6 +42,8 @@ LeklAnfordernFrame
 
 Formular-Unit "LeklAnfordernFrame" mit Klasse "TLieferantenErklAnfordernFrm"
 
+Anfordern einer Lieferantenerklärung
+
 .. image:: pics/LeklAnfordern.png
 
 In TLieferantenErklAnfordernFrm.ShowFrame werden Parameter aus :ref:`ProgrammDaten<TabProgrammDaten>` geladen.
@@ -76,8 +78,9 @@ LeklStatusEingabeFrame
 
 Formular-Unit "LeklStatusEingabeFrame" mit Klasse "TLeklStatusFrm"
 
-.. image:: pics/LeklStatuseingabe.png
+Einpflegen der Rückmeldung eines Lieferanten
 
+.. image:: pics/LeklStatuseingabe.png
 
 
 In TLeklStatusFrm.ShowFrame werden Parameter aus :ref:`ProgrammDaten<TabProgrammDaten>` geladen.
@@ -91,7 +94,7 @@ Die Abfrage :ref:`HoleLieferantenMitAdressen<SQLHoleLieferantenMitAdressen>` die
 
 Die Datensätze werden üer TLeklStatusFrm.FilterUpdateActionExecute gefiltert.
 
-Es werden nur Lieferanten angezeigt, für die schon eine Erklärung angefordert wurde.
+Es werden nur Lieferanten angezeigt, für die schon eine Erklärung angefordert 0wurde.
 Eine Erklärung gilt als "schon angefordert", wenn *angefragt_vor_Tagen <= veraltet*. 
 Mit *angefragt_vor_Tagen* als Differenz aus aktuellem Datum und dem Wert *letzteAnfrage* aus der Tabelle :ref:`Lieferanten<TabLieferanten>`.
 
@@ -99,6 +102,32 @@ Eine Antwort gilt als schon erfasst, wenn *Stand_minus_Anfrage* >=0.
 Mit *Stand_minus_Anfrage* als Differenz aus dem Wert *Stand*  und dem Wert *letzteAnfrage* aus der Tabelle :ref:`Lieferanten<TabLieferanten>`.
 Das Datum zu dem der Lieferantenstatus das letzte Mal erfasst wurde (*Stand*) muss also nach dem Versenden der letzten Anfrage (*letzteAnfrage*) liegen.
 
+
+.. #################################################################################
+
+.. _FormLekl3Statuseingabe:
+
+LieferantenLEKL3AuswahlFrame
+----------------------------
+
+Formular-Unit "LieferantenLEKL3AuswahlFrame" mit Klasse "TLieferantenStatusFrm"
+
+Eingabe der teilespezifischen Lieferantenerklärungen
+
+.. image:: pics/Lekl3LieferantenAuswahl.png
+
+In TLieferantenStatusFrm.ShowFrame werden Parameter aus :ref:`ProgrammDaten<TabProgrammDaten>` geladen.
+
+::
+
+    minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
+    veraltet:=LocalQry.LiesProgrammDatenWert('veraltet');
+
+Die Abfrage :ref:`HoleLieferantenFuerTeileEingabe<SQLHoleLieferantenFuerTeileEingabe>` dient als Basis für das Formular.
+
+
+
+.. #################################################################################
 
 .. #################################################################################
 
@@ -110,11 +139,9 @@ Dialoge
 LieferantenStatusDlg
 --------------------
 
-
 Dialog-Unit LieferantenStatusDlg mit Klasse TLieferantenStatusDialog
 
 Einpflegen der Rückmeldung eines Lieferanten Eingabe des allegemeinen Status der Lieferanten-Erklärungen über Dialog "LieferantenStatusDialog".
-
 
 
 
@@ -135,12 +162,24 @@ ruft
 
 LocalQry.HoleLieferantenMitAdressen;
 
-"Status prüfen/eingeben"
-~~~~~~~~~~~~~~~~~~~~~~~~
+Status prüfen/eingeben
+~~~~~~~~~~~~~~~~~~~~~~
 
-öffnet Formular :ref:`LeklStatusEingabeFrame<FormLeklStatusEingabeFrame>` 
+öffnet Formular :ref:`LeklStatusEingabeFrame<FormLeklStatuseingabe>` 
 
 LeklStatusEingabeFrm.ShowFrame
 
 ruft LocalQry.HoleLieferantenMitAdressen
+
+Teile
+-----
+
+Status eingeben
+~~~~~~~~~~~~~~~
+
+öffnet Formular :ref:`LieferantenLEKL3AuswahlFrame<FormLekl3Statuseingabe>` 
+
+Lekl3LieferantAuswahlFrm.ShowFrame
+
+ruft LocalQry.HoleLieferantenFuerTeileEingabe
 
