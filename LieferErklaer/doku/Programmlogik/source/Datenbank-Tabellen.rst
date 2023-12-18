@@ -68,8 +68,8 @@ Lieferanten
 Zweck:
     Erfassung des generellen Status eines Lieferanten bezüglich Lieferantenerklärung:
     Im Feld "lekl" wird die Art der Lieferantenerklärung (s :ref:`LieferantenStatusTxt<TabLieferantenStatusTxt>` ) erfasst.
-    "gilt_bis" enthält das Ablaufdatums der Erklärung
-    .....
+    "gilt_bis" enthält das Verfallsdatum der Erklärung.
+    
 
 Verhalten beim Import:
     - Neue Lieferanten werden aufgenommen (Übernahme aus Bestellungen, Lieferstatus="neu").
@@ -80,19 +80,19 @@ Tabelle Lieferanten:
 
 ::
     
-    Feld : IdLieferant                   Zahl   
-    Feld : LKurzname                     Text   
-    Feld : LName1                        Text   
-    Feld : LName2                        Text   
-    Feld : lekl           0              Zahl   
-    Feld : Stand          "1900-01-01"   Text   
-    Feld : gilt_bis       "1900-01-01"   Text   
-    Feld : Pumpenteile    0              Zahl   
-    Feld : Lieferstatus   "neu"          Text   
-    Feld : Ersatzteile    0              Zahl   
+    Feld : IdLieferant                   Zahl   UNIPPS-ID
+    Feld : LKurzname                     Text   UNIPPS-Kurzname
+    Feld : LName1                        Text   UNIPPS-Name1
+    Feld : LName2                        Text   UNIPPS-Name2
+    Feld : lekl           0              Zahl   Art der Lieferantenerklärung
+    Feld : Stand          "1900-01-01"   Text   Datum der Antwort (Eingabe lekl)
+    Feld : gilt_bis       "1900-01-01"   Text   Verfallsdatum der Lieferantenerklärung
+    Feld : Pumpenteile    0              Zahl   liefert der Lieferant Pumpenteile
+    Feld : Lieferstatus   "neu"          Text   neu, aktuell oder entfallen
+    Feld : Ersatzteile    0              Zahl   liefert der Lieferant Ersatzteile
     Feld : StandTeile     "1900-01-01"   Text   
-    Feld : letzteAnfrage  "1900-01-01"   Text   
-    Feld : Kommentar                     Text   
+    Feld : letzteAnfrage  "1900-01-01"   Text   Wann wurde der Lief. zuletzt aufgefordert eine LEkl abzugeben
+    Feld : Kommentar                     Text   Bemerkungen zur Antwort oder warum der Lief. nicht relevant ist
     Index: sqlite_autoindex_0(IdLieferant)  Primary
 
 .. #################################################################################
@@ -281,7 +281,22 @@ Zweck:
 Import:
     nicht betroffen
 
-'Bestellzeitraum': Anzahl Tage, die das Freigabedatum einer Bestellung zurückliegen darf, damit sie importiert wird
+Inhalte:
+
+Bestellzeitraum: 
+    Anzahl Tage, die das Freigabedatum einer Bestellung zurückliegen darf, damit sie importiert wird
+
+Gueltigkeit_Lekl: 
+    -------------------- prüfen ------------------------
+    Anzahl Tage, die eine Lieferantenerklärung noch gültig sein muss um als gültig betrachtet zu werden.
+    Hintergrund: Beim Anfordern neuer Erklärungen soll z.B. eine Erklärung, die nur noch 30 Tage gilt,
+    neu angefordert werden.
+
+veraltet:
+    -------------------- prüfen ------------------------
+    Stati mit Datum älter als *veraltet* Tage gelten als veraltet (z.B. Status LEKL) 200
+    Hintergrund: Angaben aus dem Vorjahr von aktuellen unterscheiden
+
 
 .. #################################################################################
 

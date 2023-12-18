@@ -476,15 +476,15 @@ Delphi: TWQryAccess.UpdateTeileZaehleLieferanten
 
 .. #################################################################################
 
-Input für Formulare
-===================
+Formulare
+=========
 
 .. #################################################################################
 
 .. _SQLHoleLieferantenMitAdressen:
 
 Hole Lieferanten mit Adressen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
 Basis für Formular zum Anfordern von Lieferanten-Erklärungen "LieferantenErklAnfordernFrm"
 
@@ -507,6 +507,25 @@ Delphi: TWQryAccess.HoleLieferantenMitAdressen
        + 'WHERE Lieferstatus <> "entfallen" '
        + 'order by LKurzname; ' ;
 
+
+.. #################################################################################
+
+.. _SQLUpdateLieferant:
+
+Update Lieferant
+----------------
+
+Pflege der Tabelle Lieferanten nach Status-Eingabe im Dialog "LieferantenStatusDlg".
+
+Delphi: TWQryAccess.UpdateLieferant
+
+::
+
+      SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
+          +  'gilt_bis=' + QuotedStr(GiltBis) + ', '
+          +  'lekl=' + QuotedStr(lekl) + ', '
+          +  ' Kommentar=' + QuotedStr(Kommentar)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
 
 .. #################################################################################
 

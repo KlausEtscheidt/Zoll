@@ -136,35 +136,86 @@ Anzahl der Lieferanten eines Teils in tmp Tabelle tmp_anz_xxx_je_teil Speichern
 Anzahl in Tabelle Teile übertragen
  
 
-manuelle Pflege
----------------
-- Pflege des Lieferantenstatus bzgl Lieferanten-Erklärung inkl Gültigkeit Abfrage "HoleLieferantenMitStatusTxt" für Formular "LieferantenStatusFrame"
-- Eingabe der teilebezogenen Lieferanten-Erklärungen in LErklaerungen Abfrage "HoleLErklaerungen" für Formular "LieferantenErklaerungenFrame" 
+Benutzereingaben
+----------------
+
+1. Anfordern von Lieferanten Erklärungen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Formular-Unit "LeklAnfordernFrame" mit Klasse "TLieferantenErklAnfordernFrm"
+
+Anfordern von Lieferanten-Erklärungen, Pflege des Lieferantenstatus bzgl Lieferanten-Erklärung inkl Gültigkeit.
+
+Die Abfrage :ref:`HoleLieferantenMitAdressen<SQLHoleLieferantenMitAdressen>` dient als Basis für das Formular.
+
+Die Buttons "mail" bzw "Fax" versenden eine Anforderung einer Lieferanten-Erklärung.
+
+Ist dieser Vorgang erfolgreich, wird über TLieferantenErklAnfordernFrm.UpdateAnfrageDatum das Feld "letzteAnfrage"
+der Tabelle :ref:`Lieferanten<tablieferanten>` aktualisiert. 
+
+::
+
+   SQL := 'Update Lieferanten set letzteAnfrage=' +QuotedStr(Datum)
+      +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+
+
+2. Einpflegen der Rückmeldung eines Lieferanten
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Im Formular :ref:`LeklAnfordernFrame<FormLeklAnfordern>` ruft der Button "Status" die Execute-Methode der "StatusUpdateAction", welche den Dialog "LieferantenStatusDialog" öffnet.
+
+In TLieferantenErklAnfordernFrm.StatusUpdateActionExecute werden über eine Abfrage (s. :ref:`SQL<SQLUpdateLieferant>`)
+die Felder "Stand" , "gilt_bis", "lekl" und "Kommentar" der Tabelle :ref:`Lieferanten<TabLieferanten>` mit den Daten aus dem Dialog besetzt.
+
+Der gleiche Ablauf wird über das Formular  :ref:`LeklStatusEingabeFrame<FormLeklStatuseingabe>` mittels TLeklStatusFrm.StatusUpdateActionExecute erreicht.
+Hier gibt es jedoch andere Filtermöglichkeiten.
+
+
+.. _EingabeTeileLekl:
+
+3. Eingabe der teilebezogenen Lieferanten-Erklärungen 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Formular "LieferantenErklaerungenFrame" 
+Eingabe der teilebezogenen Lieferanten-Erklärungen in LErklaerungen Abfrage "HoleLErklaerungen" für 
+
 
 Auswertung
 ----------
 
+Es gibt zwei Möglichkeiten der Auswertung:
+
+  - Bei der temporären Auswertung werden ab Januar regelmäßig die neuen Wareneingänge in UNIPPS mit der DigiLek-Datenbank verglichen.
+    Enthält der Wareneingang Teile, deren PFK in UNIPPS, aber nicht in DigiLek gesetzt ist, muss das PFK in UNIPPS gelöscht werden.
+  - Bei der endgültigen Auswertung werden alle PFK in UNIPPS entsprechend der Tabelle "Teile" neu gelöscht oder gesetzt.
+    Dies kann erst erfolgen, wenn alle Rückmeldungen eingegangen sind.
+  
 1. Tabelle LErklaerungen
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Das Flag "LPfk_berechnet" wird generell False gesetzt.
-Es wird True bei Lieferanten mit einer gültigen Lekl und lekl-Status "alle Teile" fuer alle Teile dieses Lieferanten
-oder lekl-Status "einige Teile" fuer alle Teile dieses Lieferanten, deren Flag LPfk zuvor vom Benutzer 
-für die aktuelle Periode gesetzt wurde
+Das Flag "LPfk_berechnet" wird zunächst generell False gesetzt.
+
+Es wird für **alle** Teile dieses Lieferanten True, wenn es für diesen Lieferanten eine gültige Erlärung der Art "**alle** Teile" 
+(s. Feld lekl in Tabelle :ref:`Lieferanten<TabLieferanten>`) gibt.
+
+Es wird für **einige** Teile dieses Lieferanten True, wenn es für diesen Lieferanten eine gültige Erlärung der Art "**einige** Teile" gibt.
+Es wird dann für die jenigen Teile True, deren Flag "LPfk" zuvor vom Benutzer für die aktuelle Periode True gesetzt wurde 
+(s. :ref:`Eingabe der teilebezogenen Lieferanten-Erklärungen<EingabeTeileLekl>`)
 
 2. Tabelle Teile
 ~~~~~~~~~~~~~~~~
 
-Setze das Flag Pfk generell True
-Loesche Flag bei Teilen mit mind. 1 Lieferanten in LErklaerungen mit LPfk_berechnet = False.
+Setze das Flag "Pfk" zunächst generell True.
+Lösche Flag bei Teilen mit mind. 1 Lieferanten in "LErklaerungen" mit "LPfk_berechnet" = False.
 Es bleiben nur Teile, bei denen alle Lieferanten eine positive Lekl für dieses Teil abgaben.
 
 3. Tabelle Export_PFK
 ~~~~~~~~~~~~~~~~~~~~~
 
-Diese Tabelle erhält alle Teile, deren Präferenzkennzeichen in UNIPPS geändert werden muss
+Diese Tabelle erhält alle Teile, deren Präferenzkennzeichen in UNIPPS geändert werden muss.
 
 zu löschende Kennungen eintragen:
+.................................
 
 Lese Wareneingänge seit Beginn des akt. Jahres aus UNIPPS und speichere Teile / Lieferanten 
 in der Tabelle tmp_wareneingang_mit_PFK, wenn sie in UNIPPS ein Präferenzkennzeichen haben.
@@ -174,6 +225,7 @@ nach Export_PFK mit Flag Pfk=False. Die Präferenzkennzeichen dieser Teile sind 
 da sie neu geliefert wurden, es für das neue Jahr aber noch keine gültige Lieferanten-Erklärung gibt.
 
 zu setzende Kennungen eintragen:
+................................
 
 Übertrage alle Teile aus Tabelle Teile mit Flag Pfk=True nach "Export_PFK" und setze dort deren Flag Pfk=True.
 Die Präferenzkennzeichen dieser Teile sind in UNIPPS zu setzen,
