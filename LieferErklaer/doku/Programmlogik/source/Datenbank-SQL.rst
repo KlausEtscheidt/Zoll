@@ -5,6 +5,8 @@ SQL-Strings
 Basis-Import
 ============
 
+.. #################################################################################
+
 .. _SQLSucheBestellungen:
 
 Bestellungen einlesen
@@ -60,6 +62,8 @@ um die Kurz- und Langnamen des Lieferanten zu erhalten.
 |    INNER JOIN adresse on lieferant.adresse = adresse.ident_nr
 
 
+.. #################################################################################
+
 .. _SQLSucheLieferantenTeilenummer:
 
 Suche Lieferanten-Teilenummer
@@ -74,6 +78,8 @@ Delphi: TWQryUNIPPS.SucheLieferantenTeilenummer(IdLieferant; TeileNr);
 
 mit ident_nr1=IdLieferant ident_nr2=TeileNr als Parameter
 
+
+.. #################################################################################
 
 .. _SQLSucheTeileBenennung:
 
@@ -99,6 +105,8 @@ Delphi: TWQryUNIPPS.SucheTeileBenennung
 Teile
 -----
 
+.. #################################################################################
+
 .. _SQLTeileBenennung1:
 
 Teile-Benennung 1 in Tabelle Teile
@@ -114,6 +122,8 @@ Delphi: TWQryAccess.TeileName1InTabelle
     INSERT INTO Teile (TeileNr, TName1, Pumpenteil, PFK)  
     SELECT TeileNr, Benennung AS TName1, 0, 0 
     FROM tmpTeileBenennung WHERE Zeile=1 ORDER BY TeileNr; 
+
+.. #################################################################################
 
 .. _SQLTeileBenennung2:
 
@@ -134,6 +144,8 @@ Pumpen und Ersatzteile bestimmen
 --------------------------------
 
 
+.. #################################################################################
+
 .. _SQLTeilinKA:
 
 Ist Teil in KA
@@ -147,6 +159,8 @@ Delphi: TWQryUNIPPS.SucheTeileInKA
         
     SELECT t_tg_nr FROM auftragpos where t_tg_nr=?;
 
+
+.. #################################################################################
 
 .. _SQLTeilinFA:
 
@@ -162,6 +176,8 @@ Delphi: TWQryUNIPPS.SucheTeileInFA
     SELECT t_tg_nr FROM astuelipos where t_tg_nr=?;
 
 
+.. #################################################################################
+
 .. _SQLTeilinSTU:
 
 Ist Teil in STückliste
@@ -175,6 +191,8 @@ Delphi: TWQryUNIPPS.SucheTeileInSTU
         
     SELECT t_tg_nr FROM teil_stuelipos where t_tg_nr=?;
 
+
+.. #################################################################################
 
 .. _SQLTeilinFAKopf:
 
@@ -193,6 +211,8 @@ Delphi: TWQryUNIPPS.SucheTeileInFAKopf
 Lieferanten Adressen
 --------------------
 
+
+.. #################################################################################
 
 .. _SQLLieferantenAdressen:
 
@@ -217,6 +237,8 @@ Delphi: TWQryUNIPPS.HoleLieferantenAdressen
          + 'INNER JOIN adresse ON lieferant.adresse = adresse.ident_nr;' ;
 
 
+.. #################################################################################
+
 .. _SQLLieferantenAnspechpartner:
 
 Hole Lieferanten Anspechpartner
@@ -238,9 +260,37 @@ Delphi: TWQryUNIPPS.HoleLieferantenAnspechpartner
          + 'WHERE UPPER(klassifiz) LIKE "%LEKL%";' ;
 
 
+.. #################################################################################
+
+.. _SQLLieferantenAnspechpartnerUebertragen:
+
+Lieferanten Anspechpartner übertragen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Überträgt Anspechpartner der Lieferanten aus der Tabelle Lieferanten_Ansprechpartner
+in die Tabelle Lieferanten_Adressen und ersetzt dort den allgemeinen Anspechpartner.
+
+Delphi: TWQryUNIPPS.UpdateLieferantenAnsprechpartner
+
+::
+
+  sql := 'UPDATE Lieferanten_Adressen '
+       + 'INNER JOIN Lieferanten_Ansprechpartner '
+       + 'ON Lieferanten_Adressen.IdLieferant = '
+       + 'Lieferanten_Ansprechpartner.IdLieferant '
+       + 'SET Lieferanten_Adressen.hat_LEKL_Ansprechp = True, '
+       + 'Lieferanten_Adressen.Anrede = Lieferanten_Ansprechpartner.Anrede, '
+       + 'Lieferanten_Adressen.Vorname = Lieferanten_Ansprechpartner.Vorname, '
+       + 'Lieferanten_Adressen.Nachname = Lieferanten_Ansprechpartner.Nachname, '
+       + 'Lieferanten_Adressen.email = Lieferanten_Ansprechpartner.email, '
+       + 'Lieferanten_Adressen.telefax = Lieferanten_Ansprechpartner.telefax ;' ;
+
+
 Lieferanten
 -----------
 
+
+.. #################################################################################
 
 .. _SQLaktuelleLieferanten:
 
@@ -255,6 +305,8 @@ Delphi: TWQryAccess.MarkiereAktuelleLieferanten
 
     update Lieferanten set Lieferstatus="aktuell" where  IdLieferant in (SELECT IdLieferant FROM Bestellungen); 
 
+
+.. #################################################################################
 
 .. _SQLneueLieferanten:
 
@@ -273,6 +325,8 @@ Delphi: TWQryAccess.NeueLieferantenInTabelle
     FROM Bestellungen where IdLieferant not in (SELECT IdLieferant FROM Lieferanten) ORDER BY IdLieferant;
 
 
+.. #################################################################################
+
 .. _SQLobsoleteLieferanten:
 
 Markiere alte Lieferanten in Tabelle "Lieferanten"
@@ -288,6 +342,8 @@ Delphi: TWQryAccess.MarkiereAlteLieferanten
     where IdLieferant not in (SELECT IdLieferant FROM Bestellungen); 
 
 
+.. #################################################################################
+
 .. _SQLLieferantenResetPumpenflags:
 
 Reset Pumpen- und Ersatzteil-Flag in Tabelle "Lieferanten"
@@ -301,6 +357,8 @@ Delphi: TWQryAccess.ResetPumpenErsatzteilMarkierungInLieferanten
         
     UPDATE Lieferanten SET Pumpenteile=0, Ersatzteile=0;
 
+
+.. #################################################################################
 
 .. _SQLLieferantenSetPumpenflags:
 
@@ -317,6 +375,8 @@ Delphi: TWQryAccess.MarkierePumpenteilLieferanten
     (SELECT DISTINCT IdLieferant 
     FROM LErklaerungen INNER JOIN Teile ON LErklaerungen.TeileNr=Teile.TeileNr  WHERE Pumpenteil=-1);'
 
+
+.. #################################################################################
 
 .. _SQLLieferantenSetErsatzflags:
 
@@ -337,6 +397,7 @@ Delphi: TWQryAccess.MarkiereErsatzteilLieferanten
 Lieferantenerklärungen
 ----------------------
 
+.. #################################################################################
 
 .. _SQLLErklaerungenNeu:
 
@@ -356,6 +417,8 @@ Delphi: TWQryAccess.NeueLErklaerungenInTabelle
     on Bestellungen.TeileNr=LErklaerungen.TeileNr and Bestellungen.IdLieferant = LErklaerungen.IdLieferant 
     WHERE LErklaerungen.IdLieferant Is Null
 
+
+.. #################################################################################
 
 .. _SQLLErklaerungenObsolet:
 
@@ -379,6 +442,8 @@ Anzahl Lieferanten je Teil
 --------------------------
 
 
+.. #################################################################################
+
 .. _SQLTmpAnzLieferantenJeTeil:
 
 Zähle Lieferanten je Teil (tmp)
@@ -394,6 +459,8 @@ Delphi: TWQryAccess.UpdateTmpAnzLieferantenJeTeil
     SELECT TeileNr, Count(TeileNr) AS n FROM LErklaerungen GROUP BY TeileNr; 
 
 
+.. #################################################################################
+
 .. _SQLTeileAnzLieferanten:
 
 Anzahl Lieferanten je Teil in Tabelle Teile
@@ -406,3 +473,85 @@ Delphi: TWQryAccess.UpdateTeileZaehleLieferanten
     UPDATE Teile INNER JOIN tmp_anz_xxx_je_teil 
     ON Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr 
     SET Teile.n_Lieferanten = tmp_anz_xxx_je_teil.n;
+
+.. #################################################################################
+
+Input für Formulare
+===================
+
+.. #################################################################################
+
+.. _SQLHoleLieferantenMitAdressen:
+
+Hole Lieferanten mit Adressen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Basis für Formular zum Anfordern von Lieferanten-Erklärungen "LieferantenErklAnfordernFrm"
+
+Delphi: TWQryAccess.HoleLieferantenMitAdressen
+
+::
+
+  sql := 'Select Lieferanten.IdLieferant, LKurzname, Stand, gilt_bis, letzteAnfrage, '
+       + 'lekl, StatusTxt, Kommentar, Pumpenteile, Ersatzteile, '
+       + 'name1,name2,strasse,plz_haus,ort,staat,telefax,email, '
+       + 'hat_LEKL_Ansprechp,Anrede,Vorname,Nachname, '
+       + 'CDate(gilt_bis)-Date() as gilt_noch, '
+       + 'Date()-CDate(letzteAnfrage) as angefragt_vor_Tagen, '
+       + 'CDate(Stand)-CDate(letzteAnfrage) as Stand_minus_Anfrage '
+       + 'from (Lieferanten '
+       + 'inner join Lieferanten_Adressen '
+       + 'on Lieferanten.IdLieferant=Lieferanten_Adressen.IdLieferant) '
+       + 'inner join LieferantenStatusTxt '
+       + 'on LieferantenStatusTxt.id=lieferanten.lekl '
+       + 'WHERE Lieferstatus <> "entfallen" '
+       + 'order by LKurzname; ' ;
+
+
+.. #################################################################################
+
+Auswertung
+==========
+
+.. #################################################################################
+
+.. _SQLLeklMarkiereAlleTeile:
+
+Lekl Markiere Alle Teile
+------------------------
+
+markiere Teile von Lieferanten mit gültiger Erklärung "alle Teile" in Tabelle LErklaerungen
+
+Delphi: TWQryAccess.LeklMarkiereAlleTeile
+
+::
+
+      SQL := 'UPDATE LErklaerungen SET LPfk_berechnet=-1 '
+           + 'WHERE IdLieferant IN '
+           + '( SELECT IdLieferant FROM Lieferanten '
+           + 'WHERE lekl=2 and Lieferstatus <> "entfallen" and '
+           //Lekl gilt noch mindestens
+           + 'CDate(gilt_bis)-Date()>' + delta_days + ' );' ;
+
+.. #################################################################################
+
+.. _SQLLeklMarkiereEinigeTeile:
+
+Lekl Markiere Einige Teile
+--------------------------
+
+markiere Teile von Lieferanten mit gültiger Erklärung "einige Teile" in Tabelle LErklaerungen
+
+Delphi: TWQryAccess.LeklMarkiereEinigeTeile
+
+::
+
+      SQL := 'UPDATE LErklaerungen '
+           + 'INNER JOIN Lieferanten '
+           + 'ON Lieferanten.IdLieferant=LErklaerungen.IdLieferant '
+           + 'SET LPfk_berechnet=-1 '
+           + 'WHERE lekl=3 and Lieferstatus <> "entfallen" and LPfk=-1 and '
+           //Eingabe der teilspez. Lekl nach Eingabe allgem. Status
+           + 'CDate(StandTeile)>CDate(Stand) and '
+           //Lekl gilt noch mindestens
+           + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;

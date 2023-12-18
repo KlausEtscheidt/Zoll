@@ -25,12 +25,12 @@ Tabelle: Export_PFK
    Feld : PFK      No   Bool   
 
 Tabelle: LErklaerungen
+   Feld : Id                             Zahl   
    Feld : IdLieferant                    Zahl   
    Feld : TeileNr                        Text   
    Feld : LTeileNr                       Text   
    Feld : LPfk            0              Zahl   
    Feld : BestDatum       "1900-01-01"   Text   
-   Feld : Id                             Zahl   
    Feld : LPfk_berechnet  0              Zahl   
    Index: PrimaryKey(Id)  Primary
 
