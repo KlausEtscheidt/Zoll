@@ -30,6 +30,7 @@ type TBasisImport = class(TThread)
         procedure SyncRecNoStatusAnzeigen;
 
         procedure BestellungenAusUnipps;
+        procedure xxxalt_LieferantenTeilenummerAusUnipps;
         procedure LieferantenTeilenummerAusUnipps;
         procedure TeileBenennungAusUnipps;
         procedure TeileBenennungInTeileTabelle;
@@ -209,12 +210,112 @@ begin
 
 end;
 
+/// <summary>Lieferanten-Teilenummer aus UNIPPS in temp Tabelle
+///          tmp_LTeilenummern lesen </summary>
+/// <remarks>
+/// Zweite Abfrage zur Erstellung der Datenbasis des Programms.
+/// </remarks>
+procedure TBasisImport.LieferantenTeilenummerAusUnipps;
+var
+  gefunden:Boolean;
+  sql,ErrMsg:String;
+  nTeile,skip,querysize:Integer;
+//  tmpTable: TWTable;
+
+begin
+  SchrittAnfangAnzeigen(2,'Lieferanten-Benennung zu Teilen lesen');
+
+  gefunden := UnippsQry2.ZaehleAlleLieferantenTeilenummern();
+
+  if not gefunden then
+      raise Exception.Create('Keine Lieferanten-Teilenummern gefunden.');
+  nTeile:=UnippsQry2.FieldByName('anzahl').AsInteger;
+
+  LocalQry2.RunExecSQLQuery('delete from tmp_LTeilenummern;');
+
+  StatusmaxRecord:=nTeile;
+//  tmpTable := Tools.GetTable('tmp_LTeilenummern');
+//  tmpTable.Open;
+
+  skip:=0;
+  querysize:=10000;
+
+  while skip<nTeile do
+    begin
+    try
+      gefunden := UnippsQry2.SucheAlleLieferantenTeilenummern(skip,querysize);
+    except on E: Exception do
+      ErrMsg:=  E.Message;
+    end;
+
+    if not gefunden then
+        raise Exception.Create('Keine Lieferanten-Teilenummern gefunden.');
+
+    if UnippsQry2.Eof then
+
+      // Die Abfrage ist schon beim ersten Datensatz fehlerhaft
+      //Neue Datensätze ab skip aus UNIPPS lesen
+      skip:=skip+1
+
+    else
+
+      // Es gibt mindestens einen i.O. Datensatz
+      begin
+
+        LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+        while not UnippsQry2.Eof do
+        begin
+          RecNoStatusAnzeigen(UnippsQry2.RecNo+skip);
+          try
+             LocalQry2.InsertFields('tmp_LTeilenummern', UnippsQry2.Fields);
+          except on E: Exception do
+            begin
+              ErrMsg:=  E.Message;
+              raise;
+            end;
+          end;
+
+          try
+            UnippsQry2.next;
+          except on E: Exception do
+            begin
+              //Next ist fehlgeschlagen, weil der Datensatz n.i.o. ist
+              //Enthält z.B "€"-Zeichen
+              ErrMsg:=  E.Message;
+              //Positioniere auf nächsten Datensatz (querysize wird unten addiert)
+              skip := skip + UnippsQry2.RecNo + 1 - querysize;
+              break;
+              //raise E;
+            end;
+          end;
+
+        end;
+
+        //Letzte Query nach Access übertragen
+        LocalQry2.RunExecSQLQuery('COMMIT;');
+        //Neue Datensätze ab skip aus UNIPPS lesen
+        skip:=skip+querysize;
+
+      end;
+
+
+  end;
+
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+  SchrittEndeAnzeigen;
+
+  LocalQry2.LieferantenTeileNrInTabelle;
+
+end;
+
+
 /// <summary>Lieferanten-Teilenummer aus UNIPPS in Tabelle
 ///          Bestellungen lesen </summary>
 /// <remarks>
 /// Zweite Abfrage zur Erstellung der Datenbasis des Programms.
 /// </remarks>
-procedure TBasisImport.LieferantenTeilenummerAusUnipps();
+procedure TBasisImport.xxxalt_LieferantenTeilenummerAusUnipps();
 
 var
   IdLieferant: String;
@@ -324,6 +425,7 @@ begin
   LocalQry2.RunExecSQLQuery('COMMIT;');
 
 end;
+
 
 //Import Schritt 4: Übertrage Benennung der Teile
 ///<summary>Uebernahme der Benennung zu Teilen in Tabelle Teile</summary>
@@ -450,7 +552,7 @@ begin
 end;
 
 // ----------------------------------------------------------------------
-// --------------------- Import ausserhalb des Threads ---------------
+// ------------- Finale Auswertung ausserhalb des Threads ---------------
 // ----------------------------------------------------------------------
 
 /// <summary> Finale Auswertung und Erzeugen der UNIPPS-Export-Tabelle</summary>

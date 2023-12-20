@@ -18,7 +18,8 @@ interface
 {$ELSE}
     TWQryAccess = class(TWADOQuery)
 {$ENDIF}
-      //Nacharbeit des UNIPPS-Imports
+      //Nacharbeit des UNIPPS-Imports in Access
+      function LieferantenTeileNrInTabelle():Boolean;
       function NeueLErklaerungenInTabelle():Boolean;
       function AlteLErklaerungenLoeschen():Boolean;
       function NeueLieferantenInTabelle():Boolean;
@@ -93,6 +94,20 @@ implementation
 // (Aufbereiten der aus UNIPPS importierten Daten vor Benutzeraktionen)
 //
 // ---------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+///<summary>Lieferanten-TeileNr aus temp Tabelle nach Bestellungen</summary>
+function TWQryAccess.LieferantenTeileNrInTabelle():Boolean;
+  var
+   sql: String;
+begin
+  sql := 'UPDATE Bestellungen INNER JOIN tmp_LTeilenummern '
+       + 'ON Bestellungen.TeileNr = tmp_LTeilenummern.TeileNr '
+       + 'AND Bestellungen.IdLieferant = tmp_LTeilenummern.IdLieferant '
+       + 'SET Bestellungen.LTeileNr = tmp_LTeilenummern.LTeileNr ;' ;
+
+  Result:= RunExecSQLQuery(sql);
+end;
 
 //---------------------------------------------------------------------------
 ///<summary>Neue Teile-Lieferanten-Kombis aus Bestellungen in LErklaerungen</summary>
@@ -528,8 +543,8 @@ begin
   Result:= RunExecSQLQuery(sql);
 end;
 
-///<summary>Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile"
-///an temp Tabelle tmpLieferantTeilPfk an</summary>
+///<summary>markiere Teile von Lieferanten mit gültiger Erklärung "einige Teile"
+///in Tabelle LErklaerungen</summary>
 function TWQryAccess.LeklMarkiereEinigeTeile(delta_days:String):Boolean;
   var
     sql: String;
@@ -643,7 +658,7 @@ end;
 
 
 ///<summary> Übertrage Teile mit in UNIPPS zu loeschenden PFK-Flags in
-/// Tabelle PFK_Teile</summary>
+/// Tabelle Export_PFK</summary>
 function TWQryAccess.UpdatePFKTabellePFK0: Boolean;
   var
     sql: String;
@@ -660,7 +675,7 @@ begin
 end;
 
 ///<summary> Übertrage Teile mit in UNIPPS zu setzenden PFK-Flags in
-/// Tabelle PFK_Teile</summary>
+/// Tabelle Export_PFK</summary>
 function TWQryAccess.UpdatePFKTabellePFK1: Boolean;
   var
     sql: String;

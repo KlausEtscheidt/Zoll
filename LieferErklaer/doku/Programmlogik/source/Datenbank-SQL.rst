@@ -2,10 +2,15 @@
 SQL-Strings
 ===========
 
+
+.. ########################################################################################################
+..                                 Basis-Import aus UNIPPS    
+.. ########################################################################################################
+
 Basis-Import
 ============
 
-.. #################################################################################
+.. #######################################################################################
 
 .. _SQLSucheBestellungen:
 
@@ -474,12 +479,17 @@ Delphi: TWQryAccess.UpdateTeileZaehleLieferanten
     ON Teile.TeileNr=tmp_anz_xxx_je_teil.TeileNr 
     SET Teile.n_Lieferanten = tmp_anz_xxx_je_teil.n;
 
-.. #################################################################################
+.. ########################################################################################################
+..                                 Abfragen für Formulare
+.. ########################################################################################################
 
 Formulare
 =========
 
 .. #################################################################################
+..                         Formulare:    Select-Abfragen
+.. #################################################################################
+
 
 .. _SQLHoleLieferantenMitAdressen:
 
@@ -510,23 +520,21 @@ Delphi: TWQryAccess.HoleLieferantenMitAdressen
 
 .. #################################################################################
 
-.. _SQLUpdateLieferant:
+.. _SQLHoleLErklaerungen:
 
-Update Lieferant
-----------------
+Hole LErklaerungen
+------------------
 
-Pflege der Tabelle Lieferanten nach Status-Eingabe im Dialog "LieferantenStatusDlg".
+Liest Tabelle LErklaerungen mit Zusazdaten zu Teilen als Basis des Formulars :ref:`LeklTeileEingabeFrame<FormLeklTeileEingabeFrame>` 
 
-Delphi: TWQryAccess.UpdateLieferant
+Delphi: TWQryAccess.HoleLErklaerungen
 
 ::
 
-      SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
-          +  'gilt_bis=' + QuotedStr(GiltBis) + ', '
-          +  'lekl=' + QuotedStr(lekl) + ', '
-          +  ' Kommentar=' + QuotedStr(Kommentar)
-          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
-
+  SQL := 'select Teile.TeileNr, LTeileNr, LPfk, TName1, TName2, Pumpenteil '
+         + 'from LErklaerungen '
+         + 'inner join Teile on LErklaerungen.TeileNr=Teile.TeileNr '
+         + 'where IdLieferant= ?' ;
 
 .. #################################################################################
 
@@ -555,6 +563,53 @@ Delphi: TWQryAccess.HoleLieferantenFuerTeileEingabe
 
 
 .. #################################################################################
+..                         Formulare Update-Abfragen
+.. #################################################################################
+
+.. #################################################################################
+
+.. _SQLUpdateLieferant:
+
+Update Lieferant
+----------------
+
+Pflege der Tabelle Lieferanten nach Status-Eingabe im Dialog "LieferantenStatusDlg".
+
+Delphi: TWQryAccess.UpdateLieferant
+
+::
+
+      SQL := 'Update Lieferanten set stand="' + Stand + ' " , '
+          +  'gilt_bis=' + QuotedStr(GiltBis) + ', '
+          +  'lekl=' + QuotedStr(lekl) + ', '
+          +  ' Kommentar=' + QuotedStr(Kommentar)
+          +  ' where IdLieferant=' + IntToSTr(IdLieferant)  +';' ;
+
+
+
+.. #################################################################################
+
+.. _SQLUpdateLPfkInLErklaerungen:
+
+Update LPfk in LErklaerungen
+----------------------------
+
+Setzt LPfk-Flag in Tabelle LErklaerungen.
+
+Delphi: TWQryAccess.UpdateLPfkInLErklaerungen
+
+::
+
+  SQL := 'Update LErklaerungen set LPfk="' + IntToSTr(Pfk) + '"  '
+        +  'where IdLieferant=' + IntToSTr(IdLieferant) + ' '
+        +  'and TeileNr="' + TeileNr + '";' ;
+  Result:= RunExecSQLQuery(sql);
+
+
+
+.. ########################################################################################################
+..                                 Finale Auswertung
+.. ########################################################################################################
 
 Auswertung
 ==========
@@ -601,3 +656,97 @@ Delphi: TWQryAccess.LeklMarkiereEinigeTeile
            + 'CDate(StandTeile)>CDate(Stand) and '
            //Lekl gilt noch mindestens
            + 'CDate(gilt_bis)-Date()>' + delta_days + ' ;' ;
+
+.. #################################################################################
+
+.. _SQLUpdateTeileDeletePFK:
+
+Update Teile Delete PFK
+-----------------------
+
+Loesche PFK-Flag eines Teils in Tabelle Teile, wenn ein Lieferant EU-Herkunft nicht bestätigt
+
+Delphi: TWQryAccess.UpdateTeileDeletePFK
+
+::
+
+  sql := 'UPDATE Teile SET Pfk=0 '
+       + 'WHERE TeileNr IN '
+       + '(SELECT TeileNr FROM LErklaerungen '
+       + 'WHERE LPfk_berechnet=0);' ;
+
+.. #################################################################################
+
+.. _SQLUpdatePFKTabellePFK0:
+
+Update PFK-Tabelle PFK0
+------------------------
+
+Übertrage Teile mit in UNIPPS zu loeschenden PFK-Flags in Tabelle Export_PFK
+
+Delphi: TWQryAccess.UpdatePFKTabellePFK0
+
+::
+
+  sql := 'INSERT INTO Export_PFK ( t_tg_nr, PFK ) '
+       + 'SELECT tmp_wareneingang_mit_PFK.t_tg_nr, 0 AS Pfk '
+       + 'FROM tmp_wareneingang_mit_PFK '
+       + 'INNER JOIN LErklaerungen '
+       + 'ON tmp_wareneingang_mit_PFK.lieferant = LErklaerungen.IdLieferant '
+       + 'AND tmp_wareneingang_mit_PFK.t_tg_nr = LErklaerungen.TeileNr '
+       + 'WHERE LErklaerungen.LPfk_berechnet=0 '
+       + 'ORDER BY t_tg_nr;';
+
+.. #################################################################################
+
+.. _SQLUpdatePFKTabellePFK1:
+
+Update PFK-Tabelle PFK1
+-----------------------
+
+Übertrage Teile mit in UNIPPS zu setzenden PFK-Flags in Tabelle Export_PFK
+
+Delphi: TWQryAccess.UpdatePFKTabellePFK1
+
+::
+
+  sql := 'INSERT INTO Export_PFK ( t_tg_nr, PFK ) '
+       + 'SELECT Teile.TeileNr, Teile.PFK '
+       + 'FROM Teile '
+       + 'WHERE Teile.PFK=-1;' ;
+
+
+.. #################################################################################
+
+.. _SQLHoleWareneingaenge:
+
+Hole Wareneingaenge
+-------------------
+
+Sucht Wareneingaenge seit Beginn des aktuellen Jahres mit PFK gesetzt.
+
+Delphi: TWQryUNIPPS.HoleWareneingaenge
+
+
+Sub-Query sucht Wareneingaenge seit Beginn des aktuellen Jahres
+
+::
+
+    sql_sub := 'SELECT DISTINCT t_tg_nr, lieferant '
+        + 'FROM wareneingang '
+        + 'JOIN wepos '
+        + 'ON wareneingang.ident_nr = wepos.ident_nr1 '
+        + 'WHERE wareneingang.status>0 AND wareneingang.art=1 '
+        + 'AND wareneingang.we_art=1 '
+        + 'AND wareneingang.we_datum>=MDY(1,1,YEAR(TODAY))' ;
+
+Join mit UNIPPS-Teil (nur Teile mit praeferenzkennung=1)
+
+::
+
+    sql := 'SELECT t_tg_nr, lieferant '
+        + 'FROM Teil '
+        + 'JOIN ( ' + sql_sub + ') '
+        + 'ON Teil.ident_nr = t_tg_nr '
+        + 'WHERE praeferenzkennung=1;' ;
+

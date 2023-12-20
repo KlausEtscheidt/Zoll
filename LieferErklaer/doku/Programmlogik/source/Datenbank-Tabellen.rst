@@ -68,7 +68,6 @@ Lieferanten
 Zweck:
     Erfassung des generellen Status eines Lieferanten bezüglich Lieferantenerklärung:
     Im Feld "lekl" wird die Art der Lieferantenerklärung (s :ref:`LieferantenStatusTxt<TabLieferantenStatusTxt>` ) erfasst.
-    "gilt_bis" enthält das Verfallsdatum der Erklärung.
     
 
 Verhalten beim Import:
@@ -90,7 +89,7 @@ Tabelle Lieferanten:
     Feld : Pumpenteile    0              Zahl   liefert der Lieferant Pumpenteile
     Feld : Lieferstatus   "neu"          Text   neu, aktuell oder entfallen
     Feld : Ersatzteile    0              Zahl   liefert der Lieferant Ersatzteile
-    Feld : StandTeile     "1900-01-01"   Text   
+    Feld : StandTeile     "1900-01-01"   Text   Eingabe teilespezifischer Erklärungen (Tab. LErklaerungen)
     Feld : letzteAnfrage  "1900-01-01"   Text   Wann wurde der Lief. zuletzt aufgefordert eine LEkl abzugeben
     Feld : Kommentar                     Text   Bemerkungen zur Antwort oder warum der Lief. nicht relevant ist
     Index: sqlite_autoindex_0(IdLieferant)  Primary
@@ -125,6 +124,7 @@ Tabelle: LErklaerungen
 
 "LPfk_berechnet" wird bei der finalen Auswertung für alle Teile eines Lieferanten gesetzt, 
 wenn dieser eine Erklärung für alle Teile abgegeben hat (s. :ref:`sql<SQLLeklMarkiereAlleTeile>`).
+
 Wenn er eine Erklärung nur für einige Teile abgegeben hat, müssen diese mittels Benutzereingabe in "LPfk" vermerkt werden.
 Bei der Auswertung werden die manuell gesetzten Flags aus "LPfk" nach "LPfk_berechnet" übertragen (s. :ref:`sql<SQLLeklMarkiereEinigeTeile>`).
 Vorraussetzung ist in beiden Fällen, das die Erklärung noch eine ausreichende Rastgültigkeit hat.
@@ -287,15 +287,14 @@ Bestellzeitraum:
     Anzahl Tage, die das Freigabedatum einer Bestellung zurückliegen darf, damit sie importiert wird
 
 Gueltigkeit_Lekl: 
-    -------------------- prüfen ------------------------
     Anzahl Tage, die eine Lieferantenerklärung noch gültig sein muss um als gültig betrachtet zu werden.
     Hintergrund: Beim Anfordern neuer Erklärungen soll z.B. eine Erklärung, die nur noch 30 Tage gilt,
     neu angefordert werden.
 
 veraltet:
-    -------------------- prüfen ------------------------
-    Stati mit Datum älter als *veraltet* Tage gelten als veraltet (z.B. Status LEKL) 200
+    Angaben mit Datum älter als *veraltet* Tage gelten als veraltet (z.B. Status LEKL) 200
     Hintergrund: Angaben aus dem Vorjahr von aktuellen unterscheiden
+    Wird in diversen Formularen verwendet.
 
 
 .. #################################################################################
@@ -362,7 +361,8 @@ Export_PFK
 ~~~~~~~~~~
 
 Zweck:
-    Alle Teile deren PFK in UNIPPS geändert werden muss.
+    Alle Teile deren PFK in UNIPPS geändert werden muss. 
+    Diese Tabelle wird verwendet, solange noch nicht alle Antworten eingegangen sind (s. :ref:`FinaleAuswertung`) .
 
 Import:
     nicht betroffen

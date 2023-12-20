@@ -3,8 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-   :ref:`here <Anforderung>`
-
 =====================
 Programmlogik DigiLek
 =====================
@@ -13,12 +11,12 @@ Programmlogik DigiLek
    :maxdepth: 2
    :caption: Inhalt:
 
+   Delphi<Delphi>
+   Formulare u Menüs<Delphi_Formulare>
    Datenbank-Tabellen<Datenbank-Tabellen>
    Datenbank-Abläufe<Datenbank-Ablaeufe>
    SQL-Strings<Datenbank-SQL>
-   Delphi<Delphi>
-   
-
+  
 
 Indices and tables
 ==================

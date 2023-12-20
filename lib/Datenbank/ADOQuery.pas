@@ -53,6 +53,8 @@ interface
         gefunden: Boolean;
         /// <summary>Ausgabe von Meldungen in Fenster oder Konsole</summary>
         GuiMode: Boolean;
+        /// <summary>Fehler-Meldungen</summary>
+        ErrMsg:String;
 
       //Hier um fehlenden Zugriff auf Datenbank während Laufzeit zu entdecken
       function Connected():Boolean;
@@ -232,16 +234,31 @@ end;
 
 //Fuehrt ExecSQL oder Open (bei WithResult:=True) aus
 procedure TWADOQuery.ExecuteQuery(WithResult:Boolean);
+
 begin
-  //Ausf�hren
-  if WithResult then
-  begin
-    //Qry ausf�hren
-    Self.Open;
-    n_records:=self.GetRecordCount();
-  end
-  else
-    n_records:=Self.ExecSQL();
+
+   gefunden:=False;
+
+  //Ausführen
+    try
+
+      if WithResult then
+        begin
+            //Qry ausf�hren
+            Self.Open;
+            n_records:=self.GetRecordCount();
+        end
+      else
+          //Qry ausf�hren
+          n_records:=Self.ExecSQL();
+
+    except on E: Exception do
+      begin
+        ErrMsg:=  E.Message;
+        n_records:=0;
+        raise;
+      end;
+    end;
 
   gefunden:=n_records>0;
 

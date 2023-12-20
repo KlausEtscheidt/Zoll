@@ -26,6 +26,8 @@ interface
       function SucheBestellungen(delta_days: String): Boolean;
       function HoleLieferantenAdressen():Boolean;
       function HoleLieferantenAnspechpartner():Boolean;
+      function ZaehleAlleLieferantenTeilenummern(): Boolean;
+      function SucheAlleLieferantenTeilenummern(skip,size:Integer):Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung(delta_days: String):Boolean;
@@ -128,6 +130,37 @@ begin
 end;
 
 
+///<summary>Suche Alle Lieferanten-Teilenummer in UNIPPS </summary>
+//---------------------------------------------------------------------
+function TWQryUNIPPS.SucheAlleLieferantenTeilenummern(
+                                         skip,size:Integer): Boolean;
+var
+  sql: String;
+begin
+
+  sql := 'SELECT skip ' + IntToStr(skip)
+       + ' first ' +  IntToStr(size)
+       + ' ident_nr1 as IdLieferant, TRIM(ident_nr2) AS TeileNr, '
+       + 'TRIM(l_teile_nr) AS LTeileNr '
+       + 'FROM lieferant_teil '
+       + 'where length(l_teile_nr)>0 '
+       + 'order by IdLieferant, TeileNr ';
+  Result:= RunSelectQuery(sql);
+end;
+
+
+///<summary>Zaehle alle Lieferanten-Teilenummer in UNIPPS </summary>
+//---------------------------------------------------------------------
+function TWQryUNIPPS.ZaehleAlleLieferantenTeilenummern(): Boolean;
+var
+  sql: String;
+begin
+
+  sql := 'SELECT count(*) as anzahl FROM lieferant_teil where length(l_teile_nr)>0;';
+  Result:= RunSelectQuery(sql);
+end;
+
+
 ///<summary>Suche Lieferanten-Teilenummer in UNIPPS </summary>
 //---------------------------------------------------------------------
 function TWQryUNIPPS.SucheLieferantenTeilenummer(IdLieferant: String;
@@ -220,7 +253,6 @@ begin
        + 'WHERE wareneingang.status>0 AND wareneingang.art=1 '
        + 'AND wareneingang.we_art=1 '
        + 'AND wareneingang.we_datum>=MDY(1,1,YEAR(TODAY))' ;
-//       + 'AND wareneingang.we_datum>=TO_DATE("2022.01.01","%Y.%m.%d")' ;
 
   sql := 'SELECT t_tg_nr, lieferant '
        + 'FROM Teil '

@@ -189,6 +189,49 @@ begin
 
 end;
 
+
+// Löschen der Pfk aller Teile eines Lieferanten
+procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
+begin
+  PfkSet(0);
+end;
+
+// Setzen der Pfk aller Teile eines Lieferanten
+procedure TLieferantenErklaerungenFrm.PfkSetBtnClick(Sender: TObject);
+begin
+  PfkSet(-1);
+end;
+
+// Setzen oder löschen der Pfk aller Teile eines Lieferanten
+procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:Integer);
+var
+  UpdateQry,LocalQry2:TWQry;
+  TeileNr:String;
+begin
+    //merken das Daten geaendert wurden
+    DatenGeaendert:=True;
+
+    LocalQry2:=Tools.GetQuery;
+    UpdateQry:=Tools.GetQuery;
+    LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION');
+    LocalQry.First;
+    while not LocalQry.Eof do
+    begin
+      TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
+      UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant,TeileNr,NeuerWert);
+      LocalQry.Next;
+    end;
+    LocalQry2.RunExecSQLQuery('COMMIT');
+{$IFDEF FIREDAC}
+    LocalQry.Refresh;
+{$ELSE}
+    LocalQry.Requery();
+{$ENDIF}
+    LocalQry.First;
+
+end;
+
+
 procedure TLieferantenErklaerungenFrm.PfkOffCheckBoxClick(Sender: TObject);
 begin
   if PfkOffCheckBox.Checked then
@@ -220,45 +263,6 @@ begin
     end;
   FilterUpdate();
 end;
-
-procedure TLieferantenErklaerungenFrm.PfkResetBtnClick(Sender: TObject);
-begin
-  PfkSet(0);
-end;
-
-procedure TLieferantenErklaerungenFrm.PfkSetBtnClick(Sender: TObject);
-begin
-  PfkSet(-1);
-end;
-
-procedure TLieferantenErklaerungenFrm.PfkSet(NeuerWert:Integer);
-var
-  UpdateQry,LocalQry2:TWQry;
-  TeileNr:String;
-begin
-    //merken das Daten geaendert wurden
-    DatenGeaendert:=True;
-
-    LocalQry2:=Tools.GetQuery;
-    UpdateQry:=Tools.GetQuery;
-    LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION');
-    LocalQry.First;
-    while not LocalQry.Eof do
-    begin
-      TeileNr:=LocalQry.FieldByName('TeileNr').AsString;
-      UpdateQry.UpdateLPfkInLErklaerungen(IdLieferant,TeileNr,NeuerWert);
-      LocalQry.Next;
-    end;
-    LocalQry2.RunExecSQLQuery('COMMIT');
-{$IFDEF FIREDAC}
-    LocalQry.Refresh;
-{$ELSE}
-    LocalQry.Requery();
-{$ENDIF}
-    LocalQry.First;
-
-end;
-
 
 procedure TLieferantenErklaerungenFrm.FilterUpdate();
 var
