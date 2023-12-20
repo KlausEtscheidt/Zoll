@@ -71,17 +71,42 @@ um die Kurz- und Langnamen des Lieferanten zu erhalten.
 
 .. _SQLSucheLieferantenTeilenummer:
 
-Suche Lieferanten-Teilenummer
------------------------------
+Suche alle Lieferanten-Teilenummern
+-----------------------------------
 
-Delphi: TWQryUNIPPS.SucheLieferantenTeilenummer(IdLieferant; TeileNr);
+Lädt alle Lieferanten-Teilenummern aus UNIPPS-Tabelle Lieferant_teil.
+
+Das SQL überspringt die ersten "skip" Datensätze.
+
+Delphi: TWQryUNIPPS.SucheAlleLieferantenTeilenummern
 
 ::
 
-        SELECT ident_nr1 as IdLieferant, TRIM(ident_nr2) AS TeileNr, TRIM(l_teile_nr) AS LTeileNr 
-        FROM lieferant_teil where ident_nr1=? and ident_nr2=?;
+  sql := 'SELECT skip ' + IntToStr(skip)
+       + ' first ' +  IntToStr(size)
+       + ' ident_nr1 as IdLieferant, TRIM(ident_nr2) AS TeileNr, '
+       + 'TRIM(l_teile_nr) AS LTeileNr '
+       + 'FROM lieferant_teil '
+       + 'where length(l_teile_nr)>0 '
+       + 'order by IdLieferant, TeileNr ';
 
-mit ident_nr1=IdLieferant ident_nr2=TeileNr als Parameter
+.. #################################################################################
+
+.. _SQLLieferantenTeileNrInTabelle:
+
+Lieferanten-TeileNr in Tabelle
+------------------------------
+
+Überträgt die Lieferanten-TeileNr aus **tmp_LTeilenummern** nach **Bestellungen**.
+
+Delphi: TWQryAccess.LieferantenTeileNrInTabelle
+
+::
+
+  sql := 'UPDATE Bestellungen INNER JOIN tmp_LTeilenummern '
+       + 'ON Bestellungen.TeileNr = tmp_LTeilenummern.TeileNr '
+       + 'AND Bestellungen.IdLieferant = tmp_LTeilenummern.IdLieferant '
+       + 'SET Bestellungen.LTeileNr = tmp_LTeilenummern.LTeileNr ;' ;
 
 
 .. #################################################################################

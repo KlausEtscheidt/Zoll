@@ -399,6 +399,30 @@ Tabelle: tmpTeileBenennung
    Index: pkey(Zeile,TeileNr)  Primary
 
 
+.. #################################################################################
+
+.. _Tabtmp_LTeilenummern:    
+
+tmp_LTeilenummern
+~~~~~~~~~~~~~~~~~
+
+Zweck:
+    Nur temporär zum Abspeichern von Lieferanten-Teilenummern
+
+Import:
+  - Die Tabelle wird bei jedem Basis-Import geleert.
+  - Es werden alle Lieferanten-Teilenummern aus der UNIPPS-Tabelle Lieferant_teil geladen. 
+
+Tabelle: tmp_LTeilenummern
+
+::
+
+   Feld : IdLieferant    Zahl   UNIPPS-Id des Lieferanten
+   Feld : TeileNr        Text   UNIPPS-Id des Teils (t_tg_nr)
+   Feld : LTeileNr       Text   Teilenummer beim Lieferanten
+   Index: pkey(IdLieferant,TeileNr)  Primary
+
+
 
 .. #################################################################################
 

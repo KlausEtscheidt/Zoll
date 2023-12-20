@@ -74,10 +74,12 @@ LieferErklaer/Brief_u_Fax
 LieferErklaer/doku/help/build
 LieferErklaer/DIGILEK.res
 LieferErklaer/doku/Programmlogik/source/pics
+LieferErklaer/doku/Programmlogik/build
 
 #Meine Files
 *.accdb
 *.laccdb
+*.chm
 
 *.~*
 

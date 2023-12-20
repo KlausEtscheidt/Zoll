@@ -23,17 +23,27 @@ Dieses definiert die älteste Bestellung, die importiert wird.
 2. Lieferanten-Teilenummer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tabelle: :ref:`Bestellungen<TabBestellungen>` updaten (:ref:`SQL <SQLSucheLieferantenTeilenummer>`)
+Tabelle: :ref:`tmp_LTeilenummern<Tabtmp_LTeilenummern>` leeren und neu fuellen
+
+Tabelle: :ref:`Bestellungen<TabBestellungen>` updaten
 
 procedure TBasisImport.LieferantenTeilenummerAusUnipps();
 
-Für jede Lieferanten/Teile-Kombination aus Bestellungen wird in UNIPPS
-eine Lieferanten-Teilenummer gesucht und in Bestellungen abgespeichert.
+Mit der Abfrage :ref:`SucheAlleLieferantenTeilenummern<SQLSucheLieferantenTeilenummer>` 
+werden die Nummern, unter denen der Lieferant die Teile führt, zunächst aus UNIPPS in die temp. Tabelle
+:ref:`tmp_LTeilenummern<Tabtmp_LTeilenummern>` gespeichert.
 
-Der Prozess ist langsam und schlägt per ODBC immer wieder mal fehl (erst beim lesen des recordsets).
-Deshalb wird jede Kombi einzeln gesucht, die Fehler werden abgefangen.
+Die Delphi-ODBC-Schnittstelle hat offensichtlich Probleme mit einigen Sonderzeichen (zumindest mit dem €-Zeichen).
+Das Positionieren auf einen solchen Datensatz wirft eine Exception, die abgefangen werden muss.
+Anschließend wird die Abfrage neu gestartet, wobei mittels "SELECT SKIP xxx" erst hinter dem fehlerhaften 
+Datensatz begonnen wird.
+Das SQL überspringt also die ersten "xxx" Datensätze.
 
-3. Teile-Benennung
+Zum Schluß werden die Daten mit der Abfrage :ref:`LieferantenTeileNrInTabelle<SQLLieferantenTeileNrInTabelle>` 
+in die Tabelle **Bestellungen** übertragen.
+
+
+1. Teile-Benennung
 ~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`tmpTeileBenennung<TabtmpTeileBenennung>` löschen und neu füllen (:ref:`SQL <SQLSucheTeileBenennung>`)
@@ -46,7 +56,7 @@ den Teilen aus allen Bestellungen seit xxx Tagen.
 xxx entspricht dem Feld 'Bestellzeitraum' aus Tabelle ProgrammDaten.
 
 4. Teile
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~
 
 Tabelle: :ref:`Teile<TabTeile>` löschen und neu füllen
 
@@ -91,7 +101,7 @@ Diesen speziellen Anspechpartner werden abschließend aus Lieferanten_Ansprechpa
 nach Lieferanten_Adressen übertragen und ersetzen dort den allgemeinen Anspechpartner (:ref:`SQL <SQLLieferantenAnspechpartnerUebertragen>`).
 In Lieferanten_Adressen wird dann das Feld hat_LEKL_Ansprechp True gesetzt.
 
-1. Lieferanten pflegen
+6. Lieferanten pflegen
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`Lieferanten<TabLieferanten>`  ändern
@@ -109,7 +119,7 @@ Setze Flags auf false, die besagen, das ein Lieferant Pumpen- oder Ersatzteile l
 Setze die Flags für Pumpen-(:ref:`SQL <SQLLieferantenSetPumpenflags>`)/Ersatzteile-Lieferanten (:ref:`SQL <SQLLieferantenSetErsatzflags>`)neu
 
 
-8. Lieferanten-Erklärungen
+7. Lieferanten-Erklärungen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`LErklaerungen<TabLErklaerungen>` 
@@ -122,7 +132,7 @@ in Bestellungen, aber nicht in Lieferantenerklärungen vorhanden ist (:ref:`SQL 
 Lösche Teile-Lieferanten-Kombis, die nicht in Bestellungen sind aus Lieferantenerklärungen (:ref:`SQL <SQLLErklaerungenObsolet>`).
  
 
-9. Anzahl der Lieferanten je Teil
+8. Anzahl der Lieferanten je Teil
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`tmp_anz_xxx_je_teil<Tabtmp_anz_xxx_je_teil>` loeschen und neu füllen (:ref:`SQL <SQLTmpAnzLieferantenJeTeil>`).
