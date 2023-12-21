@@ -27,13 +27,15 @@ interface
       function HoleLieferantenAdressen():Boolean;
       function HoleLieferantenAnspechpartner():Boolean;
       function ZaehleAlleLieferantenTeilenummern(): Boolean;
-      function SucheAlleLieferantenTeilenummern(skip,size:Integer):Boolean;
+      function SucheAlleLieferantenTeilenummern(skip:Integer):Boolean;
       function SucheLieferantenTeilenummer(IdLieferant: String;
                                    TeileNr: String): Boolean;
       function SucheTeileBenennung(delta_days: String):Boolean;
+      function SucheTeileInKA(TeileNr: String):Boolean;
+      function TesteAufErsatzteil(delta_days: String):Boolean;
+      function TesteAufPumpenteil(delta_days: String):Boolean;
       function SucheTeileInFA(TeileNr: String):Boolean;
       function SucheTeileInFAKopf(TeileNr: String):Boolean;
-      function SucheTeileInKA(TeileNr: String):Boolean;
       function SucheTeileInSTU(TeileNr: String):Boolean;
       function HoleWareneingaenge(): Boolean;
 
@@ -133,13 +135,14 @@ end;
 ///<summary>Suche Alle Lieferanten-Teilenummer in UNIPPS </summary>
 //---------------------------------------------------------------------
 function TWQryUNIPPS.SucheAlleLieferantenTeilenummern(
-                                         skip,size:Integer): Boolean;
+                                         skip:Integer): Boolean;
 var
   sql: String;
 begin
 
+//       + ' first ' +  IntToStr(size)
+
   sql := 'SELECT skip ' + IntToStr(skip)
-       + ' first ' +  IntToStr(size)
        + ' ident_nr1 as IdLieferant, TRIM(ident_nr2) AS TeileNr, '
        + 'TRIM(l_teile_nr) AS LTeileNr '
        + 'FROM lieferant_teil '
@@ -199,16 +202,34 @@ begin
 
 end;
 
-
-///<summary>Sucht Teil als Position eines FA in UNIPPS astuelipos</summary>
-///<param name="TeileNr">t_tg_nr des Teils</param>
-//---------------------------------------------------------------------------
-function TWQryUNIPPS.SucheTeileInFA(TeileNr: String):Boolean;
-var  sql: String;
+///<summary>Teil in KA in UNIPPS auftragpos ist Ersatzteil</summary>
+//--------------------------------------------------------------------
+function TWQryUNIPPS.TesteAufErsatzteil(delta_days: String):Boolean;
+var  sql,sql_teile: String;
 begin
-  sql := 'SELECT t_tg_nr FROM astuelipos where t_tg_nr=?;' ;
-  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+
+  sql := 'SELECT distinct TeileNr '
+             + 'FROM (' + sql_suche_Bestellungen + ') '
+             + 'where TeileNr in (SELECT distinct t_tg_nr FROM auftragpos);' ;
+
+  Result:= RunSelectQueryWithParam(sql,[delta_days]);
 end;
+
+///<summary>Teile in FA, FA-Kopf oder Stückliste sind Pumpenteil</summary>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.TesteAufPumpenteil(delta_days: String):Boolean;
+var  sql,sql_teile: String;
+begin
+
+  sql := 'SELECT distinct TeileNr '
+             + 'FROM (' + sql_suche_Bestellungen + ') '
+             + 'where TeileNr in (SELECT distinct t_tg_nr FROM astuelipos) '
+             + 'or TeileNr in (SELECT distinct t_tg_nr FROM f_auftragkopf) '
+             + 'or TeileNr in (SELECT distinct t_tg_nr FROM teil_stuelipos);' ;
+
+  Result:= RunSelectQueryWithParam(sql,[delta_days]);
+end;
+
 
 ///<summary>Sucht Teil als Position eines KA in UNIPPS auftragpos</summary>
 ///<param name="TeileNr">t_tg_nr des Teils</param>
@@ -217,6 +238,17 @@ function TWQryUNIPPS.SucheTeileInKA(TeileNr: String):Boolean;
 var  sql: String;
 begin
   sql := 'SELECT t_tg_nr FROM auftragpos where t_tg_nr=?;' ;
+  Result:= RunSelectQueryWithParam(sql,[TeileNr]);
+end;
+
+
+///<summary>Sucht Teil als Position eines FA in UNIPPS astuelipos</summary>
+///<param name="TeileNr">t_tg_nr des Teils</param>
+//---------------------------------------------------------------------------
+function TWQryUNIPPS.SucheTeileInFA(TeileNr: String):Boolean;
+var  sql: String;
+begin
+  sql := 'SELECT t_tg_nr FROM astuelipos where t_tg_nr=?;' ;
   Result:= RunSelectQueryWithParam(sql,[TeileNr]);
 end;
 

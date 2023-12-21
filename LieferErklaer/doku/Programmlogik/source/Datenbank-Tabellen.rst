@@ -383,7 +383,7 @@ tmpTeileBenennung
 ~~~~~~~~~~~~~~~~~
 
 Zweck:
-    Nur temporär zum Abspeichern von Zeile 1 und 2 der Teile-Benennung
+    Nur temporär beim Import zum Abspeichern von Zeile 1 und 2 der Teile-Benennung
 
 Import:
   - Die Tabelle wird bei jedem Basis-Import geleert.
@@ -432,7 +432,7 @@ tmp_anz_xxx_je_teil
 ~~~~~~~~~~~~~~~~~~~
 
 Zweck:
-    Nur temporär zum Abspeichern der Anzahl Lieferanten je Teil
+    Nur temporär beim Import zum Abspeichern der Anzahl Lieferanten je Teil
 
 Import:
   - Die Tabelle wird bei jedem Basis-Import geleert und neu gefüllt.
@@ -453,8 +453,8 @@ tmp_wareneingang_mit_PFK
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Zweck:
-    Nur temporär zum Abspeichern aller Wareneingänge seit Jahresanfang,
-    bei denen das PFK-Flag in UNIPPS gesetzt ist. 
+    Nur temporär bei finaler Auswertung zum Abspeichern aller Wareneingänge seit Jahresanfang,
+    bei denen das PFK-Flag in UNIPPS gesetzt ist  (s. :ref:`FinaleAuswertung`). 
     Ist "LPfk_berechnet" in "LErklaerungen" für eine Teile-Lieferanten-Kombi aus "tmp_wareneingang_mit_PFK"=False, 
     so muss für dieses Teil das PFK-Flag in UNIPPS gelöscht werden.
 
@@ -478,9 +478,6 @@ tmpLieferantTeilPfk
 Zweck:
     obsolet ???? Nur temporär zum Abspeichern 
 
-Import:
-  - Die Tabelle wird bei jedem Basis-Import geleert und neu gefüllt.
-
 Tabelle: tmpLieferantTeilPfk
 
 ::
@@ -502,8 +499,6 @@ tmpTeileVerwendung
 Zweck:
     obsolet ?????
 
-Import:
-  - Die Tabelle wird bei jedem Basis-Import geleert und neu gefüllt.
 
 Tabelle: tmpTeileVerwendung
 

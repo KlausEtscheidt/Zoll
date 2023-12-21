@@ -3,8 +3,8 @@ object ImportStatusDlg: TImportStatusDlg
   Top = 108
   BorderStyle = bsDialog
   Caption = 'Import'
-  ClientHeight = 337
-  ClientWidth = 430
+  ClientHeight = 358
+  ClientWidth = 433
   Color = clGradientActiveCaption
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,17 +15,18 @@ object ImportStatusDlg: TImportStatusDlg
   Position = poScreenCenter
   OnShow = FormShow
   DesignSize = (
-    430
-    337)
+    433
+    358)
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo
-    Left = 13
-    Top = 19
-    Width = 403
+    AlignWithMargins = True
+    Left = 0
+    Top = 50
+    Width = 430
     Height = 202
     Alignment = taCenter
-    Anchors = []
+    Anchors = [akLeft, akRight]
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
@@ -44,94 +45,29 @@ object ImportStatusDlg: TImportStatusDlg
       ''
       ' Wollen Sie jetzt Daten aus UNIPPS einlesen ?')
     ParentFont = False
+    ReadOnly = True
     TabOrder = 0
     StyleElements = [seFont, seClient]
-  end
-  object GridPanel1: TGridPanel
-    AlignWithMargins = True
-    Left = 0
-    Top = 280
-    Width = 430
-    Height = 60
-    Anchors = [akLeft]
-    BevelOuter = bvNone
-    ColumnCollection = <
-      item
-        Value = 50.000000000000000000
-      end
-      item
-        Value = 50.000000000000000000
-      end>
-    Constraints.MaxHeight = 80
-    Constraints.MinHeight = 60
-    ControlCollection = <
-      item
-        Column = 0
-        Control = ImportBtn
-        Row = 0
-      end
-      item
-        Column = 1
-        Control = ESCButton
-        Row = 0
-      end>
-    ParentColor = True
-    RowCollection = <
-      item
-        SizeStyle = ssAuto
-        Value = 60.000000000000000000
-      end>
-    TabOrder = 1
-    object ImportBtn: TButton
-      AlignWithMargins = True
-      Left = 130
-      Top = 15
-      Width = 75
-      Height = 25
-      Margins.Top = 15
-      Margins.Right = 10
-      Align = alRight
-      Caption = 'Einlesen'
-      Constraints.MaxHeight = 25
-      Constraints.MaxWidth = 75
-      TabOrder = 0
-      OnClick = ImportBtnClick
-    end
-    object ESCButton: TButton
-      AlignWithMargins = True
-      Left = 225
-      Top = 15
-      Width = 75
-      Height = 25
-      Margins.Left = 10
-      Margins.Top = 15
-      Align = alLeft
-      Caption = 'Abbruch'
-      Constraints.MaxHeight = 25
-      Constraints.MaxWidth = 75
-      TabOrder = 1
-      OnClick = ESCButtonClick
-    end
   end
   object StatusPanel: TPanel
     Left = 0
     Top = 0
     Width = 430
-    Height = 278
+    Height = 297
     BevelOuter = bvNone
     ParentColor = True
-    TabOrder = 2
+    TabOrder = 1
     DesignSize = (
       430
-      278)
+      297)
     object StringGrid1: TStringGrid
       Left = 24
       Top = 13
       Width = 363
-      Height = 221
+      Height = 244
       ColCount = 3
       FixedCols = 0
-      RowCount = 8
+      RowCount = 9
       FixedRows = 0
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -147,13 +83,14 @@ object ImportStatusDlg: TImportStatusDlg
     end
     object Panel1: TPanel
       Left = 0
-      Top = 244
+      Top = 263
       Width = 430
       Height = 33
       Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
+      ExplicitTop = 244
       object actRecordLbl: TLabel
         Left = 20
         Top = 17
@@ -168,5 +105,37 @@ object ImportStatusDlg: TImportStatusDlg
         ParentFont = False
       end
     end
+  end
+  object ImportBtn: TButton
+    AlignWithMargins = True
+    Left = 120
+    Top = 316
+    Width = 75
+    Height = 25
+    Margins.Top = 4
+    Margins.Right = 10
+    Margins.Bottom = 4
+    Caption = 'Einlesen'
+    Constraints.MaxHeight = 25
+    Constraints.MaxWidth = 75
+    Constraints.MinHeight = 25
+    TabOrder = 2
+    OnClick = ImportBtnClick
+  end
+  object ESCButton: TButton
+    AlignWithMargins = True
+    Left = 215
+    Top = 316
+    Width = 75
+    Height = 25
+    Margins.Left = 10
+    Margins.Top = 4
+    Margins.Bottom = 4
+    Caption = 'Abbruch'
+    Constraints.MaxHeight = 25
+    Constraints.MaxWidth = 75
+    Constraints.MinHeight = 25
+    TabOrder = 3
+    OnClick = ESCButtonClick
   end
 end

@@ -16,6 +16,7 @@ type TBasisImport = class(TThread)
           UnippsQry2: TWQryUNIPPS;
           //Statusanzeige
           StatusAktRecord,StatusMaxRecord:Integer;
+          DatensatzZaehlerText:String;
           StatusSchrittNr:Integer;
           StatusSchrittBenennung:String;
           counter:Integer;
@@ -28,12 +29,16 @@ type TBasisImport = class(TThread)
         // alle 100 Records x von y gelesen anzeigen (Forced zeigt immer an)
         procedure RecNoStatusAnzeigen(akt:Integer;Forced:Boolean=False);
         procedure SyncRecNoStatusAnzeigen;
+        //Setze Text für Datensatzzähler
+        procedure SetzeDatensatzZaehlerText(text:String);
+        procedure SyncSetRecordLabelCaption;
+
 
         procedure BestellungenAusUnipps;
-        procedure xxxalt_LieferantenTeilenummerAusUnipps;
         procedure LieferantenTeilenummerAusUnipps;
         procedure TeileBenennungAusUnipps;
         procedure TeileBenennungInTeileTabelle;
+        procedure ErsatzteileAusUnipps();
         procedure PumpenteileAusUnipps;
 
         procedure LieferantenTabelleUpdaten;
@@ -87,6 +92,18 @@ begin
   ImportStatusDlg.AnzeigeRecordsGelesen(StatusaktRecord,StatusmaxRecord);
 end;
 
+
+//Setzt Text für Datensatzzähler
+procedure TBasisImport.SetzeDatensatzZaehlerText(text:String);
+begin
+  DatensatzZaehlerText:=text;
+  Synchronize(SyncSetRecordLabelCaption);
+end;
+
+procedure TBasisImport.SyncSetRecordLabelCaption;
+begin
+  ImportStatusDlg.SetRecordLabelCaption(DatensatzZaehlerText);
+end;
 
 //Anzeige des Endes eines Import-Schrittes
 procedure TBasisImport.SchrittEndeAnzeigen;
@@ -143,6 +160,10 @@ begin
   // Eindeutige TeileNr mit Zeile 1 und 2 der Benennung
   // Flags Pumpenteil und PFk auf False
   TeileBenennungInTeileTabelle;
+
+  // Prüfe ob Teil als Ersatzteil verwendet wird
+  // Setzt Flag Ersatzteil in Tabelle Teile
+  ErsatzteileAusUnipps;
 
   // Prüfe ob Teil für Pumpen verwendet wird
   // Setzt Flag Pumpenteil in Tabelle Teile
@@ -214,90 +235,102 @@ end;
 ///          tmp_LTeilenummern lesen </summary>
 /// <remarks>
 /// Zweite Abfrage zur Erstellung der Datenbasis des Programms.
+///
+/// Die Delphi-ODBC-Schnittstelle hat offensichtlich Probleme mit einigen Sonderzeichen
+/// (zumindest mit dem €-Zeichen).
+/// Die Daten werden zwar gelesen, aber schon die Abfrage von RecordCount
+/// schlägt fehl.
+/// Eine Schleife über ein solches Abfrageergebnis wirft beim Positionieren
+/// auf einen solchen Datensatz eine Exception, die abgefangen werden muss.
+/// Anschließend wird eine neue Abfrage gestartet,
+/// wobei mittels "SELECT SKIP xxx"
+/// erst hinter dem fehlerhaften Datensatz begonnen wird.
 /// </remarks>
 procedure TBasisImport.LieferantenTeilenummerAusUnipps;
 var
   gefunden:Boolean;
   sql,ErrMsg:String;
-  nTeile,skip,querysize:Integer;
+  nTeile,skip:Integer;
 //  tmpTable: TWTable;
 
 begin
   SchrittAnfangAnzeigen(2,'Lieferanten-Benennung zu Teilen lesen');
 
+  // Zuerst die Anzahl der Datensätze bestimmen
+  // SELECT count(*) funktioniert offensichtlich ohne Probleme
+  // Die fehlerhaften Datensätze werden mit gezählt
   gefunden := UnippsQry2.ZaehleAlleLieferantenTeilenummern();
 
   if not gefunden then
       raise Exception.Create('Keine Lieferanten-Teilenummern gefunden.');
   nTeile:=UnippsQry2.FieldByName('anzahl').AsInteger;
 
+  //temp Tabelle leeren
   LocalQry2.RunExecSQLQuery('delete from tmp_LTeilenummern;');
 
   StatusmaxRecord:=nTeile;
-//  tmpTable := Tools.GetTable('tmp_LTeilenummern');
-//  tmpTable.Open;
 
   skip:=0;
-  querysize:=10000;
 
+  // In evtl mehreren Schritten so lange einlesen, bis letzter Datensatz erreicht.
   while skip<nTeile do
     begin
-    try
-      gefunden := UnippsQry2.SucheAlleLieferantenTeilenummern(skip,querysize);
-    except on E: Exception do
-      ErrMsg:=  E.Message;
-    end;
+      //Diese Abfrage wirft eine Exception beim Lesen von RecordCount,
+      //liefert aber trotzdem Daten
+      try
+        UnippsQry2.SucheAlleLieferantenTeilenummern(skip);
+      except on E: Exception do
+        //Wir ignorieren die Exception
+        ErrMsg:=  E.Message; //nur zum Debuggen
+      end;
 
-    if not gefunden then
-        raise Exception.Create('Keine Lieferanten-Teilenummern gefunden.');
+      //Falls schon der erste Datensatz fehlerhaft ist, ist EOF TRUE
+      if UnippsQry2.Eof then
 
-    if UnippsQry2.Eof then
+        // Die Abfrage ist schon beim ersten Datensatz fehlerhaft
+        // => einen Datensatz überspringen
+        skip:=skip+1
 
-      // Die Abfrage ist schon beim ersten Datensatz fehlerhaft
-      //Neue Datensätze ab skip aus UNIPPS lesen
-      skip:=skip+1
+      else
 
-    else
-
-      // Es gibt mindestens einen i.O. Datensatz
-      begin
-
-        LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION;');
-
-        while not UnippsQry2.Eof do
+        // Es gibt mindestens einen i.O. Datensatz
         begin
-          RecNoStatusAnzeigen(UnippsQry2.RecNo+skip);
-          try
-             LocalQry2.InsertFields('tmp_LTeilenummern', UnippsQry2.Fields);
-          except on E: Exception do
-            begin
-              ErrMsg:=  E.Message;
-              raise;
+
+          LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION;');
+
+          //Schleife über alle Records bricht ab,
+          // wenn auf einen fehlerhaften Datensatz positioniert wird.
+          while not UnippsQry2.Eof do
+          begin
+
+            RecNoStatusAnzeigen(UnippsQry2.RecNo+skip);
+            //Übertrage Daten in tmp_LTeilenummern
+            LocalQry2.InsertFields('tmp_LTeilenummern', UnippsQry2.Fields);
+
+            try
+              UnippsQry2.next;
+            except on E: Exception do
+              begin
+                //Next ist fehlgeschlagen, weil der Datensatz n.i.o. ist
+                //Enthält z.B "€"-Zeichen
+                ErrMsg:=  E.Message;
+                //Positioniere auf nächsten Datensatz
+                //(wird unten noch mal um UnippsQry2.RecNo erhöht)
+                skip := skip + 1;
+                break;
+              end;
             end;
+
           end;
 
-          try
-            UnippsQry2.next;
-          except on E: Exception do
-            begin
-              //Next ist fehlgeschlagen, weil der Datensatz n.i.o. ist
-              //Enthält z.B "€"-Zeichen
-              ErrMsg:=  E.Message;
-              //Positioniere auf nächsten Datensatz (querysize wird unten addiert)
-              skip := skip + UnippsQry2.RecNo + 1 - querysize;
-              break;
-              //raise E;
-            end;
-          end;
+          //Letzte Query nach Access übertragen
+          LocalQry2.RunExecSQLQuery('COMMIT;');
+
+          //In der letzten Schleife wurden UnippsQry2.RecNo Datensätze verarbeitet
+          //Wir machen weiter mit skip+UnippsQry2.RecNo
+          skip:=skip+UnippsQry2.RecNo ;
 
         end;
-
-        //Letzte Query nach Access übertragen
-        LocalQry2.RunExecSQLQuery('COMMIT;');
-        //Neue Datensätze ab skip aus UNIPPS lesen
-        skip:=skip+querysize;
-
-      end;
 
 
   end;
@@ -305,85 +338,11 @@ begin
   RecNoStatusAnzeigen(StatusmaxRecord,True);
   SchrittEndeAnzeigen;
 
+  //Übertrage Daten in Tabelle Bestellungen
   LocalQry2.LieferantenTeileNrInTabelle;
 
 end;
 
-
-/// <summary>Lieferanten-Teilenummer aus UNIPPS in Tabelle
-///          Bestellungen lesen </summary>
-/// <remarks>
-/// Zweite Abfrage zur Erstellung der Datenbasis des Programms.
-/// </remarks>
-procedure TBasisImport.xxxalt_LieferantenTeilenummerAusUnipps();
-
-var
-  IdLieferant: String;
-  TeileNr, LTeileNr: String;
-  Bestellungen: TWTable;
-//  Bestellungen: TWQry;
-  ErrMsg:String;
-  gefunden:Boolean;
-begin
-
-  SchrittAnfangAnzeigen(2,'Lieferanten-Teilenummern lesen');
-  Bestellungen := Tools.GetTable('Bestellungen');
-
-//  Bestellungen := Tools.GetQuery;
-//  Bestellungen.RunSelectQuery('SELECT * FROM Bestellungen');
-
-  Bestellungen.Open;
-  {$IFDEF FIREDAC}
-  Bestellungen.FetchAll;
-  {$ENDIF}
-  Bestellungen.First;
-  LocalQry2.RunExecSQLQuery('BEGIN TRANSACTION;');
-
-  StatusmaxRecord:=Bestellungen.RecordCount;
-  while not Bestellungen.Eof do
-  begin
-
-    RecNoStatusAnzeigen(Bestellungen.RecNo);
-
-    IdLieferant:=Bestellungen.FieldByName('IdLieferant').AsString;
-    try
-      TeileNr:=Bestellungen.FieldByName('TeileNr').AsString;
-    except on E: Exception do
-      ErrMsg:=  E.Message;
-    end;
-
-    try
-      gefunden := UnippsQry2.SucheLieferantenTeilenummer(IdLieferant, TeileNr);
-    except on E: Exception do
-      ErrMsg:=  E.Message;
-    end;
-
-    if not gefunden then
-      ErrMsg:= 'nix gfunne';
-
-    if gefunden then
-      begin
-        try
-          LTeileNr := UnippsQry2.FieldByName('LTeileNr').AsString;
-        except on E: Exception do
-          begin
-            ErrMsg:=  E.Message;
-            LTeileNr :=  '---Importfehler';
-          end;
-        end;
-        Bestellungen.Edit;
-        Bestellungen.FieldByName('LTeileNr').AsString:= LTeileNr;
-        Bestellungen.Post;
-      end;
-    Bestellungen.next;
-  end;
-
-  RecNoStatusAnzeigen(StatusmaxRecord,True);
-  SchrittEndeAnzeigen;
-
-  LocalQry2.RunExecSQLQuery('COMMIT;');
-
-end;
 
 ///<summary>Lese Benennung zu Teilen aus UNIPPS in temp Tabelle</summary>
 /// <remarks>
@@ -396,6 +355,7 @@ var
 
 begin
   SchrittAnfangAnzeigen(3,'Benennung zu Teilen lesen');
+  SetzeDatensatzZaehlerText('warte auf UNIPPS');
 
   //Lies den Bestellzeitraum
   BestellZeitraum:=LocalQry2.LiesProgrammDatenWert('Bestellzeitraum');
@@ -454,63 +414,94 @@ begin
   SchrittEndeAnzeigen;
 end;
 
-//Import Schritt 5: Test ob Teil Pumpenteil
-///<summary>Markiere Pumpenteile in Tabelle Teile</summary>
-procedure TBasisImport.PumpenteileAusUnipps();
+//Import Schritt 5: Test ob Teil Ersatzteil
+///<summary>Markiere Ersatzteile in Tabelle Teile</summary>
+procedure TBasisImport.ErsatzteileAusUnipps();
   var
     TeileNr:String;
-    Ersatzteil:Boolean;
     gefunden:Boolean;
+    BestellZeitraum:String;
 
 begin
 
-  SchrittAnfangAnzeigen(5, 'Teste ob Teil Pumpenteil');
+  SchrittAnfangAnzeigen(5, 'Teste ob Teil Ersatzteil');
+  SetzeDatensatzZaehlerText('warte auf UNIPPS');
 
-  gefunden :=LocalQry2.HoleTeile;
-  {$IFDEF FIREDAC}
-  LocalQry2.FetchAll;
-  {$ENDIF}
+  //Lies den Bestellzeitraum
+  BestellZeitraum:=LocalQry2.LiesProgrammDatenWert('Bestellzeitraum');
 
-  StatusmaxRecord:=LocalQry2.RecordCount;
-  while not LocalQry2.Eof do
+  //Zeitraum erhoehen um sicher alle Daten zu bekommen
+  BestellZeitraum:=IntToStr(StrToInt(BestellZeitraum)+5);
+
+  gefunden := UnippsQry2.TesteAufErsatzteil(BestellZeitraum);
+
+  LocalQry2.RunExecSQLQuery('delete * from tmpTeileVerwendung') ;
+
+  StatusmaxRecord:=UnippsQry2.RecordCount;
+  while not UnippsQry2.Eof do
   begin
-
-    RecNoStatusAnzeigen(LocalQry2.RecNo);
-
-    TeileNr:=LocalQry2.FieldByName('TeileNr').AsString;
-
-    gefunden := UnippsQry2.SucheTeileInKA(TeileNr);
-    Ersatzteil:=gefunden;
-    if not gefunden then
-      gefunden := UnippsQry2.SucheTeileInFA(TeileNr);
-    if not gefunden then
-      gefunden := UnippsQry2.SucheTeileInSTU(TeileNr);
-    if not gefunden then
-      gefunden := UnippsQry2.SucheTeileInFAKopf(TeileNr);
-
-    if gefunden then
-    begin
-      LocalQry2.Edit;
-      LocalQry2.FieldByName('Pumpenteil').Value := True;
-      if Ersatzteil then
-        LocalQry2.FieldByName('Ersatzteil').Value := True;
-      LocalQry2.Post;
-    end;
-
-    LocalQry2.next;
-
+    RecNoStatusAnzeigen(UnippsQry2.RecNo);
+    LocalQry2.InsertFields('tmpTeileVerwendung', UnippsQry2.Fields);
+    UnippsQry2.next;
   end;
 
   RecNoStatusAnzeigen(StatusmaxRecord,True);
+
+  //Übertrage das Ergebnis aus tmpTeileVerwendung nach Teile
+  LocalQry2.UpdateTeilErsatzteile;
+
   SchrittEndeAnzeigen;
 
  end;
 
-//Import Schritt 6: Lieferanten-Tabelle
+ //Import Schritt 6: Test ob Teil Pumpenteil
+///<summary>Markiere Pumpenteile in Tabelle Teile</summary>
+procedure TBasisImport.PumpenteileAusUnipps();
+  var
+    TeileNr:String;
+    gefunden:Boolean;
+    BestellZeitraum:String;
+
+begin
+
+  SchrittAnfangAnzeigen(6, 'Teste ob Teil Pumpenteil');
+  SetzeDatensatzZaehlerText('warte auf UNIPPS');
+
+  //Lies den Bestellzeitraum
+  BestellZeitraum:=LocalQry2.LiesProgrammDatenWert('Bestellzeitraum');
+
+  //Zeitraum erhoehen um sicher alle Daten zu bekommen
+  BestellZeitraum:=IntToStr(StrToInt(BestellZeitraum)+5);
+
+  gefunden := UnippsQry2.TesteAufPumpenteil(BestellZeitraum);
+
+  LocalQry2.RunExecSQLQuery('delete * from tmpTeileVerwendung') ;
+
+  StatusmaxRecord:=UnippsQry2.RecordCount;
+  while not UnippsQry2.Eof do
+  begin
+    RecNoStatusAnzeigen(UnippsQry2.RecNo);
+    LocalQry2.InsertFields('tmpTeileVerwendung', UnippsQry2.Fields);
+    UnippsQry2.next;
+  end;
+
+  RecNoStatusAnzeigen(StatusmaxRecord,True);
+
+  //Übertrage das Ergebnis aus tmpTeileVerwendung nach Teile
+  LocalQry2.UpdateTeilPumpenteile;
+
+  SchrittEndeAnzeigen;
+
+ end;
+
+
+
+//Import Schritt 7: Lieferanten-Tabelle
 ///<summary>Pflege Tabelle Lieferanten</summary>
 procedure TBasisImport.LieferantenTabelleUpdaten();
 begin
-  SchrittAnfangAnzeigen(6,'Lieferanten-Tabelle erzeugen');
+  SchrittAnfangAnzeigen(7,'Lieferanten-Tabelle erzeugen');
+  SetzeDatensatzZaehlerText('warte auf UNIPPS');
   //Markiere alle Lieferanten als aktuell
   LocalQry2.MarkiereAktuelleLieferanten;
   //Uebertrage neue Lieferanten
@@ -527,21 +518,21 @@ begin
 
 end;
 
-// Import Schritt 7: Lief-Erklaerungen
+// Import Schritt 8: Lief-Erklaerungen
 ///<summary>Pflege Tabelle LErklaerungen</summary>
 procedure TBasisImport.LErklaerungenUpdaten();
 begin
-  SchrittAnfangAnzeigen(7,'Lief.-Erkl. ergaenzen');
+  SchrittAnfangAnzeigen(8,'Lief.-Erkl. ergaenzen');
   LocalQry2.NeueLErklaerungenInTabelle;
   LocalQry2.AlteLErklaerungenLoeschen;
   SchrittEndeAnzeigen;
 end;
 
-// Import Schritt 8
+// Import Schritt 9
 ///<summary>Anzahl der Lieferanten je Teil in Tabelle Teile</summary>
 procedure TBasisImport.TeileUpdateZaehleLieferanten();
 begin
-  SchrittAnfangAnzeigen(8,'Lieferanten je Teil zählen');
+  SchrittAnfangAnzeigen(9,'Lieferanten je Teil zählen');
   // tmp Tabelle leeren
   LocalQry2.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
   //Anzahl der Lieferanten je Teil in tmp Tabelle tmp_anz_xxx_je_teil

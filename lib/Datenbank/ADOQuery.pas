@@ -256,6 +256,7 @@ begin
       begin
         ErrMsg:=  E.Message;
         n_records:=0;
+        gefunden:=False;
         raise;
       end;
     end;

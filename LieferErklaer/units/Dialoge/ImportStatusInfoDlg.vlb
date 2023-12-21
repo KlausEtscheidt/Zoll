@@ -1,17 +1,8 @@
 ﻿[Memo1]
 Coordinates=10,78,64,58
 
-[ImportBtn]
-Coordinates=164,10,70,58
-
-[GridPanel1]
-Coordinates=75,10,79,58
-
-[ESCButton]
-Coordinates=84,78,78,58
-
 []
-Coordinates=205,155,91,36
+Coordinates=75,10,79,58
 
 [StatusPanel]
 Coordinates=10,10,55,58

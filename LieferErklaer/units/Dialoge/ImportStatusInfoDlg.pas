@@ -11,13 +11,12 @@ uses WinApi.Windows, System.SysUtils, System.Classes,
 type
   TImportStatusDlg = class(TForm)
     Memo1: TMemo;
-    GridPanel1: TGridPanel;
-    ImportBtn: TButton;
-    ESCButton: TButton;
     StatusPanel: TPanel;
     StringGrid1: TStringGrid;
     Panel1: TPanel;
     actRecordLbl: TLabel;
+    ImportBtn: TButton;
+    ESCButton: TButton;
     procedure ImportBtnClick(Sender: TObject);
     procedure ESCButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -29,6 +28,7 @@ type
                                                  SchrittBenennung:String);
     procedure AnzeigeEndeImportSchritt(SchrittNr:Integer);
     procedure AnzeigeRecordsGelesen(aktRecord,maxRecord:Integer);
+    procedure SetRecordLabelCaption(text:String);
     procedure ImportEnde;
   end;
 
@@ -70,6 +70,12 @@ begin
              Format('%5d von %5d Datensätzen gelesen',[aktRecord, maxRecord]);
 end;
 
+procedure TImportStatusDlg.SetRecordLabelCaption(text:String);
+begin
+  actRecordLbl.Caption:= text;
+end;
+
+
 procedure TImportStatusDlg.ImportEnde;
 var
   Minuten:Double;
@@ -93,7 +99,7 @@ begin
   StringGrid1.ColWidths[1] := 200;
 //  Label1.Font.Charset := SYMBOL_CHARSET;
 //  Label1.Caption :=  #252     ;
-  for row := 0 to 7 do
+  for row := 0 to 8 do
     begin
       StringGrid1.Cells[0,row]:='Schritt ' + IntToStr(row+1) + ':';
       StringGrid1.Cells[1,row]:='';

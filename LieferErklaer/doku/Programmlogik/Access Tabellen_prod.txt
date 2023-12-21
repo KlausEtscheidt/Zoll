@@ -1,3 +1,62 @@
+   Feld : Nachname         Text   
+   Feld : email            Text   
+   Feld : telefax          Text   
+   Index: ID(IdLieferant)
+   Index: Id_Person(IdPerson)
+   Index: PrimaryKey(ID)  Primary
+
+Tabelle: LieferantenStatusTxt
+   Feld : Id            Zahl   
+   Feld : StatusTxt     Text   
+   Index: __uniqueindex(Id)  Primary
+
+Tabelle: ProgrammDaten
+   Feld : Name          Text   
+   Feld : Wert          Text   
+   Feld : Kommentar    
+   Index: __uniqueindex(Name)  Primary
+
+Tabelle: Teile
+   Feld : TeileNr            Text   
+   Feld : TName1             Text   
+   Feld : TName2             Text   
+   Feld : Pumpenteil     0   Zahl   
+   Feld : PFK            0   Zahl   
+   Feld : Ersatzteil     0   Zahl   
+   Feld : n_Lieferanten  0   Zahl   
+   Feld : n_LPfk         0   Zahl   
+   Index: sqlite_autoindex_Teile_1(TeileNr)  Primary
+
+Tabelle: tmp_anz_xxx_je_teil
+   Feld : n           Zahl   
+   Feld : TeileNr     Text   
+
+Tabelle: tmp_LTeilenummern
+   Feld : IdLieferant  0   Zahl   UNIPPS-Id des Lieferanten
+   Feld : TeileNr          Text   UNIPPS-Id des Teils
+   Feld : LTeileNr         Text   Lieferanten-Teilenummer
+   Index: id_teil_lief(IdLieferant,TeileNr)  Primary
+
+Tabelle: tmp_wareneingang_mit_PFK
+   Feld : t_tg_nr       Text   
+   Feld : lieferant     Zahl   
+
+Tabelle: tmpLieferantTeilPfk
+   Feld : TeileNr         Text   
+   Feld : IdLieferant     Zahl   
+   Feld : lekl            Zahl   
+   Feld : Id              Zahl   
+   Index: sqlite_autoindex_0(Id)  Primary
+
+Tabelle: tmpTeileBenennung
+   Feld : Zeile         Zahl   
+   Feld : Benennung     Text   
+   Feld : TeileNr       Text   
+   Index: pkey(Zeile,TeileNr)  Primary
+
+Tabelle: tmpTeileVerwendung
+   Feld : TeileNr     Text   
+
 
 Tabelle: Anwender
    Feld : WinName        Text   
@@ -8,15 +67,15 @@ Tabelle: Anwender
    Index: PrimaryKey(WinName)  Primary
 
 Tabelle: Bestellungen
-   Feld : IdLieferant  0   Zahl   UNIPPS-Id des Lieferanten
-   Feld : TeileNr          Text   UNIPPS-Id des Teils
-   Feld : BestDatum        Datum  Letzte Bestellung zu Teile/Lieferant
-   Feld : eingelesen       Datum  Datum des Imports
-   Feld : LKurzname        Text   Kurzname des Lieferanten
-   Feld : LName1           Text   Langname1 des Lieferanten
-   Feld : LName2           Text   Langname2 des Lieferanten
-   Feld : LAdressId    0   Zahl   kann weg ? immer 0
-   Feld : LTeileNr         Text   Lieferanten-Teilenummer
+   Feld : IdLieferant  0   Zahl   
+   Feld : TeileNr          Text   
+   Feld : BestDatum        Datum  
+   Feld : eingelesen       Datum  
+   Feld : LKurzname        Text   
+   Feld : LName1           Text   
+   Feld : LName2           Text   
+   Feld : LAdressId    0   Zahl   
+   Feld : LTeileNr         Text   
    Index: id_teil_lief(TeileNr,IdLieferant)  Primary
    Index: LAdressId(LAdressId)
 
@@ -134,7 +193,7 @@ Tabelle: tmpTeileBenennung
    Feld : Zeile         Zahl   
    Feld : Benennung     Text   
    Feld : TeileNr       Text   
-   Index: pkey(Zeile,TeileNr)  Primary
+   Index: __uniqueindex(Zeile,TeileNr)  Primary
 
 Tabelle: tmpTeileVerwendung
    Feld : TeileNr     Text   

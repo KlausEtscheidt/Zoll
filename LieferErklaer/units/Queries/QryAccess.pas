@@ -30,6 +30,8 @@ interface
       function MarkiereErsatzteilLieferanten():Boolean;
       function TeileName1InTabelle():Boolean;
       function TeileName2InTabelle():Boolean;
+      function UpdateTeilPumpenteile():Boolean;
+      function UpdateTeilErsatzteile():Boolean;
       function UpdateTmpAnzLieferantenJeTeil():Boolean;
       function UpdateTeileZaehleLieferanten():Boolean;
       function UpdateLieferantenAnsprechpartner():Boolean;
@@ -242,6 +244,35 @@ begin
        + 'ON Teile.TeileNr = tmpTeileBenennung.TeileNr '
        + 'SET Teile.TName2 = tmpTeileBenennung.Benennung '
       +  'WHERE tmpTeileBenennung.Zeile=2;' ;
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
+// Setze Flag für Pumpenteile in Tabelle Teile
+//---------------------------------------------------------------------------
+function TWQryAccess.UpdateTeilPumpenteile():Boolean;
+  var
+    sql: String;
+begin
+
+  sql := 'UPDATE Teile INNER JOIN tmpTeileVerwendung '
+       + 'ON Teile.TeileNr = tmpTeileVerwendung.TeileNr '
+       + 'SET Pumpenteil = -1;';
+  Result:= RunExecSQLQuery(sql);
+
+end;
+
+// Setze Flag für Ersatzteile in Tabelle Teile
+//---------------------------------------------------------------------------
+function TWQryAccess.UpdateTeilErsatzteile():Boolean;
+  var
+    sql: String;
+begin
+
+  //Ersatzteile sind auch immer Pumpenteile
+  sql := 'UPDATE Teile INNER JOIN tmpTeileVerwendung '
+       + 'ON Teile.TeileNr = tmpTeileVerwendung.TeileNr '
+       + 'SET Ersatzteil = -1, Pumpenteil = -1;';
   Result:= RunExecSQLQuery(sql);
 
 end;
