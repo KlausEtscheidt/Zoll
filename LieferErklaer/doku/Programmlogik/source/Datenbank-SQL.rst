@@ -10,6 +10,36 @@ SQL-Strings
 Basis-Import
 ============
 
+.. #################################################################################
+
+.. _SQLSucheBestellungenSub:
+
+Unterabfrage Suche Bestellungen
+-------------------------------
+
+Diese Unterabfrage holt alle Bestellungen der letzten xxx Tage aus der UNIPPS-Tabelle **Bestellkopf**.
+
+xxx wird als Parameter übergeben.
+
+Durch den Join von **Bestellkopf** mit **Bestellpos** werden auch alle bestellten Teile gelesen.
+
+Die Abfrage wird beim erstmaligen Einlesen der Bestellungen verwendet, 
+aber auch um im weiteren Verlauf Zusatzdaten zu den gleichen Lieferanten oder Teilen aus UNIPPS zu lesen.
+
+Die relevanten Teile bzw Lieferanten in UNIPPS immer wieder neu zu filtern ist sehr effizient.
+Alternativ müsste man mit den bereits importierten Teilenummern jeweils einzelne Abfragen (eine je Teil) starten. 
+Das dauert deutlich länger.
+
+::
+
+    sql_suche_Bestellungen := 'SELECT bestellkopf.lieferant as IdLieferant, '
+    + 'bestellpos.t_tg_nr as TeileNr, '
+    + 'bestellkopf.freigabe_datum as BestDatumSub '
+    + 'FROM bestellkopf '
+    + 'INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 '
+    + 'where TODAY - freigabe_datum <  ?  ' ;
+
+
 .. #######################################################################################
 
 .. _SQLSucheBestellungen:
@@ -24,40 +54,35 @@ Die Felder werden mit Delphi in die Access-Tabelle :ref:`Bestellungen <TabBestel
 
 ::
 
-    SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, trim(adresse.kurzname) AS LKurzname, 
-    trim(adresse.name1) AS LName1, trim(adresse.name2) AS LName2, TODAY as eingelesen 
-    FROM (
-    SELECT IdLieferant, TeileNr, max(BestDatumSub) as BestDatum 
-    FROM (
-    SELECT lieferant as IdLieferant, t_tg_nr as TeileNr, freigabe_datum as BestDatumSub 
-    FROM bestellkopf 
-    INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 
-    where TODAY - freigabe_datum <  ?  ) 
-    GROUP BY IdLieferant, TeileNr order by TeileNr, IdLieferant) as Bestellungen 
-    INNER JOIN lieferant on lieferant.ident_nr = IdLieferant 
-    INNER JOIN adresse on lieferant.adresse = adresse.ident_nr
+    //Neueste Bestellung je Teil und Lieferant (unique) seit Datum xxx
+    sql := 'SELECT IdLieferant, TeileNr, max(BestDatumSub) as BestDatum '
+      + 'FROM (' + sql_suche_Bestellungen + ') '
+      + 'GROUP BY IdLieferant, TeileNr '
+      + 'order by TeileNr, IdLieferant';
 
-Die innerste Sub-Query
+    //Lieferanten Kurz- und Langname dazu
+    sql := 'SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, '
+      + 'trim(adresse.kurzname) AS LKurzname, '
+      + 'trim(adresse.name1) AS LName1, trim(adresse.name2) AS LName2, '
+      + 'TODAY as eingelesen '
+      + 'FROM (' + sql + ') as Bestellungen '
+      + 'INNER JOIN lieferant on lieferant.ident_nr = IdLieferant '
+      + 'INNER JOIN adresse on lieferant.adresse = adresse.ident_nr ';
 
-|    SELECT lieferant as IdLieferant, t_tg_nr as TeileNr, freigabe_datum as BestDatumSub 
-|    FROM bestellkopf 
-|    INNER JOIN bestellpos ON bestellkopf.ident_nr = bestellpos.ident_nr1 
-|    where TODAY - freigabe_datum <  ?  
+Dabei liefert :ref:`sql_suche_Bestellungen<SQLSucheBestellungen>`  alle Bestellungen und ihre Teile, 
+bei denen das UNIPPS-Freigabedatum nicht mehr als xxx Tage zurück liegt (TODAY - freigabe_datum <  ?).  
 
-verknüpft *bestellkopf* mit *bestellpos* und liefert alle Bestellungen und ihre Teile, bei denen das UNIPPS-Freigabedatum
-nicht mehr als *?* Tage zurück liegt (TODAY - freigabe_datum <  ?).  
+xxx wird TWQryUNIPPS.SucheBestellungen als Parameter übergeben.
 
-? wird TWQryUNIPPS.SucheBestellungen als Parameter übergeben.
-
-Die nächst äußere Sub-Query *Bestellungen*
+Die nächst äußere Sub-Query **Bestellungen**
 
 |   SELECT IdLieferant, TeileNr, max(BestDatumSub) as BestDatum 
-|   FROM (   *innerste Sub-Query* )
-|   GROUP BY IdLieferant, TeileNr order by TeileNr, IdLieferant) as Bestellungen 
+|   FROM ( sql_suche_Bestellungen ) 
+|   GROUP BY IdLieferant, TeileNr order by TeileNr, IdLieferant) as **Bestellungen** 
 
 liefert für jede Kombination aus IdLieferant und TeileNr das Datum der jüngsten Bestellung.
 
-Die Gesamtabfrage verknüpft dann die Sub-Query *Bestellungen* mit den UNIPPS-Tabellen *lieferant* und *adresse*
+Die Gesamtabfrage verknüpft dann die Sub-Query **Bestellungen** mit den UNIPPS-Tabellen **lieferant** und **adresse**
 um die Kurz- und Langnamen des Lieferanten zu erhalten.
 
 |    SELECT IdLieferant, trim(TeileNr) as TeileNr, BestDatum, trim(adresse.kurzname) AS LKurzname, 
@@ -176,67 +201,87 @@ Pumpen und Ersatzteile bestimmen
 
 .. #################################################################################
 
-.. _SQLTeilinKA:
+.. _SQLTesteAufErsatzteil:
 
-Ist Teil in KA
-~~~~~~~~~~~~~~
+Teste auf Ersatzteil
+~~~~~~~~~~~~~~~~~~~~
 
-Sucht Teil als Position eines KA in UNIPPS auftragpos
+Sucht alle Teile aus Bestellungen, die auch als Position in einem KA in UNIPPS auftragpos stehen.
 
-Delphi: TWQryUNIPPS.SucheTeileInKA
+Delphi: TWQryUNIPPS.TesteAufErsatzteil
 
 ::
         
-    SELECT t_tg_nr FROM auftragpos where t_tg_nr=?;
+  sql := 'SELECT distinct TeileNr '
+             + 'FROM (' + sql_suche_Bestellungen + ') '
+             + 'where TeileNr in (SELECT distinct t_tg_nr FROM auftragpos);' ;
+
+Dabei werden mit :ref:`sql_suche_Bestellungen<SQLSucheBestellungenSub>`  die relevanten Teile gefiltert.
 
 
 .. #################################################################################
 
-.. _SQLTeilinFA:
+.. _SQLTesteAufPumpenteil:
 
-Ist Teil in FA
-~~~~~~~~~~~~~~
+Teste auf Pumpenteil
+~~~~~~~~~~~~~~~~~~~~
 
-Sucht Teil als Position eines FA in UNIPPS astuelipos
+Sucht alle Teile aus Bestellungen, die in Pumpen einfließen. 
 
-Delphi: TWQryUNIPPS.SucheTeileInFA
+Es sind die Teile, die den UNIPPS-Tabellen astuelipos, f_auftragkopf oder teil_stuelipos stehen.
+
+Delphi: TWQryUNIPPS.TesteAufPumpenteil
 
 ::
         
-    SELECT t_tg_nr FROM astuelipos where t_tg_nr=?;
+  sql := 'SELECT distinct TeileNr '
+             + 'FROM (' + sql_suche_Bestellungen + ') '
+             + 'where TeileNr in (SELECT distinct t_tg_nr FROM astuelipos) '
+             + 'or TeileNr in (SELECT distinct t_tg_nr FROM f_auftragkopf) '
+             + 'or TeileNr in (SELECT distinct t_tg_nr FROM teil_stuelipos);' ;
+
+Dabei werden mit :ref:`sql_suche_Bestellungen<SQLSucheBestellungenSub>`  die relevanten Teile gefiltert.
 
 
 .. #################################################################################
 
-.. _SQLTeilinSTU:
+.. _SQLUpdateTeilErsatzteile:
 
-Ist Teil in STückliste
-~~~~~~~~~~~~~~~~~~~~~~
+Setze Flag für Ersatzteile
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sucht Teil in Stücklisten in UNIPPS teil_stuelipos
+Setzt Flag für Ersatzteile in Tabelle Teile.
 
-Delphi: TWQryUNIPPS.SucheTeileInSTU
+Delphi: TWQryAccess.UpdateTeilErsatzteile
 
 ::
-        
-    SELECT t_tg_nr FROM teil_stuelipos where t_tg_nr=?;
+
+    sql := 'UPDATE Teile INNER JOIN tmpTeileVerwendung '
+        + 'ON Teile.TeileNr = tmpTeileVerwendung.TeileNr '
+        + 'SET Ersatzteil = -1, Pumpenteil = -1;';
+
+Ersatzteile sind auch immer Pumpenteile.
 
 
 .. #################################################################################
 
-.. _SQLTeilinFAKopf:
+.. _SQLUpdateTeilPumpenteile:
 
-Ist Teil in FA-Kopf
-~~~~~~~~~~~~~~~~~~~
+Setze Flag für Pumpenteile
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sucht Teil in FA-Kopf in UNIPPS f_auftragkopf
+Setzt Flag für Pumpenteile in Tabelle Teile.
 
-Delphi: TWQryUNIPPS.SucheTeileInFAKopf
+Delphi: TWQryAccess.UpdateTeilPumpenteile
 
 ::
-        
-    SELECT t_tg_nr FROM f_auftragkopf where t_tg_nr=?
 
+  sql := 'UPDATE Teile INNER JOIN tmpTeileVerwendung '
+       + 'ON Teile.TeileNr = tmpTeileVerwendung.TeileNr '
+       + 'SET Pumpenteil = -1;';
+
+
+.. #################################################################################
 
 Lieferanten Adressen
 --------------------

@@ -10,6 +10,8 @@ UNIPPS-Import (Basis-Import)
 
 Der Import erfolgt über die procedure TBasisImport.Execute aus Unit Import;
 
+.. _ImportBestellungen:
+
 1. Bestellungen
 ~~~~~~~~~~~~~~~
 
@@ -43,7 +45,7 @@ Zum Schluß werden die Daten mit der Abfrage :ref:`LieferantenTeileNrInTabelle<S
 in die Tabelle **Bestellungen** übertragen.
 
 
-1. Teile-Benennung
+3. Teile-Benennung
 ~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`tmpTeileBenennung<TabtmpTeileBenennung>` löschen und neu füllen (:ref:`SQL <SQLSucheTeileBenennung>`)
@@ -67,24 +69,54 @@ Schritt2: Benennungszeile 2 aus tmpTeileBenennung in Teile (:ref:`SQL <SQLTeileB
 procedure TBasisImport.TeileBenennungInTeileTabelle();
 
 
-5. Bestimme Pumpen- und Ersatzteile
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5. Bestimme Ersatzteile
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Tabelle: :ref:`tmpTeileVerwendung<TabtmpTeileVerwendung>` leeren und neu füllen
+
+Tabelle: :ref:`Teile<TabTeile>` ändern
+
+procedure TBasisImport.ErsatzteileAusUnipps();
+
+Aus Tabelle ProgrammDaten wird das Feld 'Bestellzeitraum' gelesen (s. auch :ref:`Import Bestellungen<ImportBestellungen>` ).
+Um sicher alle Daten zu bekommen, wird der Wert gegenüber dem Einlesen der Bestellungen um 5 Tage erhöht.
+
+Mit der Abfrage :ref:`Teste auf Ersatzteil<SQLTesteAufErsatzteil>` werden die im Bestellzeitraum bestellten Teile,
+die auch in Kundenaufträgen stehen, nach **tmpTeileVerwendung** übertragen.
+
+Mit der Abfrage :ref:`Update Teil Ersatzteile<SQLUpdateTeilErsatzteile>` 
+werden in Tabelle :ref:`Teile<tabteile>` für alle in **tmpTeileVerwendung** vorhandenen Teile
+die Pumpen- und Ersatzteil-Flags gesetzt (Ein Ersatzteil ist immer auch ein Pumpenteil).
+
+
+6. Bestimme Pumpenteile
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Tabelle: :ref:`tmpTeileVerwendung<TabtmpTeileVerwendung>` leeren und neu füllen
 
 Tabelle: :ref:`Teile<TabTeile>` ändern
 
 procedure TBasisImport.PumpenteileAusUnipps();
 
-Für jedes Teil in Tabelle Teile prüfen:
+Aus Tabelle ProgrammDaten wird das Feld 'Bestellzeitraum' gelesen (s. auch :ref:`Import Bestellungen<ImportBestellungen>` ).
+Um sicher alle Daten zu bekommen, wird der Wert gegenüber dem Einlesen der Bestellungen um 5 Tage erhöht.
 
-   - Ist das Teil in einem Kundenauftrag, ist es ein Ersatzteil. Die Prüfung ist dann beendet. (:ref:`SQL <SQLTeilinKA>`)
-   - Ist das Teil in einem Fertigungsauftrag (Pumpenmontage), ist es ein Pumpenteil (da kein Ersatzteil) (:ref:`SQL <SQLTeilinFA>`)
-   - Ist das Teil in einer Teile-Stückliste, ist es ein Pumpenteil (:ref:`SQL <SQLTeilinSTU>`)
-   - Ist das Teil im Kopf eines Fertigungsauftrags (es wird gefertigt), ist es ein Pumpenteil (:ref:`SQL <SQLTeilinFAKopf>`)
+Pumpenteile sind Teile, die in folegen Listen stehen
 
-Die Pumpen- und Ersatzteil-Flags in Teile werden gesetzt.
+   - in einem Fertigungsauftrag (Pumpenmontage)
+   - einer Teile-Stückliste
+   - im Kopf eines Fertigungsauftrags (es wird gefertigt)
+
+Mit der Abfrage :ref:`Teste auf Ersatzteil<SQLTesteAufErsatzteil>` werden die im Bestellzeitraum bestellten Teile, die 
+den obigen Kriterien entsprechend in den UNIPPS-Tabellen astuelipos, f_auftragkopf oder teil_stuelipos stehen, 
+nach **tmpTeileVerwendung** übertragen.
+
+Mit der Abfrage :ref:`Update Teil Pumpenteile<SQLUpdateTeilPumpenteile>` 
+werden in Tabelle :ref:`Teile<tabteile>` für alle in **tmpTeileVerwendung** vorhandenen Teile
+das Pumpen-Flag gesetzt.
 
 
-5b Lieferanten-Adressen lesen
+6b Lieferanten-Adressen lesen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`Lieferanten_Adressen<TabLieferantenAdressen>` löschen und neu füllen (:ref:`SQL <SQLLieferantenAdressen>`)
@@ -101,7 +133,7 @@ Diesen speziellen Anspechpartner werden abschließend aus Lieferanten_Ansprechpa
 nach Lieferanten_Adressen übertragen und ersetzen dort den allgemeinen Anspechpartner (:ref:`SQL <SQLLieferantenAnspechpartnerUebertragen>`).
 In Lieferanten_Adressen wird dann das Feld hat_LEKL_Ansprechp True gesetzt.
 
-6. Lieferanten pflegen
+7. Lieferanten pflegen
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`Lieferanten<TabLieferanten>`  ändern
@@ -119,7 +151,7 @@ Setze Flags auf false, die besagen, das ein Lieferant Pumpen- oder Ersatzteile l
 Setze die Flags für Pumpen-(:ref:`SQL <SQLLieferantenSetPumpenflags>`)/Ersatzteile-Lieferanten (:ref:`SQL <SQLLieferantenSetErsatzflags>`)neu
 
 
-7. Lieferanten-Erklärungen
+8. Lieferanten-Erklärungen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`LErklaerungen<TabLErklaerungen>` 
@@ -132,7 +164,7 @@ in Bestellungen, aber nicht in Lieferantenerklärungen vorhanden ist (:ref:`SQL 
 Lösche Teile-Lieferanten-Kombis, die nicht in Bestellungen sind aus Lieferantenerklärungen (:ref:`SQL <SQLLErklaerungenObsolet>`).
  
 
-8. Anzahl der Lieferanten je Teil
+9. Anzahl der Lieferanten je Teil
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tabelle: :ref:`tmp_anz_xxx_je_teil<Tabtmp_anz_xxx_je_teil>` loeschen und neu füllen (:ref:`SQL <SQLTmpAnzLieferantenJeTeil>`).

@@ -497,13 +497,12 @@ tmpTeileVerwendung
 ~~~~~~~~~~~~~~~~~~~
 
 Zweck:
-    obsolet ?????
+    Speichert alle Teile, die als Pumpen- oder Ersatzteil Verwendung finden, zwischen.
 
 
 Tabelle: tmpTeileVerwendung
 
 ::
 
-   Feld : t_tg_nr     Text   
-   Index: t_tg_nr(t_tg_nr)
+   Feld : TeileNr     Text   
 
