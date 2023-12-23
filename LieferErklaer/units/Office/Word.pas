@@ -85,7 +85,7 @@ function OeffneWordDatei(DocPath:String):OleVariant;
         begin
           Result := Null;
           raise Exception.Create('Dokument' + #13 +DocPath + #13 +
-                                          ' konnte nicht geöffnet werden!');
+                                          ' konnte nicht geï¿½ffnet werden!');
        end;
     end;
 end;
@@ -147,14 +147,14 @@ begin
 
 
   if DatensatzFelder.FieldByName('telefax').AsString = '' then
-    raise Exception.Create('Keine Faxnummer für diesen Lieferantenvorhanden.');
+    raise Exception.Create('Keine Faxnummer fï¿½r diesen Lieferantenvorhanden.');
 
   try
     //mit Word verbinden
     WordApp:= StartWord(False);
     WordApp.DisplayAlerts:=0;
 
-    //Worddokument öffnen
+    //Worddokument ï¿½ffnen
     WordDoc:=OeffneWordDatei(Tools.ApplicationBaseDir + '\Vorlagen\'
                              + Tools.Faxvorlage);
 
@@ -169,7 +169,7 @@ begin
     DatumStr:=FormatDateTime('dd.mm.yyyy',Now);
     with DatensatzFelder do
       begin
-        //Gibt es einen speziellen Ansprechpartner dieseer Firma für Lekl im UNIPPS
+        //Gibt es einen speziellen Ansprechpartner dieseer Firma fï¿½r Lekl im UNIPPS
         if FieldByName('hat_LEKL_Ansprechp').AsString='-1' then
           begin
             Anrede := FieldByName('Anrede').AsString;
@@ -216,7 +216,7 @@ begin
     WordApp.WindowState:=WindowStateNormal;
   //  Sleep(500);
 
-    //Dokument prüfen
+    //Dokument prï¿½fen
       Erfolg:= SaveNCloseDlg(WordDoc);
 
     //Word nach hinten, Delphi vor
@@ -227,7 +227,7 @@ begin
   finally
 
     try
-      //Schließen falls nicht geschehen
+      //Schlieï¿½en falls nicht geschehen
       if IsWordFileOpen(SaveAsName) then
         WordDoc.Close(wdDoNotSaveChanges);
     finally

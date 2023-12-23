@@ -37,29 +37,29 @@ begin
   //Falls ohne Erfolg
   if not Initialized then
     exit;
-  //Lies die Tage, die eine Lief.-Erklär. mindestens noch gelten muss
+  //Lies die Tage, die eine Lief.-Erklï¿½r. mindestens noch gelten muss
   minRestGueltigkeit:=LocalQry.LiesProgrammDatenWert('Gueltigkeit_Lekl');
 
   //Leere Zwischentabelle
   LocalQry.RunExecSQLQuery('delete from tmpLieferantTeilPfk;');
 
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "alle Teile" ein
+  //Fuege Teile von Lieferanten mit gï¿½ltiger Erklï¿½rung "alle Teile" ein
   LocalQry.LeklAlleTeileInTmpTabelle(minRestGueltigkeit);
 
-  //Fuege Teile von Lieferanten mit gültiger Erklärung "einige Teile" ein
+  //Fuege Teile von Lieferanten mit gï¿½ltiger Erklï¿½rung "einige Teile" ein
   LocalQry.LeklEinigeTeileInTmpTabelle(minRestGueltigkeit);
 
   //Leere Zwischentabelle
   LocalQry.RunExecSQLQuery('delete from tmp_anz_xxx_je_teil;');
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in tmp Tabelle
+  //Anzahl der Lieferanten mit gï¿½ltiger Erklaerung je Teil in tmp Tabelle
   LocalQry.UpdateTmpAnzErklaerungenJeTeil;
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil
+  //Anzahl der Lieferanten mit gï¿½ltiger Erklaerung je Teil
   //in Tabelle Teile auf 0 setzen
   LocalQry.RunExecSQLQuery('UPDATE Teile SET n_LPfk= 0');
 
-  //Anzahl der Lieferanten mit gültiger Erklaerung je Teil in Tabelle Teile
+  //Anzahl der Lieferanten mit gï¿½ltiger Erklaerung je Teil in Tabelle Teile
   LocalQry.UpdateTeileZaehleGueltigeLErklaerungen;
 
   // Flag PFK in Teile setzen

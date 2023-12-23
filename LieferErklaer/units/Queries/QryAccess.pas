@@ -13,11 +13,12 @@ interface
   uses System.SysUtils, System.Classes, ADOQuery, FDQuery;
 
   type
-{$IFDEF FIREDAC}
-    TWQryAccess = class(TWFDQuery)
-{$ELSE}
+//{$IFDEF FIREDAC}
+//    TWQryAccess = class(TWFDQuery)
+//{$ELSE}
+//    TWQryAccess = class(TWADOQuery)
+//{$ENDIF}
     TWQryAccess = class(TWADOQuery)
-{$ENDIF}
       //Nacharbeit des UNIPPS-Imports in Access
       function LieferantenTeileNrInTabelle():Boolean;
       function NeueLErklaerungenInTabelle():Boolean;

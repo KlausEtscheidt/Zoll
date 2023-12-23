@@ -37,7 +37,7 @@ function GetTable(Tablename : String;ForThread:Boolean=False) : TWTable;
 var
   IsInitialized:Boolean;
   DbConnector:TWDBConnector;
-  DbConnector2:TWDBConnector; //Fuer Thread-Abläufe
+  DbConnector2:TWDBConnector; //Fuer Thread-Ablï¿½ufe
   ApplicationBaseDir: String;
   Username: String;
   Faxvorlage: String; //Userspez Vorlage
@@ -89,7 +89,7 @@ end;
 procedure init();
 
 begin
-  //Wir wollen das hier nur 1 mal ausführen
+  //Wir wollen das hier nur 1 mal ausfï¿½hren
   if IsInitialized then
     exit;
 

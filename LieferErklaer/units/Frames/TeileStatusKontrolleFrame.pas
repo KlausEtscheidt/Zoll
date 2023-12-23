@@ -7,9 +7,9 @@ uses
   System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls,
   Vcl.DBCGrids,
-//  Data.Win.ADODB,
   Tools, Data.DB, System.ImageList, Vcl.ImgList, Vcl.ExtCtrls, System.Actions,
   Vcl.ActnList, Import;
+//  Data.Win.ADODB,
 
 type
   TTeileStatusKontrolleFrm = class(TFrame)

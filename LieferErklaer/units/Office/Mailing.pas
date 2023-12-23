@@ -16,7 +16,7 @@ const
   olMailItem = 0;
   olByValue = 1;
   olFolderInbox = 6; //Posteingang
-  olFolderDrafts = 16; //Entwürfe
+  olFolderDrafts = 16; //EntwÃ¼rfe
   olDiscard=1; //Close ohne Save
   WindowStateNormal = 0;
   WindowStateMax = 1;
@@ -63,7 +63,7 @@ begin
   //Oberster Knoten des USERS
   NameSpace := OLApp.GetNameSpace('MAPI');
 
-  //Hole Obersten Ordner des Users über Vater des Posteingangs
+  //Hole Obersten Ordner des Users ï¿½ber Vater des Posteingangs
   OLFolder:=NameSpace.GetDefaultFolder(olFolderInbox).Parent;
   FolderName:=OLFolder.Name;
 
@@ -130,8 +130,8 @@ function OutlookSucheMailOrdnerBetreff(OLFolder: OLEVariant;
   end;
   if not gefunden then
     raise Exception.Create('Keine Muster-Mail im Outlook-Ordner ' + #13
-               + '"Muster f Lieferantenerklärung" gefunden!' + #13
-               + 'Der Betreff muss mit "Lieferanten-Erklärung" beginnen.')
+               + '"Muster f Lieferantenerklï¿½rung" gefunden!' + #13
+               + 'Der Betreff muss mit "Lieferanten-Erklï¿½rung" beginnen.')
   else
     Result:=MailItem;
  end;
@@ -198,12 +198,12 @@ begin
 //  if OLApp=VarNull then
 //    raise Exception.Create('Konnte nicht zu Outlook verbinden.');
 
-  //Suche Ordner 'Muster f Lieferantenerklärung'
-  OLFolder:=OutlookSucheOrdner('Muster f Lieferantenerklärung');
+  //Suche Ordner 'Muster f Lieferantenerklï¿½rung'
+  OLFolder:=OutlookSucheOrdner('Muster f Lieferantenerklï¿½rung');
 
   //Suche mail nach Ordner und Betreff
   MailMusterItem:=
-         OutlookSucheMailOrdnerBetreff(OLFolder, 'Lieferanten-Erklärung');
+         OutlookSucheMailOrdnerBetreff(OLFolder, 'Lieferanten-Erklï¿½rung');
 
   try
     MailItem := OLApp.CreateItem(olMailItem);

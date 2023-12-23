@@ -31,7 +31,7 @@ implementation
 procedure TLeklTeileEingabeDialog.FormShow(Sender: TObject);
 begin
   LeklTeileEingabeFrm.Init;
-//  mainForm.HelpKeyword:='Präferenzkenner';
+//  mainForm.HelpKeyword:='Prï¿½ferenzkenner';
   LeklTeileEingabeFrm.Show;
 end;
 

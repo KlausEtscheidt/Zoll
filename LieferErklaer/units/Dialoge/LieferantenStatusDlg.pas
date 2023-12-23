@@ -47,8 +47,8 @@ var
   SenderComp:TComponent;
 
 const
-  msg = 'Die Restgültigkeit beträgt weniger als 100 Tage.' + #13
-      + 'Soll das wirklich so übernommen werden ?';
+  msg = 'Die Restgï¿½ltigkeit betrï¿½gt weniger als 100 Tage.' + #13
+      + 'Soll das wirklich so ï¿½bernommen werden ?';
 begin
 
   if ModalResult=mrCancel then begin
@@ -56,7 +56,7 @@ begin
     exit;
   end;
 
-  //Wenn Lekl abgegeben, Restgültigkeit prüfen
+  //Wenn Lekl abgegeben, Restgï¿½ltigkeit prï¿½fen
   if (StatusListBox.KeyValue=2) or (StatusListBox.KeyValue=3) then
   begin
     RestTage:=DaysBetween(Now, DateTimePicker1.DateTime);
@@ -75,7 +75,7 @@ begin
       raise Exception.Create('Keine Verbindung zur Datenbank!');
 //      exit;
 
-    //Lieferanten-Status-Daten aus Datenbank in DataSource für Formular
+    //Lieferanten-Status-Daten aus Datenbank in DataSource fï¿½r Formular
     LocalQry.HoleLieferantenStatusTxt;
     DataSource1.DataSet := LocalQry;
 end;

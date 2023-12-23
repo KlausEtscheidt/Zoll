@@ -54,7 +54,7 @@ begin
 //   if not StartExcel then
 //      raise Exception.Create('Excel konnte nicht gestartet werden!');
 
-  // Add a new Workbook, Neue Arbeitsmappe öffnen
+  // Add a new Workbook, Neue Arbeitsmappe ï¿½ffnen
   ExcelApp.Workbooks.Add(xlWBatWorkSheet);
 
   for col := 1 to LocalQry.FieldCount do
@@ -83,11 +83,11 @@ begin
    if not StartExcel then
       raise Exception.Create('Excel konnte nicht gestartet werden!');
 
-// Add a new Workbook, Neue Arbeitsmappe öffnen
+// Add a new Workbook, Neue Arbeitsmappe ï¿½ffnen
   ExcelApp.Workbooks.Add(xlWBatWorkSheet);
 
 
-  // Open a Workbook, Arbeitsmappe öffnen
+  // Open a Workbook, Arbeitsmappe ï¿½ffnen
 //  ExcelWorkbook := ExcelApp.Workbooks.Open(ExcelFileName);
 
   ExcelApp.Cells[1, 1].Value := 'Mein Test';
